@@ -8,7 +8,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
 
 part 'cart_state.dart';
@@ -16,7 +18,7 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   final repository = OrdersRepository();
   final auth = FirebaseAuth.instance;
-  final storage = const FlutterSecureStorage();
+  final storage = AppStorage();
 
   CartCubit() : super(CartState.initial());
 
@@ -113,49 +115,70 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(total: total));
   }
 
-  get getStorage async => storage.readAll(
-      aOptions: const AndroidOptions(
-        encryptedSharedPreferences: true,
-      ),
-      iOptions: const IOSOptions(
-        accessibility: KeychainAccessibility.first_unlock,
-      ));
-  void makeOrder(String method) async {
-    final dataStorage = await getStorage;
+  // void makeOrder(String method) async {
+  //   final dataStorage = await storage.getDataStorage("user");
 
-    bool isDelivery = !auth.currentUser!.isAnonymous;
-    var status = method == "Cartão Snacks" || isDelivery
-        ? OrderStatus.order_in_progress.name
-        : OrderStatus.waiting_payment.name;
+  //   bool isDelivery = !auth.currentUser!.isAnonymous;
+  //   var status = method == "Cartão Snacks" || isDelivery
+  //       ? OrderStatus.order_in_progress.name
+  //       : OrderStatus.waiting_payment.name;
 
-    final now = DateTime.now();
-    DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-    Map<String, dynamic> data = {
-      // "orders":
-      //     FieldValue.arrayUnion(state.cart.map((e) => e.toMap()).toList()),
-      "user_uid": auth.currentUser!.uid,
-      "payment_method": method,
-      "value": state.total,
-      "isDelivery": isDelivery,
-      "status": status,
-      "created_at": DateTime.now(),
-    };
-    data.addAll(isDelivery
-        ? {"address": dataStorage["address"]}
-        : {"table": dataStorage["table"]});
+  //   final now = DateTime.now();
+  //   DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+  //   Map<String, dynamic> data = {
+  //     // "orders":
+  //     //     FieldValue.arrayUnion(state.cart.map((e) => e.toMap()).toList()),
+  //     "user_uid": auth.currentUser!.uid,
+  //     "payment_method": method,
+  //     "value": state.total,
+  //     "isDelivery": isDelivery,
+  //     "status": status,
+  //     "created_at": DateTime.now(),
+  //   };
+  //   // data.addAll(isDelivery
+  //   //     ? {"address": dataStorage["address"]}
+  //   //     : {"table": dataStorage["table"]});
 
-    var response = await repository.createOrder(data);
+  //   var response = await repository.createOrder(data);
 
-    var items = state.cart.map((e) => e.toMap()).toList();
-    await repository.createItemstoOrder(items, response);
-    clearCart();
-  }
+  //   var items = state.cart.map((e) => e.toMap()).toList();
+  //   await repository.createItemstoOrder(items, response);
+  //   clearCart();
+  // }
 
   void clearCart() {
     emit(state.copyWith(cart: []));
   }
 
-  void changeStatus(AppStatus status) {
-    emit(state.copyWith(status: status));
+  void changeStatusBackward(doc_id, List<Map<String, dynamic>> items,
+      String payment_method, OrderStatus current) async {}
+
+  void changeStatusFoward(doc_id, List<dynamic> items, String payment_method,
+      String current, dynamic datetime) async {
+    var finance = FinanceApiServices();
+    final dataStorage = await storage.getDataStorage("user");
+
+    var current_index =
+        OrderStatus.values.firstWhere((e) => e.name == current).index;
+    var status = OrderStatus.values[current_index + 1];
+
+    print(status);
+    // List<String> ids = items.map<String>((e) => e["id"]).toList();
+    await repository.updateStatus(doc_id, status);
+
+    if (status == OrderStatus.done) {
+      double total = 0;
+      var submitItems = items.map((e) {
+        total += e["item"]["value"];
+        return {
+          "name": e["item"]["title"],
+          "amount": e["amount"],
+          "payment": payment_method,
+        };
+      }).toList();
+      var data = {"total": total, "orders": submitItems, "datetime": datetime};
+      await finance.setMonthlyBudgetFirebase(
+          dataStorage["restaurant"]["id"], data, total);
+    }
   }
 }

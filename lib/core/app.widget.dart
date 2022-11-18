@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 
@@ -35,8 +38,9 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future<String> getRouter() async {
+      await initializeDateFormatting("pt_BR");
+      // Intl.defaultLocale = "pt_BR";
       var data = await storage.readAll();
-
       return auth.currentUser != null && data.isNotEmpty
           ? AppRoutes.home
           : AppRoutes.restaurantAuth;

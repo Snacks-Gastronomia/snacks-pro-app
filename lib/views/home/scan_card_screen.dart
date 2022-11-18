@@ -140,12 +140,12 @@ class _ScanCardScreenState extends State<ScanCardScreen> {
                                     } else {
                                       final String card_code =
                                           barcode.rawValue!;
-                                      print(card_code);
-                                      if (md5.checkIfValidMD5Hash(card_code)) {
-                                        Navigator.pop(context, card_code);
-                                      } else {
-                                        Navigator.pop(context, null);
-                                      }
+                                      // print(card_code);
+                                      // if (card_code) {
+                                      Navigator.pop(context, card_code);
+                                      // } else {
+                                      //   Navigator.pop(context, null);
+                                      // }
                                     }
                                   }))
                         ],

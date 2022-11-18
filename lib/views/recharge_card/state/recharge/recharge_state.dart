@@ -53,7 +53,7 @@ class RechargeState {
       'name': name,
       'cpf': cpf,
       'value': value,
-      'auth': "Teste",
+      'card': card_code,
       'active': true,
     };
   }

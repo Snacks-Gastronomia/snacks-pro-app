@@ -6,6 +6,7 @@ import 'package:snacks_pro_app/core/app.images.dart';
 
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
+import 'package:snacks_pro_app/views/recharge_card/state/recharge/recharge_cubit.dart';
 
 class RechargeReportContent extends StatelessWidget {
   const RechargeReportContent({Key? key}) : super(key: key);
@@ -15,95 +16,120 @@ class RechargeReportContent extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Column(
-            children: [
-              Container(
-                height: 170,
-                width: double.maxFinite,
-                padding: const EdgeInsets.all(30.0),
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Recargas',
-                          style: AppTextStyles.regular(16, color: Colors.white),
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          "35",
-                          style: AppTextStyles.bold(30, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Receita',
-                          style: AppTextStyles.regular(16, color: Colors.white),
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        // BlocBuilder<FinanceCubit, FinanceHomeState>(
-                        //   builder: (context, state) {
-                        //     return
-                        Text(
-                          NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                              .format(2000),
-                          style: AppTextStyles.bold(30, color: Colors.white),
-                        ),
-                        //   },
-                        // ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Column(
-                  children: [
-                    Text(
-                      '22 de agosto de 2022',
-                      style: AppTextStyles.light(20),
-                    ),
-                    const SizedBox(
-                      height: 35,
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.52,
-                      child: ListView.separated(
-                          separatorBuilder: (context, index) => const SizedBox(
-                                height: 15,
-                              ),
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: 8,
-                          itemBuilder: (context, index) => CardExpense(
-                              title: "José da silva",
-                              time: "15:56",
-                              value: (index + 1) * 100.0)),
-                    )
+          FutureBuilder<List<dynamic>>(
+              future: context.read<RechargeCubit>().fetchRecharges(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List data = snapshot.data!;
 
-                    // List.generate(
-                    //     3,
-                  ],
-                ),
-              )
-            ],
-          ),
+                  var total = data.isEmpty
+                      ? 0
+                      : data.map((e) => e["value"]).reduce((a, b) => a + b);
+                  print(data);
+                  return Column(
+                    children: [
+                      Container(
+                        height: 170,
+                        width: double.maxFinite,
+                        padding: const EdgeInsets.all(30.0),
+                        decoration: const BoxDecoration(
+                          color: Colors.black,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Recargas',
+                                  style: AppTextStyles.regular(16,
+                                      color: Colors.white),
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  data.length.toString(),
+                                  style: AppTextStyles.bold(30,
+                                      color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Receita',
+                                  style: AppTextStyles.regular(16,
+                                      color: Colors.white),
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                // BlocBuilder<FinanceCubit, FinanceHomeState>(
+                                //   builder: (context, state) {
+                                //     return
+                                Text(
+                                  NumberFormat.currency(
+                                          locale: "pt", symbol: r"R$ ")
+                                      .format(total),
+                                  style: AppTextStyles.bold(30,
+                                      color: Colors.white),
+                                ),
+                                //   },
+                                // ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              DateFormat.yMMMMd('pt_BR').format(DateTime.now()),
+                              style: AppTextStyles.light(20),
+                            ),
+                            const SizedBox(
+                              height: 35,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.52,
+                              child: ListView.separated(
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: (context, index) => CardExpense(
+                                      title: data[index]["responsible"],
+                                      time: data[index]["created_at"],
+                                      value: data[index]["value"])),
+                            )
+
+                            // List.generate(
+                            //     3,
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                }
+                return const Center(
+                  child: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }),
           Positioned(
             top: 15,
             right: 15,

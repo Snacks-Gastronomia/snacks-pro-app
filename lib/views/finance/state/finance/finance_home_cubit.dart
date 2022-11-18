@@ -23,7 +23,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     var id = (await storage.getDataStorage("user"))["restaurant"]["id"];
 
     var data = await Future.wait([
-      repository.getMonthlyBudget(""),
+      repository.getMonthlyBudget(id),
       repository.fetchBankInformations(id),
     ]);
     print(data);

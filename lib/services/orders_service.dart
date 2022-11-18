@@ -71,15 +71,25 @@ class OrdersApiServices {
   }
 
   // Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByNow(String id) {
-  Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByNow(String id) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByRestaurant(String id) {
     return database
         .collection("orders")
-        .where("status", isEqualTo: OrderStatus.order_in_progress.name)
-        .where("restaurants", arrayContains: id)
+        .where("status", whereIn: [
+          OrderStatus.order_in_progress.name,
+          OrderStatus.waiting_payment.name,
+          OrderStatus.done.name
+        ])
+        // .where("status", isEqualTo: OrderStatus.order_in_progress.name)
+        // .where("status", isEqualTo: OrderStatus.done.name)
+        .where("restaurant", isEqualTo: id)
         .snapshots();
-    // return Stream.fromFuture(Future.delayed(Duration(milliseconds: 600), () {
-    //   return orders;
-    // }));
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByNow() {
+    return database
+        .collection("orders")
+        .where("status", isEqualTo: OrderStatus.waiting_payment.name)
+        .snapshots();
   }
 
   Future<dynamic> getOrdersByMonth(int month, String id) async {
@@ -89,5 +99,17 @@ class OrdersApiServices {
           DateFormat.M().format(DateTime.parse(element["date"])) ==
           month.toString());
     });
+  }
+
+  Future<void> changeOrderStatus(String id, OrderStatus new_status) async {
+    await database
+        .collection("orders")
+        .doc(id)
+        .update({"status": new_status.name});
+
+    // await database
+    //     .collection("orders")
+    //     .doc(id)
+    // .update({"status": new_status.name});
   }
 }

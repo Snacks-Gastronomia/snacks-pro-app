@@ -61,7 +61,6 @@ dependencies:
   firebase_storage: ^11.0.4
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  swipe_to: ^1.0.2
   dropdown_search: ^5.0.3
   
 dev_dependencies:

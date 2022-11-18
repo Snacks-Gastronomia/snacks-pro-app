@@ -59,11 +59,9 @@ class HomeCubit extends Cubit<HomeState> {
   //   }
   // }
 
-  Stream<QuerySnapshot<Object?>> fetchOrders() {
-    // print("restaurant ");
-    // print();
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchOrders() {
     return ordersRepository
-        .fetchOrdersByRestaurantId(state.storage["companie_id"]);
+        .fetchOrdersByRestaurantId(state.storage["restaurant"]["id"]);
   }
 
   Future<String> getProfileData() async {

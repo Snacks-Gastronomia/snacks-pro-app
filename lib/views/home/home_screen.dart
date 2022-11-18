@@ -26,9 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _widgetOptions = <Widget>[
     const HomeScreenWidget(),
-    //  const  RechargeCardScreen(),
     const OrdersScreen(),
-    FinanceScreen(),
+    const RechargeCardScreen(),
+    // FinanceScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -73,18 +73,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Icons.home_rounded,
                   text: 'Home',
                 ),
-                // const GButton(
-                //   icon: Icons.credit_card,
-                //   text: 'Recarregar',
-                // ),
                 const GButton(
                   icon: Icons.receipt_rounded,
                   text: 'Pedidos',
                 ),
                 const GButton(
-                  icon: Icons.business,
-                  text: 'Négocio',
+                  icon: Icons.credit_card,
+                  text: 'Recarregar',
                 ),
+                // const GButton(
+                //   icon: Icons.business,
+                //   text: 'Négocio',
+                // ),
                 // if (!auth.currentUser!.isAnonymous)
                 GButton(
                   icon: Icons.account_circle_rounded,

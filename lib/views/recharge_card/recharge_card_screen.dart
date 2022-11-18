@@ -66,7 +66,8 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)),
                       tooltip: "Fechar cartão",
-                      onPressed: () {},
+                      onPressed: () =>
+                          context.read<RechargeCubit>().closeCard(controller),
                       elevation: 4,
                       backgroundColor: Colors.white,
                       child: const Icon(
@@ -126,11 +127,14 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                       children: [
                         GestureDetector(
                           onTap: () async {
+                            var cubit = context.read<RechargeCubit>();
                             var card_code = await Navigator.pushNamed(
                                 context, AppRoutes.scanCard);
-                            await controller.animateToPage(2,
-                                duration: const Duration(milliseconds: 600),
-                                curve: Curves.easeInOut);
+
+                            cubit.readCard(card_code.toString(), controller);
+                            // await controller.animateToPage(2,
+                            //     duration: const Duration(milliseconds: 600),
+                            //     curve: Curves.easeInOut);
                           },
                           onLongPress: () =>
                               context.read<RechargeCubit>().clear(controller),

@@ -35,6 +35,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   void initState() {
     // TODO: implement initState
     //  _navigator.pushAndRemoveUntil(..., (route) => ...);
+
     super.initState();
     // context
     //     .read<HomeCubit>()
