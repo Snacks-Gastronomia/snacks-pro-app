@@ -172,11 +172,18 @@ class CartCubit extends Cubit<CartState> {
         total += e["item"]["value"];
         return {
           "name": e["item"]["title"],
+          "value": e["item"]["value"],
           "amount": e["amount"],
-          "payment": payment_method,
         };
       }).toList();
-      var data = {"total": total, "orders": submitItems, "datetime": datetime};
+
+      String time = DateFormat("HH:mm").format(datetime.toDate());
+      var data = {
+        "total": total,
+        "orders": submitItems,
+        "time": time,
+        "payment": payment_method,
+      };
       await finance.setMonthlyBudgetFirebase(
           dataStorage["restaurant"]["id"], data, total);
     }

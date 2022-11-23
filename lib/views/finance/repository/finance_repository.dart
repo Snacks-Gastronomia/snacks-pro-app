@@ -41,6 +41,33 @@ class FinanceRepository {
     }
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> getMonthlyOrders(
+      String restaurant_id) async {
+    try {
+      return await services.getMonthlyOrders(restaurant_id);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getDayOrders(
+      String restaurant_id, String day) async {
+    try {
+      return await services.getDayOrders(restaurant_id, day);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getExpenses() async {
+    try {
+      return await services.getRestaurantExpenses();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<BankModel> fetchBankInformations(String user_id) async {
     try {
       var data = await services.getBankInformations(user_id);

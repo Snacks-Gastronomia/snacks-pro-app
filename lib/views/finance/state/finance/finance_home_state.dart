@@ -2,14 +2,12 @@ part of 'finance_home_cubit.dart';
 
 class FinanceHomeState {
   final double budget;
-  final int orders_count;
-  final int employees_count;
+  final double expenses;
   final BankModel bankInfo;
   final AppStatus status;
   FinanceHomeState({
     required this.budget,
-    required this.orders_count,
-    required this.employees_count,
+    required this.expenses,
     required this.bankInfo,
     required this.status,
   });
@@ -17,23 +15,39 @@ class FinanceHomeState {
   factory FinanceHomeState.initial() => FinanceHomeState(
       status: AppStatus.initial,
       budget: 0,
-      orders_count: 0,
-      employees_count: 0,
+      expenses: 0,
       bankInfo: BankModel.initial());
 
   FinanceHomeState copyWith({
     double? budget,
-    int? orders_count,
-    int? employees_count,
+    double? expenses,
     BankModel? bankInfo,
     AppStatus? status,
   }) {
     return FinanceHomeState(
       budget: budget ?? this.budget,
-      orders_count: orders_count ?? this.orders_count,
-      employees_count: employees_count ?? this.employees_count,
+      expenses: expenses ?? this.expenses,
       bankInfo: bankInfo ?? this.bankInfo,
       status: status ?? this.status,
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is FinanceHomeState &&
+        other.budget == budget &&
+        other.expenses == expenses &&
+        other.bankInfo == bankInfo &&
+        other.status == status;
+  }
+
+  @override
+  int get hashCode {
+    return budget.hashCode ^
+        expenses.hashCode ^
+        bankInfo.hashCode ^
+        status.hashCode;
   }
 }

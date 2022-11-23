@@ -49,7 +49,7 @@ class RechargeCubit extends Cubit<RechargeState> {
   Future<List<dynamic>> fetchRecharges() async {
     var now = DateTime.now();
 
-    var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
+    var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
     var day_id = "day-${now.day}";
 
     var fb = await database
@@ -77,7 +77,7 @@ class RechargeCubit extends Cubit<RechargeState> {
       emit(state.copyWith(status: AppStatus.loading));
       var now = DateTime.now();
 
-      var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
+      var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
       var day_id = "day-${now.day}";
       var config_cards = await database
           .collection("snacks_config")
@@ -112,7 +112,7 @@ class RechargeCubit extends Cubit<RechargeState> {
   readCard(String code, PageController controller) async {
     var now = DateTime.now();
 
-    var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
+    var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
     var day_id = "day-${now.day}";
     try {
       var response = await database
@@ -147,7 +147,7 @@ class RechargeCubit extends Cubit<RechargeState> {
     try {
       var now = DateTime.now();
 
-      var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
+      var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
       var day_id = "day-${now.day}";
 
       await database

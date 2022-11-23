@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:snacks_pro_app/models/bank_model.dart';
@@ -14,9 +15,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   final storage = AppStorage();
 
   final repository = FinanceRepository(services: FinanceApiServices());
-  FinanceCubit() : super(FinanceHomeState.initial()) {
-    fetchBanks();
-  }
+  FinanceCubit() : super(FinanceHomeState.initial());
 
   void fetchData() async {
     emit(state.copyWith(status: AppStatus.loading));
@@ -26,7 +25,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
       repository.getMonthlyBudget(id),
       repository.fetchBankInformations(id),
     ]);
-    print(data);
+
     emit(state.copyWith(
       status: AppStatus.loaded,
       budget: data[0],
@@ -34,6 +33,21 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
       // employees_count: data[0],
       // orders_count: data[2]
     ));
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      fetchExpenses() async {
+    emit(state.copyWith(status: AppStatus.loading));
+    var data = await repository.getExpenses();
+
+    double total = double.parse(data
+        .map((item) => item.get("value"))
+        .reduce((a, b) => a + b)
+        .toString());
+
+    emit(state.copyWith(expenses: total, status: AppStatus.loaded));
+
+    return data;
   }
 
   void save(context) async {

@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
+import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import './day_order_report.dart';
 
 class OrdersReportScreen extends StatelessWidget {
@@ -12,93 +17,136 @@ class OrdersReportScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: Column(
-          children: [
-            Text(
-              'Relatório de pedidos',
-              style: AppTextStyles.semiBold(22),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(
-              'Junho',
-              style: AppTextStyles.light(18),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: FutureBuilder(
+            future: BlocProvider.of<OrdersCubit>(context).fetchMonthly(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                var data = snapshot.data!.docs;
+                return Column(
                   children: [
                     Text(
-                      'Total de pedidos',
-                      style: AppTextStyles.regular(16),
+                      'Relatório de pedidos',
+                      style: AppTextStyles.semiBold(22),
                     ),
-                    Text('300', style: AppTextStyles.semiBold(32)),
-                  ],
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  color: Colors.grey.shade400,
-                  height: 50,
-                  width: 1,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                    const SizedBox(
+                      height: 5,
+                    ),
                     Text(
-                      'Receita obtida',
-                      style: AppTextStyles.regular(16),
+                      toBeginningOfSentenceCase(
+                              DateFormat.MMMM("pt_BR").format(DateTime.now()))
+                          .toString(),
+                      style: AppTextStyles.light(18),
                     ),
-                    Text(r'R$ 3.000', style: AppTextStyles.semiBold(32)),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Total de pedidos',
+                              style: AppTextStyles.regular(16),
+                            ),
+                            Text(
+                                BlocProvider.of<OrdersCubit>(context)
+                                    .state
+                                    .total_orders_monthly
+                                    .toString(),
+                                style: AppTextStyles.semiBold(32)),
+                          ],
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          color: Colors.grey.shade400,
+                          height: 50,
+                          width: 1,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Receita obtida',
+                              style: AppTextStyles.regular(16),
+                            ),
+                            Text(
+                                NumberFormat.currency(
+                                        locale: "pt", symbol: r"R$ ")
+                                    .format(
+                                        BlocProvider.of<OrdersCubit>(context)
+                                            .state
+                                            .budget_monthly),
+                                style: AppTextStyles.semiBold(32)),
+                          ],
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .60,
+                      child: ListView.separated(
+                        // shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 10),
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          var item = data[index];
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            clipBehavior: Clip.hardEdge,
+                            child: ListTile(
+                              onTap: () => modal.showIOSModalBottomSheet(
+                                context: context,
+                                content: DayOrdersReportScreen(
+                                    day: item.id,
+                                    amount: item.get("length"),
+                                    total: NumberFormat.currency(
+                                            locale: "pt", symbol: r"R$ ")
+                                        .format(item.get("total"))),
+                              ),
+                              tileColor: Colors.black,
+                              title: Text(
+                                DateFormat.MMMMd('pt_BR').format(DateTime.parse(
+                                    '${DateTime.now().year}-${DateTime.now().month}-${item.id}')),
+                                style: AppTextStyles.semiBold(18,
+                                    color: Colors.white),
+                              ),
+                              subtitle: Text(
+                                NumberFormat.currency(
+                                        locale: "pt", symbol: r"R$ ")
+                                    .format(item.get("total")),
+                                style: AppTextStyles.light(14,
+                                    color: Colors.white),
+                              ),
+                              trailing: Text(
+                                '${item.get("length")}',
+                                style: AppTextStyles.semiBold(18,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
                   ],
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * .60,
-              child: ListView.separated(
-                // shrinkWrap: true,
-                physics: BouncingScrollPhysics(),
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 10),
-                itemCount: 8,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      onTap: () => modal.showIOSModalBottomSheet(
-                        context: context,
-                        content: DayOrdersReportScreen(),
-                      ),
-                      tileColor: Colors.black,
-                      title: Text(
-                        '22 de junho',
-                        style: AppTextStyles.semiBold(18, color: Colors.white),
-                      ),
-                      subtitle: Text(
-                        r'R$ 2.000',
-                        style: AppTextStyles.light(14, color: Colors.white),
-                      ),
-                      trailing: Text(
-                        "25",
-                        style: AppTextStyles.semiBold(18, color: Colors.white),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            )
-          ],
-        ),
+                );
+              }
+              return const Center(
+                child: SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                      backgroundColor: Colors.black12,
+                    )),
+              );
+            }),
       ),
     );
   }

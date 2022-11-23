@@ -26,7 +26,7 @@ class FinanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
-      return HomeFinanceWidget();
+      return const HomeFinanceWidget();
     });
   }
 }
@@ -68,7 +68,9 @@ class _HomeFinanceWidgetState extends State<HomeFinanceWidget> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          'Agosto',
+                          toBeginningOfSentenceCase(DateFormat.MMMM("pt_BR")
+                                  .format(DateTime.now()))
+                              .toString(),
                           style: AppTextStyles.semiBold(32),
                         ),
                         SvgPicture.asset(
@@ -85,7 +87,7 @@ class _HomeFinanceWidgetState extends State<HomeFinanceWidget> {
                       context: context,
                       content: BlocProvider.value(
                           value: BlocProvider.of<FinanceCubit>(context),
-                          child: BudgetDetailsContent()),
+                          child: const BudgetDetailsContent()),
                     ),
                     child: Container(
                       width: double.maxFinite,
@@ -104,7 +106,7 @@ class _HomeFinanceWidgetState extends State<HomeFinanceWidget> {
                           Text(
                             'Receita',
                             style:
-                                AppTextStyles.regular(16, color: Colors.white),
+                                AppTextStyles.regular(15, color: Colors.white),
                           ),
                           const SizedBox(
                             height: 4,

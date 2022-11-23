@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/models/bank_model.dart';
@@ -11,6 +11,7 @@ import 'package:snacks_pro_app/models/item_model.dart';
 class FinanceApiServices {
   final http.Client httpClient = http.Client();
   final firebase = FirebaseFirestore.instance;
+  // final field = firebase.pluginConstants.;
   Future<int> getOrdersCount(String restaurant_id) async {
     return Future.delayed(Duration(milliseconds: 600), () {
       return 257;
@@ -36,6 +37,20 @@ class FinanceApiServices {
     return [];
   }
 
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getRestaurantExpenses() async {
+    // try {
+    var data = await firebase
+        .collection("snacks_config")
+        .doc("expenses")
+        .collection("all")
+        // .doc("augut-2022")
+        .get()
+        .catchError((onError) => print);
+
+    return data.docs;
+  }
+
   Future<double> getMonthlyBudget(String restaurant_id) async {
     var now = DateTime.now();
     var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
@@ -45,13 +60,13 @@ class FinanceApiServices {
           .collection("receipts")
           .doc(restaurant_id)
           .collection("months")
-          // .doc(month_id)
-          .doc("augut-2022")
+          .doc(month_id)
+          // .doc("augut-2022")
           .get();
-      print(data);
-      return (data.data()!["total"] as int).toDouble();
+      print(data.reference);
+      if (data.exists) return data.get("total");
     } catch (e) {
-      print(e);
+      print("error getMontthly: " + e.toString());
     }
     return 0;
   }
@@ -61,7 +76,7 @@ class FinanceApiServices {
     var now = DateTime.now();
 
     var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
-    var day_id = "day-${now.day}";
+    var day_id = "${now.day}";
 
     var docref = firebase
         .collection("receipts")
@@ -69,8 +84,16 @@ class FinanceApiServices {
         .collection("months")
         .doc(month_id);
 
-    await docref.collection("days").doc(day_id).collection("items").add(data);
+    var dayDocRef = docref.collection("days").doc(day_id);
 
+    await dayDocRef.collection("items").add(data);
+
+    await dayDocRef.set({
+      "total": FieldValue.increment(total),
+      "length": FieldValue.increment(1)
+    }, SetOptions(merge: true));
+
+    print("run transactions");
     await firebase.runTransaction((transaction) async {
       final snapshot = await transaction.get(docref);
 
@@ -84,38 +107,39 @@ class FinanceApiServices {
       (value) => print("DocumentSnapshot successfully updated!"),
       onError: (e) => print("Error updating document $e"),
     );
-    // var batch = firebase.batch();
-    // for (var element in data) {
-    //   var docRef = ref
-    //       .collection("days")
-    //       .doc(day_id)
-    //       .collection("items")
-    //       .doc(); //automatically generate unique id
-    //   batch.set(docRef, element);
-    // } // await FirebaseFirestore.instance
-    // batch.update(ref, {"total": total});
-    // batch.commit();
   }
 
-  Future<void> getMonthlyBudgetFirebase(String restaurant_id) async {
+  Future<QuerySnapshot<Map<String, dynamic>>> getMonthlyOrders(
+      String restaurant_id) async {
     var now = DateTime.now();
 
     var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
-    var day_id = "day-${now.day}";
-    var data = await firebase
+    // var day_id = "day-${now.day}";
+    print(month_id);
+    return await firebase
         .collection("receipts")
         .doc(restaurant_id)
         .collection("months")
         .doc(month_id)
         .collection("days")
         .get();
+  }
 
-    print(data);
+  Future<QuerySnapshot<Map<String, dynamic>>> getDayOrders(
+      String restaurant_id, String day) async {
+    var now = DateTime.now();
 
-    // .orderBy("population")
-    // .startAfter([lastVisible]).limit(25);
-// /receipts/agosto-2022/restaurants/Wdx7fyOEzlUQFYYszyGB
-    // data.docs.reduce((value, element) => null);
+    var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
+
+    return await firebase
+        .collection("receipts")
+        .doc(restaurant_id)
+        .collection("months")
+        .doc(month_id)
+        .collection("days")
+        .doc(day)
+        .collection("items")
+        .get();
   }
 
   Future<void> addBankInfo(data, id) async {

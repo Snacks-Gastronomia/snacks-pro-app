@@ -27,8 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _widgetOptions = <Widget>[
     const HomeScreenWidget(),
     const OrdersScreen(),
-    const RechargeCardScreen(),
-    // FinanceScreen(),
+    // const RechargeCardScreen(),
+    FinanceScreen(),
   ];
   @override
   Widget build(BuildContext context) {
