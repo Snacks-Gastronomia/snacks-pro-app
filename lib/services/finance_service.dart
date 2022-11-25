@@ -35,6 +35,16 @@ class FinanceApiServices {
     // return data.docs;
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> getFeedbacks() async {
+    // try {
+    return await firebase
+        .collection("feedbacks")
+        .get()
+        .catchError((onError) => print);
+
+    // return data.docs;
+  }
+
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       getRestaurantExpenses() async {
     // try {

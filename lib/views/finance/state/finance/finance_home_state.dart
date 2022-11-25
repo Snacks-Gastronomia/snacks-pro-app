@@ -37,6 +37,7 @@ class FinanceHomeState {
   final double budget;
   final double expenses_value;
   final int expenses_length;
+  final int questions_carousel_index;
   final BankModel bankInfo;
   final Expense expenseAUX;
   final Restaurant? restaurantAUX;
@@ -45,6 +46,7 @@ class FinanceHomeState {
       {required this.budget,
       required this.expenses_value,
       required this.expenses_length,
+      required this.questions_carousel_index,
       required this.bankInfo,
       required this.status,
       required this.expenseAUX,
@@ -55,6 +57,7 @@ class FinanceHomeState {
       restaurantAUX: null,
       status: AppStatus.initial,
       budget: 0,
+      questions_carousel_index: 0,
       expenses_value: 0,
       expenses_length: 0,
       bankInfo: BankModel.initial());
@@ -63,6 +66,7 @@ class FinanceHomeState {
     double? budget,
     double? expenses_value,
     int? expenses_length,
+    int? questions_carousel_index,
     BankModel? bankInfo,
     AppStatus? status,
     Expense? expenseAUX,
@@ -72,6 +76,8 @@ class FinanceHomeState {
       expenseAUX: expenseAUX ?? this.expenseAUX,
       restaurantAUX: restaurantAUX,
       budget: budget ?? this.budget,
+      questions_carousel_index:
+          questions_carousel_index ?? this.questions_carousel_index,
       expenses_length: expenses_length ?? this.expenses_length,
       expenses_value: expenses_value ?? this.expenses_value,
       bankInfo: bankInfo ?? this.bankInfo,
@@ -87,6 +93,7 @@ class FinanceHomeState {
         other.budget == budget &&
         other.expenses_value == expenses_value &&
         other.expenses_length == expenses_length &&
+        other.questions_carousel_index == questions_carousel_index &&
         other.bankInfo == bankInfo &&
         other.expenseAUX == expenseAUX &&
         other.restaurantAUX == restaurantAUX &&

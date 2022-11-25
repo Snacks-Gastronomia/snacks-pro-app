@@ -136,4 +136,12 @@ class FinanceRepository {
       throw e.toString();
     }
   }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchFeedbacks() async {
+    try {
+      return await services.getFeedbacks();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 }

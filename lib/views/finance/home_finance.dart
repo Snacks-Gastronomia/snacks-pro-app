@@ -10,6 +10,7 @@ import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/budget_details.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/restaurants_content.dart';
+import 'package:snacks_pro_app/views/finance/ratings.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
@@ -207,7 +208,8 @@ class SnacksAdmBottomSheet extends StatelessWidget {
           //   child: Divider(color: Color(0xff4A4A4A)),
           // ),
           SettingButton(
-              onTap: () {},
+              onTap: () => modal.showIOSModalBottomSheet(
+                  context: context, content: RatingsContent()),
               title: "Avaliações",
               description:
                   "Observe o que as pessoas estão achando do seu estabelimento.",

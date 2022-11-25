@@ -91,6 +91,16 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     // .toList()
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchFeedbacks() async {
+    return await repository.fetchFeedbacks();
+    // .toList()
+  }
+
+  void changeCarouselIndex(int index) {
+    emit(state.copyWith(questions_carousel_index: index));
+    print(state);
+  }
+
   void changeBankAccount(String value) {
     var bank = state.bankInfo;
 
