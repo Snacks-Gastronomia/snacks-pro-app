@@ -13,6 +13,7 @@ import 'package:snacks_pro_app/views/authentication/password_screen.dart';
 import 'package:snacks_pro_app/views/authentication/phone_screen.dart';
 import 'package:snacks_pro_app/views/authentication/state/auth_cubit.dart';
 import 'package:snacks_pro_app/views/authentication/unathorized_screen.dart';
+import 'package:snacks_pro_app/views/finance/contents/restaurants/new_restaurant.dart';
 import 'package:snacks_pro_app/views/finance/home_finance.dart';
 import 'package:snacks_pro_app/views/finance/contents/bank/add_bank_account.dart';
 import 'package:snacks_pro_app/views/finance/contents/employees/new_employee.dart';
@@ -103,6 +104,8 @@ class AppWidget extends StatelessWidget {
                   AppRoutes.home: (context) => HomeScreen(),
                   AppRoutes.finance: (context) => FinanceScreen(),
                   AppRoutes.newEmployee: (context) => const NewEmployeeScreen(),
+                  AppRoutes.newRestaurant: (context) =>
+                      const NewRestaurantScreen(),
                   AppRoutes.addBankAccount: (context) =>
                       const AddBankAccountScreen(),
                   AppRoutes.restaurantAuth: (context) =>

@@ -57,7 +57,7 @@ class AuthApiServices {
   Future<Map<String, dynamic>?> userAlreadyRegistred(String phone) async {
     final doc = await database
         .collection("employees")
-        .where("phone", isEqualTo: phone)
+        .where("phone_number", isEqualTo: phone)
         .get();
     var docs = doc.docs;
     if (docs.isNotEmpty) {

@@ -18,6 +18,7 @@ class AppRoutes {
   static String get passwordScreen => '/pass';
   static String get finance => '/finance';
   static String get newEmployee => '/new-employee';
+  static String get newRestaurant => '/new-restaurant';
   static String get addBankAccount => '/add-bank-account';
   static String get unathorizedAuth => '/unathorized-auth';
 

@@ -16,7 +16,8 @@ class AppModal {
         builder: (context) => SingleChildScrollView(
           controller: ModalScrollController.of(context),
           child: ModalWidget(
-              content: content, paddingBottom: withPadding ? 20 : 0),
+              content: content,
+              paddingBottom: MediaQuery.of(context).viewInsets.bottom),
         ),
       );
   showIOSModalBottomSheet(

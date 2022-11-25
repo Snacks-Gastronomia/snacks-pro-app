@@ -11,18 +11,6 @@ import 'package:snacks_pro_app/models/item_model.dart';
 class FinanceApiServices {
   final http.Client httpClient = http.Client();
   final firebase = FirebaseFirestore.instance;
-  // final field = firebase.pluginConstants.;
-  Future<int> getOrdersCount(String restaurant_id) async {
-    return Future.delayed(Duration(milliseconds: 600), () {
-      return 257;
-    });
-  }
-
-  Future<int> getEmployeesCount(String restaurant_id) async {
-    return Future.delayed(Duration(milliseconds: 600), () {
-      return 5;
-    });
-  }
 
   Future<List> getBanks() async {
     try {
@@ -37,6 +25,16 @@ class FinanceApiServices {
     return [];
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurants() {
+    // try {
+    return firebase
+        .collection("restaurants")
+        .snapshots()
+        .handleError((onError) => print);
+
+    // return data.docs;
+  }
+
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       getRestaurantExpenses() async {
     // try {
@@ -44,11 +42,19 @@ class FinanceApiServices {
         .collection("snacks_config")
         .doc("expenses")
         .collection("all")
-        // .doc("augut-2022")
         .get()
         .catchError((onError) => print);
 
     return data.docs;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurantExpensesStream() {
+    return firebase
+        .collection("snacks_config")
+        .doc("expenses")
+        .collection("all")
+        .snapshots()
+        .handleError((onError) => print);
   }
 
   Future<double> getMonthlyBudget(String restaurant_id) async {
@@ -142,8 +148,37 @@ class FinanceApiServices {
         .get();
   }
 
-  Future<void> addBankInfo(data, id) async {
+  Future<void> saveBankInfo(data, id) async {
     return await firebase.collection("restaurants").doc(id).update(data);
+  }
+
+  Future saveExpense(data) async {
+    return await firebase
+        .collection("snacks_config")
+        .doc("expenses")
+        .collection("all")
+        .add(data);
+  }
+
+  Future<DocumentReference<Map<String, dynamic>>> saveRestaurant(data) async {
+    return await firebase.collection("restaurants").add(data);
+  }
+
+  Future<void> deleteExpense(id) async {
+    return await firebase
+        .collection("snacks_config")
+        .doc("expenses")
+        .collection("all")
+        .doc(id)
+        .delete();
+  }
+
+  Future<void> deleteRestaurant(id) async {
+    return await firebase.collection("restaurants").doc(id).delete();
+  }
+
+  Future<void> updateRestaurant(data, doc) async {
+    return await firebase.collection("restaurants").doc(doc).update(data);
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getBankInformations(
@@ -157,12 +192,6 @@ class FinanceApiServices {
     //     "account": "999999-99",
     //     "agency": "0001",
     //   });
-    // });
-  }
-
-  Future<void> addBankInformation(dynamic data) async {
-    // return Future.delayed(Duration(milliseconds: 600), () {
-    //   return 25200.55;
     // });
   }
 }

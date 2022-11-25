@@ -101,6 +101,7 @@ class AuthCubit extends Cubit<AuthState> {
         }
       } else {
         navigator.pushNamed(AppRoutes.unathorizedAuth);
+        changeStatus(AppStatus.loaded);
       }
     } else {
       print("error");

@@ -29,7 +29,7 @@ class _AddBankAccountScreenState extends State<AddBankAccountScreen> {
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: ElevatedButton(
             onPressed: () =>
-                BlocProvider.of<FinanceCubit>(context).save(context),
+                BlocProvider.of<FinanceCubit>(context).saveBankData(context),
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),

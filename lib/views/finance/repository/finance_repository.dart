@@ -1,33 +1,74 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:snacks_pro_app/models/bank_model.dart';
+import 'package:snacks_pro_app/services/employees_service.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 
 class FinanceRepository {
   final FinanceApiServices services;
+  final empServices = EmployeesApiServices();
 
   FinanceRepository({
     required this.services,
   });
 
-  Future<int> getOrdersCount(String restaurant_id) async {
-    try {
-      return await services.getOrdersCount(restaurant_id);
-    } catch (e) {
-      throw e.toString();
-    }
-  }
-
   Future<void> addBankData(Map data, String id) async {
     try {
-      return await services.addBankInfo(data, id);
+      return await services.saveBankInfo(data, id);
     } catch (e) {
       throw e.toString();
     }
   }
 
-  Future<int> getEmployeesCount(String restaurant_id) async {
+  Future<void> deleteExpense(String id) async {
     try {
-      return await services.getEmployeesCount(restaurant_id);
+      return await services.deleteExpense(id);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> deleteRestaurant(String id) async {
+    try {
+      return await services.deleteRestaurant(id);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> saveExpense(Map data) async {
+    try {
+      return await services.saveExpense(data);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> updateRestaurant(Map data, docID) async {
+    try {
+      return await services.updateRestaurant(data, docID);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> saveRestaurantAndOwner(
+      Map<String, dynamic> data, Map<String, dynamic> owner) async {
+    try {
+      var doc = await services.saveRestaurant(data);
+
+      Map<String, Map<String, dynamic>> restaurant = {
+        "restaurant": {"id": doc.id, "name": data["name"]}
+      };
+      owner.addAll(restaurant);
+      await empServices.postEmployee(owner);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurants() {
+    try {
+      return services.getRestaurants();
     } catch (e) {
       throw e.toString();
     }
@@ -68,11 +109,21 @@ class FinanceRepository {
     }
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getExpensesStream() {
+    try {
+      return services.getRestaurantExpensesStream();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<BankModel> fetchBankInformations(String user_id) async {
     try {
       var data = await services.getBankInformations(user_id);
 
-      return BankModel.fromMap(data.data()!);
+      return data.data() != null
+          ? BankModel.fromMap(data.data()!)
+          : BankModel.initial();
     } catch (e) {
       throw e.toString();
     }

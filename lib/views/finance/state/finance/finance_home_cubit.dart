@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/models/bank_model.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
@@ -40,20 +42,41 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     emit(state.copyWith(status: AppStatus.loading));
     var data = await repository.getExpenses();
 
-    double total = double.parse(data
-        .map((item) => item.get("value"))
-        .reduce((a, b) => a + b)
-        .toString());
+    if (data.isNotEmpty) {
+      double total = double.parse(data
+          .map((item) => item.get("value"))
+          .reduce((a, b) => a + b)
+          .toString());
 
-    emit(state.copyWith(expenses: total, status: AppStatus.loaded));
+      emit(state.copyWith(expenses_value: total, status: AppStatus.loaded));
+    }
 
     return data;
   }
 
-  void save(context) async {
-    var id = (await storage.getDataStorage("user"))["restaurant"]["id"];
-    await repository.addBankData(state.bankInfo.toMap(), id);
-    Navigator.pop(context);
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchExpensesStream() {
+    // emit(state.copyWith(status: AppStatus.loading));
+    return repository.getExpensesStream();
+  }
+
+  void adjustExpenseData(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> data) {
+    if (data.isNotEmpty) {
+      double total = double.parse(data
+          .map((item) => item.get("value"))
+          .reduce((a, b) => a + b)
+          .toString());
+
+      emit(state.copyWith(
+          expenses_value: total,
+          expenses_length: data.length,
+          status: AppStatus.loaded));
+    }
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchRestaurants() {
+    emit(state.copyWith(status: AppStatus.loading));
+    return repository.getRestaurants();
   }
 
   Future<List<String>> fetchBanks() async {
@@ -93,6 +116,131 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     var bank = state.bankInfo;
 
     emit(state.copyWith(bankInfo: bank.copyWith(owner: value)));
+    print(state);
+  }
+
+  void saveBankData(context) async {
+    var id = (await storage.getDataStorage("user"))["restaurant"]["id"];
+    await repository.addBankData(state.bankInfo.toMap(), id);
+    Navigator.pop(context);
+  }
+
+  void changeRestaurantName(String value) {
+    var restaurant = getRestaurantStateObject();
+    restaurant.rname = value;
+    emit(state.copyWith(restaurantAUX: restaurant));
+    print(state);
+  }
+
+  Restaurant getRestaurantStateObject() {
+    return state.restaurantAUX ??
+        Restaurant(rname: "", rcategory: "", oname: "", ophone: "");
+  }
+
+  void changeRestaurantCategory(String value) {
+    var restaurant = getRestaurantStateObject();
+    restaurant.rcategory = value;
+    emit(state.copyWith(restaurantAUX: restaurant));
+    print(state);
+  }
+
+  void changeRestaurantOwnerName(String value) {
+    var restaurant = getRestaurantStateObject();
+    restaurant.oname = value;
+    emit(state.copyWith(restaurantAUX: restaurant));
+    print(state);
+  }
+
+  void changeRestaurantOwnerPhone(String value) {
+    var restaurant = getRestaurantStateObject();
+    restaurant.ophone = value;
+    emit(state.copyWith(restaurantAUX: restaurant));
+    print(state);
+  }
+
+  void saveRestaurant(context) async {
+    if (state.restaurantAUX != null) {
+      if (state.status != AppStatus.editing) {
+        var rest = {
+          "name": state.restaurantAUX!.rname,
+          "category": state.restaurantAUX!.rcategory,
+          "bank_account": "",
+          "bank_agency": "",
+          "bank_name": "",
+          "bank_owner": "",
+          "owner": {"name": state.restaurantAUX!.oname}
+        };
+        var owner = {
+          "name": state.restaurantAUX!.oname,
+          "phone_number": state.restaurantAUX!.ophone,
+          "first_access": true,
+          "access": true,
+          "ocupation": "RADM",
+        };
+
+        await repository.saveRestaurantAndOwner(rest, owner);
+      } else {
+        await repository.updateRestaurant({
+          "name": state.restaurantAUX?.rname,
+          "category": state.restaurantAUX?.rcategory
+        }, state.restaurantAUX?.id);
+      }
+
+      clearAUX();
+      Navigator.pop(context);
+    }
+  }
+
+  void changeExpenseName(String value) {
+    var ex = state.expenseAUX;
+    ex.name = value;
+    emit(state.copyWith(expenseAUX: ex));
+    print(state);
+  }
+
+  void changeExpenseValue(String value) {
+    var ex = state.expenseAUX;
+    ex.value = double.tryParse(value) ?? 0;
+    emit(state.copyWith(expenseAUX: ex));
+    print(state);
+  }
+
+  void saveExpense(context) async {
+    if (state.expenseAUX.name.isNotEmpty && state.expenseAUX.value != 0) {
+      await repository.saveExpense(state.expenseAUX.toMap());
+      clearAUX();
+
+      Navigator.pop(context);
+    }
+  }
+
+  void deleteExpense(doc_id) async {
+    await repository.deleteExpense(doc_id).then((value) => fetchExpenses());
+    // clearAUX();
+  }
+
+  void deleteRestaurant(doc_id) {
+    repository.deleteRestaurant(doc_id);
+    print(state);
+    // clearAUX();
+  }
+
+  void updateRestaurant(id, data, context) {
+    var rest = Restaurant(
+        id: id,
+        rname: data["name"],
+        rcategory: data["category"],
+        oname: "",
+        ophone: "");
+    print(rest.rname);
+    emit(state.copyWith(restaurantAUX: rest, status: AppStatus.editing));
+    Navigator.pushNamed(context, AppRoutes.newRestaurant)
+        .then((value) => clearAUX());
+  }
+
+  clearAUX() {
+    emit(state.copyWith(
+        expenseAUX: null, restaurantAUX: null, status: AppStatus.initial));
     print(state);
   }
 }

@@ -39,12 +39,10 @@ class BudgetDetailsContent extends StatelessWidget {
                       height: 4,
                     ),
                     BlocBuilder<FinanceCubit, FinanceHomeState>(
-                      buildWhen: (previous, current) =>
-                          previous.expenses != current.expenses,
                       builder: (context, state) {
                         return Text(
                           NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                              .format(state.budget - state.expenses),
+                              .format(state.budget - state.expenses_value),
                           style: AppTextStyles.bold(30, color: Colors.white),
                         );
                       },
