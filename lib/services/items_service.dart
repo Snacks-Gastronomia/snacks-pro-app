@@ -72,25 +72,60 @@ class ItemsApiServices {
         const Duration(milliseconds: 500), () => list.getRange(0, 5).toList());
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> queryItems(
-      String query, String? category, restaurant_id) async {
+  Stream<QuerySnapshot<Map<String, dynamic>>> searchQuery(
+      String query, restaurant_id) {
     return database
         .collection("menu")
+        .orderBy("title")
         .where("restaurant_id", isEqualTo: restaurant_id)
-        // .where("category", isEqualTo: category)
-        .startAt([query]).endAt(["$query\uf8ff"]).get();
+        .where('title', isGreaterThanOrEqualTo: query)
+        .where('title', isLessThan: query + 'z')
+        .snapshots();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getItems(
-      String? restaurant_id, String query) {
+      String? restaurant_id, DocumentSnapshot? document,
+      {int limit = 5}) {
     try {
-      return database
+      var ref = database
           .collection("menu")
           .where("restaurant_id", isEqualTo: restaurant_id)
-          .limit(5)
-          .snapshots();
+          .limit(limit);
+      if (document != null) {
+        return ref.startAfterDocument(document).snapshots();
+      }
+      return ref.snapshots();
     } catch (e) {
       rethrow;
     }
   }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getMoreItems(
+      String? restaurant_id, DocumentSnapshot documentSnapshot,
+      {int limit = 8}) {
+    try {
+      return database
+          .collection("menu")
+          .where("restaurant_id", isEqualTo: restaurant_id)
+          .startAfterDocument(documentSnapshot)
+          .limit(limit)
+          .get();
+    } catch (e) {
+      rethrow;
+    }
+  }
+  // Stream<QuerySnapshot<Map<String, dynamic>>> getMoreItems(
+  //     String? restaurant_id, DocumentSnapshot documentSnapshot,
+  //     {int limit = 8}) {
+  //   try {
+  //     return database
+  //         .collection("menu")
+  //         .where("restaurant_id", isEqualTo: restaurant_id)
+  //         .startAfterDocument(documentSnapshot)
+  //         .limit(limit)
+  //         .snapshots();
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 }

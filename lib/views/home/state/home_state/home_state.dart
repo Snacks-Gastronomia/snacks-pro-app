@@ -4,25 +4,27 @@ class HomeState {
   final List<Item> items;
   final int numberOfPostsPerRequest;
   final bool listIsLastPage;
-  final int listPageNumber;
+  final DocumentSnapshot? lastDocument;
   final List<Item> popular;
   final AppStatus status;
   final bool search;
   final String? category;
   final String? query;
   final String? error;
+  final List<Map<String, dynamic>> menu;
   final Map<String, dynamic> storage;
   HomeState({
     required this.items,
     required this.numberOfPostsPerRequest,
     required this.listIsLastPage,
-    required this.listPageNumber,
+    this.lastDocument,
     required this.popular,
     required this.status,
-    required this.query,
     required this.search,
     required this.category,
+    required this.query,
     required this.error,
+    required this.menu,
     required this.storage,
   });
 
@@ -32,10 +34,10 @@ class HomeState {
       query: "",
       storage: {},
       items: [],
+      menu: [],
       popular: [],
       status: AppStatus.initial,
       listIsLastPage: false,
-      listPageNumber: 1,
       numberOfPostsPerRequest: 15,
       error: null);
 
@@ -47,7 +49,7 @@ class HomeState {
     return items.hashCode ^
         numberOfPostsPerRequest.hashCode ^
         listIsLastPage.hashCode ^
-        listPageNumber.hashCode ^
+        lastDocument.hashCode ^
         popular.hashCode ^
         status.hashCode ^
         search.hashCode ^
@@ -61,9 +63,10 @@ class HomeState {
     List<Item>? items,
     int? numberOfPostsPerRequest,
     bool? listIsLastPage,
-    int? listPageNumber,
+    DocumentSnapshot? lastDocument,
     List<Item>? popular,
     AppStatus? status,
+    List<Map<String, dynamic>>? menu,
     bool? search,
     String? category,
     String? query,
@@ -75,12 +78,13 @@ class HomeState {
       numberOfPostsPerRequest:
           numberOfPostsPerRequest ?? this.numberOfPostsPerRequest,
       listIsLastPage: listIsLastPage ?? this.listIsLastPage,
-      listPageNumber: listPageNumber ?? this.listPageNumber,
+      lastDocument: lastDocument ?? this.lastDocument,
       popular: popular ?? this.popular,
       query: query ?? this.query,
       status: status ?? this.status,
       search: search ?? this.search,
       category: category ?? this.category,
+      menu: menu ?? this.menu,
       error: error ?? this.error,
       storage: storage ?? this.storage,
     );
@@ -94,12 +98,13 @@ class HomeState {
         listEquals(other.items, items) &&
         other.numberOfPostsPerRequest == numberOfPostsPerRequest &&
         other.listIsLastPage == listIsLastPage &&
-        other.listPageNumber == listPageNumber &&
+        other.lastDocument == lastDocument &&
         listEquals(other.popular, popular) &&
         other.status == status &&
         other.search == search &&
         other.query == query &&
         other.category == category &&
+        listEquals(other.menu, menu) &&
         other.error == error &&
         mapEquals(other.storage, storage);
   }

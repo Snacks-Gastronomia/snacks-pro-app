@@ -16,28 +16,36 @@ class ItemsRepository {
     }
   }
 
-  Stream<QuerySnapshot> fetchItems(String? restaurant, String? query) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchItems(
+      String? restaurant, DocumentSnapshot? document) {
     try {
-      return services.getItems(restaurant, query.toString());
+      return services.getItems(restaurant, document);
     } catch (e) {
       throw e.toString();
     }
   }
 
-  Future<Item> fecthSingleItem(String id) async {
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchMoreItems(
+      String? restaurant, DocumentSnapshot document) {
     try {
-      return await services.getSingleItem(id);
-
-      // return item;
+      return services.getMoreItems(restaurant, document);
     } catch (e) {
       throw e.toString();
     }
   }
+  // Stream<QuerySnapshot<Map<String, dynamic>>> fetchMoreItems(
+  //     String? restaurant, DocumentSnapshot document) {
+  //   try {
+  //     return services.getMoreItems(restaurant, document);
+  //   } catch (e) {
+  //     throw e.toString();
+  //   }
+  // }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> searchItems(
-      String query, String? category, restaurant_id) async {
+  Stream<QuerySnapshot<Map<String, dynamic>>> searchQuery(
+      String query, String? category, restaurant_id) {
     try {
-      return await services.queryItems(query, category, restaurant_id);
+      return services.searchQuery(query, restaurant_id);
 
       // return items;
     } catch (e) {

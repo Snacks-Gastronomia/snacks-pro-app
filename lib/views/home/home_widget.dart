@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
@@ -33,28 +34,37 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    //  _navigator.pushAndRemoveUntil(..., (route) => ...);
-
-    super.initState();
-    context.read<HomeCubit>().saveStorage();
-    //     .then((value) => context.read<HomeCubit>().fetchItems());
-  }
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    // controller = InheritedDataProvider.of(context).scrollController;
+    controller = ScrollController();
     // controller.addListener(
     //   () {
-    //     if (controller.position.maxScrollExtent == controller.offset &&
-    //         !BlocProvider.of<HomeCubit>(context).state.listIsLastPage) {
+    //     print(controller.position.maxScrollExtent);
+    //     if (controller.position.maxScrollExtent == controller.offset) {
+    //       print("loading more");
     //       // context.read<HomeCubit>().fetchMoreItems();
     //       // Get.find<ItemController>()
     //       //     .addItem(Get.find<ItemController>().itemList.length);
     //     }
     //   },
     // );
+    super.initState();
+    context.read<HomeCubit>().saveStorage();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    // controller = InheritedDataProvider.of(context).scrollController;
+    controller.addListener(
+      () {
+        // print(controller.position.maxScrollExtent);
+        if (controller.position.maxScrollExtent == controller.offset &&
+            context.read<HomeCubit>().state.status == AppStatus.loaded) {
+          context.read<HomeCubit>().fetchItems();
+          // Get.find<ItemController>()
+          //     .addItem(Get.find<ItemController>().itemList.length);
+        }
+      },
+    );
     _navigator = Navigator.of(context);
     super.didChangeDependencies();
   }
@@ -63,7 +73,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
 
   @override
   void dispose() {
-    // controller.dispose();
+    controller.dispose();
     // TODO: implement dispose
     super.dispose();
   }
@@ -109,7 +119,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
       body: Padding(
         padding: const EdgeInsets.only(left: 25, top: 25, right: 25),
         child: SingleChildScrollView(
-          // controller: controller,
+          controller: controller,
           physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +134,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               TextFormField(
                 style: AppTextStyles.light(16, color: const Color(0xff8391A1)),
                 autofocus: false,
-                onChanged: context.read<HomeCubit>().changeQuery,
+                onChanged: context.read<HomeCubit>().fetchQuery,
                 decoration: InputDecoration(
                   fillColor: Colors.black.withOpacity(0.033),
                   filled: true,
@@ -153,7 +163,10 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               const SizedBox(
                 height: 10,
               ),
-              AllItemsWidget(ns: _navigator),
+              AllItemsWidget(
+                ns: _navigator,
+                // controller: controller,
+              ),
               const SizedBox(
                 height: 30,
               )
@@ -169,77 +182,61 @@ class AllItemsWidget extends StatelessWidget {
   AllItemsWidget({
     Key? key,
     required this.ns,
+    // required this.controller,
   }) : super(key: key);
 
   final NavigatorState ns;
   final modal = AppModal();
-
+  // final ScrollController controller;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: context.read<HomeCubit>().fetchItems(),
-      builder: (context, res) {
-        return StreamBuilder<QuerySnapshot>(
-            stream: res.data,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const ListSkeletons(direction: Axis.vertical);
-              }
-              if (snapshot.hasData) {
-                print("object");
-                var data = snapshot.data;
-                List<QueryDocumentSnapshot> list = List.from(data!.docs);
-                BlocProvider.of<HomeCubit>(context).changeItemsLoaded(list);
+    return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
+      if (state.status == AppStatus.loading) {
+        return const ListSkeletons(direction: Axis.vertical);
+      }
+      var data = state.menu;
 
-                return BlocBuilder<HomeCubit, HomeState>(
-                  builder: (context, state) {
-                    if (list.isNotEmpty) {
-                      return GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 15,
-                                  mainAxisSpacing: 15,
-                                  mainAxisExtent: 160),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount:
-                              list.length + (state.listIsLastPage ? 0 : 3),
-                          // itemCount: list.length,
-
-                          itemBuilder: (BuildContext ctx, index) {
-                            if (list.length <= index && state.listIsLastPage) {
-                              return Transform.scale(
-                                  scale: 0.9, child: const CardSkeleton());
-                            } else {
-                              var jsonItem = jsonEncode(list[index].data());
-                              var item = Item.fromJson(jsonItem);
-                              var id = list[index].id;
-                              item = item.copyWith(id: id);
-
-                              return GestureDetector(
-                                  onTap: () => modal.showIOSModalBottomSheet(
-                                      context: context,
-                                      content: ItemScreen(
-                                          order: Order(
-                                              item: item, observations: ""))),
-                                  child: CardItemWidget(
-                                    // ns: ns,
-                                    item: item,
-                                  ));
-                            }
-                          });
-                    }
-                    return const Center(
-                      child: Text("Cardapio vazio"),
-                    );
-                  },
-                );
-              }
-              return const SizedBox();
-            });
-      },
-    );
+      return BlocBuilder<HomeCubit, HomeState>(
+        builder: (context, state) {
+          if (data.isNotEmpty) {
+            return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
+                    mainAxisExtent: 160),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                // itemCount: data.length + (state.listIsLastPage ? 0 : 3),
+                itemCount: data.length,
+                // controller: controller,
+                itemBuilder: (BuildContext ctx, index) {
+                  // if (data.length <= index && state.listIsLastPage) {
+                  //   return Transform.scale(
+                  //       scale: 0.9, child: const CardSkeleton());
+                  // } else {
+                  var item = Item.fromMap(data[index]);
+                  var id = data[index]["id"];
+                  item = item.copyWith(id: id);
+                  // if (ctx.) print("loading more");
+                  return GestureDetector(
+                      onTap: () => modal.showIOSModalBottomSheet(
+                          context: context,
+                          content: ItemScreen(
+                              order: Order(item: item, observations: ""))),
+                      child: CardItemWidget(
+                        // ns: ns,
+                        item: item,
+                      ));
+                  // }
+                });
+          }
+          return const Center(
+            child: Text("Cardapio vazio"),
+          );
+        },
+      );
+    });
   }
 }
 
