@@ -25,12 +25,38 @@ class FinanceApiServices {
     return [];
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getSchedule() {
+    try {
+      return firebase
+          .collection("snacks_config")
+          .doc("work_time")
+          .collection("days")
+          .snapshots();
+    } catch (e) {
+      rethrow;
+    }
+    // return data;
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurants() {
     // try {
     return firebase
         .collection("restaurants")
         .snapshots()
         .handleError((onError) => print);
+
+    // return data.docs;
+  }
+
+  Future<void> updateTime(int day, Map<String, dynamic> data) {
+    // try {
+    print(day.toString());
+    return firebase
+        .collection("snacks_config")
+        .doc("work_time")
+        .collection("days")
+        .doc(day.toString())
+        .update(data);
 
     // return data.docs;
   }

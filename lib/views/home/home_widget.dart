@@ -37,9 +37,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
     //  _navigator.pushAndRemoveUntil(..., (route) => ...);
 
     super.initState();
-    // context
-    //     .read<HomeCubit>()
-    //     .getStorage()
+    context.read<HomeCubit>().saveStorage();
     //     .then((value) => context.read<HomeCubit>().fetchItems());
   }
 
@@ -126,6 +124,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               TextFormField(
                 style: AppTextStyles.light(16, color: const Color(0xff8391A1)),
                 autofocus: false,
+                onChanged: context.read<HomeCubit>().changeQuery,
                 decoration: InputDecoration(
                   fillColor: Colors.black.withOpacity(0.033),
                   filled: true,
@@ -327,14 +326,22 @@ class TopWidget extends StatelessWidget {
             const SizedBox(
               width: 12,
             ),
-            SizedBox(
-              width: 140,
-              child: Text(
-                'Restaurante 01',
-                style: AppTextStyles.medium(22),
-                maxLines: 2,
-              ),
-            ),
+            FutureBuilder(
+                future:
+                    context.read<HomeCubit>().storage.getDataStorage("user"),
+                builder: (context, snap) {
+                  if (snap.hasData) {
+                    return SizedBox(
+                      width: 140,
+                      child: Text(
+                        snap.data!["restaurant"]["name"],
+                        style: AppTextStyles.medium(22),
+                        maxLines: 2,
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                }),
           ],
         ),
 

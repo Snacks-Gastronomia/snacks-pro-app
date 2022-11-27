@@ -19,6 +19,14 @@ class FinanceRepository {
     }
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchSchedule() {
+    try {
+      return services.getSchedule();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<void> deleteExpense(String id) async {
     try {
       return await services.deleteExpense(id);
@@ -140,6 +148,30 @@ class FinanceRepository {
   Future<QuerySnapshot<Map<String, dynamic>>> fetchFeedbacks() async {
     try {
       return await services.getFeedbacks();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> updateStartTime(int weekday, start) async {
+    try {
+      return await services.updateTime(weekday, {"start": start});
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> updateEndTime(int weekday, end) async {
+    try {
+      return await services.updateTime(weekday, {"end": end});
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> updateActiveTime(int weekday, active) async {
+    try {
+      return await services.updateTime(weekday, {"active": active});
     } catch (e) {
       throw e.toString();
     }

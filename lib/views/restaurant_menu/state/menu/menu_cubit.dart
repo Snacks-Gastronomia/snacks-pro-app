@@ -128,35 +128,37 @@ class MenuCubit extends Cubit<MenuState> {
     final encrypt = AppMD5();
     final modal = AppModal();
 
-    var storage = AppStorage.initStorage;
-    Map<String, dynamic> data = await storage.readAll();
-    data = Map.from(jsonDecode(data["user"]));
+    var storage = AppStorage();
 
-    var restaurant_id = data["companie_id"];
+    Map<String, dynamic> data = await storage.getDataStorage("user");
+    // data = Map.from(jsonDecode(data["user"]));
 
-    var pathDownload = "";
+    var restaurant_id = data["restaurant"]["id"];
 
-    var ref =
-        fs.child("menu_images/${encrypt.getEncrypt(state.item.title)}.jpg");
+    emit(state.copyWith(
+        item: state.item.copyWith(restaurant_id: restaurant_id)));
     if (state.item.image_url != null) {
+      var ref =
+          fs.child("menu_images/${encrypt.getEncrypt(state.item.title)}.jpg");
       File file = File(state.item.image_url!);
       try {
         // ref.putDa;ta(data);
         final snapshot = await ref.putFile(file).whenComplete(() {});
-        pathDownload = await snapshot.ref.getDownloadURL();
-      } on FirebaseException catch (e) {
-        debugPrint(e.message);
+        var pathDownload = await snapshot.ref.getDownloadURL();
+        emit(state.copyWith(
+            item: state.item.copyWith(
+          image_url: pathDownload,
+        )));
+      } catch (e) {
+        debugPrint(e.toString());
       }
     }
 
-    emit(state.copyWith(
-        item: state.item.copyWith(
-            image_url: pathDownload,
-            restaurant_id: restaurant_id))); //ingredients: state.ingredients
+    //ingredients: state.ingredients
 
     try {
       await repository.postItem(state.item);
-      emit(state.copyWith(status: AppStatus.loaded));
+      clear();
     } catch (e) {
       print(e);
     }
@@ -165,5 +167,13 @@ class MenuCubit extends Cubit<MenuState> {
         context: context,
         content: const SuccessScreen(
             title: "Item adicionado com sucesso!", backButton: true));
+  }
+
+  void clear() {
+    emit(state.copyWith(
+        item: Item.initial(),
+        selected: "",
+        status: AppStatus.loaded,
+        ingredients: []));
   }
 }

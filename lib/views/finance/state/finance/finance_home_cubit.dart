@@ -253,4 +253,24 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
         expenseAUX: null, restaurantAUX: null, status: AppStatus.initial));
     print(state);
   }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchSchedule() {
+    return repository.fetchSchedule();
+  }
+
+  changeActiveSchedule({required int day, required bool value}) async {
+    print(value);
+    await repository.updateActiveTime(day, value);
+    print(state);
+  }
+
+  changeStartTime({required int day, required String value}) async {
+    await repository.updateStartTime(day, value);
+    print(state);
+  }
+
+  changeEndTime({required int day, required String value}) async {
+    await repository.updateEndTime(day, value);
+    print(state);
+  }
 }

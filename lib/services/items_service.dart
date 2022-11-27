@@ -72,16 +72,22 @@ class ItemsApiServices {
         const Duration(milliseconds: 500), () => list.getRange(0, 5).toList());
   }
 
-  Future<List<Item>> queryItems(String query, String? category) async {
-    return Future.delayed(const Duration(milliseconds: 500),
-        () => list.where((element) => element.title.contains(query)).toList());
+  Future<QuerySnapshot<Map<String, dynamic>>> queryItems(
+      String query, String? category, restaurant_id) async {
+    return database
+        .collection("menu")
+        .where("restaurant_id", isEqualTo: restaurant_id)
+        // .where("category", isEqualTo: category)
+        .startAt([query]).endAt(["$query\uf8ff"]).get();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getItems(String? restaurant_id) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getItems(
+      String? restaurant_id, String query) {
     try {
       return database
           .collection("menu")
           .where("restaurant_id", isEqualTo: restaurant_id)
+          .limit(5)
           .snapshots();
     } catch (e) {
       rethrow;

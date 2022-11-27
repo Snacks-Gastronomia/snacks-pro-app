@@ -15,13 +15,7 @@ class MenuState extends Equatable {
   factory MenuState.initial() => MenuState(
         status: AppStatus.initial,
         ingredients: [],
-        item: Item(
-            active: true,
-            title: "",
-            description: "",
-            value: 0,
-            restaurant_id: "",
-            time: 0),
+        item: Item.initial(),
         selected: "",
       );
 

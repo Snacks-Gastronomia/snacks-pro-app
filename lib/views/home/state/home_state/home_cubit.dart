@@ -77,7 +77,7 @@ class HomeCubit extends Cubit<HomeState> {
     var data = await storage.getDataStorage("user");
     var id = data["restaurant"]["id"];
 
-    return itemsRepository.fetchItems(id);
+    return itemsRepository.fetchItems(id, state.query);
   }
 
   void changeItemsLoaded(List value) {
@@ -92,11 +92,11 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(status: AppStatus.loading));
 
     try {
-      final List<Item>? items =
-          await itemsRepository.searchItems(query, state.category);
+      print(await itemsRepository.searchItems(
+          query, state.category, state.storage["restaurant"]["id"]));
 
-      emit(
-          state.copyWith(search: true, status: AppStatus.loaded, items: items));
+      // emit(
+      //     state.copyWith(search: true, status: AppStatus.loaded, items: items));
 
       print('state: $state');
     } catch (e) {
@@ -116,5 +116,10 @@ class HomeCubit extends Cubit<HomeState> {
   void updateCategory(String category) {
     emit(state.copyWith(category: category));
     fetchItems();
+  }
+
+  void changeQuery(String value) {
+    emit(state.copyWith(query: value));
+    // fetchItems();
   }
 }

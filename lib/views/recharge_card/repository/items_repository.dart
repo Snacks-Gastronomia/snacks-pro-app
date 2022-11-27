@@ -25,16 +25,6 @@ class ItemsRepository {
     }
   }
 
-  Future<List<Item>?> searchItems(String query, String? category) async {
-    try {
-      final List<Item> items = await services.queryItems(query, category);
-
-      return items;
-    } catch (e) {
-      throw e.toString();
-    }
-  }
-
   Future<List<Item>?> fetchPopularItems() async {
     try {
       final List<Item> items = await services.getPopularItems();

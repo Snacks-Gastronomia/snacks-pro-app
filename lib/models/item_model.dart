@@ -76,6 +76,15 @@ class Item {
     };
   }
 
+  factory Item.initial() {
+    return Item(
+        active: true,
+        title: "",
+        description: "",
+        value: 0,
+        restaurant_id: "",
+        time: 0);
+  }
   factory Item.fromMap(Map<String, dynamic> map) {
     return Item(
       id: map['id'],

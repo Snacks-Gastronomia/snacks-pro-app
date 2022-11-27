@@ -2,8 +2,10 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snacks_pro_app/components/custom_submit_button.dart';
 
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 
 class ItemDetailsWidget extends StatelessWidget {
@@ -184,25 +186,40 @@ class ItemDetailsWidget extends StatelessWidget {
               ),
               Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      var item = context.read<MenuCubit>().state.item;
-                      if (item.category != null &&
-                          item.value != 0 &&
-                          item.time != 0) {
-                        buttonAction();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        backgroundColor: Colors.black,
-                        fixedSize: const Size(double.maxFinite, 59)),
-                    child: Text(
-                      'Salvar',
-                      style: AppTextStyles.regular(16, color: Colors.white),
-                    ),
-                  ),
+                  BlocBuilder<MenuCubit, MenuState>(builder: (context, state) {
+                    return CustomSubmitButton(
+                      onPressedAction: () {
+                        var item = context.read<MenuCubit>().state.item;
+                        if (item.category != null &&
+                            item.value != 0 &&
+                            item.time != 0) {
+                          buttonAction();
+                        }
+                      },
+                      loading: state.status == AppStatus.loading,
+                      label: "Adicionar ao menu",
+                      loading_label: "Adionando...",
+                    );
+                  })
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     var item = context.read<MenuCubit>().state.item;
+                  //     if (item.category != null &&
+                  //         item.value != 0 &&
+                  //         item.time != 0) {
+                  //       buttonAction();
+                  //     }
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //       shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.circular(15)),
+                  //       backgroundColor: Colors.black,
+                  //       fixedSize: const Size(double.maxFinite, 59)),
+                  //   child: Text(
+                  //     'Salvar',
+                  //     style: AppTextStyles.regular(16, color: Colors.white),
+                  //   ),
+                  // ),
                   // TextButton(
                   //   onPressed: backAction,
                   //   child: Text(

@@ -9,6 +9,7 @@ class HomeState {
   final AppStatus status;
   final bool search;
   final String? category;
+  final String? query;
   final String? error;
   final Map<String, dynamic> storage;
   HomeState({
@@ -18,6 +19,7 @@ class HomeState {
     required this.listPageNumber,
     required this.popular,
     required this.status,
+    required this.query,
     required this.search,
     required this.category,
     required this.error,
@@ -27,6 +29,7 @@ class HomeState {
   factory HomeState.initial() => HomeState(
       search: false,
       category: null,
+      query: "",
       storage: {},
       items: [],
       popular: [],
@@ -48,6 +51,7 @@ class HomeState {
         popular.hashCode ^
         status.hashCode ^
         search.hashCode ^
+        query.hashCode ^
         category.hashCode ^
         error.hashCode ^
         storage.hashCode;
@@ -62,6 +66,7 @@ class HomeState {
     AppStatus? status,
     bool? search,
     String? category,
+    String? query,
     String? error,
     Map<String, dynamic>? storage,
   }) {
@@ -72,6 +77,7 @@ class HomeState {
       listIsLastPage: listIsLastPage ?? this.listIsLastPage,
       listPageNumber: listPageNumber ?? this.listPageNumber,
       popular: popular ?? this.popular,
+      query: query ?? this.query,
       status: status ?? this.status,
       search: search ?? this.search,
       category: category ?? this.category,
@@ -92,6 +98,7 @@ class HomeState {
         listEquals(other.popular, popular) &&
         other.status == status &&
         other.search == search &&
+        other.query == query &&
         other.category == category &&
         other.error == error &&
         mapEquals(other.storage, storage);

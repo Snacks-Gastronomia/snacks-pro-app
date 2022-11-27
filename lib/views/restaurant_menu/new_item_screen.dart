@@ -25,7 +25,10 @@ class NewItemScreen extends StatelessWidget {
             child: Row(
               children: [
                 ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      context.read<MenuCubit>().clear();
+                      Navigator.pop(context);
+                    },
                     style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),

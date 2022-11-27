@@ -16,9 +16,9 @@ class ItemsRepository {
     }
   }
 
-  Stream<QuerySnapshot> fetchItems(String? restaurant) {
+  Stream<QuerySnapshot> fetchItems(String? restaurant, String? query) {
     try {
-      return services.getItems(restaurant);
+      return services.getItems(restaurant, query.toString());
     } catch (e) {
       throw e.toString();
     }
@@ -34,11 +34,12 @@ class ItemsRepository {
     }
   }
 
-  Future<List<Item>?> searchItems(String query, String? category) async {
+  Future<QuerySnapshot<Map<String, dynamic>>> searchItems(
+      String query, String? category, restaurant_id) async {
     try {
-      final List<Item> items = await services.queryItems(query, category);
+      return await services.queryItems(query, category, restaurant_id);
 
-      return items;
+      // return items;
     } catch (e) {
       throw e.toString();
     }
