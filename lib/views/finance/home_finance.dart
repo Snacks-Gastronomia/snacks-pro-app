@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/budget_details.dart';
+import 'package:snacks_pro_app/views/finance/contents/Printer/printers.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/restaurants_content.dart';
 import 'package:snacks_pro_app/views/finance/ratings.dart';
@@ -139,12 +140,12 @@ class _HomeFinanceWidgetState extends State<HomeFinanceWidget> {
                   ),
                   const SizedBox(height: 10),
 
-                  // RestaurantSummaryCards(
-                  //   modal: modal,
-                  // )
-                  SnacksAdmSummaryCards(
+                  RestaurantSummaryCards(
                     modal: modal,
                   )
+                  // SnacksAdmSummaryCards(
+                  //   modal: modal,
+                  // )
                 ],
               ),
             ),
@@ -407,38 +408,85 @@ class SnacksAdmSummaryCards extends StatelessWidget {
 }
 
 class RestaurantSummaryCards extends StatelessWidget {
-  const RestaurantSummaryCards({
+  RestaurantSummaryCards({
     Key? key,
     required this.modal,
   }) : super(key: key);
   final AppModal modal;
+
+  final List list = [
+    {
+      "title": "Pedidos",
+      "icon": Icons.format_align_left_rounded,
+      "highlight": false,
+      "action": OrdersReportScreen(),
+    },
+    {
+      "title": "Impressoras",
+      "icon": Icons.print,
+      "highlight": false,
+      "action": const PrinterContent()
+    },
+    {
+      "title": "Funcionários",
+      "icon": Icons.people_outline_rounded,
+      "highlight": true,
+      "action": const EmployeesContentWidget()
+    }
+  ];
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CardSummary(
-          title: "Pedidos",
-          icon: Icons.format_align_left_rounded,
-          action: () => modal.showIOSModalBottomSheet(
-              context: context,
-              content: BlocProvider.value(
-                  value: BlocProvider.of<OrdersCubit>(context),
-                  child: OrdersReportScreen()),
-              expand: true),
-        ),
-        const SizedBox(width: 15),
-        CardSummary(
-          title: "Funcionários",
-          icon: Icons.people_outline_rounded,
-          action: () => modal.showIOSModalBottomSheet(
-              context: context,
-              content: BlocProvider.value(
-                  value: BlocProvider.of<EmployeesCubit>(context),
-                  child: const EmployeesContentWidget()),
-              expand: true),
-        ),
-      ],
-    );
+    return SizedBox(
+        height: 170,
+        child: ListView.separated(
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) => CardSummary(
+                title: list[index]["title"],
+                icon: list[index]["icon"],
+                bgHighlight: list[index]["highlight"],
+                action: () => modal.showIOSModalBottomSheet(
+                    context: context,
+                    content: list[index]["action"],
+                    expand: true)),
+            separatorBuilder: (context, index) => const SizedBox(width: 15),
+            itemCount: list.length));
+    // return Row(
+    //   children: [
+    //     CardSummary(
+    //       title: "Pedidos",
+    //       icon: Icons.format_align_left_rounded,
+    //       action: () => modal.showIOSModalBottomSheet(
+    //           context: context,
+    //           content: BlocProvider.value(
+    //               value: BlocProvider.of<OrdersCubit>(context),
+    //               child: OrdersReportScreen()),
+    //           expand: true),
+    //     ),
+    //     const SizedBox(width: 15),
+    //     CardSummary(
+    //       title: "Impressoras",
+    //       icon: Icons.print,
+    //       action: () => modal.showIOSModalBottomSheet(
+    //           context: context,
+    //           content: BlocProvider.value(
+    //               value: BlocProvider.of<EmployeesCubit>(context),
+    //               child: const PrinterContent()),
+    //           expand: true),
+    //     ),
+    //     const SizedBox(width: 15),
+    //     CardSummary(
+    //       title: "Funcionários",
+    //       icon: Icons.people_outline_rounded,
+    //       action: () => modal.showIOSModalBottomSheet(
+    //           context: context,
+    //           content: BlocProvider.value(
+    //               value: BlocProvider.of<EmployeesCubit>(context),
+    //               child: const EmployeesContentWidget()),
+    //           expand: true),
+    //     ),
+    //   ],
+    // );
   }
 }
 

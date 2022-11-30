@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:snacks_pro_app/firebase_options.dart';
+import 'package:snacks_pro_app/services/beerpass_service.dart';
 import 'dart:convert';
 
 import 'package:snacks_pro_app/utils/enums.dart';
@@ -15,6 +16,7 @@ part 'recharge_state.dart';
 
 class RechargeCubit extends Cubit<RechargeState> {
   final database = FirebaseFirestore.instance;
+  final beerPassService = BeerPassService();
   final storage = AppStorage();
   RechargeCubit() : super(RechargeState.initial());
 
@@ -86,22 +88,24 @@ class RechargeCubit extends Cubit<RechargeState> {
           .doc(state.card_code)
           .get();
       // config_cards.get("active_cards");
-      if (config_cards.exists) {
-        final dataStorage = await storage.getDataStorage("user");
 
-        var data = state.toMap();
-        data.addAll({
-          "responsible": dataStorage["name"],
-          "created_at": DateFormat.Hm().format(now)
-        });
-        await database
-            .collection("snacks_cards")
-            .doc(month_id)
-            .collection("days")
-            .doc(day_id)
-            .collection("recharges")
-            .add(data);
-      }
+      await beerPassService.createOrder(state.toMap(), state.value);
+      // if (config_cards.exists) {
+      //   final dataStorage = await storage.getDataStorage("user");
+
+      //   var data = state.toMap();
+      //   data.addAll({
+      //     "responsible": dataStorage["name"],
+      //     "created_at": DateFormat.Hm().format(now)
+      //   });
+      //   await database
+      //       .collection("snacks_cards")
+      //       .doc(month_id)
+      //       .collection("days")
+      //       .doc(day_id)
+      //       .collection("recharges")
+      //       .add(data);
+      // }
     } catch (e) {
       debugPrint(e.toString());
     }

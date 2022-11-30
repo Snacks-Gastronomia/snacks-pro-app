@@ -65,6 +65,7 @@ dependencies:
   esc_pos_printer: ^4.1.0
   esc_pos_utils: ^1.1.0
   image: ^3.2.2
+  jwt_decoder: ^2.0.1
   
 dev_dependencies:
   plugin_platform_interface: 2.1.3

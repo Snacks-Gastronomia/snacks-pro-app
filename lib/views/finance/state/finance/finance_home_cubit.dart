@@ -27,6 +27,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
       repository.getMonthlyBudget(id),
       repository.fetchBankInformations(id),
     ]);
+    emit(state.copyWith(status: AppStatus.loaded));
 
     emit(state.copyWith(
       status: AppStatus.loaded,
@@ -35,6 +36,65 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
       // employees_count: data[0],
       // orders_count: data[2]
     ));
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchPrinters() async* {
+    // emit(state.copyWith(status: AppStatus.loading));
+    var id = (await storage.getDataStorage("user"))["restaurant"]["id"];
+
+    yield* repository.fetchPrinters(id);
+  }
+
+  insertPrinter(context) async {
+    emit(state.copyWith(status: AppStatus.loading));
+
+    var id = (await storage.getDataStorage("user"))["restaurant"]["id"];
+    var newPrinter = getPrinterStateObject();
+    newPrinter = newPrinter.copyWith(restaurant: id);
+    if (newPrinter.ip.length >= 13) {
+      repository.insertPrinter(newPrinter.toMap());
+      clearAUX();
+      Navigator.pop(context);
+    }
+  }
+
+  changePrinterName(value) {
+    var newPrinter = getPrinterStateObject();
+    emit(state.copyWith(printerAUX: newPrinter.copyWith(name: value)));
+  }
+
+  deletePrinter(String id) async {
+    await repository.deletePrinter(id);
+  }
+
+  updatePrinter(context, String? id, Map? data) async {
+    if (data != null) {
+      var newPrinter = Printer(
+          id: id,
+          name: data["name"],
+          goal: data["goal"],
+          ip: data["ip"],
+          restaurant: data["restaurant"]);
+      emit(state.copyWith(printerAUX: newPrinter, status: AppStatus.editing));
+    } else {
+      var data = state.printerAUX;
+      emit(state.copyWith(status: AppStatus.loading));
+
+      await repository.updatePrinter(data!.toMap(), data.id);
+
+      clearAUX();
+      Navigator.pop(context);
+    }
+  }
+
+  changePrinterIP(value) {
+    var newPrinter = getPrinterStateObject();
+    emit(state.copyWith(printerAUX: newPrinter.copyWith(ip: value)));
+  }
+
+  changePrinterGoal(value) {
+    var newPrinter = getPrinterStateObject();
+    emit(state.copyWith(printerAUX: newPrinter.copyWith(goal: value)));
   }
 
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
@@ -147,6 +207,11 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
         Restaurant(rname: "", rcategory: "", oname: "", ophone: "");
   }
 
+  Printer getPrinterStateObject() {
+    return state.printerAUX ??
+        Printer(name: "", goal: "", ip: "", restaurant: "");
+  }
+
   void changeRestaurantCategory(String value) {
     var restaurant = getRestaurantStateObject();
     restaurant.rcategory = value;
@@ -250,8 +315,12 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
 
   clearAUX() {
     emit(state.copyWith(
-        expenseAUX: null, restaurantAUX: null, status: AppStatus.initial));
-    print(state);
+        expenseAUX: null,
+        restaurantAUX: null,
+        printerAUX: null,
+        status: AppStatus.initial));
+    // print(state);
+    // print("clear");
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchSchedule() {

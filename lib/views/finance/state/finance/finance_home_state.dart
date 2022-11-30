@@ -33,6 +33,46 @@ class Restaurant {
   });
 }
 
+class Printer {
+  final String? id;
+  final String name;
+  final String goal;
+  final String ip;
+  final String restaurant;
+  Printer({
+    this.id,
+    required this.name,
+    required this.goal,
+    required this.ip,
+    required this.restaurant,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'goal': goal,
+      'ip': ip,
+      'restaurant': restaurant,
+    };
+  }
+
+  Printer copyWith({
+    String? id,
+    String? name,
+    String? goal,
+    String? ip,
+    String? restaurant,
+  }) {
+    return Printer(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      goal: goal ?? this.goal,
+      ip: ip ?? this.ip,
+      restaurant: restaurant ?? this.restaurant,
+    );
+  }
+}
+
 class FinanceHomeState {
   final double budget;
   final double expenses_value;
@@ -41,11 +81,13 @@ class FinanceHomeState {
   final BankModel bankInfo;
   final Expense expenseAUX;
   final Restaurant? restaurantAUX;
+  final Printer? printerAUX;
   final AppStatus status;
   FinanceHomeState(
       {required this.budget,
       required this.expenses_value,
       required this.expenses_length,
+      required this.printerAUX,
       required this.questions_carousel_index,
       required this.bankInfo,
       required this.status,
@@ -55,6 +97,7 @@ class FinanceHomeState {
   factory FinanceHomeState.initial() => FinanceHomeState(
       expenseAUX: Expense.initial(),
       restaurantAUX: null,
+      printerAUX: null,
       status: AppStatus.initial,
       budget: 0,
       questions_carousel_index: 0,
@@ -71,11 +114,13 @@ class FinanceHomeState {
     AppStatus? status,
     Expense? expenseAUX,
     Restaurant? restaurantAUX,
+    Printer? printerAUX,
   }) {
     return FinanceHomeState(
       expenseAUX: expenseAUX ?? this.expenseAUX,
       restaurantAUX: restaurantAUX,
       budget: budget ?? this.budget,
+      printerAUX: printerAUX,
       questions_carousel_index:
           questions_carousel_index ?? this.questions_carousel_index,
       expenses_length: expenses_length ?? this.expenses_length,
@@ -97,6 +142,7 @@ class FinanceHomeState {
         other.bankInfo == bankInfo &&
         other.expenseAUX == expenseAUX &&
         other.restaurantAUX == restaurantAUX &&
+        other.printerAUX == printerAUX &&
         other.status == status;
   }
 

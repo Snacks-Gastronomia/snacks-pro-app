@@ -38,6 +38,60 @@ class FinanceApiServices {
     // return data;
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getPrinters(id) {
+    try {
+      return firebase
+          .collection("printers")
+          .where("restaurant", isEqualTo: id)
+          .snapshots();
+    } catch (e) {
+      rethrow;
+    }
+    // return data;
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getPrinterByGoal(
+      String restaurant, String goal) {
+    try {
+      return firebase
+          .collection("printers")
+          .where("goal", isEqualTo: goal)
+          .where("restaurant", isEqualTo: restaurant)
+          .limit(1)
+          .get();
+    } catch (e) {
+      rethrow;
+    }
+    // return data;
+  }
+
+  Future<void> updatePrinter(Map<String, dynamic> data, id) async {
+    try {
+      return await firebase.collection("printers").doc(id).update(data);
+    } catch (e) {
+      rethrow;
+    }
+    // return data;
+  }
+
+  Future<void> deletePrinter(String id) async {
+    try {
+      return await firebase.collection("printers").doc(id).delete();
+    } catch (e) {
+      rethrow;
+    }
+    // return data;
+  }
+
+  Future addPrinter(data) async {
+    try {
+      return await firebase.collection("printers").add(data);
+    } catch (e) {
+      rethrow;
+    }
+    // return data;
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getRestaurants() {
     // try {
     return firebase

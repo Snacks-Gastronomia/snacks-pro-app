@@ -19,9 +19,50 @@ class FinanceRepository {
     }
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> getPrinterByGoal(
+      String restaurant, String goal) async {
+    try {
+      return await services.getPrinterByGoal(restaurant, goal);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> insertPrinter(Map<String, dynamic> data) async {
+    try {
+      return await services.addPrinter(data);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> deletePrinter(String docID) async {
+    try {
+      return await services.deletePrinter(docID);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> updatePrinter(Map<String, dynamic> data, id) async {
+    try {
+      return await services.updatePrinter(data, id);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchSchedule() {
     try {
       return services.getSchedule();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchPrinters(id) {
+    try {
+      return services.getPrinters(id);
     } catch (e) {
       throw e.toString();
     }

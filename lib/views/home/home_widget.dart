@@ -13,6 +13,7 @@ import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/services/beerpass_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/home/item_screen.dart';
@@ -87,7 +88,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         padding: const EdgeInsets.only(bottom: 70),
         child: FloatingActionButton(
           backgroundColor: Colors.black,
-          onPressed: () => Navigator.pushNamed(context, AppRoutes.newItem),
+          onPressed: () async => await BeerPassService().createOrder(
+              {"nome": "Teste 7", "rfid": "1255999891", "cpf": "11400234880"},
+              100),
           child: const Icon(Icons.plus_one),
         ),
       ),

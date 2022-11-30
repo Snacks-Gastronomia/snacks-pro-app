@@ -9,6 +9,7 @@ import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/printer.dart';
 import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/tabbar.dart';
@@ -104,8 +105,11 @@ class OrdersScreen extends StatelessWidget {
                                                               "payment_method"],
                                                           item["status"],
                                                           item["created_at"]),
-                                                  onLonPress: () =>
-                                                      print("printer"),
+                                                  onLongPress: () async =>
+                                                      context
+                                                          .read<HomeCubit>()
+                                                          .printerOrder(
+                                                              item, context),
                                                   leading: item["isDelivery"]
                                                       ? null
                                                       : item["table"],
@@ -155,10 +159,17 @@ class OrdersScreen extends StatelessWidget {
                                                   //   },
                                                   //   child:
                                                   CardOrderWidget(
-                                                      doubleTap: () => print(
-                                                          "change status"),
-                                                      onLonPress: () =>
-                                                          print("printer"),
+                                                      doubleTap: () => context
+                                                          .read<CartCubit>()
+                                                          .changeStatusFoward(
+                                                              item["id"],
+                                                              item["items"],
+                                                              item[
+                                                                  "payment_method"],
+                                                              item["status"],
+                                                              item[
+                                                                  "created_at"]),
+                                                      onLongPress: () {},
                                                       leading:
                                                           item["isDelivery"]
                                                               ? null
@@ -210,7 +221,7 @@ class CardOrderWidget extends StatelessWidget {
   final String time;
   final List items;
   final VoidCallback doubleTap;
-  final VoidCallback onLonPress;
+  final VoidCallback onLongPress;
 
   const CardOrderWidget({
     Key? key,
@@ -223,7 +234,7 @@ class CardOrderWidget extends StatelessWidget {
     required this.time,
     required this.items,
     required this.doubleTap,
-    required this.onLonPress,
+    required this.onLongPress,
   }) : super(key: key);
 
   @override
@@ -237,7 +248,7 @@ class CardOrderWidget extends StatelessWidget {
         //   child:
         GestureDetector(
       onDoubleTap: doubleTap,
-      onLongPress: () => onLonPress,
+      onLongPress: onLongPress,
       child: ExpandableNotifier(
           initialExpanded: true,
           child: Stack(children: [

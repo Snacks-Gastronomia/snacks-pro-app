@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
@@ -125,68 +126,8 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                     padding: const EdgeInsets.all(20.0),
                     child: ListView(
                       children: [
-                        GestureDetector(
-                          onTap: () async {
-                            var cubit = context.read<RechargeCubit>();
-                            var card_code = await Navigator.pushNamed(
-                                context, AppRoutes.scanCard);
-
-                            cubit.readCard(card_code.toString(), controller);
-                            // await controller.animateToPage(2,
-                            //     duration: const Duration(milliseconds: 600),
-                            //     curve: Curves.easeInOut);
-                          },
-                          onLongPress: () =>
-                              context.read<RechargeCubit>().clear(controller),
-                          child: Container(
-                            padding: const EdgeInsets.all(20),
-                            height: 220,
-                            decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(15)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  children: [
-                                    SvgPicture.asset(
-                                      AppImages.snacks_logo,
-                                      height: 60,
-                                      color: Colors.white,
-                                    ),
-                                  ],
-                                ),
-                                BlocBuilder<RechargeCubit, RechargeState>(
-                                  builder: (context, state) {
-                                    return Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          state.name,
-                                          style: AppTextStyles.regular(20,
-                                              color: Colors.white70),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        if (state.value != 0)
-                                          Text(
-                                            NumberFormat.currency(
-                                                    locale: "pt",
-                                                    symbol: r"R$ ")
-                                                .format(state.value),
-                                            style: AppTextStyles.light(18,
-                                                color: Colors.white70),
-                                          ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
+                        SnacksCardPresentation(
+                          controller: controller,
                         ),
                         const SizedBox(
                           height: 10,
@@ -315,5 +256,71 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
         ),
       );
     });
+  }
+}
+
+class SnacksCardPresentation extends StatelessWidget {
+  const SnacksCardPresentation({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+  final PageController controller;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        var cubit = context.read<RechargeCubit>();
+        var card_code = await Navigator.pushNamed(context, AppRoutes.scanCard);
+
+        cubit.readCard(card_code.toString(), controller);
+        // await controller.animateToPage(2,
+        //     duration: const Duration(milliseconds: 600),
+        //     curve: Curves.easeInOut);
+      },
+      onLongPress: () => context.read<RechargeCubit>().clear(controller),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        height: 220,
+        decoration: BoxDecoration(
+            color: Colors.black, borderRadius: BorderRadius.circular(15)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                SvgPicture.asset(
+                  AppImages.snacks_logo,
+                  height: 60,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+            BlocBuilder<RechargeCubit, RechargeState>(
+              builder: (context, state) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      state.name,
+                      style: AppTextStyles.regular(20, color: Colors.white70),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    if (state.value != 0)
+                      Text(
+                        NumberFormat.currency(locale: "pt", symbol: r"R$ ")
+                            .format(state.value),
+                        style: AppTextStyles.light(18, color: Colors.white70),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
