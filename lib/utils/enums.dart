@@ -10,22 +10,24 @@ enum OrderStatus {
   invalid
 }
 
-enum AppPermission { employee, cashier, waiter, owner, snacks }
+enum AppPermission { employee, cashier, waiter, radm, sadm }
 
 extension ParseToString on OrderStatus {
-  // String get displayEnum {
-  //   switch (this) {
-  //     case OrderStatus.waiting_payment:
-  //       return "Aguardando pagamento";
-  //     case OrderStatus.order_in_progress:
-  //       return "Pedido em andamento";
-  //     case OrderStatus.done:
-  //       return "Pedido pronto";
+  String get displayEnum {
+    switch (this) {
+      case OrderStatus.waiting_payment:
+        return "Aguardando pagamento";
+      case OrderStatus.ready_to_start:
+        return "Pedido pronto para começar";
+      case OrderStatus.order_in_progress:
+        return "Pedido em andamento";
+      case OrderStatus.done:
+        return "Pedido pronto";
 
-  //     default:
-  //       return "Status inválido";
-  //   }
-  // }
+      default:
+        return "Status inválido";
+    }
+  }
 
   Color get getColor {
     switch (this) {
