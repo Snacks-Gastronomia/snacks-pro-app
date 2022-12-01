@@ -142,6 +142,8 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                                 textAlign: TextAlign.center,
                                 style: AppTextStyles.medium(30,
                                     color: Colors.black),
+                                maxLength:
+                                    index == 1 ? 11 : TextField.noMaxLength,
                                 keyboardType: index != 0
                                     ? TextInputType.number
                                     : TextInputType.name,
@@ -165,6 +167,7 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                                 },
                                 focusNode: focus[index],
                                 decoration: InputDecoration(
+                                    counterText: "",
                                     border: InputBorder.none,
                                     label: Row(
                                       mainAxisAlignment:
@@ -208,8 +211,11 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                           if (card_code != null) {
                             cubit.changeCode(card_code.toString());
 
-                            await cubit.rechargeCard();
-
+                            if (cubit.state.cpf.isNotEmpty) {
+                              await cubit.rechargeCard();
+                            } else {
+                              await cubit.createOrderAndRecharge();
+                            }
                             await modal.showModalBottomSheet(
                                 context: context,
                                 content: const RechargeSuccess());
@@ -260,10 +266,8 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
 }
 
 class SnacksCardPresentation extends StatelessWidget {
-  const SnacksCardPresentation({
-    Key? key,
-    required this.controller,
-  }) : super(key: key);
+  const SnacksCardPresentation({Key? key, required this.controller})
+      : super(key: key);
   final PageController controller;
   @override
   Widget build(BuildContext context) {
@@ -271,8 +275,17 @@ class SnacksCardPresentation extends StatelessWidget {
       onTap: () async {
         var cubit = context.read<RechargeCubit>();
         var card_code = await Navigator.pushNamed(context, AppRoutes.scanCard);
+        // if (mounted) ;;
+        if (card_code != null) {
+          await cubit.readCard(card_code.toString(), controller);
 
-        cubit.readCard(card_code.toString(), controller);
+          // if (res == null) {
+          //   toast.showToast(
+          //       context: context,
+          //       content: "Snacks card não encontrado",
+          //       type: ToastType.info);
+          // }
+        }
         // await controller.animateToPage(2,
         //     duration: const Duration(milliseconds: 600),
         //     curve: Curves.easeInOut);

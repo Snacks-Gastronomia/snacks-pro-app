@@ -6,7 +6,7 @@ import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
-import 'package:snacks_pro_app/views/finance/contents/Printer/new_printer.dart';
+import 'package:snacks_pro_app/views/finance/contents/printer/new_printer.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 
 class PrinterContent extends StatelessWidget {

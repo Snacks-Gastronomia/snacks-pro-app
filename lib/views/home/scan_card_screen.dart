@@ -96,7 +96,7 @@ class _ScanCardScreenState extends State<ScanCardScreen> {
                           boxShadow: const [
                             BoxShadow(
                               color: Colors.black54,
-                              offset: const Offset(
+                              offset: Offset(
                                 5.0,
                                 5.0,
                               ),
@@ -105,7 +105,7 @@ class _ScanCardScreenState extends State<ScanCardScreen> {
                             ), //BoxShadow
                             BoxShadow(
                               color: Colors.white,
-                              offset: const Offset(0.0, 0.0),
+                              offset: Offset(0.0, 0.0),
                               blurRadius: 0.0,
                               spreadRadius: 0.0,
                             )

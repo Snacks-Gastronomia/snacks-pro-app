@@ -36,33 +36,16 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   @override
   void initState() {
     controller = ScrollController();
-    // controller.addListener(
-    //   () {
-    //     print(controller.position.maxScrollExtent);
-    //     if (controller.position.maxScrollExtent == controller.offset) {
-    //       print("loading more");
-    //       // context.read<HomeCubit>().fetchMoreItems();
-    //       // Get.find<ItemController>()
-    //       //     .addItem(Get.find<ItemController>().itemList.length);
-    //     }
-    //   },
-    // );
     super.initState();
-    context.read<HomeCubit>().saveStorage();
   }
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    // controller = InheritedDataProvider.of(context).scrollController;
     controller.addListener(
       () {
-        // print(controller.position.maxScrollExtent);
         if (controller.position.maxScrollExtent == controller.offset &&
             context.read<HomeCubit>().state.status == AppStatus.loaded) {
           context.read<HomeCubit>().fetchItems();
-          // Get.find<ItemController>()
-          //     .addItem(Get.find<ItemController>().itemList.length);
         }
       },
     );
@@ -94,8 +77,6 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
           child: const Icon(Icons.plus_one),
         ),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.,
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),

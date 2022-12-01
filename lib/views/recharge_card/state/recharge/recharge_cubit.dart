@@ -11,13 +11,15 @@ import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/snackbar.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
+import 'package:snacks_pro_app/views/recharge_card/repository/recharge_repositoy.dart';
 
 part 'recharge_state.dart';
 
 class RechargeCubit extends Cubit<RechargeState> {
   final database = FirebaseFirestore.instance;
-  final beerPassService = BeerPassService();
+  final repository = RechargeRepository();
   final storage = AppStorage();
+  final toast = AppToast();
   RechargeCubit() : super(RechargeState.initial());
 
   void changeCpf(String value) {
@@ -75,21 +77,25 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   Future<void> rechargeCard() async {
+    await repository.rechargeCard(state.card_code, state.value);
+  }
+
+  Future<void> createOrderAndRecharge() async {
     try {
       emit(state.copyWith(status: AppStatus.loading));
-      var now = DateTime.now();
+      // var now = DateTime.now();
 
-      var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
-      var day_id = "day-${now.day}";
-      var config_cards = await database
-          .collection("snacks_config")
-          .doc("snacks_cards")
-          .collection("active_cards")
-          .doc(state.card_code)
-          .get();
+      // var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
+      // var day_id = "day-${now.day}";
+      // var config_cards = await database
+      //     .collection("snacks_config")
+      //     .doc("snacks_cards")
+      //     .collection("active_cards")
+      //     .doc(state.card_code)
+      //     .get();
       // config_cards.get("active_cards");
 
-      await beerPassService.createOrder(state.toMap(), state.value);
+      await repository.createOrderAndRecharge(state.toMap(), state.value);
       // if (config_cards.exists) {
       //   final dataStorage = await storage.getDataStorage("user");
 
@@ -114,34 +120,38 @@ class RechargeCubit extends Cubit<RechargeState> {
 
 //card_code->recharges
   readCard(String code, PageController controller) async {
-    var now = DateTime.now();
-
-    var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
-    var day_id = "day-${now.day}";
+    // var now = DateTime.now();
+    // var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
+    // var day_id = "day-${now.day}";
     try {
-      var response = await database
-          .collection("snacks_cards")
-          .doc(month_id)
-          .collection("days")
-          .doc(day_id)
-          .collection("recharges")
-          .where("card", isEqualTo: code)
-          .where("active", isEqualTo: true)
-          .get();
+      // var response = await database
+      //     .collection("snacks_cards")
+      //     .doc(month_id)
+      //     .collection("days")
+      //     .doc(day_id)
+      //     .collection("recharges")
+      //     .where("card", isEqualTo: code)
+      //     .where("active", isEqualTo: true)
+      //     .get();
 
-      var data = response.docs[0].data();
+      var response = await repository.getCard(code);
+
+      var data = response;
       debugPrint(data.toString());
-      if (data.isNotEmpty) {
+      if (data != null) {
         await controller.animateToPage(2,
             duration: const Duration(milliseconds: 600),
             curve: Curves.easeInOut);
         emit(state.copyWith(
             cpf: data["cpf"],
             card_code: code,
-            recharge_id: response.docs[0].id,
-            value: data["value"],
-            name: data["name"]));
+            recharge_id: data["id"],
+            value: double.parse(data["saldo"].toString()),
+            name: data["nome"]));
       }
+      // else {
+      //   return null;
+      // }
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -149,20 +159,7 @@ class RechargeCubit extends Cubit<RechargeState> {
 
   closeCard(PageController controller) async {
     try {
-      var now = DateTime.now();
-
-      var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
-      var day_id = "day-${now.day}";
-
-      await database
-          .collection("snacks_cards")
-          .doc(month_id)
-          .collection("days")
-          .doc(day_id)
-          .collection("recharges")
-          .doc(state.recharge_id)
-          .update({"active": false});
-
+      await repository.closeOrderAndCard(state.toMap());
       clear(controller);
     } catch (e) {
       debugPrint(e.toString());

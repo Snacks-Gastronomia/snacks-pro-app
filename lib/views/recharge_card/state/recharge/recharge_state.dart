@@ -50,11 +50,11 @@ class RechargeState {
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
+      'nome': name,
       'cpf': cpf,
-      'value': value,
-      'card': card_code,
-      'active': true,
+      'valor': value,
+      'rfid': card_code,
+      // 'active': true,
     };
   }
 

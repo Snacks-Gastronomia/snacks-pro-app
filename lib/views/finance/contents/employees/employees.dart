@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
@@ -176,8 +177,7 @@ class ListEmployees extends StatelessWidget {
               },
             );
           }
-          return const SizedBox(
-              height: 70, width: 70, child: CircularProgressIndicator());
+          return const CustomCircularProgress();
         });
   }
 }
