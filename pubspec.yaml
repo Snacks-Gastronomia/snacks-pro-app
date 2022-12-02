@@ -62,7 +62,6 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   dropdown_search: ^5.0.3
-  esc_pos_printer: ^4.1.0
   esc_pos_utils: ^1.1.0
   image: ^3.2.2
   jwt_decoder: ^2.0.1

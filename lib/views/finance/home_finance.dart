@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
@@ -45,7 +46,6 @@ class HomeFinanceWidget extends StatefulWidget {
 
 class _HomeFinanceWidgetState extends State<HomeFinanceWidget> {
   final modal = AppModal();
-
   final admCards = [];
   final restaurantCards = [];
 
@@ -57,102 +57,110 @@ class _HomeFinanceWidgetState extends State<HomeFinanceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(builder: (context, snapshot) {
-      var access = snapshot.storage["access_level"];
-
-      return Scaffold(
-        backgroundColor: Colors.white,
-        // appBar:
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(30.0),
+    return FutureBuilder<String>(
+        future: context.read<FinanceCubit>().getPermission(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            String access = snapshot.data ?? "";
+            return Scaffold(
+              backgroundColor: Colors.white,
+              // appBar:
+              body: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PreferredSize(
-                      preferredSize: const Size.fromHeight(70.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            toBeginningOfSentenceCase(DateFormat.MMMM("pt_BR")
-                                    .format(DateTime.now()))
-                                .toString(),
-                            style: AppTextStyles.semiBold(32),
+                          PreferredSize(
+                            preferredSize: const Size.fromHeight(70.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  toBeginningOfSentenceCase(
+                                          DateFormat.MMMM("pt_BR")
+                                              .format(DateTime.now()))
+                                      .toString(),
+                                  style: AppTextStyles.semiBold(32),
+                                ),
+                                SvgPicture.asset(
+                                  "assets/icons/snacks_logo.svg",
+                                  height: 30,
+                                  color: Colors.black.withOpacity(0.1),
+                                )
+                              ],
+                            ),
                           ),
-                          SvgPicture.asset(
-                            "assets/icons/snacks_logo.svg",
-                            height: 30,
-                            color: Colors.black.withOpacity(0.1),
-                          )
+                          const SizedBox(height: 15),
+                          GestureDetector(
+                            onTap: () => modal.showIOSModalBottomSheet(
+                              context: context,
+                              content: BlocProvider.value(
+                                  value: BlocProvider.of<FinanceCubit>(context),
+                                  child: const BudgetDetailsContent()),
+                            ),
+                            child: Container(
+                              width: double.maxFinite,
+                              padding: const EdgeInsets.all(30.0),
+                              decoration: BoxDecoration(
+                                  // color: Colors.black,
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topRight,
+                                    end: Alignment.bottomLeft,
+                                    colors: [
+                                      Color(0xffFE5762),
+                                      Color(0xffFF6BA1)
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Receita',
+                                    style: AppTextStyles.regular(15,
+                                        color: Colors.white),
+                                  ),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  BlocBuilder<FinanceCubit, FinanceHomeState>(
+                                    builder: (context, state) {
+                                      return Text(
+                                        NumberFormat.currency(
+                                                locale: "pt", symbol: r"R$ ")
+                                            .format(state.budget),
+                                        style: AppTextStyles.bold(30,
+                                            color: Colors.white),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 35),
+                          Text(
+                            'Resumo',
+                            style: AppTextStyles.semiBold(22),
+                          ),
+                          const SizedBox(height: 10),
+                          SummaryCards(access: access, modal: modal)
                         ],
                       ),
                     ),
-                    const SizedBox(height: 15),
-                    GestureDetector(
-                      onTap: () => modal.showIOSModalBottomSheet(
-                        context: context,
-                        content: BlocProvider.value(
-                            value: BlocProvider.of<FinanceCubit>(context),
-                            child: const BudgetDetailsContent()),
-                      ),
-                      child: Container(
-                        width: double.maxFinite,
-                        padding: const EdgeInsets.all(30.0),
-                        decoration: BoxDecoration(
-                            // color: Colors.black,
-                            gradient: const LinearGradient(
-                              begin: Alignment.topRight,
-                              end: Alignment.bottomLeft,
-                              colors: [Color(0xffFE5762), Color(0xffFF6BA1)],
-                            ),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Receita',
-                              style: AppTextStyles.regular(15,
-                                  color: Colors.white),
-                            ),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                            BlocBuilder<FinanceCubit, FinanceHomeState>(
-                              builder: (context, state) {
-                                return Text(
-                                  NumberFormat.currency(
-                                          locale: "pt", symbol: r"R$ ")
-                                      .format(state.budget),
-                                  style: AppTextStyles.bold(30,
-                                      color: Colors.white),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 35),
-                    Text(
-                      'Resumo',
-                      style: AppTextStyles.semiBold(22),
-                    ),
-                    const SizedBox(height: 10),
-                    SummaryCards(access: access, modal: modal)
+                    BottomSheet(access: access, modal: modal)
                   ],
                 ),
               ),
-              BottomSheet(access: access, modal: modal)
-            ],
-          ),
-        ),
-      );
-    });
+            );
+          }
+          return const CustomCircularProgress();
+        });
   }
 }
 
@@ -402,6 +410,12 @@ class SnacksAdmSummaryCards extends StatelessWidget {
     //   "highlight": true,
     //   "action": null
     // },
+    {
+      "title": "Impressoras",
+      "icon": Icons.print,
+      "highlight": false,
+      "action": const PrinterContent()
+    },
     {
       "title": "Restaurantes",
       "icon": Icons.restaurant,

@@ -8,13 +8,13 @@ class ItemsRepository {
     required this.services,
   });
 
-  Future<void> postItem(Item item) async {
-    try {
-      await services.postItem(item);
-    } catch (e) {
-      throw e.toString();
-    }
-  }
+  // Future<void> postItem(Item item) async {
+  //   try {
+  //     await services.postItem(item);
+  //   } catch (e) {
+  //     throw e.toString();
+  //   }
+  // }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchItems(
       String? restaurant, DocumentSnapshot? document) {
@@ -53,13 +53,13 @@ class ItemsRepository {
     }
   }
 
-  Future<List<Item>?> fetchPopularItems() async {
-    try {
-      final List<Item> items = await services.getPopularItems();
+  // Future<List<Item>?> fetchPopularItems() async {
+  //   try {
+  //     final List<Item> items = await services.getPopularItems();
 
-      return items;
-    } catch (e) {
-      throw e.toString();
-    }
-  }
+  //     return items;
+  //   } catch (e) {
+  //     throw e.toString();
+  //   }
+  // }
 }

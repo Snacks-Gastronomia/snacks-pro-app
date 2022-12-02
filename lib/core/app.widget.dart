@@ -41,14 +41,10 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Future<String> getRouter() async {
       await initializeDateFormatting("pt_BR");
-      // Intl.defaultLocale = "pt_BR";
       var user = await storage.getDataStorage("user");
-      var acc = user["access_level"];
 
       return auth.currentUser != null && user.isNotEmpty
-          ? acc == AppPermission.sadm.name
-              ? AppRoutes.finance
-              : AppRoutes.home
+          ? AppRoutes.home
           : AppRoutes.restaurantAuth;
     }
 

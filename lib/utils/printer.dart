@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:esc_pos_printer/esc_pos_printer.dart';
-
 // import 'package:esc_pos_printer/esc_pos_printer/enums';
 
 // import './connect.dart';
@@ -11,10 +9,13 @@ import 'package:image/image.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/utils/printer_connection.dart';
+import 'package:snacks_pro_app/utils/printer_enums.dart';
+import 'package:snacks_pro_app/utils/toast.dart';
 // import "";
 
 class AppPrinter {
-  printNFETemplate(NetworkPrinter printer) {}
+  printNFETemplate(AppNetworkPrinter printer) {}
   Future<Image> resizeImg(String path) async {
     String imageUrl = 'http://example.co.in/images/$path.png';
     // http.Response response = await http.get(path);
@@ -26,7 +27,7 @@ class AppPrinter {
     return ig;
   }
 
-  printImageOrderTemplate(NetworkPrinter printer) async {
+  printImageOrderTemplate(AppNetworkPrinter printer) async {
     // try {
     final ByteData data = await rootBundle.load('assets/icons/logo.png');
     final Uint8List bytes = data.buffer.asUint8List();
@@ -42,7 +43,7 @@ class AppPrinter {
     }
   }
 
-  printOrderTemplate(NetworkPrinter printer, List<Order> orders) async {
+  printOrderTemplate(AppNetworkPrinter printer, List<Order> orders) async {
     // print("printing order...");
     // final ByteData data = await rootBundle.load('assets/icons/snacks.svg');
     // final Uint8List bytes = data.buffer.asUint8List();
@@ -187,15 +188,21 @@ class AppPrinter {
     printer.cut();
   }
 
-  printOrders(String ip, List<Order> orders) async {
+  printOrders(context, String ip, List<Order> orders) async {
     print("try connect...");
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
-    final printer = NetworkPrinter(paper, profile);
+    final printer = AppNetworkPrinter(paper, profile);
     try {
+      await Socket.connect(ip, 9100)
+          .then((value) => print(value.remoteAddress))
+          .catchError((err) => print(err));
+      // print(socket.socket);
       // printer.beep();
-      final PosPrintResult res = await printer.connect(ip,
+
+      var res = await printer.connect(ip,
           port: 9100, timeout: const Duration(seconds: 15));
+
       print("connected.");
 
       if (res == PosPrintResult.success) {
@@ -203,8 +210,15 @@ class AppPrinter {
         printOrderTemplate(printer, orders);
         printer.disconnect();
         print("disconnected");
+      } else {
+        var toast = AppToast();
+        toast.showToast(
+            context: context,
+            content: "Não foi possível imprimir o pedido",
+            type: ToastType.error);
       }
-    } on SocketException {
+    } catch (e) {
+      print(e);
       // printer.reset();
       print("error socket");
     }

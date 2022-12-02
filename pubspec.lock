@@ -43,13 +43,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.1"
-  charset_converter:
-    dependency: transitive
-    description:
-      name: charset_converter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.0"
   clock:
     dependency: transitive
     description:
@@ -141,13 +134,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  esc_pos_printer:
-    dependency: "direct main"
-    description:
-      name: esc_pos_printer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.1.0"
   esc_pos_utils:
     dependency: "direct main"
     description:

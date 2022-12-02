@@ -120,12 +120,11 @@ class NewPrinterContent extends StatelessWidget {
                 onChanged: context.read<FinanceCubit>().changePrinterIP,
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
-                inputFormatters: [
-                  MaskTextInputFormatter(
-                      mask: '###.###.###.###',
-                      filter: {"#": RegExp(r'[0-9]')},
-                      type: MaskAutoCompletionType.lazy)
-                ],
+                // inputFormatters: [
+                //   MaskTextInputFormatter(
+                //       filter: {"#": RegExp(r'[0-9]')},
+                //       type: MaskAutoCompletionType.lazy)
+                // ],
                 controller: TextEditingController(
                     text: context.read<FinanceCubit>().state.printerAUX?.ip ??
                         ""),

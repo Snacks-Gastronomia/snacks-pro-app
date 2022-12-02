@@ -38,6 +38,12 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     ));
   }
 
+  Future<String> getPermission() async {
+    print("init storage");
+    var data = await storage.getDataStorage("user");
+    return data["access_level"];
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchPrinters() async* {
     // emit(state.copyWith(status: AppStatus.loading));
     var id = (await storage.getDataStorage("user"))["restaurant"]["id"];

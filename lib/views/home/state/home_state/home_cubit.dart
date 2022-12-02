@@ -41,40 +41,22 @@ class HomeCubit extends Cubit<HomeState> {
   final OrdersRepository ordersRepository = OrdersRepository();
 
   HomeCubit() : super(HomeState.initial()) {
-    fetchItems();
     saveStorage();
+    fetchItems();
     print("user logged: ${auth.currentUser!.uid}");
   }
 
   Future<void> saveStorage() async {
     print("init storage");
-
-    // emit(state.copyWith(status: AppStatus.loading));
-
-    emit(state.copyWith(
-        storage: Map.from(await storage.getDataStorage("user"))));
+    var stor = await storage.getDataStorage("user");
+    emit(state.copyWith(storage: stor));
     print("finish storage");
   }
 
-  // Future<void> fetchMoreItems() async {
-  //   try {
-  //     emit(state.copyWith(status: AppStatus.loading));
-  //     final List<Item>? data = await itemsRepository.fetchItems(state.category);
-  //     final items = [...state.items, ...data!.toList()];
-
-  //     var last_page = data.length < state.numberOfPostsPerRequest;
-  //     emit(state.copyWith(
-  //         status: AppStatus.loaded,
-  //         items: items,
-  //         listIsLastPage: last_page,
-  //         listPageNumber: state.listPageNumber + 1));
-  //   } catch (e) {
-  //     debugPrint("error");
-  //     emit(state.copyWith(status: AppStatus.error));
-  //   }
-  // }
-
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchOrders() {
+    if (state.storage["access_level"] == AppPermission.cashier.name) {
+      return ordersRepository.fetchOrdersByStatus(OrderStatus.done);
+    }
     return ordersRepository
         .fetchOrdersByRestaurantId(state.storage["restaurant"]["id"]);
   }
@@ -107,7 +89,7 @@ class HomeCubit extends Cubit<HomeState> {
           content: "imprimindo pedido...",
           type: ToastType.info);
       print(printer.docs[0].get("ip"));
-      appPrinter.printOrders(printer.docs[0].get("ip"), orders);
+      appPrinter.printOrders(context, printer.docs[0].get("ip"), orders);
     }
   }
 
@@ -136,57 +118,6 @@ class HomeCubit extends Cubit<HomeState> {
       });
     }
   }
-
-  // void fetchMoreItems() async {
-  //   emit(state.copyWith(status: AppStatus.loading));
-  //   var menu = state.menu;
-  //   var dataStorage = await storage.getDataStorage("user");
-  //   var id = dataStorage["restaurant"]["id"];
-
-  //   var data = await itemsRepository.fetchMoreItems(id, state.lastDocument!);
-
-  //   var list = data.docs.map((e) => e.data()).toList();
-  //   // .listen((event) {
-  //   //   if (event.docs.isNotEmpty) {
-  //   //     var data = event.docs.map<Map<String, dynamic>>((e) {
-  //   //       var el = e.data();
-  //   //       el.addAll({"id": e.id});
-  //   //       return el;
-  //   //     }).toList();
-
-  //   //     // bool last_page = data.length < state.numberOfPostsPerRequest;
-  //   // print(list.length);
-  //   if (list.isNotEmpty) {
-  //     emit(state.copyWith(
-  //         status: AppStatus.loaded,
-  //         menu: [...menu, ...list],
-  //         lastDocument: data.docs.last));
-  //   }
-
-  //   // });
-  // }
-  // void fetchMoreItems() async {
-  //   emit(state.copyWith(status: AppStatus.loading));
-
-  //   var data = await storage.getDataStorage("user");
-  //   var id = data["restaurant"]["id"];
-
-  //   itemsRepository.fetchItems(id).listen((event) {
-  //     if (event.docs.isNotEmpty) {
-  //       var data = event.docs.map<Map<String, dynamic>>((e) {
-  //         var el = e.data();
-  //         el.addAll({"id": e.id});
-  //         return el;
-  //       }).toList();
-  //       bool last_page = data.length < state.numberOfPostsPerRequest;
-  //       emit(state.copyWith(
-  //           status: AppStatus.loaded,
-  //           menu: data,
-  //           listIsLastPage: last_page,
-  //           listPageNumber: state.listPageNumber + 1));
-  //     }
-  //   });
-  // }
 
   Future<void> fetchQuery(String query) async {
     emit(state.copyWith(status: AppStatus.loading));

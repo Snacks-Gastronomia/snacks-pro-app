@@ -4,71 +4,6 @@ import 'package:snacks_pro_app/utils/enums.dart';
 
 class OrdersApiServices {
   final database = FirebaseFirestore.instance;
-  List<dynamic> days = [
-    {"date": "2022-05-22 08:35:39", "count": 23, "amount": 2.300},
-    {"date": "2022-05-24 08:35:39", "count": 23, "amount": 2.300},
-    {"date": "2022-05-26 08:35:39", "count": 23, "amount": 2.300},
-    {"date": "2022-06-27 08:35:39", "count": 23, "amount": 2.300},
-    {"date": "2022-07-28 08:35:39", "count": 23, "amount": 2.300},
-  ];
-  List<dynamic> orders = [
-    {
-      "date": "26/05/2022",
-      "method": "Cartão de crédito",
-      "value": 22.05,
-      "items": [
-        "1 coca-cola",
-        "1 Batata G",
-        "1 X-burguer",
-      ]
-    },
-    {
-      "date": "26/05/2022",
-      "method": "Cartão Snacks",
-      "value": 78.30,
-      "items": [
-        "1 coca-cola",
-        "1 Batata G",
-        "1 X-burguer",
-      ]
-    },
-    {
-      "date": "26/05/2022",
-      "method": "Pix",
-      "value": 10.05,
-      "items": [
-        "1 coca-cola",
-        "1 Batata G",
-        "1 X-burguer",
-      ]
-    },
-    {
-      "date": "27/05/2022",
-      "method": "Pix",
-      "value": 18.05,
-      "items": [
-        "1 coca-cola",
-        "1 Batata G",
-        "1 X-burguer",
-      ]
-    },
-    {
-      "date": "28/05/2022",
-      "method": "Cartão de crédito",
-      "value": 22.55,
-      "items": [
-        "1 coca-cola",
-        "1 Batata G",
-        "1 X-burguer",
-      ]
-    },
-  ];
-  Future<dynamic> getOrdersByDay(int day, String id) async {
-    return Future.delayed(Duration(milliseconds: 600), () {
-      return orders
-          .where((element) => DateFormat.d().format(element["date"]) == day);
-    });
-  }
 
   // Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByNow(String id) {
   Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByRestaurant(String id) {
@@ -76,30 +11,27 @@ class OrdersApiServices {
         .collection("orders")
         .where("status", whereIn: [
           OrderStatus.order_in_progress.name,
-          OrderStatus.waiting_payment.name,
+          OrderStatus.ready_to_start.name,
           OrderStatus.done.name
         ])
-        // .where("status", isEqualTo: OrderStatus.order_in_progress.name)
-        // .where("status", isEqualTo: OrderStatus.done.name)
         .where("restaurant", isEqualTo: id)
         .snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByNow() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByStatus(
+      OrderStatus status) {
     return database
         .collection("orders")
-        .where("status", isEqualTo: OrderStatus.waiting_payment.name)
+        .where("status", isEqualTo: status.name)
         .snapshots();
   }
 
-  Future<dynamic> getOrdersByMonth(int month, String id) async {
-    print(DateFormat.M().format(DateTime.parse("2022-06-27 08:35:39")));
-    return Future.delayed(Duration(milliseconds: 600), () {
-      return days.where((element) =>
-          DateFormat.M().format(DateTime.parse(element["date"])) ==
-          month.toString());
-    });
-  }
+  // Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrdersByNow() {
+  //   return database
+  //       .collection("orders")
+  //       .where("status", isEqualTo: OrderStatus.waiting_payment.name)
+  //       .snapshots();
+  // }
 
   Future<void> changeOrderStatus(String id, OrderStatus new_status) async {
     await database
