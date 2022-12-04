@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class BudgetDetailsContent extends StatelessWidget {
   const BudgetDetailsContent({Key? key}) : super(key: key);
@@ -40,9 +42,16 @@ class BudgetDetailsContent extends StatelessWidget {
                     ),
                     BlocBuilder<FinanceCubit, FinanceHomeState>(
                       builder: (context, state) {
+                        var total = context
+                                    .read<HomeCubit>()
+                                    .state
+                                    .storage["access_level"] ==
+                                AppPermission.sadm.name
+                            ? state.budget
+                            : state.budget - state.expenses_value;
                         return Text(
                           NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                              .format(state.budget - state.expenses_value),
+                              .format(total),
                           style: AppTextStyles.bold(30, color: Colors.white),
                         );
                       },

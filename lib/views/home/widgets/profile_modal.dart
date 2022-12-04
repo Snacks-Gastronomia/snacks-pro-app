@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/views/authentication/state/auth_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class ProfileModal extends StatelessWidget {
@@ -99,11 +100,8 @@ class ProfileModal extends StatelessWidget {
           ),
           Center(
             child: TextButton.icon(
-              onPressed: () async {
-                await auth.signOut().then((value) =>
-                    Navigator.pushReplacementNamed(
-                        context, AppRoutes.restaurantAuth));
-              },
+              onPressed: () async =>
+                  context.read<AuthCubit>().appSingOut(context),
               icon: const Icon(
                 Icons.power_settings_new_rounded,
                 color: Colors.white,

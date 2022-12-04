@@ -86,12 +86,17 @@ class PasswordScreen extends StatelessWidget {
                 //text 8391A1
                 Column(
                   children: [
-                    InputPassword(
-                        hint: "Senha",
-                        validator: (value) =>
-                            context.read<AuthCubit>().validatePassLength(value),
-                        onChange:
-                            BlocProvider.of<AuthCubit>(context).changePassword),
+                    BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, state) {
+                        return InputPassword(
+                            hint: "Senha",
+                            readOnly: state.status == AppStatus.loading,
+                            validator: (value) => context
+                                .read<AuthCubit>()
+                                .validatePassLength(value),
+                            onChange: context.read<AuthCubit>().changePassword);
+                      },
+                    ),
                     const SizedBox(height: 20),
                     if (context.read<AuthCubit>().state.firstAccess)
                       InputPassword(
@@ -119,12 +124,14 @@ class InputPassword extends StatelessWidget {
     this.errorText,
     required this.hint,
     this.buttonAction,
+    this.readOnly,
     this.onChange,
     required this.validator,
   }) : super(key: key);
 
   final String? errorText;
   final String hint;
+  final bool? readOnly;
   final TextInputAction? buttonAction;
   final Function(String)? onChange;
   final String? Function(String?)? validator;
@@ -134,6 +141,7 @@ class InputPassword extends StatelessWidget {
       builder: (context, state) {
         return TextFormField(
           onChanged: onChange,
+          readOnly: readOnly ?? false,
           obscureText: state.obscure_pass,
           textInputAction: buttonAction ?? TextInputAction.next,
           style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),

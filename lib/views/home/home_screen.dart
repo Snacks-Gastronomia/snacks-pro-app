@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, snapshot) {
       var contents = getButtons(snapshot.storage["access_level"]);
       // var contents = getButtons("radm");
-
+      print(snapshot.storage["access_level"]);
       return SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,

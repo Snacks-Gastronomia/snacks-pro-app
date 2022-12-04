@@ -167,6 +167,28 @@ class FinanceApiServices {
     return 0;
   }
 
+  Future<double> getMonthlyBudgetSnacks() async {
+    var now = DateTime.now();
+    var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
+
+    try {
+      var restaurants = await firebase.collection("restaurants").get();
+      var data = restaurants.docs
+          .map((e) async => await firebase
+              .collection("receipts")
+              .doc(e.id)
+              .collection("months")
+              .doc(month_id)
+              .get())
+          .toList();
+      // print(data.reference);
+      // if (data.exists) return data.get("total");
+    } catch (e) {
+      print("error getMontthly: " + e.toString());
+    }
+    return 0;
+  }
+
   Future<void> setMonthlyBudgetFirebase(
       String restaurant_id, Map<String, dynamic> data, double total) async {
     var now = DateTime.now();
@@ -179,6 +201,11 @@ class FinanceApiServices {
         .doc(restaurant_id)
         .collection("months")
         .doc(month_id);
+    var snacks = firebase
+        .collection("receipts")
+        .doc("snacks")
+        .collection("months")
+        .doc(month_id);
 
     var dayDocRef = docref.collection("days").doc(day_id);
 
@@ -189,9 +216,15 @@ class FinanceApiServices {
       "length": FieldValue.increment(1)
     }, SetOptions(merge: true));
 
-    print("run transactions");
+    await snacks.set({
+      "total": FieldValue.increment(total),
+      "length": FieldValue.increment(1)
+    }, SetOptions(merge: true));
+
+    // print("run transactions");
     await firebase.runTransaction((transaction) async {
       final snapshot = await transaction.get(docref);
+      final snacks_snapshot = await transaction.get(snacks);
 
       if (snapshot.data() == null || snapshot.data()!.isEmpty) {
         transaction.set(docref, {"total": total});
@@ -199,8 +232,15 @@ class FinanceApiServices {
         final newTotalValue = snapshot.get("total") + total;
         transaction.update(docref, {"total": newTotalValue});
       }
+//snacks total
+      if (snacks_snapshot.data() == null || snacks_snapshot.data()!.isEmpty) {
+        transaction.set(docref, {"total": total});
+      } else {
+        final newTotalValue = snacks_snapshot.get("total") + total;
+        transaction.update(docref, {"total": newTotalValue});
+      }
     }).then(
-      (value) => print("DocumentSnapshot successfully updated!"),
+      (value) => print("Document snapshot successfully updated!"),
       onError: (e) => print("Error updating document $e"),
     );
   }

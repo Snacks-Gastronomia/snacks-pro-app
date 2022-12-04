@@ -25,6 +25,13 @@ class AuthCubit extends Cubit<AuthState> {
   final auth = FirebaseAuth.instance;
   AuthCubit() : super(AuthState.initial());
 
+  Future<void> appSingOut(context) async {
+    await auth.signOut();
+    await storage.delete(key: "user");
+    // .then((value) =>
+    Navigator.pushReplacementNamed(context, AppRoutes.restaurantAuth);
+  }
+
   otpVerification(String value, context) async {
     final navigator = Navigator.of(context);
     emit(state.copyWith(status: AppStatus.loading));
@@ -45,6 +52,7 @@ class AuthCubit extends Cubit<AuthState> {
     changeStatus(AppStatus.loading);
     final navigator = Navigator.of(context);
     bool done = false;
+    var toast = AppToast();
     if (state.firstAccess) {
       createUser(context);
       done = true;
@@ -53,15 +61,24 @@ class AuthCubit extends Cubit<AuthState> {
         // if (true) {
         done = true;
       } else {
-        print("senha incorreta");
+        toast.init(context: context);
+
+        toast.showToast(
+            context: context,
+            content: "Senha incorreta",
+            type: ToastType.error);
+
+        // print("senha incorreta");
         changeStatus(AppStatus.loaded);
       }
     }
     if (done) {
       await createUserStorage();
       changeStatus(AppStatus.loaded);
+      // navigator.pushNamedAndRemoveUntil(
+      //     AppRoutes.home, ModalRoute.withName(AppRoutes.restaurantAuth));
       navigator.pushNamedAndRemoveUntil(
-          AppRoutes.home, ModalRoute.withName(AppRoutes.restaurantAuth));
+          AppRoutes.home, ModalRoute.withName("/"));
     }
   }
 
@@ -129,9 +146,9 @@ class AuthCubit extends Cubit<AuthState> {
       "access_level": state.userDoc["access_level"],
       "companie_id": state.userDoc["companie_id"],
       "restaurant": state.userDoc["restaurant"],
-      "docID": state.userDoc["id"]
+      "docID": state.userDoc["id"],
+      "uid": state.userDoc["uid"]
     };
-    print(dataStorage);
     await storage.write(key: "user", value: jsonEncode(dataStorage));
   }
 

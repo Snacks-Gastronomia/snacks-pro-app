@@ -153,17 +153,33 @@ class CartCubit extends Cubit<CartState> {
   void changeStatusBackward(doc_id, List<Map<String, dynamic>> items,
       String payment_method, OrderStatus current) async {}
 
+  void changeStatus(doc_id, List<dynamic> items, String payment_method,
+      String current, dynamic datetime, bool isDelivery) async {
+    final user = await storage.getDataStorage("user");
+    var current_index = getStatusIndex(current);
+
+    if (user["access_level"] == AppPermission.employee.name &&
+            current != OrderStatus.done.name ||
+        user["access_level"] == AppPermission.cashier.name &&
+            current_index >= 3 &&
+            isDelivery) {
+      changeStatusFoward(doc_id, items, payment_method, current, datetime);
+    }
+  }
+
+  getStatusIndex(String status) {
+    return OrderStatus.values.firstWhere((e) => e.name == status).index;
+  }
+
   void changeStatusFoward(doc_id, List<dynamic> items, String payment_method,
       String current, dynamic datetime) async {
     var finance = FinanceApiServices();
     final dataStorage = await storage.getDataStorage("user");
 
-    var current_index =
-        OrderStatus.values.firstWhere((e) => e.name == current).index;
+    var current_index = getStatusIndex(current);
+
     var status = OrderStatus.values[current_index + 1];
 
-    print(status);
-    // List<String> ids = items.map<String>((e) => e["id"]).toList();
     await repository.updateStatus(doc_id, status);
 
     if (status == OrderStatus.done) {

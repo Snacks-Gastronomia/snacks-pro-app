@@ -7,10 +7,50 @@ enum OrderStatus {
   ready_to_start,
   order_in_progress,
   done,
+  waiting_delivery,
+  in_delivery,
   invalid
 }
 
 enum AppPermission { employee, cashier, waiter, radm, sadm }
+
+extension ParseToStringFromDisplay on String {
+  AppPermission get stringFromDisplayEnum {
+    switch (this) {
+      case "Caixa":
+        return AppPermission.cashier;
+      case "Garçom":
+        return AppPermission.waiter;
+      case "Funcionário do restaurante":
+        return AppPermission.employee;
+      case "Snacks administrador":
+        return AppPermission.sadm;
+      case "Restaurante administrador":
+        return AppPermission.radm;
+      default:
+        return AppPermission.employee;
+    }
+  }
+}
+
+extension ParseToStringName on AppPermission {
+  String get displayEnum {
+    switch (this) {
+      case AppPermission.cashier:
+        return "Caixa";
+      case AppPermission.waiter:
+        return "Garçom";
+      case AppPermission.employee:
+        return "Funcionário do restaurante";
+      case AppPermission.sadm:
+        return "Snacks administrador";
+      case AppPermission.radm:
+        return "Restaurante administrador";
+      default:
+        return "Status inválido";
+    }
+  }
+}
 
 extension ParseToString on OrderStatus {
   String get displayEnum {
@@ -23,7 +63,10 @@ extension ParseToString on OrderStatus {
         return "Pedido em andamento";
       case OrderStatus.done:
         return "Pedido pronto";
-
+      case OrderStatus.waiting_delivery:
+        return "Aguardando motoboy";
+      case OrderStatus.in_delivery:
+        return "Pedido à caminho";
       default:
         return "Status inválido";
     }
@@ -37,6 +80,8 @@ extension ParseToString on OrderStatus {
         return Colors.blue.shade400;
       case OrderStatus.done:
         return Colors.green.shade400;
+      case OrderStatus.in_delivery:
+        return Colors.green.shade700;
 
       default:
         return Colors.black;

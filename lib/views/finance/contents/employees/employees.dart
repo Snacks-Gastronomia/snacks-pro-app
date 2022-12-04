@@ -93,9 +93,12 @@ class ListEmployees extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var data = context.read<HomeCubit>().state.storage;
+    print(data);
     return StreamBuilder(
-        stream: context.read<EmployeesCubit>().fetchData(
-            context.read<HomeCubit>().state.storage["restaurant"]["id"]),
+        stream: context
+            .read<EmployeesCubit>()
+            .fetchData(data["uid"], data["restaurant"]["id"]),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             context.read<EmployeesCubit>().convertData(snapshot.data!);

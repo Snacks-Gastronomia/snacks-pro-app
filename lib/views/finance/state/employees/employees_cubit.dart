@@ -39,9 +39,10 @@ class EmployeesCubit extends Cubit<EmployeesState> {
         status: AppStatus.loaded));
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> fetchData(id) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchData(
+      user_id, restaurant_id) {
     emit(state.copyWith(status: AppStatus.loading));
-    return repository.fetchEmployees(id);
+    return repository.fetchEmployees(user_id, restaurant_id);
 
     // await for (final event in response) {
     //   convertData(event);
@@ -51,7 +52,14 @@ class EmployeesCubit extends Cubit<EmployeesState> {
 
   saveEmployee() async {
     final emp = state.newEmployee;
-    var data = emp!.toMap();
+    // if (emp != null) {
+    if (emp.access_level.isEmpty) {
+      emp.copyWith(access_level: AppPermission.employee.name);
+    } else {
+      emp.copyWith(access_level: emp.access_level.stringFromDisplayEnum.name);
+    }
+
+    var data = emp.toMap();
 
     if (state.updateEmp) {
       await repository.updateEmployee(emp.id!, data);
@@ -62,6 +70,7 @@ class EmployeesCubit extends Cubit<EmployeesState> {
       await repository.createEmployee(data);
     }
   }
+  // }
 
   disableEmployee(bool access, String id) async {
     await repository.updateAppAccess(access, id);
@@ -88,21 +97,31 @@ class EmployeesCubit extends Cubit<EmployeesState> {
   void changeName(String value) {
     var emp = state.newEmployee;
 
-    emit(state.copyWith(newEmployee: emp!.copyWith(name: value)));
+    emit(state.copyWith(newEmployee: emp.copyWith(name: value)));
     print(state);
   }
 
   void changePhoneNumber(String value) {
     var emp = state.newEmployee;
 
-    emit(state.copyWith(newEmployee: emp!.copyWith(phone_number: value)));
+    emit(state.copyWith(newEmployee: emp.copyWith(phone_number: value)));
     print(state);
   }
 
   void changeOcupation(String value) {
     var emp = state.newEmployee;
 
-    emit(state.copyWith(newEmployee: emp!.copyWith(ocupation: value)));
+    emit(state.copyWith(newEmployee: emp.copyWith(ocupation: value)));
+    print(state);
+  }
+
+  void changePermission(String? value) {
+    if (value != null) {
+      var emp = state.newEmployee;
+
+      value = value.stringFromDisplayEnum.name;
+      emit(state.copyWith(newEmployee: emp.copyWith(access_level: value)));
+    }
     print(state);
   }
 
@@ -110,8 +129,8 @@ class EmployeesCubit extends Cubit<EmployeesState> {
     var emp = state.newEmployee;
 
     emit(state.copyWith(
-        newEmployee: emp!
-            .copyWith(salary: value.isNotEmpty ? double.tryParse(value) : 0)));
+        newEmployee: emp.copyWith(
+            salary: value.isNotEmpty ? double.tryParse(value) : 0)));
     print(state);
   }
 }

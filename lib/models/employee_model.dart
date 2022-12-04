@@ -7,10 +7,14 @@ class EmployeeModel {
   final String ocupation;
   final bool first_access;
   final double salary;
+  final String access_level;
+  final String uid;
   final bool access;
   EmployeeModel({
     this.id,
     required this.name,
+    required this.access_level,
+    required this.uid,
     required this.phone_number,
     required this.first_access,
     required this.ocupation,
@@ -22,6 +26,8 @@ class EmployeeModel {
       first_access: true,
       name: "",
       phone_number: "",
+      access_level: "",
+      uid: "",
       ocupation: "",
       salary: 0,
       access: true);
@@ -30,7 +36,9 @@ class EmployeeModel {
     String? id,
     String? name,
     String? phone_number,
+    String? uid,
     String? ocupation,
+    String? access_level,
     double? salary,
     bool? access,
     bool? first_access,
@@ -38,6 +46,8 @@ class EmployeeModel {
     return EmployeeModel(
       id: id ?? this.id,
       name: name ?? this.name,
+      uid: uid ?? this.uid,
+      access_level: access_level ?? this.access_level,
       phone_number: phone_number ?? this.phone_number,
       ocupation: ocupation ?? this.ocupation,
       salary: salary ?? this.salary,
@@ -51,7 +61,9 @@ class EmployeeModel {
       'name': name,
       'phone_number': phone_number,
       'first_access': first_access,
+      'access_level': access_level,
       'ocupation': ocupation,
+      'uid': uid,
       'salary': salary,
       'access': access,
     };
@@ -60,8 +72,10 @@ class EmployeeModel {
   factory EmployeeModel.fromMap(Map<String, dynamic> map) {
     return EmployeeModel(
       id: map['id'],
+      uid: map['uid'] ?? "",
       name: map['name'] ?? '',
       first_access: map['first_access'] ?? '',
+      access_level: map['access_level'] ?? '',
       phone_number: map['phone_number'] ?? '',
       ocupation: map['ocupation'] ?? '',
       salary: map['salary']?.toDouble() ?? 0.0,
@@ -87,7 +101,9 @@ class EmployeeModel {
         other.id == id &&
         other.name == name &&
         other.phone_number == phone_number &&
+        other.access_level == access_level &&
         other.ocupation == ocupation &&
+        other.uid == uid &&
         other.salary == salary &&
         other.access == access;
   }

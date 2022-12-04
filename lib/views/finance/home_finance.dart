@@ -417,10 +417,16 @@ class SnacksAdmSummaryCards extends StatelessWidget {
       "action": const PrinterContent()
     },
     {
+      "title": "Funcionários",
+      "icon": Icons.people_outline_rounded,
+      "highlight": true,
+      "action": const EmployeesContentWidget()
+    },
+    {
       "title": "Restaurantes",
       "icon": Icons.restaurant,
       "highlight": true,
-      "action": RestaurantsContent()
+      "action": const RestaurantsContent()
     }
   ];
   @override

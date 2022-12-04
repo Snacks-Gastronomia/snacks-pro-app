@@ -131,6 +131,14 @@ class FinanceRepository {
     }
   }
 
+  Future<dynamic> getMonthlyBudgetSnacks() async {
+    try {
+      return await services.getMonthlyBudgetSnacks();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<QuerySnapshot<Map<String, dynamic>>> getMonthlyOrders(
       String restaurant_id) async {
     try {

@@ -7,11 +7,13 @@ class EmployeesApiServices {
   final firebase = FirebaseFirestore.instance;
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getEmployees(
-      String restaurant_id) {
+      String uid, String restaurant_id) {
     try {
+      print(uid);
       return firebase
           .collection("employees")
           .where("restaurant.id", isEqualTo: restaurant_id)
+          .where("uid", isNotEqualTo: uid)
           .snapshots();
     } catch (e) {
       rethrow;

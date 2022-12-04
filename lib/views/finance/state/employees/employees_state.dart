@@ -3,7 +3,7 @@ part of 'employees_cubit.dart';
 class EmployeesState {
   final List<EmployeeModel> employees;
   final int amount;
-  final EmployeeModel? newEmployee;
+  final EmployeeModel newEmployee;
   final double expenses;
   final AppStatus status;
   final bool updateEmp;

@@ -10,9 +10,9 @@ class EmployeesRepository {
   });
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchEmployees(
-      String restaurant_id) {
+      String uid, String restaurant_id) {
     try {
-      return services.getEmployees(restaurant_id);
+      return services.getEmployees(uid, restaurant_id);
     } catch (e) {
       throw e.toString();
     }

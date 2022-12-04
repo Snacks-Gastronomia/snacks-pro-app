@@ -98,13 +98,14 @@ class OrdersScreen extends StatelessWidget {
                                               child: CardOrderWidget(
                                                   doubleTap: () => context
                                                       .read<CartCubit>()
-                                                      .changeStatusFoward(
+                                                      .changeStatus(
                                                           item["id"],
                                                           item["items"],
                                                           item[
                                                               "payment_method"],
                                                           item["status"],
-                                                          item["created_at"]),
+                                                          item["created_at"],
+                                                          item["isDelivery"]),
                                                   onLongPress: () async =>
                                                       context
                                                           .read<HomeCubit>()
@@ -161,14 +162,15 @@ class OrdersScreen extends StatelessWidget {
                                                   CardOrderWidget(
                                                       doubleTap: () => context
                                                           .read<CartCubit>()
-                                                          .changeStatusFoward(
-                                                              item["id"],
-                                                              item["items"],
-                                                              item[
-                                                                  "payment_method"],
-                                                              item["status"],
-                                                              item[
-                                                                  "created_at"]),
+                                                          .changeStatus(
+                                                            item["id"],
+                                                            item["items"],
+                                                            item[
+                                                                "payment_method"],
+                                                            item["status"],
+                                                            item["created_at"],
+                                                            item["isDelivery"],
+                                                          ),
                                                       onLongPress: () {},
                                                       leading:
                                                           item["isDelivery"]
@@ -467,7 +469,7 @@ class CardOrderWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Center(
                       child: Text(
-                        OrderStatus.values.byName(status).name,
+                        OrderStatus.values.byName(status).displayEnum,
                         style: AppTextStyles.regular(14, color: Colors.white54),
                       ),
                     ),

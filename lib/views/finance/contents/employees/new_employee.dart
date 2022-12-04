@@ -4,8 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/authentication/state/auth_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class NewEmployeeScreen extends StatelessWidget {
   const NewEmployeeScreen({Key? key}) : super(key: key);
@@ -23,7 +25,7 @@ class NewEmployeeScreen extends StatelessWidget {
                   final navigator = Navigator.of(context);
                   await context.read<EmployeesCubit>().saveEmployee();
 
-                  navigator.pushNamed(AppRoutes.finance);
+                  navigator.pop();
                 },
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -84,7 +86,7 @@ class NewEmployeeScreen extends StatelessWidget {
                           builder: (context, state) {
                         return Text(
                           state.updateEmp
-                              ? "Editar ${state.newEmployee!.name}"
+                              ? "Editar ${state.newEmployee.name}"
                               : 'Novo Funcionário',
                           style: AppTextStyles.semiBold(30),
                         );
@@ -100,11 +102,10 @@ class NewEmployeeScreen extends StatelessWidget {
                             BlocProvider.of<EmployeesCubit>(context).changeName,
                         controller: TextEditingController(
                             text: context
-                                    .read<EmployeesCubit>()
-                                    .state
-                                    .newEmployee
-                                    ?.name ??
-                                ""),
+                                .read<EmployeesCubit>()
+                                .state
+                                .newEmployee
+                                .name),
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           fillColor: const Color(0xffF7F8F9),
@@ -132,11 +133,10 @@ class NewEmployeeScreen extends StatelessWidget {
                             .changePhoneNumber,
                         controller: TextEditingController(
                             text: context
-                                    .read<EmployeesCubit>()
-                                    .state
-                                    .newEmployee
-                                    ?.phone_number ??
-                                ""),
+                                .read<EmployeesCubit>()
+                                .state
+                                .newEmployee
+                                .phone_number),
                         keyboardType: TextInputType.phone,
                         inputFormatters: [
                           MaskTextInputFormatter(
@@ -172,11 +172,10 @@ class NewEmployeeScreen extends StatelessWidget {
                             .changeOcupation,
                         controller: TextEditingController(
                             text: context
-                                    .read<EmployeesCubit>()
-                                    .state
-                                    .newEmployee
-                                    ?.ocupation ??
-                                ""),
+                                .read<EmployeesCubit>()
+                                .state
+                                .newEmployee
+                                .ocupation),
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           fillColor: const Color(0xffF7F8F9),
@@ -206,13 +205,12 @@ class NewEmployeeScreen extends StatelessWidget {
                         keyboardType: TextInputType.number,
                         controller: TextEditingController(
                             text: context
-                                    .read<EmployeesCubit>()
-                                    .state
-                                    .newEmployee
-                                    ?.salary
-                                    .toInt()
-                                    .toString() ??
-                                ""),
+                                .read<EmployeesCubit>()
+                                .state
+                                .newEmployee
+                                .salary
+                                .toInt()
+                                .toString()),
                         decoration: InputDecoration(
                           fillColor: const Color(0xffF7F8F9),
                           filled: true,
@@ -229,6 +227,65 @@ class NewEmployeeScreen extends StatelessWidget {
                           hintText: 'Salário',
                         ),
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      if (context
+                              .read<HomeCubit>()
+                              .state
+                              .storage["access_level"] ==
+                          AppPermission.sadm.name)
+                        BlocBuilder<EmployeesCubit, EmployeesState>(
+                            builder: (context, snapshot) {
+                          List<String> items = [
+                            AppPermission.waiter.displayEnum,
+                            AppPermission.cashier.displayEnum,
+                            AppPermission.employee.displayEnum,
+                            AppPermission.sadm.displayEnum
+                          ];
+
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: const Color(0xffF7F8F9),
+                              border: const Border.fromBorderSide(BorderSide(
+                                  color: Color(0xffE8ECF4), width: 1)),
+                            ),
+                            child: DropdownButton<String>(
+                              value: snapshot.newEmployee.access_level.isEmpty
+                                  ? null
+                                  : AppPermission.values
+                                      .byName(snapshot.newEmployee.access_level)
+                                      .displayEnum,
+                              hint: Text(
+                                "Permissão",
+                                style: AppTextStyles.regular(16,
+                                    color: Colors.black26),
+                              ),
+                              icon: const Icon(Icons.arrow_downward),
+                              elevation: 16,
+                              style: AppTextStyles.medium(16,
+                                  color: Colors.black54),
+                              isExpanded: true,
+                              itemHeight: 55,
+                              underline: Container(
+                                height: 2,
+                                color: Colors.transparent,
+                              ),
+                              onChanged: (String? value) => context
+                                  .read<EmployeesCubit>()
+                                  .changePermission(value),
+                              borderRadius: BorderRadius.circular(15),
+                              items: items
+                                  .map((String value) => DropdownMenuItem(
+                                        value: value,
+                                        child: Text(value),
+                                      ))
+                                  .toList(),
+                            ),
+                          );
+                        }),
                     ],
                   ),
                 ),
