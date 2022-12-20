@@ -1,21 +1,15 @@
-import 'dart:io';
-
-// import 'package:esc_pos_printer/esc_pos_printer/enums';
-
-// import './connect.dart';
+import 'package:esc_pos_printer/esc_pos_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
-import 'package:snacks_pro_app/utils/printer_connection.dart';
-import 'package:snacks_pro_app/utils/printer_enums.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
 // import "";
 
 class AppPrinter {
-  printNFETemplate(AppNetworkPrinter printer) {}
+  printNFETemplate(NetworkPrinter printer) {}
   Future<Image> resizeImg(String path) async {
     String imageUrl = 'http://example.co.in/images/$path.png';
     // http.Response response = await http.get(path);
@@ -27,13 +21,14 @@ class AppPrinter {
     return ig;
   }
 
-  printImageOrderTemplate(AppNetworkPrinter printer) async {
+  printImageOrderTemplate(NetworkPrinter printer) async {
     // try {
-    final ByteData data = await rootBundle.load('assets/icons/logo.png');
+    final ByteData data = await rootBundle.load('assets/icons/snacks.png');
     final Uint8List bytes = data.buffer.asUint8List();
 
-    print(bytes.length);
     final Image? image = decodeImage(bytes);
+
+    print("imprimindo");
 
     if (image != null) {
       // printer.imageRaster(image);
@@ -43,94 +38,59 @@ class AppPrinter {
     }
   }
 
-  printOrderTemplate(AppNetworkPrinter printer, List<Order> orders) async {
+  printOrderTemplate(NetworkPrinter printer, List<Order> orders) async {
     // print("printing order...");
-    // final ByteData data = await rootBundle.load('assets/icons/snacks.svg');
+    // final ByteData data = await rootBundle.load('assets/icons/snacks.png');
     // final Uint8List bytes = data.buffer.asUint8List();
 
     // final Image? image = decodeImage(bytes);
+
+    // printer.imageRaster(image!);
+    // printer.imageRaster(image, imageFn: PosImageFn.graphics);
 
     // if (image != null) {
     //   printer.image(image);
     // }
     //   print("image null")
-    printer.text('SNACKS',
-        styles: const PosStyles(
-            align: PosAlign.center,
-            height: PosTextSize.size2,
-            width: PosTextSize.size2,
-            bold: true),
-        linesAfter: 1);
+    // printer.text('SNACKS - PEDIDOS',
+    //     styles: const PosStyles(
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size2,
+    //         width: PosTextSize.size2,
+    //         bold: true),
+    //     linesAfter: 1);
 
-    printer.text('889  Watson Lane', styles: PosStyles(align: PosAlign.center));
-    printer.text('New Braunfels, TX',
-        styles: const PosStyles(align: PosAlign.center));
-    printer.text('Tel: 830-221-1234',
-        styles: const PosStyles(align: PosAlign.center));
+    // printer.text('889  Watson Lane', styles: PosStyles(align: PosAlign.center));
+    // printer.text('New Braunfels, TX',
+    //     styles: const PosStyles(align: PosAlign.center));
+    // printer.text('Tel: 830-221-1234',
+    //     styles: const PosStyles(align: PosAlign.center));
     // printer.text('Web: www.example.com',
     //     styles: const PosStyles(align: PosAlign.center), linesAfter: 1);
 
+    // printer.hr();
+    printer.text(
+      'SNACKS - PEDIDOS',
+      styles: const PosStyles(
+        align: PosAlign.center,
+        height: PosTextSize.size2,
+        width: PosTextSize.size2,
+      ),
+    );
+    printer.emptyLines(2);
     printer.hr();
-    printer.text('Pedidos',
-        styles: const PosStyles(
-          align: PosAlign.center,
-          height: PosTextSize.size2,
-          width: PosTextSize.size2,
-        ),
-        linesAfter: 1);
+    printer.emptyLines(1);
 
-    printer.hr();
-    // printer.row([
-    //   PosColumn(text: 'Qty', width: 1),
-    //   PosColumn(text: 'Item', width: 7),
-    //   PosColumn(
-    //       text: 'Price', width: 2, styles: PosStyles(align: PosAlign.right)),
-    //   PosColumn(
-    //       text: 'Total', width: 2, styles: PosStyles(align: PosAlign.right)),
-    // ]);
-
-    orders.map((e) {
+    for (var e in orders) {
       printer.row([
-        PosColumn(text: e.amount.toString(), width: 2),
-        PosColumn(text: e.item.title, width: 10),
+        PosColumn(text: e.amount.toString(), width: 1),
+        PosColumn(text: e.item.title, width: 11),
       ]);
       printer.row([
         PosColumn(text: e.observations, width: 12),
       ]);
-    });
-
-    // printer.row([
-    //   PosColumn(text: '2', width: 1),
-    //   PosColumn(text: 'ONION RINGS', width: 7),
-    //   PosColumn(
-    //       text: '0.99', width: 2, styles: PosStyles(align: PosAlign.right)),
-    //   PosColumn(
-    //       text: '1.98', width: 2, styles: PosStyles(align: PosAlign.right)),
-    // ]);
-    // printer.row([
-    //   PosColumn(text: '1', width: 1),
-    //   PosColumn(text: 'PIZZA', width: 7),
-    //   PosColumn(
-    //       text: '3.45', width: 2, styles: PosStyles(align: PosAlign.right)),
-    //   PosColumn(
-    //       text: '3.45', width: 2, styles: PosStyles(align: PosAlign.right)),
-    // ]);
-    // printer.row([
-    //   PosColumn(text: '1', width: 1),
-    //   PosColumn(text: 'SPRING ROLLS', width: 7),
-    //   PosColumn(
-    //       text: '2.99', width: 2, styles: PosStyles(align: PosAlign.right)),
-    //   PosColumn(
-    //       text: '2.99', width: 2, styles: PosStyles(align: PosAlign.right)),
-    // ]);
-    // printer.row([
-    //   PosColumn(text: '3', width: 1),
-    //   PosColumn(text: 'CRUNCHY STICKS', width: 7),
-    //   PosColumn(
-    //       text: '0.85', width: 2, styles: PosStyles(align: PosAlign.right)),
-    //   PosColumn(
-    //       text: '2.55', width: 2, styles: PosStyles(align: PosAlign.right)),
-    // ]);
+    }
+    printer.emptyLines(1);
     printer.hr();
 
     // printer.row([
@@ -192,13 +152,12 @@ class AppPrinter {
     print("try connect...");
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
-    final printer = AppNetworkPrinter(paper, profile);
+    final printer = NetworkPrinter(paper, profile);
     try {
-      await Socket.connect(ip, 9100)
-          .then((value) => print(value.remoteAddress))
-          .catchError((err) => print(err));
+      // await Socket.connect(ip, 9100)
+      //     .then((value) => print(value.remoteAddress))
+      //     .catchError((err) => print(err));
       // print(socket.socket);
-      // printer.beep();
 
       var res = await printer.connect(ip,
           port: 9100, timeout: const Duration(seconds: 15));
@@ -208,6 +167,8 @@ class AppPrinter {
       if (res == PosPrintResult.success) {
         // printImageOrderTemplate(printer);
         printOrderTemplate(printer, orders);
+        // printer.beep();
+        // printer.
         printer.disconnect();
         print("disconnected");
       } else {

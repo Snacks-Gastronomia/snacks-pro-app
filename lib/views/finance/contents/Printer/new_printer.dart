@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
@@ -21,7 +20,7 @@ class NewPrinterContent extends StatelessWidget {
                   builder: (context, state) {
                 return Text(
                   state.status == AppStatus.editing
-                      ? "Editar impressora ${state.printerAUX!.name}"
+                      ? "Editar impressora ${state.printerAUX.name}"
                       : 'Adicionar impressora',
                   style: AppTextStyles.semiBold(25),
                 );
@@ -34,7 +33,7 @@ class NewPrinterContent extends StatelessWidget {
                 onChanged: context.read<FinanceCubit>().changePrinterName,
                 textInputAction: TextInputAction.next,
                 controller: TextEditingController(
-                    text: context.read<FinanceCubit>().state.printerAUX?.name ??
+                    text: context.read<FinanceCubit>().state.printerAUX.name ??
                         ""),
                 decoration: InputDecoration(
                   fillColor: const Color(0xffF7F8F9),
@@ -86,7 +85,7 @@ class NewPrinterContent extends StatelessWidget {
                         BorderSide(color: Color(0xffE8ECF4), width: 1)),
                   ),
                   child: DropdownButton<String>(
-                    value: snapshot.printerAUX?.goal,
+                    value: snapshot.printerAUX.goal,
                     hint: Text(
                       "Finalidade",
                       style: AppTextStyles.regular(16, color: Colors.black26),

@@ -23,7 +23,7 @@ import 'package:snacks_pro_app/views/success/success_screen.dart';
 part 'menu_state.dart';
 
 class MenuCubit extends Cubit<MenuState> {
-  final repository = StockRepository(services: StockApiServices());
+  final repository = ItemsRepository();
   final storage = AppStorage.initStorage;
   final fs = FirebaseStorage.instance.ref();
   MenuCubit() : super(MenuState.initial());

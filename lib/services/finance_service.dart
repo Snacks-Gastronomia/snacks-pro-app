@@ -159,8 +159,9 @@ class FinanceApiServices {
           .doc(month_id)
           // .doc("augut-2022")
           .get();
-      print(data.reference);
-      if (data.exists) return data.get("total");
+
+      var map = data.data();
+      if (data.exists) return map?["total"];
     } catch (e) {
       print("error getMontthly: " + e.toString());
     }

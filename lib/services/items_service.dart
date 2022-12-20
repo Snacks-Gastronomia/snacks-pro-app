@@ -8,6 +8,7 @@ import 'package:snacks_pro_app/services/firebase/database.dart';
 class ItemsApiServices {
   final http.Client httpClient = http.Client();
   final database = FirebaseFirestore.instance;
+  final custom = FirebaseDataBase();
 
   Stream<QuerySnapshot<Map<String, dynamic>>> searchQuery(
       String query, restaurant_id) {
@@ -51,6 +52,16 @@ class ItemsApiServices {
       rethrow;
     }
   }
+
+  Future<void> postItem(Item item) async {
+    try {
+      await custom.createDocumentToCollection(
+          collection: "menu", data: item.toMap());
+    } catch (e) {
+      print(e);
+    }
+  }
+
   // Stream<QuerySnapshot<Map<String, dynamic>>> getMoreItems(
   //     String? restaurant_id, DocumentSnapshot documentSnapshot,
   //     {int limit = 8}) {

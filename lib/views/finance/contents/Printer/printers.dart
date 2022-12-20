@@ -44,60 +44,6 @@ class PrinterContent extends StatelessWidget {
                     const Expanded(
                       child: ListPrinters(),
                     ),
-                    // Column(children: [
-                    //   SizedBox(
-                    //     height: 100,
-                    //     child: PageView(
-                    //       controller: PageController(
-                    //         initialPage: 0,
-                    //       ),
-                    //       onPageChanged: (value) {
-                    //         context.read<FinanceCubit>().changeCarouselIndex(value);
-                    //       },
-                    //       children: questions
-                    //           .map<Widget>((e) => Center(
-                    //                 child: Text(
-                    //                   e,
-                    //                   textAlign: TextAlign.center,
-                    //                   style: AppTextStyles.medium(16),
-                    //                 ),
-                    //               ))
-                    //           .toList(),
-                    //     ),
-                    //   ),
-                    //   SizedBox(
-                    //     height: 10,
-                    //     child: BlocBuilder<FinanceCubit, FinanceHomeState>(
-                    //         builder: (context, state) {
-                    //       return Center(
-                    //         child: ListView.separated(
-                    //             scrollDirection: Axis.horizontal,
-                    //             separatorBuilder: (context, index) =>
-                    //                 const SizedBox(
-                    //                   width: 5,
-                    //                 ),
-                    //             shrinkWrap: true,
-                    //             itemBuilder: (context, index) {
-                    //               return state.questions_carousel_index != index
-                    //                   ? Icon(
-                    //                       Icons.brightness_1,
-                    //                       color: Colors.grey.shade300,
-                    //                       size: 10,
-                    //                     )
-                    //                   : Container(
-                    //                       // height: 10,
-                    //                       width: 30,
-                    //                       decoration: BoxDecoration(
-                    //                           color: getColor(index + 1),
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(15)),
-                    //                     );
-                    //             },
-                    //             itemCount: questions.length),
-                    //       );
-                    //     }),
-                    //   )
-                    // ])
                   ],
                 )),
           ),

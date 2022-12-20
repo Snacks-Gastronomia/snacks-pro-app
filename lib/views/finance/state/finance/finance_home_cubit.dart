@@ -58,18 +58,21 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     emit(state.copyWith(status: AppStatus.loading));
 
     var id = (await storage.getDataStorage("user"))["restaurant"]["id"];
-    var newPrinter = getPrinterStateObject();
+    var newPrinter = state.printerAUX;
+    print(newPrinter.toMap());
     newPrinter = newPrinter.copyWith(restaurant: id);
-    if (newPrinter.ip.length >= 13) {
-      repository.insertPrinter(newPrinter.toMap());
+    if (newPrinter.ip.length >= 11) {
+      await repository.insertPrinter(newPrinter.toMap());
       clearAUX();
+      emit(state.copyWith(status: AppStatus.loaded));
       Navigator.pop(context);
     }
+    emit(state.copyWith(status: AppStatus.loaded));
   }
 
   changePrinterName(value) {
-    var newPrinter = getPrinterStateObject();
-    emit(state.copyWith(printerAUX: newPrinter.copyWith(name: value)));
+    emit(state.copyWith(printerAUX: state.printerAUX.copyWith(name: value)));
+    // print(state.printerAUX);
   }
 
   deletePrinter(String id) async {
@@ -89,7 +92,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
       var data = state.printerAUX;
       emit(state.copyWith(status: AppStatus.loading));
 
-      await repository.updatePrinter(data!.toMap(), data.id);
+      await repository.updatePrinter(data.toMap(), data.id);
 
       clearAUX();
       Navigator.pop(context);
@@ -97,13 +100,11 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   }
 
   changePrinterIP(value) {
-    var newPrinter = getPrinterStateObject();
-    emit(state.copyWith(printerAUX: newPrinter.copyWith(ip: value)));
+    emit(state.copyWith(printerAUX: state.printerAUX.copyWith(ip: value)));
   }
 
   changePrinterGoal(value) {
-    var newPrinter = getPrinterStateObject();
-    emit(state.copyWith(printerAUX: newPrinter.copyWith(goal: value)));
+    emit(state.copyWith(printerAUX: state.printerAUX.copyWith(goal: value)));
   }
 
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
@@ -214,11 +215,6 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   Restaurant getRestaurantStateObject() {
     return state.restaurantAUX ??
         Restaurant(rname: "", rcategory: "", oname: "", ophone: "");
-  }
-
-  Printer getPrinterStateObject() {
-    return state.printerAUX ??
-        Printer(name: "", goal: "", ip: "", restaurant: "");
   }
 
   void changeRestaurantCategory(String value) {

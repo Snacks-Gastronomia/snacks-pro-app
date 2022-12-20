@@ -36,7 +36,7 @@ class Restaurant {
 class Printer {
   final String? id;
   final String name;
-  final String goal;
+  final String? goal;
   final String ip;
   final String restaurant;
   Printer({
@@ -46,6 +46,9 @@ class Printer {
     required this.ip,
     required this.restaurant,
   });
+
+  factory Printer.initial() =>
+      Printer(name: "", goal: null, ip: "", restaurant: "");
 
   Map<String, dynamic> toMap() {
     return {
@@ -71,6 +74,27 @@ class Printer {
       restaurant: restaurant ?? this.restaurant,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Printer &&
+        other.id == id &&
+        other.name == name &&
+        other.goal == goal &&
+        other.ip == ip &&
+        other.restaurant == restaurant;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        name.hashCode ^
+        goal.hashCode ^
+        ip.hashCode ^
+        restaurant.hashCode;
+  }
 }
 
 class FinanceHomeState {
@@ -81,7 +105,7 @@ class FinanceHomeState {
   final BankModel bankInfo;
   final Expense expenseAUX;
   final Restaurant? restaurantAUX;
-  final Printer? printerAUX;
+  final Printer printerAUX;
   final AppStatus status;
   FinanceHomeState(
       {required this.budget,
@@ -97,7 +121,7 @@ class FinanceHomeState {
   factory FinanceHomeState.initial() => FinanceHomeState(
       expenseAUX: Expense.initial(),
       restaurantAUX: null,
-      printerAUX: null,
+      printerAUX: Printer.initial(),
       status: AppStatus.initial,
       budget: 0,
       questions_carousel_index: 0,
@@ -120,7 +144,7 @@ class FinanceHomeState {
       expenseAUX: expenseAUX ?? this.expenseAUX,
       restaurantAUX: restaurantAUX,
       budget: budget ?? this.budget,
-      printerAUX: printerAUX,
+      printerAUX: printerAUX ?? this.printerAUX,
       questions_carousel_index:
           questions_carousel_index ?? this.questions_carousel_index,
       expenses_length: expenses_length ?? this.expenses_length,

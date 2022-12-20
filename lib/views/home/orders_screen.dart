@@ -49,7 +49,7 @@ class OrdersScreen extends StatelessWidget {
                       orders.map((e) {
                         Map<String, dynamic> data = e.data();
                         data["id"] = e.id;
-                        if (e.get("isDelivery") == true) {
+                        if (data["isDelivery"] == true) {
                           orders_delivery.add(data);
                         } else {
                           orders_local.add(data);

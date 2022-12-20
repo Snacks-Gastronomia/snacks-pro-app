@@ -15,12 +15,14 @@ import 'package:snacks_pro_app/views/authentication/phone_screen.dart';
 import 'package:snacks_pro_app/views/authentication/state/auth_cubit.dart';
 import 'package:snacks_pro_app/views/authentication/unathorized_screen.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/new_restaurant.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/stock.dart';
 import 'package:snacks_pro_app/views/finance/home_finance.dart';
 import 'package:snacks_pro_app/views/finance/contents/bank/add_bank_account.dart';
 import 'package:snacks_pro_app/views/finance/contents/employees/new_employee.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
+import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
 import 'package:snacks_pro_app/views/home/home_screen.dart';
 import 'package:snacks_pro_app/views/home/orders_screen.dart';
 import 'package:snacks_pro_app/views/home/scan_card_screen.dart';
@@ -76,6 +78,9 @@ class AppWidget extends StatelessWidget {
         BlocProvider<EmployeesCubit>(
           create: (context) => EmployeesCubit(),
         ),
+        BlocProvider<StockCubit>(
+          create: (context) => StockCubit(),
+        ),
       ],
       key: UniqueKey(),
       child: FutureBuilder<String>(
@@ -91,6 +96,7 @@ class AppWidget extends StatelessWidget {
                         Theme.of(context).textTheme)),
                 title: "Snacks Pro",
                 initialRoute: snapshot.data,
+                // initialRoute: "/stock",
                 // AppRoutes.home,
 
                 routes: {
@@ -112,6 +118,7 @@ class AppWidget extends StatelessWidget {
                       const RestaurantAuthenticationScreen(),
                   AppRoutes.unathorizedAuth: (context) =>
                       const UnathorizedScreen(),
+                  "/stock": (context) => StockScreen(),
                 },
               );
             }

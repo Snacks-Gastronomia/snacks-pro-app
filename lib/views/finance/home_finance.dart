@@ -13,6 +13,7 @@ import 'package:snacks_pro_app/views/finance/budget_details.dart';
 import 'package:snacks_pro_app/views/finance/contents/printer/printers.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/restaurants_content.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/stock.dart';
 import 'package:snacks_pro_app/views/finance/ratings.dart';
 import 'package:snacks_pro_app/views/finance/schedule.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
@@ -291,7 +292,8 @@ class RestaurantBottomSheet extends StatelessWidget {
             height: 20,
           ),
           SettingButton(
-              onTap: () {},
+              onTap: () => modal.showIOSModalBottomSheet(
+                  context: context, content: StockScreen()),
               title: "Stock",
               description: "Gerencie todo estoque do seu estabelecimento.",
               icon: Icons.layers_outlined),

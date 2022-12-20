@@ -1,5 +1,6 @@
 // import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,62 +24,62 @@ class StockItem {
 }
 
 class StockApiServices {
-  final database = FirebaseDataBase();
+  final database = FirebaseFirestore.instance;
   final http.Client httpClient = http.Client();
-  final List categories = ["Bebidas", "Pizzas", "Comida japonesa", "Fast-food"];
 
-  final List<StockItem> stock = List.generate(
-    10,
-    (i) => StockItem(
-      id: '$i',
-      amount: i + 10,
-      title: "$i vodka",
-      unique_volume: 800,
-      unit: "ml",
-    ),
-  );
-
-  Future<void> postItem(Item item) async {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStock(String? restaurant_id,
+      {int limit = 5}) {
     try {
-      await database.createDocumentToCollection(
-          collection: "menu", data: item.toMap());
+      // var ref = database.collection("stock").doc(restaurant_id).snapshots();
+      // .limit(limit);
+      // if (document != null) {
+      //   return ref.startAfterDocument(document).snapshots();
+      // }
+      return database
+          .collection("restaurants")
+          .doc(restaurant_id)
+          .collection("stock")
+          .snapshots();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> createStockItem(restaurant_id, data) async {
+    try {
+      await database
+          .collection("restaurants")
+          .doc(restaurant_id)
+          .collection("stock")
+          .add(data);
     } catch (e) {
       print(e);
     }
   }
 
-  Future<List<dynamic>> getStockItems() async {
-    return Future.delayed(const Duration(milliseconds: 500), () => stock);
+  Future<void> updateStockItem(restaurant_id, doc, data) async {
+    try {
+      await database
+          .collection("restaurants")
+          .doc(restaurant_id)
+          .collection("stock")
+          .doc(doc)
+          .update(data);
+    } catch (e) {
+      print(e);
+    }
   }
 
-  Future<List<dynamic>> getCategories() async {
-    return Future.delayed(const Duration(milliseconds: 500), () => categories);
+  Future<void> updateStock(restaurant_id, doc, data) async {
+    try {
+      await database
+          .collection("restaurants")
+          .doc(restaurant_id)
+          .collection("stock")
+          .doc(doc)
+          .set(data, SetOptions(merge: true));
+    } catch (e) {
+      print(e);
+    }
   }
-
-  Future<List<dynamic>> getStockItemsByQuery(String query) async {
-    return Future.delayed(const Duration(milliseconds: 500),
-        () => stock.where((element) => element.title.contains(query)).toList());
-  }
-
-//   Future<List<Item>> getItems(String? category) async {
-//     try {
-//       // final http.Response response = await httpClient.get(uri);
-
-//       // if (response.statusCode != 200) {
-//       //   throw httpErrorHandler(response);
-//       // }
-
-//       // final responseBody = json.decode(response.body);
-
-//       // if (responseBody.isEmpty) {
-//       //   throw WeatherException('Cannot get the location of $city');
-//       // }
-
-//       // final directGeocoding = DirectGeocoding.fromJson(responseBody);
-
-//       return Future.delayed(const Duration(milliseconds: 500), () => list);
-//     } catch (e) {
-//       rethrow;
-//     }
-//   }
 }
