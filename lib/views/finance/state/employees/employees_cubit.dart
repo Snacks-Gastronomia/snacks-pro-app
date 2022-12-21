@@ -69,6 +69,7 @@ class EmployeesCubit extends Cubit<EmployeesState> {
 
       await repository.createEmployee(data);
     }
+    clearSelect();
   }
   // }
 
@@ -85,7 +86,7 @@ class EmployeesCubit extends Cubit<EmployeesState> {
     Navigator.pushNamed(context, AppRoutes.newEmployee);
   }
 
-  clearSelectToUpdate() {
+  clearSelect() {
     emit(
         state.copyWith(newEmployee: EmployeeModel.initial(), updateEmp: false));
   }

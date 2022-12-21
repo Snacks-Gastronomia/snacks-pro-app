@@ -257,7 +257,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
           "phone_number": state.restaurantAUX!.ophone,
           "first_access": true,
           "access": true,
-          "ocupation": "RADM",
+          "ocupation": "radm",
         };
 
         await repository.saveRestaurantAndOwner(rest, owner);

@@ -48,7 +48,7 @@ class NewEmployeeScreen extends StatelessWidget {
                   children: [
                     ElevatedButton(
                         onPressed: () {
-                          context.read<EmployeesCubit>().clearSelectToUpdate();
+                          context.read<EmployeesCubit>().clearSelect();
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
@@ -205,12 +205,18 @@ class NewEmployeeScreen extends StatelessWidget {
                         keyboardType: TextInputType.number,
                         controller: TextEditingController(
                             text: context
-                                .read<EmployeesCubit>()
-                                .state
-                                .newEmployee
-                                .salary
-                                .toInt()
-                                .toString()),
+                                        .read<EmployeesCubit>()
+                                        .state
+                                        .updateEmp ==
+                                    true
+                                ? context
+                                    .read<EmployeesCubit>()
+                                    .state
+                                    .newEmployee
+                                    .salary
+                                    .toInt()
+                                    .toString()
+                                : null),
                         decoration: InputDecoration(
                           fillColor: const Color(0xffF7F8F9),
                           filled: true,
