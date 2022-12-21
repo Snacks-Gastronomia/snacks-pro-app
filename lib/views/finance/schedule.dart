@@ -43,15 +43,15 @@ class ScheduleContent extends StatelessWidget {
                                   .dateSymbols
                                   .SHORTWEEKDAYS[index];
                               DateTime dateTimeStart = DateFormat("HH:mm")
-                                  .parse(days[index].get("start"));
+                                  .parse(days[index].data()["start"]);
                               DateTime dateTimeEnd = DateFormat("HH:mm")
-                                  .parse(days[index].get("end"));
+                                  .parse(days[index].data()["end"]);
 
                               return ScheduleDay(
-                                active: days[index].get("active"),
+                                active: days[index].data()["active"],
                                 day: toBeginningOfSentenceCase(day) ?? "",
-                                startHour: days[index].get("start"),
-                                endHour: days[index].get("end"),
+                                startHour: days[index].data()["start"],
+                                endHour: days[index].data()["end"],
                                 changeStatus: (value) => context
                                     .read<FinanceCubit>()
                                     .changeActiveSchedule(

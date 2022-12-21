@@ -71,7 +71,7 @@ class ListPrinters extends StatelessWidget {
                   var item = snapshot.data!.docs[index];
                   print(snapshot.data!.docs[index].data());
                   return CardPrinter(
-                    title: '${item.get("name")} - ${item.get("goal")}',
+                    title: '${item.data()["name"]} - ${item.data()["goal"]}',
                     onDelete: () =>
                         context.read<FinanceCubit>().deletePrinter(item.id),
                     onEdit: () {
@@ -83,7 +83,7 @@ class ListPrinters extends StatelessWidget {
                           context: context,
                           content: const NewPrinterContent());
                     },
-                    subtitle: item.get("ip"),
+                    subtitle: item.data()["ip"],
                   );
                 });
           }

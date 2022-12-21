@@ -84,6 +84,8 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> sendPhoneCodeOtp(context) async {
     final navigator = Navigator.of(context);
+    final toast = AppToast();
+    toast.init(context: context);
     changeStatus(AppStatus.loading);
     if (validateNumber) {
       var res = await checkUser();
@@ -94,10 +96,17 @@ class AuthCubit extends Cubit<AuthState> {
               phoneNumber: "+55 ${state.phone}",
               verificationCompleted: (PhoneAuthCredential credential) async {},
               verificationFailed: (FirebaseAuthException e) {
-                print("Não foi possível enviar o código! Tente novamente.");
+                toast.showToast(
+                    content: "Não foi possível enviar o código!",
+                    context: context,
+                    type: ToastType.error);
+                changeStatus(AppStatus.loaded);
               },
               codeSent: (String verificationID, int? resendToken) async {
-                print("code sent");
+                toast.showToast(
+                    content: "Código enviado!",
+                    context: context,
+                    type: ToastType.success);
                 if (verificationID.isNotEmpty) {
                   changeVerificationId(verificationID);
                   changeStatus(AppStatus.loaded);
@@ -107,14 +116,18 @@ class AuthCubit extends Cubit<AuthState> {
               codeAutoRetrievalTimeout: (String verificationID) async {
                 if (verificationID.isNotEmpty) {
                   changeVerificationId(verificationID);
+                  // toast.showToast(
+                  //     content: "Não foi possível enviar o código!",
+                  //     context: context,
+                  //     type: ToastType.error);
                   changeStatus(AppStatus.loaded);
 
-                  await navigator.pushNamed(AppRoutes.otp);
+                  // await navigator.pushNamed(AppRoutes.otp);
                 }
               },
               timeout: const Duration(seconds: 120));
         } catch (e) {
-          print(e);
+          print("error" + e.toString());
         }
       } else {
         navigator.pushNamed(AppRoutes.unathorizedAuth);

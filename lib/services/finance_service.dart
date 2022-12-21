@@ -195,7 +195,7 @@ class FinanceApiServices {
     var now = DateTime.now();
 
     var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
-    var day_id = "${now.day}";
+    var day_id = DateFormat("dd").format(now);
 
     var docref = firebase
         .collection("receipts")

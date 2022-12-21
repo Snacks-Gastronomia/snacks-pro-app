@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:http/http.dart' as http;
 
@@ -82,6 +83,22 @@ class BeerPassService {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<List<dynamic>> fetchRecharges() async {
+    var header = await getReqHeader();
+    var date = DateFormat("y-M-d").format(DateTime.now());
+    var response = await httpClient.get(
+        Uri.https(URL, 'apiv2/recargas?inicio=2022-12-01'),
+        headers: header);
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(response.body);
+      return body;
+    } else {
+      print(response.statusCode);
+    }
+    return [];
   }
 
   Future<void> rechargeCard(rfid, double valor) async {

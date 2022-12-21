@@ -93,7 +93,7 @@ class DayOrdersReportScreen extends StatelessWidget {
                             child: ListTile(
                               contentPadding: const EdgeInsets.all(8),
                               title: Text(
-                                item.get("payment"),
+                                item.data()["payment"],
                                 style: AppTextStyles.semiBold(16),
                               ),
                               isThreeLine: true,
@@ -101,12 +101,14 @@ class DayOrdersReportScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   ListView.builder(
-                                      itemCount: item.get("orders").length,
+                                      itemCount: (item.data()["orders"] as List)
+                                          .length,
                                       shrinkWrap: true,
                                       physics:
                                           const NeverScrollableScrollPhysics(),
                                       itemBuilder: (context, index) {
-                                        var order = item.get("orders")[index];
+                                        var order =
+                                            item.data()["orders"][index];
                                         var text =
                                             '${order["amount"]} ${order["name"]}';
                                         return Text(
@@ -125,12 +127,12 @@ class DayOrdersReportScreen extends StatelessWidget {
                                   Text(
                                     NumberFormat.currency(
                                             locale: "pt", symbol: r"R$ ")
-                                        .format(item.get("total")),
+                                        .format(item.data()["total"]),
                                     style: AppTextStyles.semiBold(18,
                                         color: const Color(0xff00B907)),
                                   ),
                                   Text(
-                                    item.get("time"),
+                                    item.data()["time"],
                                     style: AppTextStyles.light(14),
                                   ),
                                 ],

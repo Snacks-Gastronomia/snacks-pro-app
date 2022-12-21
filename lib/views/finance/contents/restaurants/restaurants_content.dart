@@ -69,6 +69,7 @@ class ListRestaurants extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   var item = snapshot.data!.docs[index];
+
                   return CardRestaurant(
                       editAction: () => context
                           .read<FinanceCubit>()
@@ -76,8 +77,8 @@ class ListRestaurants extends StatelessWidget {
                       removeAction: () => context
                           .read<FinanceCubit>()
                           .deleteRestaurant(item.id),
-                      title: item.get("name"),
-                      owner: item.get("owner")["name"]);
+                      title: item.data()["name"],
+                      owner: item.data()["owner"]["name"]);
                 });
           }
           return const CustomCircularProgress();
@@ -170,25 +171,26 @@ class CardRestaurant extends StatelessWidget {
             ),
           ],
         ),
-        Row(
-          children: [
-            IconButton(
-              onPressed: editAction,
-              icon: const Icon(
-                Icons.edit,
-                size: 20,
-                color: Colors.black,
-              ),
-            ),
-            IconButton(
-                onPressed: removeAction,
+        if (title != "SNACKS")
+          Row(
+            children: [
+              IconButton(
+                onPressed: editAction,
                 icon: const Icon(
-                  Icons.delete,
+                  Icons.edit,
                   size: 20,
-                  color: Color(0xffE20808),
-                ))
-          ],
-        )
+                  color: Colors.black,
+                ),
+              ),
+              IconButton(
+                  onPressed: removeAction,
+                  icon: const Icon(
+                    Icons.delete,
+                    size: 20,
+                    color: Color(0xffE20808),
+                  ))
+            ],
+          )
       ],
     );
     // );

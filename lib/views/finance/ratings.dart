@@ -1,17 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:intl/intl.dart';
-
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
-import 'package:snacks_pro_app/core/app.colors.dart';
-import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
-import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
-import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class RatingsContent extends StatelessWidget {
   RatingsContent({super.key});
@@ -125,7 +116,7 @@ class ListRatings extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.separated(
-                separatorBuilder: (context, index) => SizedBox(
+                separatorBuilder: (context, index) => const SizedBox(
                       height: 10,
                     ),
                 itemCount: snapshot.data!.docs.length,
@@ -136,8 +127,8 @@ class ListRatings extends StatelessWidget {
                   print(snapshot.data!.docs[index].data());
                   return CardRate(
                     title: "",
-                    description: item.get("observations"),
-                    questions: item.get("questions"),
+                    description: item.data()["observations"],
+                    questions: item.data()["questions"],
                   );
                 });
           }

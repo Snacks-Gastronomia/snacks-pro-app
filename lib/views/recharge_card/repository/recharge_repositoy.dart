@@ -30,6 +30,14 @@ class RechargeRepository {
     }
   }
 
+  Future<List<dynamic>> fetchRecharges() async {
+    try {
+      return await services.fetchRecharges();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<dynamic> closeOrderAndCard(Map<String, dynamic> data) async {
     try {
       await services.closeCard(data);

@@ -111,12 +111,10 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
       fetchExpenses() async {
     emit(state.copyWith(status: AppStatus.loading));
     var data = await repository.getExpenses();
-
+    // var map = data.asMap();
+    print(data.length);
     if (data.isNotEmpty) {
-      double total = double.parse(data
-          .map((item) => item.get("value"))
-          .reduce((a, b) => a + b)
-          .toString());
+      double total = totalExpenses(data);
 
       emit(state.copyWith(expenses_value: total, status: AppStatus.loaded));
     }
@@ -129,13 +127,17 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     return repository.getExpensesStream();
   }
 
+  double totalExpenses(
+          List<QueryDocumentSnapshot<Map<String, dynamic>>> data) =>
+      double.parse(data
+          .map((item) => double.parse(item.data()["value"]))
+          .reduce((a, b) => a + b)
+          .toString());
+
   void adjustExpenseData(
       List<QueryDocumentSnapshot<Map<String, dynamic>>> data) {
     if (data.isNotEmpty) {
-      double total = double.parse(data
-          .map((item) => item.get("value"))
-          .reduce((a, b) => a + b)
-          .toString());
+      double total = totalExpenses(data);
 
       emit(state.copyWith(
           expenses_value: total,

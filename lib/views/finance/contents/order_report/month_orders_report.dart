@@ -105,10 +105,10 @@ class OrdersReportScreen extends StatelessWidget {
                                 context: context,
                                 content: DayOrdersReportScreen(
                                     day: item.id,
-                                    amount: item.get("length"),
+                                    amount: item.data()["length"],
                                     total: NumberFormat.currency(
                                             locale: "pt", symbol: r"R$ ")
-                                        .format(item.get("total"))),
+                                        .format(item.data()["total"])),
                               ),
                               tileColor: Colors.black,
                               title: Text(
@@ -120,12 +120,12 @@ class OrdersReportScreen extends StatelessWidget {
                               subtitle: Text(
                                 NumberFormat.currency(
                                         locale: "pt", symbol: r"R$ ")
-                                    .format(item.get("total")),
+                                    .format(item.data()["total"]),
                                 style: AppTextStyles.light(14,
                                     color: Colors.white),
                               ),
                               trailing: Text(
-                                '${item.get("length")}',
+                                '${item.data()["length"]}',
                                 style: AppTextStyles.semiBold(18,
                                     color: Colors.white),
                               ),

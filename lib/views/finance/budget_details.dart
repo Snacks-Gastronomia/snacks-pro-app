@@ -101,9 +101,9 @@ class BudgetDetailsContent extends StatelessWidget {
                                     itemBuilder: (context, index) {
                                       var item = snapshot.data![index];
                                       return CardExpense(
-                                          title: item.get("name"),
+                                          title: item.data()["name"],
                                           value: double.parse(item
-                                                  .get("value")
+                                                  .data()["value"]
                                                   .toString()) *
                                               -1);
                                     });

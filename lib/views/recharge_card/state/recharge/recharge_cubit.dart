@@ -51,25 +51,27 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   Future<List<dynamic>> fetchRecharges() async {
-    var now = DateTime.now();
+    // var now = DateTime.now();
 
-    var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
-    var day_id = "day-${now.day}";
+    // var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
+    // var day_id = "day-${now.day}";
 
-    var fb = await database
-        .collection("snacks_cards")
-        .doc(month_id)
-        .collection("days")
-        .doc(day_id)
-        .collection("recharges")
-        .get();
+    // var fb = await database
+    //     .collection("snacks_cards")
+    //     .doc(month_id)
+    //     .collection("days")
+    //     .doc(day_id)
+    //     .collection("recharges")
+    //     .get();
 
-    var data = fb.docs
+    var response = await repository.fetchRecharges();
+
+    var data = response
         .map((e) => {
-              "responsible": e.get("responsible"),
-              "value": e.get("value"),
-              // "created_at": e.get("created_at"),
-              "created_at": "15:40",
+              "responsible": e.data()["nomeUsuario"],
+              "value": e.data()["Value"],
+              "created_at": DateFormat("HH:m")
+                  .format(DateTime.parse(e.data()["createdAt"])),
             })
         .toList();
 

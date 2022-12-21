@@ -142,8 +142,8 @@ class ListExpenses extends StatelessWidget {
                     return CardExpense(
                         deleteAction: () =>
                             context.read<FinanceCubit>().deleteExpense(item.id),
-                        title: item.get("name"),
-                        value: double.parse(item.get("value").toString()));
+                        title: item.data()["name"],
+                        value: double.parse(item.data()["value"].toString()));
                   });
                 });
           }
