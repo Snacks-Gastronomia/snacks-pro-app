@@ -65,13 +65,13 @@ class RechargeCubit extends Cubit<RechargeState> {
     //     .get();
 
     var response = await repository.fetchRecharges();
-
+    print(response);
     var data = response
         .map((e) => {
-              "responsible": e.data()["nomeUsuario"],
-              "value": e.data()["Value"],
-              "created_at": DateFormat("HH:m")
-                  .format(DateTime.parse(e.data()["createdAt"])),
+              "responsible": e["nomeUsuario"],
+              "value": e["Value"],
+              "created_at":
+                  DateFormat("HH:m").format(DateTime.parse(e["createdAt"])),
             })
         .toList();
 

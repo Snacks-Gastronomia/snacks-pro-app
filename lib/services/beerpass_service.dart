@@ -28,7 +28,7 @@ class BeerPassService {
   Future<Map<String, String>> getReqHeader() async {
     return {
       "Authorization": await getToken() ?? "",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
   }
 
@@ -89,11 +89,12 @@ class BeerPassService {
     var header = await getReqHeader();
     var date = DateFormat("y-M-d").format(DateTime.now());
     var response = await httpClient.get(
-        Uri.https(URL, 'apiv2/recargas?inicio=2022-12-01'),
+        Uri.https(URL, 'apiv2/recargas', {"inicio": date}),
         headers: header);
 
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
+      print(response.body);
       return body;
     } else {
       print(response.statusCode);

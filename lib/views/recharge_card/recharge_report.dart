@@ -111,7 +111,8 @@ class RechargeReportContent extends StatelessWidget {
                                   itemBuilder: (context, index) => CardExpense(
                                       title: data[index]["responsible"],
                                       time: data[index]["created_at"],
-                                      value: data[index]["value"])),
+                                      value: double.parse(
+                                          data[index]["value"].toString()))),
                             )
 
                             // List.generate(
