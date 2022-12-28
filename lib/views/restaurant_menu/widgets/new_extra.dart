@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
-import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 
 class NewExtraModal extends StatelessWidget {
@@ -74,12 +73,14 @@ class NewExtraModal extends StatelessWidget {
               ),
               CustomSubmitButton(
                   onPressedAction: () {
-                    context
-                        .read<MenuCubit>()
-                        .addExtraItem(title.text, value.text);
-                    title.clear();
-                    value.clear();
-                    Navigator.pop(context);
+                    if (title.text.isNotEmpty && value.text.isNotEmpty) {
+                      context
+                          .read<MenuCubit>()
+                          .addExtraItem(title.text, value.text);
+                      title.clear();
+                      value.clear();
+                      Navigator.pop(context);
+                    }
                   },
                   label: "Feito"),
               TextButton(
