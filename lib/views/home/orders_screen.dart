@@ -19,6 +19,41 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final access_level =
+        context.read<HomeCubit>().state.storage["access_level"];
+
+    getCountByStatus(List data, OrderStatus status) {
+      return data.isNotEmpty
+          ? data
+              .map((element) => element["status"] == status.name ? 1 : 0)
+              .reduce((value, element) => value + element)
+          : 0;
+    }
+
+    getCountBadgeTab(orders_page1, orders_page2) {
+      var count1 = 0;
+      var count2 = 0;
+      if (access_level == AppPermission.employee.name) {
+        count1 = getCountByStatus(orders_page1, OrderStatus.ready_to_start);
+        count2 = getCountByStatus(orders_page2, OrderStatus.order_in_progress);
+      } else {
+        count1 = getCountByStatus(orders_page1, OrderStatus.waiting_payment);
+        count2 = getCountByStatus(orders_page2, OrderStatus.done);
+      }
+
+      return [count1, count2];
+    }
+
+    getTextTab() {
+      if (access_level == AppPermission.employee.name) {
+        return ["Pronto para Começar", "Em andamento"];
+      } else if (access_level == AppPermission.waiter.name) {
+        return ["À pagar", "Prontos"];
+      } else {
+        return ["Local", "Entrega"];
+      }
+    }
+
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60.0),
@@ -44,50 +79,56 @@ class OrdersScreen extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var orders = snapshot.data!.docs;
-                      List<dynamic> orders_delivery = [];
-                      List<dynamic> orders_local = [];
+                      List<dynamic> orders_page2 = [];
+                      List<dynamic> orders_page1 = [];
                       orders.map((e) {
                         Map<String, dynamic> data = e.data();
                         data["id"] = e.id;
-                        if (data["isDelivery"] == true) {
-                          orders_delivery.add(data);
+
+                        if (access_level == AppPermission.waiter.name) {
+                          if (data["status"] == OrderStatus.waiting_payment) {
+                            orders_page1.add(data);
+                          } else {
+                            orders_page2.add(data);
+                          }
+                        } else if (access_level ==
+                            AppPermission.employee.name) {
+                          if (data["status"] == OrderStatus.ready_to_start) {
+                            orders_page1.add(data);
+                          } else {
+                            orders_page2.add(data);
+                          }
                         } else {
-                          orders_local.add(data);
+                          if (data["isDelivery"] == true) {
+                            orders_page2.add(data);
+                          } else {
+                            orders_page1.add(data);
+                          }
                         }
                       }).toList();
+
+                      List<String> tabs = getTextTab();
+                      List<int> counts =
+                          getCountBadgeTab(orders_page1, orders_page2);
                       return Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           children: [
                             TabarBar(
-                              new_items_page1: orders_local.isNotEmpty
-                                  ? orders_local
-                                      .map((element) => element["status"] ==
-                                              OrderStatus.ready_to_start.name
-                                          ? 1
-                                          : 0)
-                                      .reduce(
-                                          (value, element) => value + element)
-                                  : 0,
-                              new_items_page2: orders_delivery.isNotEmpty
-                                  ? orders_delivery
-                                      .map((element) => element["status"] ==
-                                              OrderStatus.ready_to_start.name
-                                          ? 1
-                                          : 0)
-                                      .reduce(
-                                          (value, element) => value + element)
-                                  : 0,
+                              tab1_text: tabs[0],
+                              tab2_text: tabs[1],
+                              new_items_page1: counts[0],
+                              new_items_page2: counts[1],
                               page1: Column(
                                 children: [
                                   Expanded(
                                       child: ListView.builder(
                                           physics:
                                               const BouncingScrollPhysics(),
-                                          itemCount: orders_local.length,
+                                          itemCount: orders_page1.length,
                                           shrinkWrap: true,
                                           itemBuilder: (_, index) {
-                                            var item = orders_local[index];
+                                            var item = orders_page1[index];
                                             Timestamp date = item["created_at"];
                                             // time.toDate();
                                             String time = DateFormat("HH:mm")
@@ -135,10 +176,10 @@ class OrdersScreen extends StatelessWidget {
                                       child: ListView.builder(
                                           physics:
                                               const BouncingScrollPhysics(),
-                                          itemCount: orders_delivery.length,
+                                          itemCount: orders_page2.length,
                                           shrinkWrap: true,
                                           itemBuilder: (_, index) {
-                                            var item = orders_delivery[index];
+                                            var item = orders_page2[index];
                                             Timestamp date = item["created_at"];
                                             // time.toDate();
                                             String time = DateFormat("HH:mm")
@@ -187,7 +228,8 @@ class OrdersScreen extends StatelessWidget {
                                                       total: item["value"],
                                                       method: item[
                                                           "payment_method"],
-                                                      items: item["orders"]),
+                                                      items:
+                                                          item["items"] ?? []),
                                             );
                                             // );
                                           })),

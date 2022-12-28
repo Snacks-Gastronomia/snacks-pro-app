@@ -7,6 +7,8 @@ class TabarBar extends StatelessWidget {
     Key? key,
     required this.page1,
     required this.page2,
+    required this.tab1_text,
+    required this.tab2_text,
     required this.new_items_page1,
     required this.new_items_page2,
     required this.onChange,
@@ -14,6 +16,8 @@ class TabarBar extends StatelessWidget {
 
   final Widget page1;
   final Widget page2;
+  final String tab1_text;
+  final String tab2_text;
   final int new_items_page1;
   final int new_items_page2;
   final Function(int) onChange;
@@ -52,7 +56,7 @@ class TabarBar extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Local'),
+                        Text(tab1_text),
                         const SizedBox(width: 5),
                         if (new_items_page1 != 0)
                           Container(
@@ -75,7 +79,7 @@ class TabarBar extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Entrega'),
+                        Text(tab2_text),
                         const SizedBox(width: 5),
                         if (new_items_page2 != 0)
                           Container(

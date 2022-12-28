@@ -43,7 +43,7 @@ class Order {
       item: Item.fromMap(map['item']),
       amount: map['amount']?.toInt() ?? 0,
       observations: map['observations'] ?? '',
-      extras: List.from(map['extras']) ?? [],
+      extras: List.from(map['extras'] ?? []),
       // restaurant_id: map['restaurant_id'] ?? '',
     );
   }

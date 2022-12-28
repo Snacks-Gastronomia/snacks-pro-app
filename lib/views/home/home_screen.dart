@@ -47,8 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, snapshot) {
       var contents = getButtons(snapshot.storage["access_level"]);
-      // var contents = getButtons("radm");
-      print(snapshot.storage["access_level"]);
+
       return SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
@@ -125,7 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ]);
     }
     if (access == AppPermission.radm.name ||
-        access == AppPermission.employee.name) {
+        access == AppPermission.employee.name ||
+        access == AppPermission.waiter.name) {
       items.addAll([
         Content(
             screen: const HomeScreenWidget(),
