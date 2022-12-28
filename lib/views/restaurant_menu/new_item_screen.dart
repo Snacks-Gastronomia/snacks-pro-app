@@ -12,7 +12,7 @@ import 'package:snacks_pro_app/views/restaurant_menu/upload_image.dart';
 
 class NewItemScreen extends StatelessWidget {
   NewItemScreen({Key? key}) : super(key: key);
-  final pageController = PageController(initialPage: 3);
+  final pageController = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {

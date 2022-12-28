@@ -42,12 +42,11 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future<String> getRouter() async {
-      // await initializeDateFormatting("pt_BR");
-      // var user = await storage.getDataStorage("user");
-      // return auth.currentUser != null && user.isNotEmpty
-      //     ? AppRoutes.home
-      //     : AppRoutes.restaurantAuth;
-      return AppRoutes.newItem;
+      await initializeDateFormatting("pt_BR");
+      var user = await storage.getDataStorage("user");
+      return auth.currentUser != null && user.isNotEmpty
+          ? AppRoutes.home
+          : AppRoutes.restaurantAuth;
     }
 
     return MultiBlocProvider(
