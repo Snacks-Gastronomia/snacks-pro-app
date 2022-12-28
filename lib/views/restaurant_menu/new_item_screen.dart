@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/add_item_widget.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/extras_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/item_details_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/stock_control_widget.dart';
@@ -11,7 +12,7 @@ import 'package:snacks_pro_app/views/restaurant_menu/upload_image.dart';
 
 class NewItemScreen extends StatelessWidget {
   NewItemScreen({Key? key}) : super(key: key);
-  final pageController = PageController(initialPage: 0);
+  final pageController = PageController(initialPage: 3);
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +80,17 @@ class NewItemScreen extends StatelessWidget {
                       curve: Curves.easeInOut)),
             ),
             Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ItemDetailsWidget(
+                    buttonAction: () => pageController.nextPage(
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut),
+                    backAction: () => pageController.previousPage(
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut))),
+            Padding(
               padding: const EdgeInsets.all(20.0),
-              child: ItemDetailsWidget(
+              child: ExtraWidget(
                   buttonAction: () =>
                       context.read<MenuCubit>().saveItem(context),
                   backAction: () => pageController.previousPage(

@@ -2,8 +2,8 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:snacks_pro_app/components/custom_submit_button.dart';
 
+import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
@@ -197,10 +197,10 @@ class ItemDetailsWidget extends StatelessWidget {
                         }
                       },
                       loading: state.status == AppStatus.loading,
-                      label: "Adicionar ao menu",
-                      loading_label: "Adionando...",
+                      label: "Continuar",
+                      loading_label: "",
                     );
-                  })
+                  }),
                   // ElevatedButton(
                   //   onPressed: () {
                   //     var item = context.read<MenuCubit>().state.item;
@@ -220,14 +220,14 @@ class ItemDetailsWidget extends StatelessWidget {
                   //     style: AppTextStyles.regular(16, color: Colors.white),
                   //   ),
                   // ),
-                  // TextButton(
-                  //   onPressed: backAction,
-                  //   child: Text(
-                  //     'Voltar',
-                  //     style: AppTextStyles.regular(16,
-                  //         color: const Color(0xff35C2C1)),
-                  //   ),
-                  // )
+                  TextButton(
+                    onPressed: backAction,
+                    child: Text(
+                      'Voltar',
+                      style: AppTextStyles.regular(16,
+                          color: const Color(0xff35C2C1)),
+                    ),
+                  )
                 ],
               ),
             ],
