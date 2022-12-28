@@ -89,6 +89,13 @@ class AppPrinter {
       printer.row([
         PosColumn(text: e.observations, width: 12),
       ]);
+      // for (var element in e.extras) {
+      printer.row([
+        PosColumn(text: "Adicionais", width: 3),
+        PosColumn(
+            text: e.extras.isEmpty ? "Nenhum" : e.extras.toString(), width: 9),
+      ]);
+      // }
     }
     printer.emptyLines(1);
     printer.hr();

@@ -5,10 +5,12 @@ class Order {
   final Item item;
   int amount;
   String observations;
+  List<String> extras;
   // final String restaurant_id;
   Order({
     required this.item,
     this.amount = 1,
+    this.extras = const [],
     required this.observations,
     // required this.restaurant_id,
   });
@@ -41,6 +43,7 @@ class Order {
       item: Item.fromMap(map['item']),
       amount: map['amount']?.toInt() ?? 0,
       observations: map['observations'] ?? '',
+      extras: List.from(map['extras']) ?? [],
       // restaurant_id: map['restaurant_id'] ?? '',
     );
   }
