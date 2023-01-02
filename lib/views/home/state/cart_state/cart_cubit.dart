@@ -22,13 +22,13 @@ class CartCubit extends Cubit<CartState> {
 
   CartCubit() : super(CartState.initial());
 
-  void addToCart(Order newOrder) {
+  void addToCart(OrderModel newOrder) {
     // print(newOrder);
 
     // newOrder.observations = state.temp_observation;
 
     if (hasItem(newOrder.item.id!)) {
-      var ord = getOrderByItemId(newOrder.item.id!);
+      OrderModel? ord = getOrderByItemId(newOrder.item.id!);
       if (ord != null) {
         ord.copyWith(
             amount: newOrder.amount, observations: newOrder.observations);
@@ -43,7 +43,7 @@ class CartCubit extends Cubit<CartState> {
     print(state);
   }
 
-  updateItemFromCart(Order order) {
+  updateItemFromCart(OrderModel order) {
     final newCart = state.cart.map((item) {
       if (item.item.id == order.item.id) {
         return item.copyWith(
@@ -63,7 +63,7 @@ class CartCubit extends Cubit<CartState> {
     return item.isNotEmpty;
   }
 
-  Order? getOrderByItemId(String id) {
+  OrderModel? getOrderByItemId(String id) {
     return hasItem(id)
         ? state.cart.singleWhere((el) => el.item.id == id)
         : null;
@@ -96,7 +96,7 @@ class CartCubit extends Cubit<CartState> {
     print(state.total);
   }
 
-  void removeToCart(Order order) {
+  void removeToCart(OrderModel order) {
     final newCart = state.cart;
     newCart.removeWhere((element) => element.item.id == order.item.id);
 

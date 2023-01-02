@@ -72,7 +72,7 @@ class HomeCubit extends Cubit<HomeState> {
     toast.init(context: context);
     // debugPrint(data.toString());
     List<dynamic> items = data["items"] ?? [];
-    List<Order> orders = items.map((e) => Order.fromMap(e)).toList();
+    List<OrderModel> orders = items.map((e) => OrderModel.fromMap(e)).toList();
 
     var id = state.storage["restaurant"]["id"];
     var printer = await financeRepository.getPrinterByGoal(id, "Pedidos");

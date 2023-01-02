@@ -7,9 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
-import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
@@ -207,7 +205,7 @@ class AllItemsWidget extends StatelessWidget {
                       onTap: () => modal.showIOSModalBottomSheet(
                           context: context,
                           content: ItemScreen(
-                              order: Order(item: item, observations: ""))),
+                              order: OrderModel(item: item, observations: ""))),
                       child: CardItemWidget(
                         // ns: ns,
                         item: item,
@@ -266,7 +264,8 @@ class PopularItemsWidget extends StatelessWidget {
                               context: context,
                               expand: true,
                               content: ItemScreen(
-                                  order: Order(item: item, observations: ""))),
+                                  order: OrderModel(
+                                      item: item, observations: ""))),
                           child: CardItemWidget(
                             // ns: ns,
                             item: item,

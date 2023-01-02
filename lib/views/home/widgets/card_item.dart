@@ -18,7 +18,7 @@ class CardItemWidget extends StatelessWidget {
   final bool adm_mode = false;
   @override
   Widget build(BuildContext context) {
-    var order = Order(item: item, observations: "");
+    var order = OrderModel(item: item, observations: "");
     return Builder(builder: (context) {
       return Stack(
         children: [

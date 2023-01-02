@@ -1,7 +1,7 @@
 part of 'cart_cubit.dart';
 
 class CartState {
-  final List<Order> cart;
+  final List<OrderModel> cart;
   final String payment_method;
   final int table_code;
 
@@ -54,7 +54,7 @@ class CartState {
   // }
 
   CartState copyWith({
-    List<Order>? cart,
+    List<OrderModel>? cart,
     String? payment_method,
     int? table_code,
     double? total,

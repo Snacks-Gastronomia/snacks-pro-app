@@ -9,7 +9,6 @@ import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
-import 'package:snacks_pro_app/utils/printer.dart';
 import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/tabbar.dart';
@@ -414,7 +413,7 @@ class CardOrderWidget extends StatelessWidget {
                               itemCount: items.length,
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
-                                var order = Order.fromMap(items[index]);
+                                var order = OrderModel.fromMap(items[index]);
 
                                 if (order.item.restaurant_id ==
                                     context

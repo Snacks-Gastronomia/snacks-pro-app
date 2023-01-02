@@ -38,7 +38,7 @@ class AppPrinter {
     }
   }
 
-  printOrderTemplate(NetworkPrinter printer, List<Order> orders) async {
+  printOrderTemplate(NetworkPrinter printer, List<OrderModel> orders) async {
     // print("printing order...");
     // final ByteData data = await rootBundle.load('assets/icons/snacks.png');
     // final Uint8List bytes = data.buffer.asUint8List();
@@ -155,7 +155,7 @@ class AppPrinter {
     printer.cut();
   }
 
-  printOrders(context, String ip, List<Order> orders) async {
+  printOrders(context, String ip, List<OrderModel> orders) async {
     print("try connect...");
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
