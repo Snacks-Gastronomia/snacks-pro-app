@@ -304,8 +304,9 @@ class FinanceApiServices {
         .delete();
   }
 
-  Future<void> deleteRestaurant(id) async {
-    return await firebase.collection("restaurants").doc(id).delete();
+  Future<void> deleteRestaurant(rid, owner_id) async {
+    await firebase.collection("employees").doc(owner_id).delete();
+    return await firebase.collection("restaurants").doc(rid).delete();
   }
 
   Future<void> updateRestaurant(data, doc) async {

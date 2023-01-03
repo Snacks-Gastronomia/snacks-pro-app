@@ -2,10 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:snacks_pro_app/models/bank_model.dart';
 import 'package:snacks_pro_app/services/employees_service.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
+import 'package:snacks_pro_app/utils/toast.dart';
+import 'package:snacks_pro_app/views/finance/repository/employees_repository.dart';
 
 class FinanceRepository {
   final FinanceApiServices services;
+  final toast = AppToast();
   final empServices = EmployeesApiServices();
+  final empRepo = EmployeesRepository(services: EmployeesApiServices());
 
   FinanceRepository({
     required this.services,
@@ -76,9 +80,9 @@ class FinanceRepository {
     }
   }
 
-  Future<void> deleteRestaurant(String id) async {
+  Future<void> deleteRestaurant(String rid, String owner_id) async {
     try {
-      return await services.deleteRestaurant(id);
+      return await services.deleteRestaurant(rid, owner_id);
     } catch (e) {
       throw e.toString();
     }
@@ -101,15 +105,29 @@ class FinanceRepository {
   }
 
   Future<void> saveRestaurantAndOwner(
-      Map<String, dynamic> data, Map<String, dynamic> owner) async {
-    try {
-      var doc = await services.saveRestaurant(data);
+      Map<String, dynamic> data, Map<String, dynamic> owner, context) async {
+    toast.init(context: context);
+    var phone =
+        await empRepo.fetchSingleEmployeeByPhoneNumber(owner["phone_number"]);
 
-      Map<String, Map<String, dynamic>> restaurant = {
-        "restaurant": {"id": doc.id, "name": data["name"]}
-      };
-      owner.addAll(restaurant);
-      await empServices.postEmployee(owner);
+    try {
+      if (phone.docs.isEmpty) {
+        var doc = await services.saveRestaurant(data);
+
+        print(data);
+        print(owner);
+        Map<String, Map<String, dynamic>> restaurant = {
+          "restaurant": {"id": doc.id, "name": data["name"]}
+        };
+        owner.addAll(restaurant);
+        var emp = await empServices.postEmployee(owner);
+        await services.updateRestaurant({"owner.id": emp.id}, doc.id);
+      } else {
+        toast.showToast(
+            context: context,
+            content: "Telefone já em uso",
+            type: ToastType.error);
+      }
     } catch (e) {
       throw e.toString();
     }

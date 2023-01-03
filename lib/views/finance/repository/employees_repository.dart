@@ -18,6 +18,15 @@ class EmployeesRepository {
     }
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchSingleEmployeeByPhoneNumber(
+      String phone) async {
+    try {
+      return await services.getByPhoneNumber(phone);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<void> updateAppAccess(bool access, String employee_id) async {
     try {
       return await services.changeAccess(access, employee_id);

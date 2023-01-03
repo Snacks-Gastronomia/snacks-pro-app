@@ -76,7 +76,8 @@ class ListRestaurants extends StatelessWidget {
                           .updateRestaurant(item.id, item.data(), context),
                       removeAction: () => context
                           .read<FinanceCubit>()
-                          .deleteRestaurant(item.id),
+                          .deleteRestaurant(
+                              item.id, item.data()["owner"]["id"]),
                       title: item.data()["name"],
                       owner: item.data()["owner"]["name"]);
                 });

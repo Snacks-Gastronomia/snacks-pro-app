@@ -32,6 +32,13 @@ class EmployeesApiServices {
     }
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> getByPhoneNumber(phone) async {
+    return await firebase
+        .collection("employees")
+        .where("phone_number", isEqualTo: phone)
+        .get();
+  }
+
   Future<void> deleteEmployee(String employee_id) async {
     try {
       return await firebase.collection("employees").doc(employee_id).delete();
@@ -48,9 +55,9 @@ class EmployeesApiServices {
     }
   }
 
-  Future<void> postEmployee(Map<String, dynamic> emp) async {
+  Future<dynamic> postEmployee(Map<String, dynamic> emp) async {
     try {
-      await firebase.collection("employees").add(emp);
+      return await firebase.collection("employees").add(emp);
     } catch (e) {
       print(e);
     }

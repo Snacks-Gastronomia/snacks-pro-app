@@ -257,11 +257,11 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
           "phone_number": state.restaurantAUX!.ophone,
           "first_access": true,
           "access": true,
-          "ocupation": "${state.restaurantAUX?.oname} adiministrador",
+          "ocupation": "Adiministrador do restaurante",
           "access_level": AppPermission.radm.name,
         };
 
-        await repository.saveRestaurantAndOwner(rest, owner);
+        await repository.saveRestaurantAndOwner(rest, owner, context);
       } else {
         await repository.updateRestaurant({
           "name": state.restaurantAUX?.rname,
@@ -302,8 +302,8 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     // clearAUX();
   }
 
-  void deleteRestaurant(doc_id) {
-    repository.deleteRestaurant(doc_id);
+  void deleteRestaurant(doc_id, owner_id) {
+    repository.deleteRestaurant(doc_id, owner_id);
     print(state);
     // clearAUX();
   }
