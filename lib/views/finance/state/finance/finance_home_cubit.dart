@@ -5,9 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/models/bank_model.dart';
+import 'package:snacks_pro_app/services/employees_service.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
+import 'package:snacks_pro_app/utils/toast.dart';
+import 'package:snacks_pro_app/views/finance/repository/employees_repository.dart';
 import 'package:snacks_pro_app/views/finance/repository/finance_repository.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
@@ -15,7 +18,7 @@ part 'finance_home_state.dart';
 
 class FinanceCubit extends Cubit<FinanceHomeState> {
   final storage = AppStorage();
-
+  final empRepo = EmployeesRepository(services: EmployeesApiServices());
   final repository = FinanceRepository(services: FinanceApiServices());
   FinanceCubit() : super(FinanceHomeState.initial());
 
@@ -241,36 +244,49 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   }
 
   void saveRestaurant(context) async {
+    final toast = AppToast();
     if (state.restaurantAUX != null) {
       if (state.status != AppStatus.editing) {
-        var rest = {
-          "name": state.restaurantAUX!.rname,
-          "category": state.restaurantAUX!.rcategory,
-          "bank_account": "",
-          "bank_agency": "",
-          "bank_name": "",
-          "bank_owner": "",
-          "owner": {"name": state.restaurantAUX!.oname}
-        };
-        var owner = {
-          "name": state.restaurantAUX!.oname,
-          "phone_number": state.restaurantAUX!.ophone,
-          "first_access": true,
-          "access": true,
-          "ocupation": "Adiministrador do restaurante",
-          "access_level": AppPermission.radm.name,
-        };
+        toast.init(context: context);
+        var phone = await empRepo
+            .fetchSingleEmployeeByPhoneNumber(state.restaurantAUX!.ophone);
 
-        await repository.saveRestaurantAndOwner(rest, owner, context);
+        if (phone.docs.isEmpty) {
+          var rest = {
+            "name": state.restaurantAUX!.rname,
+            "category": state.restaurantAUX!.rcategory,
+            "bank_account": "",
+            "bank_agency": "",
+            "bank_name": "",
+            "bank_owner": "",
+            "owner": {"name": state.restaurantAUX!.oname}
+          };
+          var owner = {
+            "name": state.restaurantAUX!.oname,
+            "phone_number": state.restaurantAUX!.ophone,
+            "first_access": true,
+            "access": true,
+            "ocupation": "Adiministrador do restaurante",
+            "access_level": AppPermission.radm.name,
+          };
+
+          await repository.saveRestaurantAndOwner(rest, owner, context);
+          clearAUX();
+          Navigator.pop(context);
+        } else {
+          toast.showToast(
+              context: context,
+              content: "Telefone já em uso",
+              type: ToastType.error);
+        }
       } else {
         await repository.updateRestaurant({
           "name": state.restaurantAUX?.rname,
           "category": state.restaurantAUX?.rcategory
         }, state.restaurantAUX?.id);
+        clearAUX();
+        Navigator.pop(context);
       }
-
-      clearAUX();
-      Navigator.pop(context);
     }
   }
 

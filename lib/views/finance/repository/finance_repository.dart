@@ -106,28 +106,15 @@ class FinanceRepository {
 
   Future<void> saveRestaurantAndOwner(
       Map<String, dynamic> data, Map<String, dynamic> owner, context) async {
-    toast.init(context: context);
-    var phone =
-        await empRepo.fetchSingleEmployeeByPhoneNumber(owner["phone_number"]);
-
     try {
-      if (phone.docs.isEmpty) {
-        var doc = await services.saveRestaurant(data);
+      var doc = await services.saveRestaurant(data);
 
-        print(data);
-        print(owner);
-        Map<String, Map<String, dynamic>> restaurant = {
-          "restaurant": {"id": doc.id, "name": data["name"]}
-        };
-        owner.addAll(restaurant);
-        var emp = await empServices.postEmployee(owner);
-        await services.updateRestaurant({"owner.id": emp.id}, doc.id);
-      } else {
-        toast.showToast(
-            context: context,
-            content: "Telefone já em uso",
-            type: ToastType.error);
-      }
+      Map<String, Map<String, dynamic>> restaurant = {
+        "restaurant": {"id": doc.id, "name": data["name"]}
+      };
+      owner.addAll(restaurant);
+      var emp = await empServices.postEmployee(owner);
+      await services.updateRestaurant({"owner.id": emp.id}, doc.id);
     } catch (e) {
       throw e.toString();
     }
