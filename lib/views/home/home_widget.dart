@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:snacks_pro_app/core/app.images.dart';
+import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
@@ -69,9 +70,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         padding: const EdgeInsets.only(bottom: 70),
         child: FloatingActionButton(
           backgroundColor: Colors.black,
-          onPressed: () async => await BeerPassService().createOrder(
-              {"nome": "Teste 7", "rfid": "1255999891", "cpf": "11400234880"},
-              100),
+          onPressed: () => Navigator.pushNamed(context, AppRoutes.newItem),
           child: const Icon(Icons.plus_one),
         ),
       ),
