@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:snacks_pro_app/components/custom_submit_button.dart';
 
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
@@ -16,6 +17,7 @@ import 'package:snacks_pro_app/services/beerpass_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/home/item_screen.dart';
+import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/card_item.dart';
 import 'package:snacks_pro_app/views/home/widgets/skeletons.dart';
@@ -29,8 +31,7 @@ class HomeScreenWidget extends StatefulWidget {
 
 class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   late ScrollController controller;
-  // final key = GlobalKey();
-  final auth = FirebaseAuth.instance;
+  bool showButton = false;
 
   @override
   void initState() {
@@ -42,6 +43,19 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   void didChangeDependencies() {
     controller.addListener(
       () {
+        var cart = context.read<CartCubit>().state;
+
+        if (controller.offset > 60 && cart.cart.isNotEmpty) {
+          // context.read<HomeCubit>().changeButtonDone(true);
+          setState(() {
+            showButton = true;
+          });
+        } else {
+          setState(() {
+            showButton = false;
+          });
+        }
+
         if (controller.position.maxScrollExtent == controller.offset &&
             context.read<HomeCubit>().state.status == AppStatus.loaded) {
           context.read<HomeCubit>().fetchItems();
@@ -64,16 +78,42 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   final modal = AppModal();
   @override
   Widget build(BuildContext context) {
+    final access_level =
+        context.read<HomeCubit>().state.storage["access_level"];
     return Scaffold(
-      // key: key,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 70),
-        child: FloatingActionButton(
-          backgroundColor: Colors.black,
-          onPressed: () => Navigator.pushNamed(context, AppRoutes.newItem),
-          child: const Icon(Icons.plus_one),
-        ),
-      ),
+      floatingActionButton: access_level == AppPermission.waiter.name
+          ? BlocBuilder<HomeCubit, HomeState>(
+              builder: (context, state) {
+                return AnimatedOpacity(
+                  opacity: showButton ? 1 : 0,
+                  duration: const Duration(milliseconds: 300),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: 70, left: 20, right: 20),
+                    child: CustomSubmitButton(
+                        onPressedAction: () =>
+                            Navigator.pushNamed(context, AppRoutes.cart),
+                        label: "Continuar",
+                        loading_label: "",
+                        loading: false),
+                  ),
+                );
+                // }
+                // return const SizedBox();
+              },
+            )
+          : Padding(
+              padding: const EdgeInsets.only(bottom: 70),
+              child: FloatingActionButton(
+                backgroundColor: Colors.black,
+                onPressed: () =>
+                    Navigator.pushNamed(context, AppRoutes.newItem),
+                child: const Icon(Icons.plus_one),
+              ),
+            ),
+      floatingActionButtonLocation: access_level == AppPermission.waiter.name
+          ? FloatingActionButtonLocation.centerFloat
+          : null,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
