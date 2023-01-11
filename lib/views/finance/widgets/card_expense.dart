@@ -10,22 +10,24 @@ class CardExpense extends StatelessWidget {
     required this.title,
     this.month,
     required this.value,
-    this.icon = Icons.pie_chart_outline_rounded,
-    this.deleteAction,
     this.iconColorBlack = false,
+    this.icon = Icons.pie_chart_outline_rounded,
+    this.enableDelete = true,
+    this.deleteAction,
   }) : super(key: key);
   final String title;
   final String? month;
   final double value;
   final bool iconColorBlack;
   final IconData? icon;
-
+  final bool enableDelete;
   final VoidCallback? deleteAction;
   @override
   Widget build(BuildContext context) {
+    print(deleteAction);
     return Slidable(
       key: const ValueKey(0),
-      enabled: deleteAction != null,
+      enabled: enableDelete,
       endActionPane: ActionPane(
         motion: const ScrollMotion(),
         extentRatio: 0.4,

@@ -127,15 +127,15 @@ class BudgetDetailsContent extends StatelessWidget {
                                       itemCount: list.length,
                                       itemBuilder: (context, index) {
                                         var item = list[index];
+                                        print(item.data()["type"] ==
+                                            "restaurant");
                                         return CardExpense(
-                                            deleteAction: () => item
-                                                        .data()["type"] ==
-                                                    "restaurant"
-                                                ? context
-                                                    .read<FinanceCubit>()
-                                                    .deleteRestaurantExpense(
-                                                        item.id, restaurantID)
-                                                : null,
+                                            enableDelete: item.data()["type"] ==
+                                                "restaurant",
+                                            deleteAction: () => context
+                                                .read<FinanceCubit>()
+                                                .deleteRestaurantExpense(
+                                                    item.id, restaurantID),
                                             title: item.data()["name"],
                                             iconColorBlack:
                                                 item.data()["type"] ==
