@@ -18,22 +18,26 @@ class BudgetDetailsContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final restaurantID =
         context.read<HomeCubit>().state.storage["restaurant"]["id"];
+    final access_level =
+        context.read<HomeCubit>().state.storage["access_level"];
     return Scaffold(
-      bottomSheet: SizedBox(
-        height: 50,
-        child: Center(
-          child: TextButton(
-            onPressed: () => AppModal().showModalBottomSheet(
-                withPadding: false,
-                context: context,
-                content: NewExpenseContent(
-                  restaurantDocId: restaurantID,
-                  restaurantExpense: true,
-                )),
-            child: const Text('Adicionar depesa adicional'),
-          ),
-        ),
-      ),
+      bottomSheet: access_level == AppPermission.radm.name
+          ? SizedBox(
+              height: 50,
+              child: Center(
+                child: TextButton(
+                  onPressed: () => AppModal().showModalBottomSheet(
+                      withPadding: false,
+                      context: context,
+                      content: NewExpenseContent(
+                        restaurantDocId: restaurantID,
+                        restaurantExpense: true,
+                      )),
+                  child: const Text('Adicionar depesa adicional'),
+                ),
+              ),
+            )
+          : null,
       body: Stack(
         children: [
           Column(
