@@ -3,17 +3,20 @@ part of 'finance_home_cubit.dart';
 class Expense {
   String name;
   double value;
+  String type;
   Expense({
     required this.name,
     required this.value,
+    required this.type,
   });
 
-  factory Expense.initial() => Expense(name: "", value: 0);
+  factory Expense.initial() => Expense(name: "", type: "", value: 0);
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
       'value': value,
+      'type': type,
     };
   }
 }
@@ -97,7 +100,7 @@ class Printer {
   }
 }
 
-class FinanceHomeState {
+class FinanceHomeState extends Equatable {
   final double budget;
   final double expenses_value;
   final int expenses_length;
@@ -107,16 +110,19 @@ class FinanceHomeState {
   final Restaurant? restaurantAUX;
   final Printer printerAUX;
   final AppStatus status;
-  FinanceHomeState(
-      {required this.budget,
-      required this.expenses_value,
-      required this.expenses_length,
-      required this.printerAUX,
-      required this.questions_carousel_index,
-      required this.bankInfo,
-      required this.status,
-      required this.expenseAUX,
-      required this.restaurantAUX});
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> expensesData;
+  FinanceHomeState({
+    required this.budget,
+    required this.expenses_value,
+    required this.expenses_length,
+    required this.questions_carousel_index,
+    required this.bankInfo,
+    required this.expenseAUX,
+    required this.restaurantAUX,
+    required this.printerAUX,
+    required this.status,
+    required this.expensesData,
+  });
 
   factory FinanceHomeState.initial() => FinanceHomeState(
       expenseAUX: Expense.initial(),
@@ -127,22 +133,24 @@ class FinanceHomeState {
       questions_carousel_index: 0,
       expenses_value: 0,
       expenses_length: 0,
+      expensesData: [],
       bankInfo: BankModel.initial());
 
-  FinanceHomeState copyWith({
-    double? budget,
-    double? expenses_value,
-    int? expenses_length,
-    int? questions_carousel_index,
-    BankModel? bankInfo,
-    AppStatus? status,
-    Expense? expenseAUX,
-    Restaurant? restaurantAUX,
-    Printer? printerAUX,
-  }) {
+  FinanceHomeState copyWith(
+      {double? budget,
+      double? expenses_value,
+      int? expenses_length,
+      int? questions_carousel_index,
+      BankModel? bankInfo,
+      AppStatus? status,
+      Expense? expenseAUX,
+      Restaurant? restaurantAUX,
+      Printer? printerAUX,
+      List<QueryDocumentSnapshot<Map<String, dynamic>>>? expensesData}) {
     return FinanceHomeState(
       expenseAUX: expenseAUX ?? this.expenseAUX,
       restaurantAUX: restaurantAUX,
+      expensesData: expensesData ?? this.expensesData,
       budget: budget ?? this.budget,
       printerAUX: printerAUX ?? this.printerAUX,
       questions_carousel_index:
@@ -167,6 +175,7 @@ class FinanceHomeState {
         other.expenseAUX == expenseAUX &&
         other.restaurantAUX == restaurantAUX &&
         other.printerAUX == printerAUX &&
+        other.expensesData == expensesData &&
         other.status == status;
   }
 
@@ -178,5 +187,20 @@ class FinanceHomeState {
         expenseAUX.hashCode ^
         restaurantAUX.hashCode ^
         status.hashCode;
+  }
+
+  @override
+  List<Object> get props {
+    return [
+      budget,
+      expenses_value,
+      expenses_length,
+      questions_carousel_index,
+      bankInfo,
+      expenseAUX,
+      printerAUX,
+      status,
+      expensesData,
+    ];
   }
 }

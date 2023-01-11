@@ -1,12 +1,19 @@
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class NewExpenseContent extends StatelessWidget {
-  const NewExpenseContent({super.key});
-
+  const NewExpenseContent({
+    Key? key,
+    this.restaurantExpense = false,
+    this.restaurantDocId = "",
+  }) : super(key: key);
+  final bool restaurantExpense;
+  final String restaurantDocId;
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -70,8 +77,12 @@ class NewExpenseContent extends StatelessWidget {
                 height: 20,
               ),
               CustomSubmitButton(
-                  onPressedAction: () =>
-                      context.read<FinanceCubit>().saveExpense(context),
+                  onPressedAction: () => restaurantExpense
+                      ? context.read<FinanceCubit>().saveRestaurantExpense(
+                          context,
+                          context.read<HomeCubit>().state.storage["restaurant"]
+                              ["id"])
+                      : context.read<FinanceCubit>().saveExpense(context),
                   label: "Adicionar depesa"),
               TextButton(
                 onPressed: () => Navigator.pop(context),

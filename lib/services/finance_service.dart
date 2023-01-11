@@ -126,12 +126,25 @@ class FinanceApiServices {
   }
 
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
-      getRestaurantExpenses() async {
+      getExpenses() async {
     // try {
     var data = await firebase
         .collection("snacks_config")
         .doc("expenses")
         .collection("all")
+        .get()
+        .catchError((onError) => print);
+
+    return data.docs;
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getRestaurantExpenses(doc) async {
+    // try {
+    var data = await firebase
+        .collection("restaurants")
+        .doc(doc)
+        .collection("expenses")
         .get()
         .catchError((onError) => print);
 
@@ -291,6 +304,14 @@ class FinanceApiServices {
         .add(data);
   }
 
+  Future saveRestExpense(data, id) async {
+    return await firebase
+        .collection("restaurants")
+        .doc(id)
+        .collection("expenses")
+        .add(data);
+  }
+
   Future<DocumentReference<Map<String, dynamic>>> saveRestaurant(data) async {
     return await firebase.collection("restaurants").add(data);
   }
@@ -300,6 +321,15 @@ class FinanceApiServices {
         .collection("snacks_config")
         .doc("expenses")
         .collection("all")
+        .doc(id)
+        .delete();
+  }
+
+  Future<void> deleteRestaurantExpense(id, restaurant_id) async {
+    return await firebase
+        .collection("restaurants")
+        .doc(restaurant_id)
+        .collection("expenses")
         .doc(id)
         .delete();
   }

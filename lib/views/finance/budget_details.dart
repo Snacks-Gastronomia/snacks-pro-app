@@ -4,7 +4,11 @@ import 'package:intl/intl.dart';
 
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/modal.dart';
+import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
+import 'package:snacks_pro_app/views/finance/contents/expenses/new_expense.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
+import 'package:snacks_pro_app/views/finance/widgets/card_expense.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class BudgetDetailsContent extends StatelessWidget {
@@ -12,7 +16,24 @@ class BudgetDetailsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final restaurantID =
+        context.read<HomeCubit>().state.storage["restaurant"]["id"];
     return Scaffold(
+      bottomSheet: SizedBox(
+        height: 50,
+        child: Center(
+          child: TextButton(
+            onPressed: () => AppModal().showModalBottomSheet(
+                withPadding: false,
+                context: context,
+                content: NewExpenseContent(
+                  restaurantDocId: restaurantID,
+                  restaurantExpense: true,
+                )),
+            child: const Text('Adicionar depesa adicional'),
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           Column(
@@ -84,29 +105,47 @@ class BudgetDetailsContent extends StatelessWidget {
                         height: 35,
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.35,
+                        height: MediaQuery.of(context).size.height * 0.45,
                         child: FutureBuilder(
-                            future:
-                                context.read<FinanceCubit>().fetchExpenses(),
+                            future: context
+                                .read<FinanceCubit>()
+                                .fetchExpenses(restaurantID),
                             builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return ListView.separated(
-                                    separatorBuilder: (context, index) =>
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                    shrinkWrap: true,
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: snapshot.data!.length,
-                                    itemBuilder: (context, index) {
-                                      var item = snapshot.data![index];
-                                      return CardExpense(
-                                          title: item.data()["name"],
-                                          value: double.parse(item
-                                                  .data()["value"]
-                                                  .toString()) *
-                                              -1);
-                                    });
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                return BlocBuilder<FinanceCubit,
+                                        FinanceHomeState>(
+                                    builder: (context, snapshot) {
+                                  var list = snapshot.expensesData;
+                                  return ListView.separated(
+                                      separatorBuilder: (context, index) =>
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                      shrinkWrap: true,
+                                      physics: const BouncingScrollPhysics(),
+                                      itemCount: list.length,
+                                      itemBuilder: (context, index) {
+                                        var item = list[index];
+                                        return CardExpense(
+                                            deleteAction: () => item
+                                                        .data()["type"] ==
+                                                    "restaurant"
+                                                ? context
+                                                    .read<FinanceCubit>()
+                                                    .deleteRestaurantExpense(
+                                                        item.id, restaurantID)
+                                                : null,
+                                            title: item.data()["name"],
+                                            iconColorBlack:
+                                                item.data()["type"] ==
+                                                    "restaurant",
+                                            value: double.parse(item
+                                                    .data()["value"]
+                                                    .toString()) *
+                                                -1);
+                                      });
+                                });
                               }
                               return const Center(
                                 child: SizedBox(
@@ -139,68 +178,6 @@ class BudgetDetailsContent extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CardExpense extends StatelessWidget {
-  const CardExpense({
-    Key? key,
-    required this.title,
-    this.month,
-    required this.value,
-    this.icon = Icons.pie_chart_outline_rounded,
-  }) : super(key: key);
-  final String title;
-  final String? month;
-  final double value;
-  final IconData? icon;
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                  color: const Color(0xffF0F6F5),
-                  borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTextStyles.medium(16),
-                ),
-                // Text(
-                //   month,
-                //   style:
-                //       AppTextStyles.regular(13, color: const Color(0xff666666)),
-                // ),
-              ],
-            ),
-          ],
-        ),
-        Text(
-          (value < 0 ? '' : '+ ') +
-              NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value),
-          style: AppTextStyles.medium(18,
-              color: value < 0
-                  ? const Color(0xffF95B51)
-                  : const Color(0xff25A969)),
-        ),
-      ],
     );
   }
 }

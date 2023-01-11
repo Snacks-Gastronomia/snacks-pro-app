@@ -110,19 +110,21 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     emit(state.copyWith(printerAUX: state.printerAUX.copyWith(goal: value)));
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
-      fetchExpenses() async {
+  Future<void> fetchExpenses(String docID) async {
     emit(state.copyWith(status: AppStatus.loading));
+
     var data = await repository.getExpenses();
-    // var map = data.asMap();
-    print(data.length);
+    if (docID.isNotEmpty) {
+      var dataRestaurant = await repository.getRestaurantExpenses(docID);
+      data = [...data, ...dataRestaurant];
+    }
+
     if (data.isNotEmpty) {
       double total = totalExpenses(data);
 
-      emit(state.copyWith(expenses_value: total, status: AppStatus.loaded));
+      emit(state.copyWith(
+          expenses_value: total, expensesData: data, status: AppStatus.loaded));
     }
-
-    return data;
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchExpensesStream() {
@@ -133,7 +135,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   double totalExpenses(
           List<QueryDocumentSnapshot<Map<String, dynamic>>> data) =>
       double.parse(data
-          .map((item) => double.parse(item.data()["value"]))
+          .map((item) => double.parse(item.data()["value"].toString()))
           .reduce((a, b) => a + b)
           .toString());
 
@@ -304,8 +306,16 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     print(state);
   }
 
+  void changeExpenseType(String value) {
+    var ex = state.expenseAUX;
+    ex.type = value;
+    emit(state.copyWith(expenseAUX: ex));
+    print(state);
+  }
+
   void saveExpense(context) async {
     if (state.expenseAUX.name.isNotEmpty && state.expenseAUX.value != 0) {
+      changeExpenseType("snacks");
       await repository.saveExpense(state.expenseAUX.toMap());
       clearAUX();
 
@@ -313,9 +323,36 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     }
   }
 
+  void saveRestaurantExpense(context, rest_id) async {
+    if (state.expenseAUX.name.isNotEmpty && state.expenseAUX.value != 0) {
+      changeExpenseType("restaurant");
+      await repository.saveRestExpense(state.expenseAUX.toMap(), rest_id);
+      clearAUX();
+
+      Navigator.pop(context);
+    }
+  }
+
   void deleteExpense(doc_id) async {
-    await repository.deleteExpense(doc_id).then((value) => fetchExpenses());
+    await repository.deleteExpense(doc_id).then((value) => fetchExpenses(""));
     // clearAUX();
+  }
+
+  void deleteRestaurantExpense(doc_id, String restaurant_id) async {
+    print("delete" + doc_id);
+    await repository
+        .deleteRestaurantExpense(doc_id, restaurant_id)
+        .then((value) => {fetchExpenses(restaurant_id)});
+    clearAUX();
+  }
+
+  void partialRemoveExpensesList(doc) {
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> list =
+        List.from(state.expensesData);
+
+    list.removeWhere((element) => element.id == doc);
+
+    emit(state.copyWith(expensesData: list));
   }
 
   void deleteRestaurant(doc_id, owner_id) {

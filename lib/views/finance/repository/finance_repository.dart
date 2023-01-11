@@ -80,6 +80,14 @@ class FinanceRepository {
     }
   }
 
+  Future<void> deleteRestaurantExpense(String id, String doc) async {
+    try {
+      return await services.deleteRestaurantExpense(id, doc);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<void> deleteRestaurant(String rid, String owner_id) async {
     try {
       return await services.deleteRestaurant(rid, owner_id);
@@ -91,6 +99,14 @@ class FinanceRepository {
   Future<void> saveExpense(Map data) async {
     try {
       return await services.saveExpense(data);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> saveRestExpense(Map data, rest_id) async {
+    try {
+      return await services.saveRestExpense(data, rest_id);
     } catch (e) {
       throw e.toString();
     }
@@ -165,7 +181,16 @@ class FinanceRepository {
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       getExpenses() async {
     try {
-      return await services.getRestaurantExpenses();
+      return await services.getExpenses();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getRestaurantExpenses(docID) async {
+    try {
+      return await services.getRestaurantExpenses(docID);
     } catch (e) {
       throw e.toString();
     }

@@ -13,6 +13,7 @@ import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/new_expense.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
+import 'package:snacks_pro_app/views/finance/widgets/card_expense.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class ExpensesContent extends StatelessWidget {
@@ -149,95 +150,5 @@ class ListExpenses extends StatelessWidget {
           }
           return const CustomCircularProgress();
         });
-  }
-}
-
-class CardExpense extends StatelessWidget {
-  const CardExpense({
-    Key? key,
-    required this.title,
-    this.month,
-    required this.value,
-    this.icon = Icons.pie_chart_outline_rounded,
-    required this.deleteAction,
-  }) : super(key: key);
-  final String title;
-  final String? month;
-  final double value;
-  final IconData? icon;
-
-  final VoidCallback deleteAction;
-  @override
-  Widget build(BuildContext context) {
-    return Slidable(
-      key: const ValueKey(0),
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        extentRatio: 0.4,
-        children: [
-          CustomSlidableAction(
-            onPressed: (context) {},
-            autoClose: true,
-            flex: 2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // IconButton(
-                //     onPressed: null,
-                //     icon: Icon(
-                //       Icons.delete,
-                //       color: Color(0xffE20808),
-                //     ))
-
-                TextButton(
-                  onPressed: deleteAction,
-                  child: Text(
-                    "Excluir",
-                    style: AppTextStyles.light(14, color: Color(0xffE20808)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                    color: const Color(0xffF0F6F5),
-                    borderRadius: BorderRadius.circular(8)),
-                child: Icon(icon),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.medium(16),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Text(
-            NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value),
-            style: AppTextStyles.medium(18, color: Colors.grey.shade400),
-          ),
-        ],
-      ),
-    );
   }
 }
