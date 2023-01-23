@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
+import 'package:snacks_pro_app/services/firebase/notifications.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
@@ -153,8 +154,14 @@ class CartCubit extends Cubit<CartState> {
   void changeStatusBackward(doc_id, List<Map<String, dynamic>> items,
       String payment_method, OrderStatus current) async {}
 
-  void changeStatus(doc_id, List<dynamic> items, String payment_method,
-      String current, dynamic datetime, bool isDelivery) async {
+  void changeStatus(
+      String table,
+      doc_id,
+      List<dynamic> items,
+      String payment_method,
+      String current,
+      dynamic datetime,
+      bool isDelivery) async {
     final user = await storage.getDataStorage("user");
     var current_index = getStatusIndex(current);
 
@@ -164,6 +171,9 @@ class CartCubit extends Cubit<CartState> {
             current_index >= 3 &&
             isDelivery) {
       changeStatusFoward(doc_id, items, payment_method, current, datetime);
+    } else {
+      final notification = AppNotification();
+      await notification.sendToWaiters(code: "#$table");
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 import 'package:snacks_pro_app/core/app.routes.dart';
+import 'package:snacks_pro_app/services/firebase/notifications.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 

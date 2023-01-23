@@ -15,7 +15,7 @@ enum OrderStatus {
 enum AppPermission { employee, cashier, waiter, radm, sadm }
 
 extension ParseToStringFromDisplay on String {
-  AppPermission get stringFromDisplayEnum {
+  AppPermission get stringLabelToEnum {
     switch (this) {
       case "Caixa":
         return AppPermission.cashier;
@@ -26,6 +26,21 @@ extension ParseToStringFromDisplay on String {
       case "Snacks administrador":
         return AppPermission.sadm;
       case "Restaurante administrador":
+        return AppPermission.radm;
+      default:
+        return AppPermission.employee;
+    }
+  }
+
+  AppPermission get stringToEnum {
+    switch (this) {
+      case "cashier":
+        return AppPermission.cashier;
+      case "waiter":
+        return AppPermission.waiter;
+      case "sadm":
+        return AppPermission.sadm;
+      case "radm":
         return AppPermission.radm;
       default:
         return AppPermission.employee;

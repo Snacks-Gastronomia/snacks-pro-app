@@ -6,8 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:snacks_pro_app/components/custom_submit_button.dart';
 
+import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
@@ -78,11 +78,25 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   final modal = AppModal();
   @override
   Widget build(BuildContext context) {
-    final access_level =
-        context.read<HomeCubit>().state.storage["access_level"];
+    final access_level = context
+        .read<HomeCubit>()
+        .state
+        .storage["access_level"]
+        .toString()
+        .stringToEnum;
     return Scaffold(
-      floatingActionButton: access_level == AppPermission.waiter.name
-          ? BlocBuilder<HomeCubit, HomeState>(
+      floatingActionButton: (access_level == AppPermission.radm ||
+              access_level == AppPermission.employee)
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 70),
+              child: FloatingActionButton(
+                backgroundColor: Colors.black,
+                onPressed: () =>
+                    Navigator.pushNamed(context, AppRoutes.newItem),
+                child: const Icon(Icons.plus_one),
+              ),
+            )
+          : BlocBuilder<HomeCubit, HomeState>(
               builder: (context, state) {
                 return AnimatedOpacity(
                   opacity: showButton ? 1 : 0,
@@ -101,17 +115,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                 // }
                 // return const SizedBox();
               },
-            )
-          : Padding(
-              padding: const EdgeInsets.only(bottom: 70),
-              child: FloatingActionButton(
-                backgroundColor: Colors.black,
-                onPressed: () =>
-                    Navigator.pushNamed(context, AppRoutes.newItem),
-                child: const Icon(Icons.plus_one),
-              ),
             ),
-      floatingActionButtonLocation: access_level == AppPermission.waiter.name
+      floatingActionButtonLocation: (access_level == AppPermission.radm ||
+              access_level == AppPermission.employee)
           ? FloatingActionButtonLocation.centerFloat
           : null,
       backgroundColor: Colors.white,
@@ -173,10 +179,10 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               const SizedBox(
                 height: 40,
               ),
-              PopularItemsWidget(ns: _navigator),
-              const SizedBox(
-                height: 25,
-              ),
+              // PopularItemsWidget(ns: _navigator),
+              // const SizedBox(
+              //   height: 25,
+              // ),
               Text(
                 'Cardápio',
                 style: AppTextStyles.medium(18),
@@ -186,6 +192,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
               ),
               AllItemsWidget(
                 ns: _navigator,
+                access_level: access_level,
                 // controller: controller,
               ),
               const SizedBox(
@@ -202,123 +209,202 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
 class AllItemsWidget extends StatelessWidget {
   AllItemsWidget({
     Key? key,
+    required this.access_level,
     required this.ns,
-    // required this.controller,
   }) : super(key: key);
-
+  final AppPermission access_level;
   final NavigatorState ns;
   final modal = AppModal();
-  // final ScrollController controller;
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
-      if (state.status == AppStatus.loading) {
-        return const ListSkeletons(direction: Axis.vertical);
-      }
-      var data = state.menu;
+    return context.watch<HomeCubit>().state.menu.isEmpty
+        ? const Center(
+            child: Text("Cardapio vazio"),
+          )
+        : GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+                mainAxisExtent: 160),
+            shrinkWrap: true,
+            cacheExtent: 100,
+            addAutomaticKeepAlives: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: context.watch<HomeCubit>().state.menu.length +
+                (!context.watch<HomeCubit>().state.listIsLastPage &&
+                        context.watch<HomeCubit>().state.status ==
+                            AppStatus.loading
+                    ? 3
+                    : 0),
+            // itemCount: data.length,
+            // controller: controller,
+            itemBuilder: (BuildContext ctx, index) {
+              // if (data.length <= index && state.listIsLastPage) {
+              //   return Transform.scale(
+              //       scale: 0.9, child: const CardSkeleton());
+              // } else {
+              // if (ctx.) print("loading more");
+              return BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) {
+                // if (state.status == AppStatus.loading) {
+                //   return const ListSkeletons(direction: Axis.vertical);
+                // }
+                var data = state.menu;
+                // var data = [];
 
-      return BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          if (data.isNotEmpty) {
-            return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
-                    mainAxisExtent: 160),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                // itemCount: data.length + (state.listIsLastPage ? 0 : 3),
-                itemCount: data.length,
-                // controller: controller,
-                itemBuilder: (BuildContext ctx, index) {
-                  // if (data.length <= index && state.listIsLastPage) {
-                  //   return Transform.scale(
-                  //       scale: 0.9, child: const CardSkeleton());
-                  // } else {
+                if (data.isNotEmpty && index < data.length) {
                   var item = Item.fromMap(data[index]);
                   var id = data[index]["id"];
                   item = item.copyWith(id: id);
-                  // if (ctx.) print("loading more");
                   return GestureDetector(
                       onTap: () => modal.showIOSModalBottomSheet(
                           context: context,
                           content: ItemScreen(
+                              permission: access_level,
                               order: OrderModel(item: item, observations: ""))),
                       child: CardItemWidget(
                         // ns: ns,
+                        permission: access_level,
                         item: item,
                       ));
-                  // }
-                });
-          }
-          return const Center(
-            child: Text("Cardapio vazio"),
-          );
-        },
-      );
-    });
+                }
+
+                return const ListSkeletons(direction: Axis.horizontal);
+              });
+            });
   }
 }
 
-class PopularItemsWidget extends StatelessWidget {
-  const PopularItemsWidget({
-    Key? key,
-    required this.ns,
-  }) : super(key: key);
-  final NavigatorState ns;
+// class AllItemsWidget extends StatelessWidget {
+//   AllItemsWidget({
+//     Key? key,
+//     required this.access_level,
+//     required this.ns,
+//   }) : super(key: key);
+//   final AppPermission access_level;
+//   final NavigatorState ns;
+//   final modal = AppModal();
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(builder: (context, snapshot) {
-      if (snapshot.status == AppStatus.loading) {
-        return const ListSkeletons(direction: Axis.horizontal);
-      }
-      if (snapshot.popular.isNotEmpty) {
-        return Column(
-          children: [
-            Text(
-              'Itens populares',
-              style: AppTextStyles.medium(18),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              height: 155,
-              child: ListView.separated(
-                shrinkWrap: true,
-                separatorBuilder: (context, index) => const SizedBox(
-                  width: 10,
-                ),
-                scrollDirection: Axis.horizontal,
-                itemCount: snapshot.popular.length, //alterado sem teste
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  var item = snapshot.popular[index];
-                  return SizedBox(
-                      width: 165,
-                      child: GestureDetector(
-                          onTap: () => AppModal().showIOSModalBottomSheet(
-                              context: context,
-                              expand: true,
-                              content: ItemScreen(
-                                  order: OrderModel(
-                                      item: item, observations: ""))),
-                          child: CardItemWidget(
-                            // ns: ns,
-                            item: item,
-                          )));
-                },
-              ),
-            ),
-          ],
-        );
-      }
-      return const SizedBox();
-    });
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<HomeCubit, HomeState>(
+//       builder: (context, state) {
+//         // if (state.status == AppStatus.loading) {
+//         //   return const ListSkeletons(direction: Axis.vertical);
+//         // }
+//         var data = state.menu;
+
+//         if (data.isNotEmpty) {
+//           if (state.status == AppStatus.loading) {
+//             return const ListSkeletons(direction: Axis.horizontal);
+//           } else {
+//             return GridView.builder(
+//                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//                     crossAxisCount: 2,
+//                     crossAxisSpacing: 15,
+//                     mainAxisSpacing: 15,
+//                     mainAxisExtent: 160),
+//                 shrinkWrap: true,
+//                 cacheExtent: 100,
+//                 addAutomaticKeepAlives: true,
+//                 physics: const NeverScrollableScrollPhysics(),
+//                 itemCount: data.length,
+//                 // itemCount: data.length,
+//                 // controller: controller,
+//                 itemBuilder: (BuildContext ctx, index) {
+//                   // if (data.length <= index && state.listIsLastPage) {
+//                   //   return Transform.scale(
+//                   //       scale: 0.9, child: const CardSkeleton());
+//                   // } else {
+//                   // if (ctx.) print("loading more");
+
+//                   var item = Item.fromMap(data[index]);
+//                   var id = data[index]["id"];
+//                   item = item.copyWith(id: id);
+//                   return GestureDetector(
+//                       onTap: () => modal.showIOSModalBottomSheet(
+//                           context: context,
+//                           content: ItemScreen(
+//                               permission: access_level,
+//                               order: OrderModel(item: item, observations: ""))),
+//                       child: CardItemWidget(
+//                         // ns: ns,
+//                         permission: access_level,
+//                         item: item,
+//                       ));
+
+//                   // }
+//                 });
+//           }
+//         }
+//         return const Center(
+//           child: Text("Cardapio vazio"),
+//         );
+//       },
+//     );
+//   }
+// }
+
+// class PopularItemsWidget extends StatelessWidget {
+//   const PopularItemsWidget({
+//     Key? key,
+//     required this.ns,
+//   }) : super(key: key);
+//   final NavigatorState ns;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<HomeCubit, HomeState>(builder: (context, snapshot) {
+//       if (snapshot.status == AppStatus.loading) {
+//         return const ListSkeletons(direction: Axis.horizontal);
+//       }
+//       if (snapshot.popular.isNotEmpty) {
+//         return Column(
+//           children: [
+//             Text(
+//               'Itens populares',
+//               style: AppTextStyles.medium(18),
+//             ),
+//             const SizedBox(
+//               height: 15,
+//             ),
+//             SizedBox(
+//               height: 155,
+//               child: ListView.separated(
+//                 shrinkWrap: true,
+//                 separatorBuilder: (context, index) => const SizedBox(
+//                   width: 10,
+//                 ),
+//                 scrollDirection: Axis.horizontal,
+//                 itemCount: snapshot.popular.length, //alterado sem teste
+//                 physics: const BouncingScrollPhysics(),
+//                 itemBuilder: (context, index) {
+//                   var item = snapshot.popular[index];
+//                   return SizedBox(
+//                       width: 165,
+//                       child: GestureDetector(
+//                           onTap: () => AppModal().showIOSModalBottomSheet(
+//                               context: context,
+//                               expand: true,
+//                               content: ItemScreen(
+//                                   order: OrderModel(
+//                                       item: item, observations: ""))),
+//                           child: CardItemWidget(
+//                             // ns: ns,
+//                             item: item,
+//                           )));
+//                 },
+//               ),
+//             ),
+//           ],
+//         );
+//       }
+//       return const SizedBox();
+//     });
+//   }
+// }
 
 class TopWidget extends StatelessWidget {
   const TopWidget({Key? key}) : super(key: key);

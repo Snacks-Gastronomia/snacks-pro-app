@@ -8,15 +8,18 @@ import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/modal_content_obs.dart';
 
 class ItemScreen extends StatefulWidget {
-  ItemScreen({Key? key, required this.order}) : super(key: key);
+  ItemScreen({Key? key, required this.order, required this.permission})
+      : super(key: key);
 
   OrderModel order;
+  AppPermission permission;
 
   @override
   State<ItemScreen> createState() => _ItemScreenState();
@@ -29,15 +32,13 @@ class _ItemScreenState extends State<ItemScreen> {
 
     var item =
         context.read<CartCubit>().getOrderByItemId(widget.order.item.id!);
-    print(item);
+
     if (item != null) {
       context.read<ItemScreenCubit>().insertItem(item, false);
     } else {
       context.read<ItemScreenCubit>().insertItem(widget.order, true);
     }
   }
-
-  final adm_mode = true;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +133,8 @@ class _ItemScreenState extends State<ItemScreen> {
                           // height: 200,
                         ),
                 ),
-                if (!adm_mode)
+                if (widget.permission == AppPermission.radm ||
+                    widget.permission == AppPermission.employee)
                   Positioned(
                     top: MediaQuery.of(context).size.height * 0.465,
                     left: 0,
@@ -319,7 +321,8 @@ class _ItemScreenState extends State<ItemScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  if (adm_mode)
+                  if (widget.permission == AppPermission.radm ||
+                      widget.permission == AppPermission.employee)
                     Center(
                       child: TextButton.icon(
                         onPressed: () {},
