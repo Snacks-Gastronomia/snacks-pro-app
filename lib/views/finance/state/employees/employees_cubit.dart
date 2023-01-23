@@ -55,8 +55,6 @@ class EmployeesCubit extends Cubit<EmployeesState> {
     // if (emp != null) {
     if (emp.access_level.isEmpty) {
       emp.copyWith(access_level: AppPermission.employee.name);
-    } else {
-      emp.copyWith(access_level: emp.access_level.stringFromDisplayEnum.name);
     }
 
     var data = emp.toMap();
@@ -120,7 +118,7 @@ class EmployeesCubit extends Cubit<EmployeesState> {
     if (value != null) {
       var emp = state.newEmployee;
 
-      value = value.stringFromDisplayEnum.name;
+      value = value.stringLabelToEnum.name;
       emit(state.copyWith(newEmployee: emp.copyWith(access_level: value)));
     }
     print(state);

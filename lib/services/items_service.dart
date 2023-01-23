@@ -23,12 +23,15 @@ class ItemsApiServices {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getItems(
       String? restaurant_id, DocumentSnapshot? document,
-      {int limit = 5}) {
+      {int limit = 5, bool item_active = true}) {
     try {
-      var ref = database
-          .collection("menu")
-          .where("restaurant_id", isEqualTo: restaurant_id)
-          .limit(limit);
+      var ref =
+          database.collection("menu").where("active", isEqualTo: item_active);
+
+      if (restaurant_id?.isNotEmpty ?? false) {
+        ref = ref.where("restaurant_id", isEqualTo: restaurant_id);
+      }
+      ref = ref.limit(limit);
       if (document != null) {
         return ref.startAfterDocument(document).snapshots();
       }

@@ -46,8 +46,8 @@ class CardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 155,
-      height: 155,
+      width: 150,
+      height: 150,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -65,7 +65,7 @@ class CardSkeleton extends StatelessWidget {
                 ),
               )),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [

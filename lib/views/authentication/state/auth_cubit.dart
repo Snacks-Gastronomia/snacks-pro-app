@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/services/auth_service.dart';
+import 'package:snacks_pro_app/services/firebase/notifications.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/md5.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
@@ -74,11 +75,12 @@ class AuthCubit extends Cubit<AuthState> {
     }
     if (done) {
       await createUserStorage();
-      changeStatus(AppStatus.loaded);
+      await AppNotification().generateTokenAndSave(docID: state.userDoc["id"]);
       // navigator.pushNamedAndRemoveUntil(
       //     AppRoutes.home, ModalRoute.withName(AppRoutes.restaurantAuth));
       navigator.pushNamedAndRemoveUntil(
           AppRoutes.home, ModalRoute.withName("/"));
+      changeStatus(AppStatus.loaded);
     }
   }
 
@@ -143,7 +145,7 @@ class AuthCubit extends Cubit<AuthState> {
     final data = {
       "first_access": false,
       "password": encrypt.getEncrypt(state.password),
-      "uid": auth.currentUser!.uid
+      "uid": auth.currentUser!.uid,
     };
 
     await repository.updateUser(data, state.userDoc["id"]);

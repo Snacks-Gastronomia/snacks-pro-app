@@ -74,6 +74,22 @@ class NewExpenseContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(
+                height: 10,
+              ),
+              BlocBuilder<FinanceCubit, FinanceHomeState>(
+                builder: (context, state) {
+                  return CheckboxListTile(
+                    value: state.expenseAUX.sharedValue,
+                    onChanged:
+                        context.read<FinanceCubit>().changeExpenseDividerValue,
+                    title: Text(
+                      "Dividir valor para todos os segmentos",
+                      style: AppTextStyles.medium(15),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
                 height: 20,
               ),
               CustomSubmitButton(

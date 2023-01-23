@@ -95,15 +95,19 @@ class HomeCubit extends Cubit<HomeState> {
 
   void fetchItems() async {
     if (!state.listIsLastPage) {
-      var data = await storage.getDataStorage("user");
-      var id = data["restaurant"]["id"];
       emit(state.copyWith(status: AppStatus.loading));
+      var data = await storage.getDataStorage("user");
+      var permission = data["access_level"].toString().stringToEnum;
+      var id = permission == AppPermission.radm ||
+              permission == AppPermission.employee
+          ? data["restaurant"]["id"]
+          : null;
+
       itemsRepository
           .fetchItems(id, state.lastDocument)
           .distinct()
           .listen((event) {
         if (event.docs.isNotEmpty) {
-          // print("fetch...");
           var data = event.docs.map<Map<String, dynamic>>((e) {
             var el = e.data();
             el.addAll({"id": e.id});

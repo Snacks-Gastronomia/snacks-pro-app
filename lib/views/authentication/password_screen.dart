@@ -23,7 +23,7 @@ class PasswordScreen extends StatelessWidget {
                   onPressedAction: () async =>
                       context.read<AuthCubit>().authenticateUser(context),
                   label: state.firstAccess ? "Salvar" : "Entrar",
-                  loading_label: "Salvando dados..",
+                  loading_label: "Entrando...",
                   loading: state.status == AppStatus.loading);
             },
           ),

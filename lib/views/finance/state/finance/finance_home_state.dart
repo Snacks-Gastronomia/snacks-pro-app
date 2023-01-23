@@ -4,17 +4,21 @@ class Expense {
   String name;
   double value;
   String type;
+  bool sharedValue;
   Expense({
     required this.name,
     required this.value,
     required this.type,
+    required this.sharedValue,
   });
 
-  factory Expense.initial() => Expense(name: "", type: "", value: 0);
+  factory Expense.initial() =>
+      Expense(name: "", sharedValue: false, type: "", value: 0);
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'sharedValue': sharedValue,
       'value': value,
       'type': type,
     };
