@@ -32,6 +32,14 @@ class FinanceRepository {
     }
   }
 
+  Future<void> getCountRestaurants() async {
+    try {
+      return await services.getCountRestaunts();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<void> insertPrinter(Map<String, dynamic> data) async {
     try {
       return await services.addPrinter(data);

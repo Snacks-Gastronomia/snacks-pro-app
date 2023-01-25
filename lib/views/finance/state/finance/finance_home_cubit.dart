@@ -28,7 +28,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     var access = user["access_level"];
 
     var id = access == AppPermission.sadm ? "snacks" : user["restaurant"]["id"];
-
+    await repository.getCountRestaurants();
     var data = await Future.wait([
       repository.getMonthlyBudget(id),
       repository.fetchBankInformations(id),
@@ -135,7 +135,10 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   double totalExpenses(
           List<QueryDocumentSnapshot<Map<String, dynamic>>> data) =>
       double.parse(data
-          .map((item) => double.parse(item.data()["value"].toString()))
+          .map((item) => (item.data()["sharedValue"] ?? false)
+              ? double.parse(item.data()["value"].toString()) /
+                  state.restaurant_count
+              : double.parse(item.data()["value"].toString()))
           .reduce((a, b) => a + b)
           .toString());
 

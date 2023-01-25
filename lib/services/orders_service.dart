@@ -26,6 +26,10 @@ class OrdersApiServices {
         .snapshots();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getOrders() {
+    return database.collection("orders").snapshots();
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrders(OrderStatus status) {
     return database.collection("orders").snapshots();
   }

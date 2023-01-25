@@ -57,6 +57,10 @@ class HomeCubit extends Cubit<HomeState> {
     if (state.storage["access_level"] == AppPermission.cashier.name) {
       return ordersRepository.fetchOrdersByStatus(OrderStatus.done);
     }
+    if (state.storage["access_level"] == AppPermission.waiter.name) {
+      return ordersRepository.fetchAllOrders();
+    }
+
     return ordersRepository
         .fetchOrdersByRestaurantId(state.storage["restaurant"]["id"]);
   }

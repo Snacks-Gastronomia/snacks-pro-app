@@ -18,8 +18,12 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final access_level =
-        context.read<HomeCubit>().state.storage["access_level"];
+    final access_level = context
+        .read<HomeCubit>()
+        .state
+        .storage["access_level"]
+        .toString()
+        .stringToEnum;
 
     getCountByStatus(List data, OrderStatus status) {
       return data.isNotEmpty
@@ -85,14 +89,16 @@ class OrdersScreen extends StatelessWidget {
                         data["id"] = e.id;
 
                         if (access_level == AppPermission.waiter.name) {
-                          if (data["status"] == OrderStatus.waiting_payment) {
+                          if (data["status"] ==
+                              OrderStatus.waiting_payment.name) {
                             orders_page1.add(data);
                           } else {
                             orders_page2.add(data);
                           }
                         } else if (access_level ==
                             AppPermission.employee.name) {
-                          if (data["status"] == OrderStatus.ready_to_start) {
+                          if (data["status"] ==
+                              OrderStatus.ready_to_start.name) {
                             orders_page1.add(data);
                           } else {
                             orders_page2.add(data);
@@ -132,10 +138,12 @@ class OrdersScreen extends StatelessWidget {
                                             // time.toDate();
                                             String time = DateFormat("HH:mm")
                                                 .format(date.toDate());
+
                                             return Padding(
                                               padding: const EdgeInsets.only(
                                                   bottom: 10),
                                               child: CardOrderWidget(
+                                                  permission: access_level,
                                                   doubleTap: () => context
                                                       .read<CartCubit>()
                                                       .changeStatus(
@@ -183,58 +191,43 @@ class OrdersScreen extends StatelessWidget {
                                           itemBuilder: (_, index) {
                                             var item = orders_page2[index];
                                             Timestamp date = item["created_at"];
-                                            // time.toDate();
+
                                             String time = DateFormat("HH:mm")
                                                 .format(date.toDate());
+
                                             return Padding(
                                               padding: const EdgeInsets.only(
                                                   bottom: 10),
-                                              child:
-                                                  // Dismissible(
-                                                  //   key: UniqueKey(),
-                                                  //   dismissThresholds: const {
-                                                  //     DismissDirection.startToEnd:
-                                                  //         0.1,
-                                                  //     DismissDirection.endToStart:
-                                                  //         0.1
-                                                  //   },
-                                                  //   onDismissed: (direction) {
-                                                  //     print(direction);
-                                                  //   },
-                                                  //   child:
-                                                  CardOrderWidget(
-                                                      doubleTap: () => context
-                                                          .read<CartCubit>()
-                                                          .changeStatus(
-                                                            item["isDelivery"]
-                                                                ? null
-                                                                : item["table"],
-                                                            item["id"],
-                                                            item["items"],
-                                                            item[
-                                                                "payment_method"],
-                                                            item["status"],
-                                                            item["created_at"],
-                                                            item["isDelivery"],
-                                                          ),
-                                                      onLongPress: () {},
-                                                      leading:
-                                                          item["isDelivery"]
-                                                              ? null
-                                                              : item["table"],
-                                                      address:
-                                                          item["isDelivery"]
-                                                              ? item["address"]
-                                                              : "",
-                                                      status: item["status"],
-                                                      isDelivery:
-                                                          item["isDelivery"],
-                                                      time: time,
-                                                      total: item["value"],
-                                                      method: item[
-                                                          "payment_method"],
-                                                      items:
-                                                          item["items"] ?? []),
+                                              child: CardOrderWidget(
+                                                  permission: access_level,
+                                                  doubleTap: () => context
+                                                      .read<CartCubit>()
+                                                      .changeStatus(
+                                                        item["isDelivery"]
+                                                            ? null
+                                                            : item["table"],
+                                                        item["id"],
+                                                        item["items"],
+                                                        item["payment_method"],
+                                                        item["status"],
+                                                        item["created_at"],
+                                                        item["isDelivery"],
+                                                      ),
+                                                  onLongPress: () {},
+                                                  leading: item["isDelivery"]
+                                                      ? null
+                                                      : item["table"],
+                                                  address: item["isDelivery"]
+                                                      ? item["address"]
+                                                      : "",
+                                                  status: item["status"],
+                                                  isDelivery:
+                                                      item["isDelivery"],
+                                                  time: time,
+                                                  total: item["value"],
+                                                  method:
+                                                      item["payment_method"],
+                                                  items: item["items"] ?? []),
                                             );
                                             // );
                                           })),
@@ -265,6 +258,7 @@ class CardOrderWidget extends StatelessWidget {
   final String? leading;
   final String status;
   final String address;
+  final AppPermission permission;
   final double total;
   final String method;
   final String time;
@@ -276,6 +270,7 @@ class CardOrderWidget extends StatelessWidget {
     Key? key,
     this.isDelivery = false,
     required this.leading,
+    required this.permission,
     required this.status,
     required this.address,
     required this.total,
@@ -288,14 +283,7 @@ class CardOrderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // SwipeTo(
-        //   onLeftSwipe: () => print("left"),
-        //   onRightSwipe: () => print("right"),
-        //   iconOnLeftSwipe: Icons.keyboard_double_arrow_right_rounded,
-        //   iconOnRightSwipe: Icons.keyboard_double_arrow_left_rounded,
-        //   child:
-        GestureDetector(
+    return GestureDetector(
       onDoubleTap: doubleTap,
       onLongPress: onLongPress,
       child: ExpandableNotifier(
@@ -422,10 +410,11 @@ class CardOrderWidget extends StatelessWidget {
                                 var order = OrderModel.fromMap(items[index]);
 
                                 if (order.item.restaurant_id ==
-                                    context
-                                        .read<HomeCubit>()
-                                        .state
-                                        .storage["restaurant"]["id"]) {
+                                        context
+                                            .read<HomeCubit>()
+                                            .state
+                                            .storage["restaurant"]["id"] ||
+                                    permission == AppPermission.waiter) {
                                   return Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -495,7 +484,7 @@ class CardOrderWidget extends StatelessWidget {
                       ),
                       expanded: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[],
+                        children: [],
                       ),
                       builder: (_, collapsed, expanded) {
                         return Padding(

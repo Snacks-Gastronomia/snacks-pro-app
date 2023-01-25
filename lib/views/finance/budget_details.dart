@@ -131,8 +131,10 @@ class BudgetDetailsContent extends StatelessWidget {
                                       itemCount: list.length,
                                       itemBuilder: (context, index) {
                                         var item = list[index];
-                                        print(item.data()["type"] ==
-                                            "restaurant");
+                                        final value = double.parse(item
+                                                .data()["value"]
+                                                .toString()) *
+                                            -1;
                                         return CardExpense(
                                             enableDelete: item.data()["type"] ==
                                                 "restaurant",
@@ -141,13 +143,16 @@ class BudgetDetailsContent extends StatelessWidget {
                                                 .deleteRestaurantExpense(
                                                     item.id, restaurantID),
                                             title: item.data()["name"],
-                                            iconColorBlack:
-                                                item.data()["type"] ==
-                                                    "restaurant",
-                                            value: double.parse(item
-                                                    .data()["value"]
-                                                    .toString()) *
-                                                -1);
+                                            iconColorBlack: item
+                                                    .data()["type"] ==
+                                                "restaurant",
+                                            value:
+                                                (item.data()["sharedValue"] ??
+                                                        false)
+                                                    ? value /
+                                                        snapshot
+                                                            .restaurant_count
+                                                    : value);
                                       });
                                 });
                               }

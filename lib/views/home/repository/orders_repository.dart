@@ -26,6 +26,11 @@ class OrdersRepository {
     return services.getOrdersByStatus(status);
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchAllOrders() {
+    // return await services.getOrdersByRestaurantId(id);
+    return services.getOrders();
+  }
+
   updateStatus(String id, OrderStatus new_status) async {
     // return await services.getOrdersByRestaurantId(id);
 

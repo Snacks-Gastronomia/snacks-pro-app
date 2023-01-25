@@ -65,6 +65,18 @@ class FinanceApiServices {
     // return data;
   }
 
+  Future<void> getCountRestaunts() async {
+    try {
+      AggregateQuerySnapshot snapshot =
+          await firebase.collection("restaurants").count().get();
+
+      print(snapshot);
+    } catch (e) {
+      rethrow;
+    }
+    // return data;
+  }
+
   Future<void> updatePrinter(Map<String, dynamic> data, id) async {
     try {
       return await firebase.collection("printers").doc(id).update(data);

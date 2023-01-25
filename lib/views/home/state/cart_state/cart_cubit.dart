@@ -116,36 +116,36 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(total: total));
   }
 
-  // void makeOrder(String method) async {
-  //   final dataStorage = await storage.getDataStorage("user");
+  void makeOrder(String method) async {
+    final dataStorage = await storage.getDataStorage("user");
 
-  //   bool isDelivery = !auth.currentUser!.isAnonymous;
-  //   var status = method == "Cartão Snacks" || isDelivery
-  //       ? OrderStatus.order_in_progress.name
-  //       : OrderStatus.waiting_payment.name;
+    bool isDelivery = !auth.currentUser!.isAnonymous;
+    var status = method == "Cartão Snacks" || isDelivery
+        ? OrderStatus.ready_to_start.name
+        : OrderStatus.waiting_payment.name;
 
-  //   final now = DateTime.now();
-  //   DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-  //   Map<String, dynamic> data = {
-  //     // "orders":
-  //     //     FieldValue.arrayUnion(state.cart.map((e) => e.toMap()).toList()),
-  //     "user_uid": auth.currentUser!.uid,
-  //     "payment_method": method,
-  //     "value": state.total,
-  //     "isDelivery": isDelivery,
-  //     "status": status,
-  //     "created_at": DateTime.now(),
-  //   };
-  //   // data.addAll(isDelivery
-  //   //     ? {"address": dataStorage["address"]}
-  //   //     : {"table": dataStorage["table"]});
+    final now = DateTime.now();
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+    Map<String, dynamic> data = {
+      // "orders":
+      //     FieldValue.arrayUnion(state.cart.map((e) => e.toMap()).toList()),
+      "user_uid": auth.currentUser!.uid,
+      "payment_method": method,
+      "value": state.total,
+      "isDelivery": isDelivery,
+      "status": status,
+      "created_at": DateTime.now(),
+    };
+    // data.addAll(isDelivery
+    //     ? {"address": dataStorage["address"]}
+    //     : {"table": dataStorage["table"]});
 
-  //   var response = await repository.createOrder(data);
+    var response = await repository.createOrder(data);
 
-  //   var items = state.cart.map((e) => e.toMap()).toList();
-  //   await repository.createItemstoOrder(items, response);
-  //   clearCart();
-  // }
+    var items = state.cart.map((e) => e.toMap()).toList();
+    await repository.createItemstoOrder(items, response);
+    clearCart();
+  }
 
   void clearCart() {
     emit(state.copyWith(cart: []));

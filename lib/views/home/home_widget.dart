@@ -37,6 +37,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   void initState() {
     controller = ScrollController();
     super.initState();
+    setState(() {
+      showButton = false;
+    });
   }
 
   @override

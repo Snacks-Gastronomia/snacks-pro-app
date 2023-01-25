@@ -108,6 +108,7 @@ class FinanceHomeState extends Equatable {
   final double budget;
   final double expenses_value;
   final int expenses_length;
+  final int restaurant_count;
   final int questions_carousel_index;
   final BankModel bankInfo;
   final Expense expenseAUX;
@@ -115,10 +116,12 @@ class FinanceHomeState extends Equatable {
   final Printer printerAUX;
   final AppStatus status;
   final List<QueryDocumentSnapshot<Map<String, dynamic>>> expensesData;
+
   FinanceHomeState({
     required this.budget,
     required this.expenses_value,
     required this.expenses_length,
+    required this.restaurant_count,
     required this.questions_carousel_index,
     required this.bankInfo,
     required this.expenseAUX,
@@ -131,6 +134,7 @@ class FinanceHomeState extends Equatable {
   factory FinanceHomeState.initial() => FinanceHomeState(
       expenseAUX: Expense.initial(),
       restaurantAUX: null,
+      restaurant_count: 0,
       printerAUX: Printer.initial(),
       status: AppStatus.initial,
       budget: 0,
@@ -145,6 +149,7 @@ class FinanceHomeState extends Equatable {
       double? expenses_value,
       int? expenses_length,
       int? questions_carousel_index,
+      int? restaurant_count,
       BankModel? bankInfo,
       AppStatus? status,
       Expense? expenseAUX,
@@ -160,6 +165,7 @@ class FinanceHomeState extends Equatable {
       questions_carousel_index:
           questions_carousel_index ?? this.questions_carousel_index,
       expenses_length: expenses_length ?? this.expenses_length,
+      restaurant_count: restaurant_count ?? this.restaurant_count,
       expenses_value: expenses_value ?? this.expenses_value,
       bankInfo: bankInfo ?? this.bankInfo,
       status: status ?? this.status,
@@ -180,6 +186,7 @@ class FinanceHomeState extends Equatable {
         other.restaurantAUX == restaurantAUX &&
         other.printerAUX == printerAUX &&
         other.expensesData == expensesData &&
+        other.restaurant_count == restaurant_count &&
         other.status == status;
   }
 
@@ -190,6 +197,7 @@ class FinanceHomeState extends Equatable {
         bankInfo.hashCode ^
         expenseAUX.hashCode ^
         restaurantAUX.hashCode ^
+        restaurant_count.hashCode ^
         status.hashCode;
   }
 
@@ -203,6 +211,7 @@ class FinanceHomeState extends Equatable {
       bankInfo,
       expenseAUX,
       printerAUX,
+      restaurant_count,
       status,
       expensesData,
     ];
