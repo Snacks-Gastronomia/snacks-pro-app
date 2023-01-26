@@ -32,7 +32,7 @@ class FinanceRepository {
     }
   }
 
-  Future<void> getCountRestaurants() async {
+  Future<int> getCountRestaurants() async {
     try {
       return await services.getCountRestaunts();
     } catch (e) {

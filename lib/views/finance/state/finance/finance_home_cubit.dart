@@ -28,7 +28,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     var access = user["access_level"];
 
     var id = access == AppPermission.sadm ? "snacks" : user["restaurant"]["id"];
-    await repository.getCountRestaurants();
+    var count = await repository.getCountRestaurants();
     var data = await Future.wait([
       repository.getMonthlyBudget(id),
       repository.fetchBankInformations(id),
@@ -36,6 +36,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     emit(state.copyWith(status: AppStatus.loaded));
 
     emit(state.copyWith(
+      restaurant_count: count,
       status: AppStatus.loaded,
       budget: data[0],
       bankInfo: data[1],

@@ -14,11 +14,8 @@ class ModalContentObservation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
       return Padding(
-        padding: EdgeInsets.only(
-            top: 25,
-            left: 20,
-            right: 20,
-            bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            const EdgeInsets.only(top: 25, left: 20, right: 20, bottom: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

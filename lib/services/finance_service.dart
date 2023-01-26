@@ -65,12 +65,12 @@ class FinanceApiServices {
     // return data;
   }
 
-  Future<void> getCountRestaunts() async {
+  Future<int> getCountRestaunts() async {
     try {
       AggregateQuerySnapshot snapshot =
           await firebase.collection("restaurants").count().get();
 
-      print(snapshot);
+      return snapshot.count - 1;
     } catch (e) {
       rethrow;
     }

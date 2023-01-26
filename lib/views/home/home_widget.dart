@@ -119,8 +119,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                 // return const SizedBox();
               },
             ),
-      floatingActionButtonLocation: (access_level == AppPermission.radm ||
-              access_level == AppPermission.employee)
+      floatingActionButtonLocation: (access_level == AppPermission.waiter)
           ? FloatingActionButtonLocation.centerFloat
           : null,
       backgroundColor: Colors.white,
