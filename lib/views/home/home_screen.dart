@@ -109,12 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (access == AppPermission.cashier.name) {
       items.addAll([
         Content(
-            screen: const OrdersScreen(),
-            button: const GButton(
-              icon: Icons.receipt_rounded,
-              text: 'Pedidos',
-            )),
-        Content(
           screen: const RechargeCardScreen(),
           button: const GButton(
             icon: Icons.credit_card,
@@ -124,8 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ]);
     }
     if (access == AppPermission.radm.name ||
-        access == AppPermission.employee.name ||
-        access == AppPermission.waiter.name) {
+        access == AppPermission.employee.name) {
       items.addAll([
         Content(
             screen: const HomeScreenWidget(),
@@ -133,6 +126,12 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icons.home_rounded,
               text: 'Home',
             )),
+      ]);
+    }
+    if (access == AppPermission.waiter.name ||
+        access == AppPermission.cashier.name ||
+        access == AppPermission.radm.name) {
+      items.addAll([
         Content(
             screen: const OrdersScreen(),
             button: const GButton(

@@ -97,7 +97,7 @@ class AppWidget extends StatelessWidget {
                         Theme.of(context).textTheme)),
                 title: "Snacks Pro",
                 initialRoute: snapshot.data,
-                // initialRoute: "/stock",
+                // initialRoute: AppRoutes.newItem,
                 // AppRoutes.home,
 
                 routes: {

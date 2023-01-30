@@ -9,6 +9,7 @@ enum OrderStatus {
   done,
   waiting_delivery,
   in_delivery,
+  delivered,
   invalid
 }
 

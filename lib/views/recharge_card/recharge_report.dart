@@ -91,9 +91,56 @@ class RechargeReportContent extends StatelessWidget {
                         padding: const EdgeInsets.all(30.0),
                         child: Column(
                           children: [
-                            Text(
-                              DateFormat.yMMMMd('pt_BR').format(DateTime.now()),
-                              style: AppTextStyles.light(20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  DateFormat.yMMMMd('pt_BR')
+                                      .format(DateTime.now()),
+                                  style: AppTextStyles.light(20),
+                                ),
+                                BlocBuilder<RechargeCubit, RechargeState>(
+                                    builder: (context, snapshot) {
+                                  return PopupMenuButton(
+                                    icon: const Icon(Icons.tune_rounded),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    elevation: 10,
+                                    itemBuilder: (context) {
+                                      final items = [
+                                        "Tudo",
+                                        "Pix",
+                                        "Cartão de crédito/débito",
+                                        "Dinheiro",
+                                      ];
+                                      return items
+                                          .map(
+                                            (e) => PopupMenuItem(
+                                              value: e,
+                                              child: Text(
+                                                e,
+                                                style: AppTextStyles.medium(16,
+                                                    color: snapshot.filter == e
+                                                        ? Colors.blue
+                                                        : Colors.black54),
+                                              ),
+                                            ),
+                                          )
+                                          .toList();
+                                      // const [
+
+                                      // ];
+                                    },
+                                    onSelected: (String value) {
+                                      context
+                                          .read<RechargeCubit>()
+                                          .changeFilter(value);
+                                    },
+                                  );
+                                })
+                              ],
                             ),
                             const SizedBox(
                               height: 35,

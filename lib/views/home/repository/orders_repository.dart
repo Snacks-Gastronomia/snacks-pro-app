@@ -41,6 +41,16 @@ class OrdersRepository {
     }
   }
 
+  updatePaymentMethod(String id, String newMethod) async {
+    // return await services.getOrdersByRestaurantId(id);
+
+    try {
+      return await services.updatePaymentMethod(id, newMethod);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   // Stream<QuerySnapshot> fetchOrdersByUserId(String id) {
   // return services.getOrdersByUserId(id);
   // }

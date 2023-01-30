@@ -11,8 +11,10 @@ import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/services/firebase/notifications.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
+import 'package:snacks_pro_app/views/home/widgets/modals/confirm_order.dart';
 
 part 'cart_state.dart';
 
@@ -155,6 +157,7 @@ class CartCubit extends Cubit<CartState> {
       String payment_method, OrderStatus current) async {}
 
   void changeStatus(
+      context,
       String table,
       doc_id,
       List<dynamic> items,
@@ -169,16 +172,37 @@ class CartCubit extends Cubit<CartState> {
             current != OrderStatus.done.name ||
         user["access_level"] == AppPermission.cashier.name &&
             current_index >= 3 &&
-            isDelivery) {
-      changeStatusFoward(doc_id, items, payment_method, current, datetime);
-    } else {
+            isDelivery ||
+        user["access_level"] == AppPermission.waiter.name &&
+            current_index == 0) {
+      if (getStatusObject(current) == OrderStatus.in_delivery) {
+        double total = items
+            .map((e) => double.parse(e["item"]["value"].toString()))
+            .reduce((value, element) => value + element);
+
+        var res = await AppModal().showModalBottomSheet(
+            context: context,
+            content: ConfirmOrderModal(value: total, method: payment_method));
+
+        if (res != null && res != payment_method) {
+          repository.updatePaymentMethod(doc_id, res);
+          changeStatusFoward(doc_id, items, payment_method, current, datetime);
+        }
+      } else {
+        changeStatusFoward(doc_id, items, payment_method, current, datetime);
+      }
+    } else if (user["access_level"] == AppPermission.employee.name) {
       final notification = AppNotification();
       await notification.sendToWaiters(code: "#$table");
     }
   }
 
   getStatusIndex(String status) {
-    return OrderStatus.values.firstWhere((e) => e.name == status).index;
+    return getStatusObject(status).index;
+  }
+
+  OrderStatus getStatusObject(String status) {
+    return OrderStatus.values.firstWhere((e) => e.name == status);
   }
 
   void changeStatusFoward(doc_id, List<dynamic> items, String payment_method,

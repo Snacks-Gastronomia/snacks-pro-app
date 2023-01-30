@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -83,7 +85,7 @@ class AppNotification {
         "priority": "HIGH"
       };
       final http.Response response =
-          await httpClient.post(url, headers: headers, body: data);
+          await httpClient.post(url, headers: headers, body: jsonEncode(data));
 
       if (response.statusCode != 200) {
         throw "Not possible send mensage";

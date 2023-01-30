@@ -59,39 +59,14 @@ class _ItemScreenState extends State<ItemScreen> {
               },
             ),
             ElevatedButton(
-              onPressed: () => AppModal().showModalBottomSheet(
-                context: context,
-                content: ModalContentObservation(
-                    action: () {
-                      var order = context.read<ItemScreenCubit>().state.order!;
-                      if (context.read<ItemScreenCubit>().state.isNew) {
-                        BlocProvider.of<CartCubit>(context).addToCart(order);
-                      } else {
-                        BlocProvider.of<CartCubit>(context)
-                            .updateItemFromCart(order);
-                      }
-                      Navigator.popUntil(
-                          context, ModalRoute.withName(AppRoutes.home));
-
-                      Navigator.pushNamed(context, AppRoutes.cart);
-                    },
-                    value: context
-                        .read<ItemScreenCubit>()
-                        .state
-                        .order!
-                        .observations,
-                    onChanged:
-                        context.read<ItemScreenCubit>().observationChanged),
-              ),
+              onPressed: () => null,
               style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15)),
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                   fixedSize: const Size(200, 52)),
               child: Text(
-                context.read<ItemScreenCubit>().state.isNew
-                    ? 'Adicionar'
-                    : "Ok",
+                'Atualizar',
                 style: AppTextStyles.regular(16, color: Colors.white),
               ),
             ),

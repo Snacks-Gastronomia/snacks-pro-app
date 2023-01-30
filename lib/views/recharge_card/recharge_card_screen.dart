@@ -10,6 +10,7 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
+import 'package:snacks_pro_app/views/recharge_card/modal_payment.dart';
 import 'package:snacks_pro_app/views/recharge_card/recharge_report.dart';
 import 'package:snacks_pro_app/views/recharge_card/state/recharge/recharge_cubit.dart';
 import 'package:snacks_pro_app/views/recharge_card/widgets/recharge_success.dart';
@@ -204,30 +205,37 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                               duration: const Duration(milliseconds: 600),
                               curve: Curves.easeInOut);
                         } else {
-                          var cubit = context.read<RechargeCubit>();
-                          var card_code = await Navigator.pushNamed(
-                              context, AppRoutes.scanCard);
+                          AppModal().showModalBottomSheet(
+                              withPadding: false,
+                              context: context,
+                              content: ModalPaymentMethod(
+                                next: () async {
+                                  var cubit = context.read<RechargeCubit>();
+                                  var card_code = await Navigator.pushNamed(
+                                      context, AppRoutes.scanCard);
 
-                          if (card_code != null) {
-                            cubit.changeCode(card_code.toString());
+                                  if (card_code != null) {
+                                    cubit.changeCode(card_code.toString());
 
-                            if (cubit.state.cpf.isNotEmpty) {
-                              await cubit.rechargeCard();
-                            } else {
-                              await cubit.createOrderAndRecharge();
-                            }
-                            await modal.showModalBottomSheet(
-                                context: context,
-                                content: const RechargeSuccess());
-                            cubit.clear(controller);
+                                    if (cubit.state.cpf.isNotEmpty) {
+                                      await cubit.rechargeCard();
+                                    } else {
+                                      await cubit.createOrderAndRecharge();
+                                    }
+                                    await modal.showModalBottomSheet(
+                                        context: context,
+                                        content: const RechargeSuccess());
+                                    cubit.clear(controller);
 
-                            focus[page].unfocus();
-                          } else {
-                            toast.showToast(
-                                context: context,
-                                content: "Cartão snacks inválido",
-                                type: ToastType.error);
-                          }
+                                    focus[page].unfocus();
+                                  } else {
+                                    toast.showToast(
+                                        context: context,
+                                        content: "Cartão snacks inválido",
+                                        type: ToastType.error);
+                                  }
+                                },
+                              ));
                         }
                       }
                     },

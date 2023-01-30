@@ -52,4 +52,16 @@ class OrdersApiServices {
     //     .doc(id)
     // .update({"status": new_status.name});
   }
+
+  Future<void> updatePaymentMethod(String id, String newMethod) async {
+    await database
+        .collection("orders")
+        .doc(id)
+        .update({"payment_method": newMethod});
+
+    // await database
+    //     .collection("orders")
+    //     .doc(id)
+    // .update({"status": new_status.name});
+  }
 }

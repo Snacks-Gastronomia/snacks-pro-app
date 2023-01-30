@@ -147,6 +147,7 @@ class OrdersScreen extends StatelessWidget {
                                                   doubleTap: () => context
                                                       .read<CartCubit>()
                                                       .changeStatus(
+                                                          context,
                                                           item["isDelivery"]
                                                               ? null
                                                               : item["table"],
@@ -203,6 +204,7 @@ class OrdersScreen extends StatelessWidget {
                                                   doubleTap: () => context
                                                       .read<CartCubit>()
                                                       .changeStatus(
+                                                        context,
                                                         item["isDelivery"]
                                                             ? null
                                                             : item["table"],
@@ -325,10 +327,14 @@ class CardOrderWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                method,
-                                style: AppTextStyles.regular(16,
-                                    color: const Color(0xff979797)),
+                              SizedBox(
+                                width: 160,
+                                child: Text(
+                                  method,
+                                  style: AppTextStyles.regular(16,
+                                      color: const Color(0xff979797)),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                               Text(
                                 NumberFormat.currency(

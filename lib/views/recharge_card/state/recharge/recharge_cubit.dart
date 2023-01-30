@@ -30,6 +30,16 @@ class RechargeCubit extends Cubit<RechargeState> {
     emit(state.copyWith(name: value));
   }
 
+  void changePaymentMethod(String? value) {
+    emit(state.copyWith(method: value?.toLowerCase()));
+    print(state);
+  }
+
+  void changeFilter(String value) {
+    emit(state.copyWith(filter: value));
+    print(state);
+  }
+
   void changeValue(String value) {
     emit(state.copyWith(value: double.parse(value)));
   }
@@ -70,6 +80,7 @@ class RechargeCubit extends Cubit<RechargeState> {
         .map((e) => {
               "responsible": e["nomeUsuario"],
               "value": e["Value"],
+              // "method": e["Value"],
               "created_at":
                   DateFormat("HH:m").format(DateTime.parse(e["createdAt"])),
             })

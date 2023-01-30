@@ -99,28 +99,6 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                 child: const Icon(Icons.plus_one),
               ),
             )
-          : BlocBuilder<HomeCubit, HomeState>(
-              builder: (context, state) {
-                return AnimatedOpacity(
-                  opacity: showButton ? 1 : 0,
-                  duration: const Duration(milliseconds: 300),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: 70, left: 20, right: 20),
-                    child: CustomSubmitButton(
-                        onPressedAction: () =>
-                            Navigator.pushNamed(context, AppRoutes.cart),
-                        label: "Continuar",
-                        loading_label: "",
-                        loading: false),
-                  ),
-                );
-                // }
-                // return const SizedBox();
-              },
-            ),
-      floatingActionButtonLocation: (access_level == AppPermission.waiter)
-          ? FloatingActionButtonLocation.centerFloat
           : null,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
