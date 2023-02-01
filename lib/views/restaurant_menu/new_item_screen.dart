@@ -6,6 +6,7 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/add_item_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/extras_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/item_details_widget.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/options_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/stock_control_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/upload_image.dart';
@@ -88,6 +89,17 @@ class NewItemScreen extends StatelessWidget {
                     backAction: () => pageController.previousPage(
                         duration: const Duration(milliseconds: 400),
                         curve: Curves.easeInOut))),
+
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: OptionsWidget(
+                  buttonAction: () => pageController.nextPage(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut),
+                  backAction: () => pageController.previousPage(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut)),
+            ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: ExtraWidget(
@@ -97,6 +109,7 @@ class NewItemScreen extends StatelessWidget {
                       duration: const Duration(milliseconds: 400),
                       curve: Curves.easeInOut)),
             ),
+
             // Padding(
             //   padding: const EdgeInsets.all(20.0),
             //   child: StockControlWidget(

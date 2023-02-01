@@ -45,6 +45,25 @@ class StockApiServices {
     }
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStockConsumed(
+      String? restaurant_id,
+      {int limit = 5}) {
+    try {
+      // var ref = database.collection("stock").doc(restaurant_id).snapshots();
+      // .limit(limit);
+      // if (document != null) {
+      //   return ref.startAfterDocument(document).snapshots();
+      // }
+      return database
+          .collection("restaurants")
+          .doc(restaurant_id)
+          .collection("stock_consumed")
+          .snapshots();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> createStockItem(restaurant_id, data) async {
     try {
       await database

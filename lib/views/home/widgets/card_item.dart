@@ -25,8 +25,8 @@ class CardItemWidget extends StatelessWidget {
   final AppPermission permission;
   @override
   Widget build(BuildContext context) {
-    var order = OrderModel(item: item, observations: "");
-    print(permission);
+    var order = OrderModel(item: item, observations: "", option_selected: {});
+
     return Builder(builder: (context) {
       return Stack(
         children: [

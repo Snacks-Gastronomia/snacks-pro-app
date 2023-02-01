@@ -98,13 +98,15 @@ class AppWidget extends StatelessWidget {
                 title: "Snacks Pro",
                 initialRoute: snapshot.data,
                 // initialRoute: AppRoutes.newItem,
+                // initialRoute: AppRoutes.stock,
                 // AppRoutes.home,
 
                 routes: {
                   // AppRoutes.start: (context) => const StartScreen(),
                   AppRoutes.otp: (context) => OtpScreen(),
                   AppRoutes.passwordScreen: (context) => const PasswordScreen(),
-                  AppRoutes.rechargeCard: (context) => RechargeCardScreen(),
+                  AppRoutes.rechargeCard: (context) =>
+                      const RechargeCardScreen(),
                   AppRoutes.scanCard: (context) => const ScanCardScreen(),
                   AppRoutes.newItem: (context) => NewItemScreen(),
                   AppRoutes.orders: (context) => const OrdersScreen(),
@@ -119,7 +121,7 @@ class AppWidget extends StatelessWidget {
                       const RestaurantAuthenticationScreen(),
                   AppRoutes.unathorizedAuth: (context) =>
                       const UnathorizedScreen(),
-                  "/stock": (context) => StockScreen(),
+                  AppRoutes.stock: (context) => StockScreen(),
                 },
               );
             }

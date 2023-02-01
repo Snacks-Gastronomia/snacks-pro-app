@@ -6,11 +6,12 @@ class OrderModel {
   int amount;
   String observations;
   List<String> extras;
-  // final String restaurant_id;
+  final dynamic option_selected;
   OrderModel({
     required this.item,
     this.amount = 1,
     this.extras = const [],
+    required this.option_selected,
     required this.observations,
     // required this.restaurant_id,
   });
@@ -19,11 +20,13 @@ class OrderModel {
     Item? item,
     int? amount,
     String? observations,
+    dynamic option_selected,
     // String? restaurant_id,
   }) {
     return OrderModel(
       item: item ?? this.item,
       amount: amount ?? this.amount,
+      option_selected: option_selected ?? this.option_selected,
       observations: observations ?? this.observations,
       // restaurant_id: restaurant_id ?? this.restaurant_id,
     );
@@ -34,6 +37,7 @@ class OrderModel {
       'item': item.toMap(),
       'amount': amount,
       'observations': observations,
+      'option_selected': option_selected,
       // 'restaurant_id': restaurant_id,
     };
   }
@@ -44,6 +48,7 @@ class OrderModel {
       amount: map['amount']?.toInt() ?? 0,
       observations: map['observations'] ?? '',
       extras: List.from(map['extras'] ?? []),
+      option_selected: List.from(map['option_selected'] ?? []),
       // restaurant_id: map['restaurant_id'] ?? '',
     );
   }

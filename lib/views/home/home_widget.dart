@@ -243,7 +243,10 @@ class AllItemsWidget extends StatelessWidget {
                           context: context,
                           content: ItemScreen(
                               permission: access_level,
-                              order: OrderModel(item: item, observations: ""))),
+                              order: OrderModel(
+                                  item: item,
+                                  observations: "",
+                                  option_selected: {}))),
                       child: CardItemWidget(
                         // ns: ns,
                         permission: access_level,

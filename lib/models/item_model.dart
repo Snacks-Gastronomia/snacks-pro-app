@@ -18,6 +18,7 @@ class Item {
   // final Map<dynamic, String>? ingredients;
   final List<Ingredient> ingredients;
   final List<dynamic> extra;
+  final List<dynamic> options;
 
   Item({
     this.id,
@@ -32,6 +33,7 @@ class Item {
     required this.active,
     this.ingredients = const [],
     this.extra = const [],
+    this.options = const [],
   });
 
   Item copyWith({
@@ -46,6 +48,7 @@ class Item {
     String? image_url,
     bool? active,
     List<dynamic>? extra,
+    List<dynamic>? options,
     List<Ingredient>? ingredients,
   }) {
     return Item(
@@ -60,6 +63,7 @@ class Item {
       ingredients: ingredients ?? this.ingredients,
       time: time ?? this.time,
       extra: extra ?? this.extra,
+      options: options ?? this.options,
       active: active ?? this.active,
     );
   }
@@ -75,6 +79,8 @@ class Item {
       'measure': measure,
       'active': active,
       'time': time,
+      'extras': extra,
+      'options': options,
       'image_url': image_url,
       'ingredients': ingredients,
     };
@@ -102,6 +108,8 @@ class Item {
       measure: map['measure'],
       image_url: map['image_url'],
       ingredients: List<Ingredient>.from(map['ingredients']),
+      options: List<dynamic>.from(map['options']),
+      extra: List<dynamic>.from(map['extra']),
     );
   }
 
@@ -145,6 +153,7 @@ class Item {
         other.image_url == image_url &&
         other.active == active &&
         listEquals(other.ingredients, ingredients) &&
+        listEquals(other.options, options) &&
         listEquals(other.extra, extra);
   }
 }

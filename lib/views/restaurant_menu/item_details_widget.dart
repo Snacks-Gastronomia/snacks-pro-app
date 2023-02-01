@@ -6,7 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/modal.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/extras_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/widgets/new_option_item.dart';
 
 class ItemDetailsWidget extends StatelessWidget {
   const ItemDetailsWidget({
@@ -66,40 +69,40 @@ class ItemDetailsWidget extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  Text(
-                    'Valor',
-                    style: AppTextStyles.medium(18),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DottedBorder(
-                    color: Colors.grey,
-                    strokeWidth: 1.5,
-                    dashPattern: const [7, 4],
-                    borderType: BorderType.RRect,
-                    radius: const Radius.circular(12),
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-                      ],
-                      textInputAction: TextInputAction.next,
-                      onChanged: context.read<MenuCubit>().changePrice,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 16),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(0),
-                        ),
-                        hintText: "Ex.: 2,00",
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  // Text(
+                  //   'Valor',
+                  //   style: AppTextStyles.medium(18),
+                  // ),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
+                  // DottedBorder(
+                  //   color: Colors.grey,
+                  //   strokeWidth: 1.5,
+                  //   dashPattern: const [7, 4],
+                  //   borderType: BorderType.RRect,
+                  //   radius: const Radius.circular(12),
+                  //   child: TextFormField(
+                  //     keyboardType: TextInputType.number,
+                  //     inputFormatters: [
+                  //       FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                  //     ],
+                  //     textInputAction: TextInputAction.next,
+                  //     onChanged: context.read<MenuCubit>().changePrice,
+                  //     decoration: InputDecoration(
+                  //       contentPadding: const EdgeInsets.symmetric(
+                  //           horizontal: 15, vertical: 16),
+                  //       border: OutlineInputBorder(
+                  //         borderSide: BorderSide.none,
+                  //         borderRadius: BorderRadius.circular(0),
+                  //       ),
+                  //       hintText: "Ex.: 2,00",
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(
+                  //   height: 20,
+                  // ),
                   Text(
                     'Categoria',
                     style: AppTextStyles.medium(18),
@@ -147,41 +150,41 @@ class ItemDetailsWidget extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  Text(
-                    'Volume',
-                    style: AppTextStyles.medium(18),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DottedBorder(
-                    color: Colors.grey,
-                    strokeWidth: 1.5,
-                    dashPattern: const [7, 4],
-                    borderType: BorderType.RRect,
-                    radius: const Radius.circular(12),
-                    child: TextFormField(
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-                      ], //
-                      onChanged: context.read<MenuCubit>().changeMeasure,
-                      textInputAction: TextInputAction.done,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 16),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(0),
-                          ),
-                          hintText: "Ex.: 200",
-                          suffixText:
-                              context.read<MenuCubit>().state.item.category ==
-                                      "Bebidas"
-                                  ? "ml"
-                                  : "gramas"),
-                    ),
-                  ),
+                  // Text(
+                  //   'Volume',
+                  //   style: AppTextStyles.medium(18),
+                  // ),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
+                  // DottedBorder(
+                  //   color: Colors.grey,
+                  //   strokeWidth: 1.5,
+                  //   dashPattern: const [7, 4],
+                  //   borderType: BorderType.RRect,
+                  //   radius: const Radius.circular(12),
+                  //   child: TextFormField(
+                  //     inputFormatters: [
+                  //       FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                  //     ], //
+                  //     onChanged: context.read<MenuCubit>().changeMeasure,
+                  //     textInputAction: TextInputAction.done,
+                  //     keyboardType: TextInputType.number,
+                  //     decoration: InputDecoration(
+                  //         contentPadding: const EdgeInsets.symmetric(
+                  //             horizontal: 15, vertical: 16),
+                  //         border: OutlineInputBorder(
+                  //           borderSide: BorderSide.none,
+                  //           borderRadius: BorderRadius.circular(0),
+                  //         ),
+                  //         hintText: "Ex.: 200",
+                  //         suffixText:
+                  //             context.read<MenuCubit>().state.item.category ==
+                  //                     "Bebidas"
+                  //                 ? "ml"
+                  //                 : "gramas"),
+                  //   ),
+                  // ),
                 ],
               ),
               Column(
@@ -190,9 +193,7 @@ class ItemDetailsWidget extends StatelessWidget {
                     return CustomSubmitButton(
                       onPressedAction: () {
                         var item = context.read<MenuCubit>().state.item;
-                        if (item.category != null &&
-                            item.value != 0 &&
-                            item.time != 0) {
+                        if (item.category != null && item.time != 0) {
                           buttonAction();
                         }
                       },
