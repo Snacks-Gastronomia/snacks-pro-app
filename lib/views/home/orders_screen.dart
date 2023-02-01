@@ -36,7 +36,7 @@ class OrdersScreen extends StatelessWidget {
     getCountBadgeTab(orders_page1, orders_page2) {
       var count1 = 0;
       var count2 = 0;
-      if (access_level == AppPermission.employee.name) {
+      if (access_level == AppPermission.employee) {
         count1 = getCountByStatus(orders_page1, OrderStatus.ready_to_start);
         count2 = getCountByStatus(orders_page2, OrderStatus.order_in_progress);
       } else {
@@ -48,9 +48,9 @@ class OrdersScreen extends StatelessWidget {
     }
 
     getTextTab() {
-      if (access_level == AppPermission.employee.name) {
+      if (access_level == AppPermission.employee) {
         return ["Pronto para Começar", "Em andamento"];
-      } else if (access_level == AppPermission.waiter.name) {
+      } else if (access_level == AppPermission.waiter) {
         return ["À pagar", "Prontos"];
       } else {
         return ["Local", "Entrega"];
@@ -88,15 +88,14 @@ class OrdersScreen extends StatelessWidget {
                         Map<String, dynamic> data = e.data();
                         data["id"] = e.id;
 
-                        if (access_level == AppPermission.waiter.name) {
+                        if (access_level == AppPermission.waiter) {
                           if (data["status"] ==
                               OrderStatus.waiting_payment.name) {
                             orders_page1.add(data);
                           } else {
                             orders_page2.add(data);
                           }
-                        } else if (access_level ==
-                            AppPermission.employee.name) {
+                        } else if (access_level == AppPermission.employee) {
                           if (data["status"] ==
                               OrderStatus.ready_to_start.name) {
                             orders_page1.add(data);
