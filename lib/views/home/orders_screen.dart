@@ -84,6 +84,8 @@ class OrdersScreen extends StatelessWidget {
                       var orders = snapshot.data!.docs;
                       List<dynamic> orders_page2 = [];
                       List<dynamic> orders_page1 = [];
+
+                      print(orders.length);
                       orders.map((e) {
                         Map<String, dynamic> data = e.data();
                         data["id"] = e.id;
@@ -172,7 +174,8 @@ class OrdersScreen extends StatelessWidget {
                                                   isDelivery:
                                                       item["isDelivery"],
                                                   time: time,
-                                                  total: item["value"],
+                                                  total: double.parse(
+                                                      item["value"].toString()),
                                                   method:
                                                       item["payment_method"],
                                                   items: item["items"] ?? []),
@@ -225,7 +228,8 @@ class OrdersScreen extends StatelessWidget {
                                                   isDelivery:
                                                       item["isDelivery"],
                                                   time: time,
-                                                  total: item["value"],
+                                                  total: double.parse(
+                                                      item["value"].toString()),
                                                   method:
                                                       item["payment_method"],
                                                   items: item["items"] ?? []),
@@ -451,7 +455,7 @@ class CardOrderWidget extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                order.item.title,
+                                                '${order.item.title} - ${order.option_selected["title"]}',
                                                 style:
                                                     AppTextStyles.regular(14),
                                               ),
@@ -473,7 +477,9 @@ class CardOrderWidget extends StatelessWidget {
                                       Text(
                                         NumberFormat.currency(
                                                 locale: "pt", symbol: r"R$ ")
-                                            .format(order.item.value),
+                                            .format(double.parse(order
+                                                .option_selected["value"]
+                                                .toString())),
                                         style: AppTextStyles.regular(14,
                                             color: Colors.grey),
                                       ),

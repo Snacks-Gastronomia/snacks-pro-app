@@ -48,7 +48,7 @@ class OrderModel {
       amount: map['amount']?.toInt() ?? 0,
       observations: map['observations'] ?? '',
       extras: List.from(map['extras'] ?? []),
-      option_selected: List.from(map['option_selected'] ?? []),
+      option_selected: map['option_selected'] ?? {},
       // restaurant_id: map['restaurant_id'] ?? '',
     );
   }
