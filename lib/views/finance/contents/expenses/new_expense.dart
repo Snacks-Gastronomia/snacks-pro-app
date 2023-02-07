@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
@@ -11,9 +12,11 @@ class NewExpenseContent extends StatelessWidget {
     Key? key,
     this.restaurantExpense = false,
     this.restaurantDocId = "",
+    this.accessLevel = AppPermission.sadm,
   }) : super(key: key);
   final bool restaurantExpense;
   final String restaurantDocId;
+  final AppPermission accessLevel;
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -73,22 +76,28 @@ class NewExpenseContent extends StatelessWidget {
                   hintText: 'Value',
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              BlocBuilder<FinanceCubit, FinanceHomeState>(
-                builder: (context, state) {
-                  return CheckboxListTile(
-                    value: state.expenseAUX.sharedValue,
-                    onChanged:
-                        context.read<FinanceCubit>().changeExpenseDividerValue,
-                    title: Text(
-                      "Dividir valor para todos os segmentos",
-                      style: AppTextStyles.medium(15),
+              if (accessLevel == AppPermission.sadm)
+                Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
                     ),
-                  );
-                },
-              ),
+                    BlocBuilder<FinanceCubit, FinanceHomeState>(
+                      builder: (context, state) {
+                        return CheckboxListTile(
+                          value: state.expenseAUX.sharedValue,
+                          onChanged: context
+                              .read<FinanceCubit>()
+                              .changeExpenseDividerValue,
+                          title: Text(
+                            "Dividir valor para todos os segmentos",
+                            style: AppTextStyles.medium(15),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               const SizedBox(
                 height: 20,
               ),

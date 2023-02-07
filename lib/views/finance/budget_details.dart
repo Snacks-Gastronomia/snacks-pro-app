@@ -32,6 +32,7 @@ class BudgetDetailsContent extends StatelessWidget {
                       content: NewExpenseContent(
                         restaurantDocId: restaurantID,
                         restaurantExpense: true,
+                        accessLevel: access_level.toString().stringToEnum,
                       )),
                   child: const Text('Adicionar depesa adicional'),
                 ),
