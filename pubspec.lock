@@ -240,7 +240,7 @@ packages:
     source: hosted
     version: "2.4.1"
   firebase_core_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
@@ -673,7 +673,7 @@ packages:
       name: mobile_scanner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "3.0.0"
   modal_bottom_sheet:
     dependency: "direct main"
     description:
