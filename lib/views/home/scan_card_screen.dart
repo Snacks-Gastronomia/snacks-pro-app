@@ -126,9 +126,8 @@ class _ScanCardScreenState extends State<ScanCardScreen> {
                               child: QRCodeBuilder(
                                   controller: controller,
                                   key: qrKey,
-                                  onDetect: (barcode, args) async {
-                                    if (barcode.rawValue == null) {
-                                      debugPrint('Failed to scan Barcode');
+                                  onDetect: (barcode) async {
+                                    if (barcode.barcodes.isEmpty) {
                                       toast.showToast(
                                           context: context,
                                           content:
@@ -137,17 +136,41 @@ class _ScanCardScreenState extends State<ScanCardScreen> {
 
                                       Future.delayed(const Duration(seconds: 2),
                                           (() => Navigator.pop(context)));
+                                      modal.showModalBottomSheet(
+                                          context: context,
+                                          content: const PaymentFailedContent(
+                                            readError: true,
+                                            value: "",
+                                          ));
                                     } else {
                                       final String card_code =
-                                          barcode.rawValue!;
-                                      // print(card_code);
-                                      // if (card_code) {
+                                          barcode.barcodes[0].rawValue ?? "";
                                       Navigator.pop(context, card_code);
-                                      // } else {
-                                      //   Navigator.pop(context, null);
-                                      // }
                                     }
-                                  }))
+                                  }
+                                  // (barcode) async {
+                                  //   if (barcode.rawValue == null) {
+                                  //     debugPrint('Failed to scan Barcode');
+                                  //     toast.showToast(
+                                  //         context: context,
+                                  //         content:
+                                  //             "Não foi possível identificar o cartão snacks",
+                                  //         type: ToastType.error);
+
+                                  //     Future.delayed(const Duration(seconds: 2),
+                                  //         (() => Navigator.pop(context)));
+                                  //   } else {
+                                  //     final String card_code =
+                                  //         barcode.rawValue!;
+                                  //     // print(card_code);
+                                  //     // if (card_code) {
+                                  //     Navigator.pop(context, card_code);
+                                  //     // } else {
+                                  //     //   Navigator.pop(context, null);
+                                  //     // }
+                                  //   }
+                                  // }
+                                  ))
                         ],
                       ),
                     )
@@ -170,7 +193,7 @@ class QRCodeBuilder extends StatelessWidget {
   }) : super(key: key);
   final MobileScannerController controller;
   // final modal = AppModal();
-  final dynamic Function(Barcode, MobileScannerArguments?) onDetect;
+  final dynamic Function(BarcodeCapture) onDetect;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -183,10 +206,8 @@ class QRCodeBuilder extends StatelessWidget {
             child: SizedBox(
                 height: 250,
                 width: 250,
-                child: MobileScanner(
-                    allowDuplicates: false,
-                    controller: controller,
-                    onDetect: onDetect)),
+                child:
+                    MobileScanner(controller: controller, onDetect: onDetect)),
           ),
         ),
         SizedBox(
