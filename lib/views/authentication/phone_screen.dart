@@ -60,7 +60,8 @@ class RestaurantAuthenticationScreen extends StatelessWidget {
               ),
               TextFormField(
                 style: AppTextStyles.regular(16, color: Colors.white),
-                keyboardType: TextInputType.number,
+                keyboardType:
+                    const TextInputType.numberWithOptions(signed: true),
                 onChanged: BlocProvider.of<AuthCubit>(context).changePhone,
                 inputFormatters: [
                   MaskTextInputFormatter(
