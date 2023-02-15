@@ -137,7 +137,8 @@ class NewEmployeeScreen extends StatelessWidget {
                                 .state
                                 .newEmployee
                                 .phone_number),
-                        keyboardType: TextInputType.phone,
+                        keyboardType:
+                            const TextInputType.numberWithOptions(signed: true),
                         inputFormatters: [
                           MaskTextInputFormatter(
                               mask: '(##) #####-####',
