@@ -65,7 +65,7 @@ class FilledRoundedPinPut extends StatelessWidget {
               ),
             ),
             // errorText: "Código ionválido",
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.numberWithOptions(signed: true),
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp("[0-9]")),
             ], // Only numbers can be entered

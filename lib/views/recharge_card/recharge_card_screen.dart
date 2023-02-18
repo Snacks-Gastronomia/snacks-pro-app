@@ -146,7 +146,8 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                                 maxLength:
                                     index == 1 ? 11 : TextField.noMaxLength,
                                 keyboardType: index != 0
-                                    ? TextInputType.number
+                                    ? TextInputType.numberWithOptions(
+                                        signed: true)
                                     : TextInputType.name,
                                 // keyboardType: TextInputType.text,
                                 onChanged: (value) {

@@ -89,7 +89,7 @@ class AddStockScreen extends StatelessWidget {
             //   style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
             //   // onChanged: context.read<FinanceCubit>().changeExpenseValue,
             //   textInputAction: TextInputAction.next,
-            //   keyboardType: TextInputType.number,
+            //   keyboardType: TextInputType.numberWithOptions(signed: true),
             //   decoration: InputDecoration(
             //     fillColor: const Color(0xffF7F8F9),
             //     filled: true,
@@ -113,7 +113,7 @@ class AddStockScreen extends StatelessWidget {
               style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
               onChanged: context.read<StockCubit>().changeVolume,
               textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.numberWithOptions(signed: true),
               controller:
                   context.read<StockCubit>().state.status == AppStatus.editing
                       ? TextEditingController(

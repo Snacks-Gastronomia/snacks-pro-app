@@ -125,7 +125,8 @@ class NewRestaurantScreen extends StatelessWidget {
                           ),
                           CustomTextField(
                               label: "Telefone",
-                              inputType: TextInputType.number,
+                              inputType:
+                                  TextInputType.numberWithOptions(signed: true),
                               onChange: context
                                   .read<FinanceCubit>()
                                   .changeRestaurantOwnerPhone),
@@ -161,7 +162,7 @@ class CustomTextField extends StatelessWidget {
       textInputAction: TextInputAction.next,
       keyboardType: inputType ?? TextInputType.text,
       inputFormatters: [
-        if (inputType == TextInputType.number)
+        if (inputType == TextInputType.numberWithOptions(signed: true))
           MaskTextInputFormatter(
               mask: '(##) #####-####',
               filter: {"#": RegExp(r'[0-9]')},

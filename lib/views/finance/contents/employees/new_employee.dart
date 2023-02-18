@@ -203,7 +203,8 @@ class NewEmployeeScreen extends StatelessWidget {
                         onChanged: BlocProvider.of<EmployeesCubit>(context)
                             .changeSalary,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.number,
+                        keyboardType:
+                            TextInputType.numberWithOptions(signed: true),
                         controller: TextEditingController(
                             text: context
                                         .read<EmployeesCubit>()

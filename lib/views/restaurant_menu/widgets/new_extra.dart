@@ -50,7 +50,7 @@ class NewExtraModal extends StatelessWidget {
               TextFormField(
                 style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
                 textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.numberWithOptions(signed: true),
                 controller: value,
                 decoration: InputDecoration(
                   fillColor: const Color(0xffF7F8F9),

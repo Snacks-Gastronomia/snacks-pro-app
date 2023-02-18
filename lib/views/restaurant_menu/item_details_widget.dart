@@ -49,7 +49,8 @@ class ItemDetailsWidget extends StatelessWidget {
                     borderType: BorderType.RRect,
                     radius: const Radius.circular(12),
                     child: TextFormField(
-                      keyboardType: TextInputType.number,
+                      keyboardType:
+                          TextInputType.numberWithOptions(signed: true),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
                       ],
@@ -83,7 +84,7 @@ class ItemDetailsWidget extends StatelessWidget {
                   //   borderType: BorderType.RRect,
                   //   radius: const Radius.circular(12),
                   //   child: TextFormField(
-                  //     keyboardType: TextInputType.number,
+                  //     keyboardType: TextInputType.numberWithOptions(signed: true),
                   //     inputFormatters: [
                   //       FilteringTextInputFormatter.allow(RegExp("[0-9]")),
                   //     ],
@@ -169,7 +170,7 @@ class ItemDetailsWidget extends StatelessWidget {
                   //     ], //
                   //     onChanged: context.read<MenuCubit>().changeMeasure,
                   //     textInputAction: TextInputAction.done,
-                  //     keyboardType: TextInputType.number,
+                  //     keyboardType: TextInputType.numberWithOptions(signed: true),
                   //     decoration: InputDecoration(
                   //         contentPadding: const EdgeInsets.symmetric(
                   //             horizontal: 15, vertical: 16),

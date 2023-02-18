@@ -212,7 +212,8 @@ class _AddBankAccountScreenState extends State<AddBankAccountScreen> {
                   onChanged:
                       BlocProvider.of<FinanceCubit>(context).changeBankAgency,
                   textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.number,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(signed: true),
                   controller: TextEditingController(text: bank_data.agency),
                   decoration: InputDecoration(
                     fillColor: const Color(0xffF7F8F9),
@@ -238,7 +239,8 @@ class _AddBankAccountScreenState extends State<AddBankAccountScreen> {
                       AppTextStyles.medium(16, color: const Color(0xff8391A1)),
                   onChanged:
                       BlocProvider.of<FinanceCubit>(context).changeBankAccount,
-                  keyboardType: TextInputType.number,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(signed: true),
                   textInputAction: TextInputAction.next,
                   controller: TextEditingController(text: bank_data.account),
                   decoration: InputDecoration(
@@ -272,7 +274,7 @@ Widget _customPopupItemBuilderExample2(
   bool isSelected,
 ) {
   return Container(
-    margin: EdgeInsets.symmetric(horizontal: 8),
+    margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
         ? null
         : BoxDecoration(

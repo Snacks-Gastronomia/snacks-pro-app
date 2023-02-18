@@ -58,7 +58,7 @@ class NewPrinterContent extends StatelessWidget {
               //   style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
               //   onChanged: context.read<FinanceCubit>().changePrinterGoal,
               //   textInputAction: TextInputAction.next,
-              //   keyboardType: TextInputType.number,
+              //   keyboardType: TextInputType.numberWithOptions(signed: true),
               //   decoration: InputDecoration(
               //     fillColor: const Color(0xffF7F8F9),
               //     filled: true,
@@ -118,7 +118,7 @@ class NewPrinterContent extends StatelessWidget {
                 style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
                 onChanged: context.read<FinanceCubit>().changePrinterIP,
                 textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.numberWithOptions(signed: true),
                 // inputFormatters: [
                 //   MaskTextInputFormatter(
                 //       filter: {"#": RegExp(r'[0-9]')},
