@@ -99,7 +99,8 @@ class AuthCubit extends Cubit<AuthState> {
               verificationCompleted: (PhoneAuthCredential credential) async {},
               verificationFailed: (FirebaseAuthException e) {
                 toast.showToast(
-                    content: "Não foi possível enviar o código!",
+                    content:
+                        "Não foi possível enviar o código!\n${e.code}: ${e.message}",
                     context: context,
                     type: ToastType.error);
                 changeStatus(AppStatus.loaded);
