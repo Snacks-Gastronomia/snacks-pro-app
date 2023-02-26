@@ -27,9 +27,11 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>BaselOSidentifier</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.921959811180-nmkjt6glr13aq216j5g95kms6lc0ivov</string>
+				<string>com.googleusercontent.apps.921959811180-79ak6rcrm1q8jrdbg6obg0sfvb5qoat1</string>
 			</array>
 		</dict>
 		<dict/>
