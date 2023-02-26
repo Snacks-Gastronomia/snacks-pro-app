@@ -26,7 +26,7 @@ class CardItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var order = OrderModel(item: item, observations: "", option_selected: {});
-
+    double value = double.parse(item.options[0]["value"].toString());
     return Builder(builder: (context) {
       return Stack(
         children: [
@@ -85,7 +85,7 @@ class CardItemWidget extends StatelessWidget {
                             softWrap: true),
                         Text(
                           NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                              .format(item.value),
+                              .format(value),
                           style: AppTextStyles.regular(15,
                               color: Colors.grey.shade500),
                         ),

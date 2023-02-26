@@ -187,6 +187,7 @@ class MenuCubit extends Cubit<MenuState> {
         var pathDownload = await snapshot.ref.getDownloadURL();
         emit(state.copyWith(
             item: state.item.copyWith(
+          value: double.parse(state.item.options[0]["value"].toString()),
           image_url: pathDownload,
         )));
       } catch (e) {

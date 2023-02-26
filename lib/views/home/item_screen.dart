@@ -137,69 +137,62 @@ class _ItemScreenState extends State<ItemScreen> {
                         child: BlocBuilder<ItemScreenCubit, ItemScreenState>(
                           builder: (context, state) {
                             return SizedBox(
-                              width: 160,
-                              height: 45,
-                              child:
-                                  BlocBuilder<ItemScreenCubit, ItemScreenState>(
-                                builder: (context, state) {
-                                  return Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      ElevatedButton(
+                                width: 160,
+                                height: 45,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () => context
+                                          .read<ItemScreenCubit>()
+                                          .decrementAmount(),
+                                      style: ElevatedButton.styleFrom(
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        shape: const CircleBorder(
+                                            side: BorderSide(
+                                                color: Colors.white, width: 2)),
+                                        backgroundColor:
+                                            const Color(0xffF6F6F6),
+                                        shadowColor: Colors.grey.shade200,
+                                        fixedSize: const Size(45, 45),
+                                        // elevation: 0
+                                      ),
+                                      child: const Icon(
+                                        Icons.remove_rounded,
+                                        color: Color(0xff626262),
+                                      ),
+                                    ),
+                                    Text(
+                                      context
+                                          .read<ItemScreenCubit>()
+                                          .state
+                                          .order!
+                                          .amount
+                                          .toString(),
+                                      style: AppTextStyles.medium(20),
+                                    ),
+                                    ElevatedButton(
                                         onPressed: () => context
                                             .read<ItemScreenCubit>()
-                                            .decrementAmount(),
+                                            .incrementAmount(),
                                         style: ElevatedButton.styleFrom(
-                                          tapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                          shape: const CircleBorder(
-                                              side: BorderSide(
-                                                  color: Colors.white,
-                                                  width: 2)),
-                                          backgroundColor:
-                                              const Color(0xffF6F6F6),
-                                          shadowColor: Colors.grey.shade200,
-                                          fixedSize: const Size(45, 45),
-                                          // elevation: 0
-                                        ),
-                                        child: const Icon(
-                                          Icons.remove_rounded,
-                                          color: Color(0xff626262),
-                                        ),
-                                      ),
-                                      Text(
-                                        context
-                                            .read<ItemScreenCubit>()
-                                            .state
-                                            .order!
-                                            .amount
-                                            .toString(),
-                                        style: AppTextStyles.medium(20),
-                                      ),
-                                      ElevatedButton(
-                                          onPressed: () => context
-                                              .read<ItemScreenCubit>()
-                                              .incrementAmount(),
-                                          style: ElevatedButton.styleFrom(
-                                              shape: const CircleBorder(
-                                                  side: BorderSide(
-                                                      color: Colors.white,
-                                                      width: 2)),
-                                              backgroundColor:
-                                                  const Color(0xffF6F6F6),
-                                              // elevation: 0,
-                                              shadowColor: Colors.grey.shade200,
-                                              fixedSize: const Size(45, 45)),
-                                          child: Icon(
-                                            Icons.add_rounded,
-                                            color: AppColors.highlight,
-                                          )),
-                                    ],
-                                  );
-                                },
-                              ),
-                            );
+                                            shape: const CircleBorder(
+                                                side: BorderSide(
+                                                    color: Colors.white,
+                                                    width: 2)),
+                                            backgroundColor:
+                                                const Color(0xffF6F6F6),
+                                            // elevation: 0,
+                                            shadowColor: Colors.grey.shade200,
+                                            fixedSize: const Size(45, 45)),
+                                        child: Icon(
+                                          Icons.add_rounded,
+                                          color: AppColors.highlight,
+                                        )),
+                                  ],
+                                ));
                           },
                         ),
                       ),
