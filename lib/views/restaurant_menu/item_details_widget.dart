@@ -54,6 +54,16 @@ class ItemDetailsWidget extends StatelessWidget {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
                       ],
+                      controller: context.read<MenuCubit>().state.status ==
+                              AppStatus.editing
+                          ? TextEditingController(
+                              text: context
+                                  .read<MenuCubit>()
+                                  .state
+                                  .item
+                                  .time
+                                  .toString())
+                          : null,
                       textInputAction: TextInputAction.next,
                       onChanged: context.read<MenuCubit>().changeTime,
                       decoration: InputDecoration(

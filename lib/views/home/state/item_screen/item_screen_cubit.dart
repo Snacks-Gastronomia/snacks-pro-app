@@ -1,12 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/services/items_service.dart';
+import 'package:snacks_pro_app/views/home/repository/items_repository.dart';
 
 part 'item_screen_state.dart';
 
 class ItemScreenCubit extends Cubit<ItemScreenState> {
   ItemScreenCubit() : super(ItemScreenState.initial());
-
   void incrementAmount() {
     var amount = state.order!.amount + 1;
 

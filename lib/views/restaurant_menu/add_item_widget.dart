@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 
 class AddItemWidget extends StatelessWidget {
@@ -45,6 +46,11 @@ class AddItemWidget extends StatelessWidget {
                       maxLength: 30,
                       onChanged: context.read<MenuCubit>().changeTitle,
                       textInputAction: TextInputAction.next,
+                      controller: context.read<MenuCubit>().state.status ==
+                              AppStatus.editing
+                          ? TextEditingController(
+                              text: context.read<MenuCubit>().state.item.title)
+                          : null,
                       decoration: InputDecoration(
                         counterText: "",
                         contentPadding: const EdgeInsets.symmetric(
@@ -94,6 +100,15 @@ class AddItemWidget extends StatelessWidget {
                       maxLength: 200,
                       onChanged: context.read<MenuCubit>().changeDescription,
                       textInputAction: TextInputAction.done,
+                      controller: context.read<MenuCubit>().state.status ==
+                              AppStatus.editing
+                          ? TextEditingController(
+                              text: context
+                                  .read<MenuCubit>()
+                                  .state
+                                  .item
+                                  .description)
+                          : null,
                       decoration: InputDecoration(
                         counterText: "",
                         contentPadding: const EdgeInsets.symmetric(

@@ -53,13 +53,27 @@ class ItemsRepository {
     }
   }
 
-  // Future<List<Item>?> fetchPopularItems() async {
-  //   try {
-  //     final List<Item> items = await services.getPopularItems();
+  Future<void> deleteItem(String doc) async {
+    try {
+      return services.deleteItem(doc);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 
-  //     return items;
-  //   } catch (e) {
-  //     throw e.toString();
-  //   }
-  // }
+  Future<void> postItem(Item item) async {
+    try {
+      return services.postItem(item);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> updateItem(Item item) async {
+    try {
+      return services.updateItem(item);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 }

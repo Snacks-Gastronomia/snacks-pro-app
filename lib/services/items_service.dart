@@ -25,13 +25,10 @@ class ItemsApiServices {
       String? restaurant_id, DocumentSnapshot? document,
       {int limit = 5, bool item_active = true}) {
     try {
-      var ref =
-          database.collection("menu").where("active", isEqualTo: item_active);
-
-      if (restaurant_id?.isNotEmpty ?? false) {
-        ref = ref.where("restaurant_id", isEqualTo: restaurant_id);
-      }
-      ref = ref.limit(limit);
+      var ref = database
+          .collection("menu")
+          .where("restaurant_id", isEqualTo: restaurant_id)
+          .limit(limit);
       if (document != null) {
         return ref.startAfterDocument(document).snapshots();
       }
@@ -56,10 +53,26 @@ class ItemsApiServices {
     }
   }
 
+  Future<void> deleteItem(String doc) {
+    try {
+      return database.collection("menu").doc(doc).delete();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> postItem(Item item) async {
     try {
       await custom.createDocumentToCollection(
           collection: "menu", data: item.toMap());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> updateItem(Item item) async {
+    try {
+      return await database.collection("menu").doc(item.id).set(item.toMap());
     } catch (e) {
       print(e);
     }

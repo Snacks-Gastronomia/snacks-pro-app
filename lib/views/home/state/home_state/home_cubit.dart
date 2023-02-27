@@ -158,15 +158,24 @@ class HomeCubit extends Cubit<HomeState> {
   void disableItem(String docID, bool value) async {
     await fb.updateDocumentToCollectionById(
         collection: "menu", id: docID, data: {"active": value});
+    emit(state.copyWith(menu: []));
+    fetchItems();
   }
 
   void updateCategory(String category) {
     emit(state.copyWith(category: category));
+    emit(state.copyWith(menu: []));
     fetchItems();
   }
 
   void changeQuery(String value) {
     emit(state.copyWith(query: value));
     // fetchItems();
+  }
+
+  void removeItem(String doc) async {
+    await itemsRepository.deleteItem(doc);
+    emit(state.copyWith(menu: []));
+    fetchItems();
   }
 }

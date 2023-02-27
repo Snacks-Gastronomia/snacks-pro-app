@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/add_item_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/extras_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/item_details_widget.dart';
@@ -63,13 +64,14 @@ class NewItemScreen extends StatelessWidget {
           controller: pageController,
 
           children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: UploadImageWidget(
-                  buttonAction: () => pageController.nextPage(
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut)),
-            ),
+            if (!(context.read<MenuCubit>().state.status == AppStatus.editing))
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: UploadImageWidget(
+                    buttonAction: () => pageController.nextPage(
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut)),
+              ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: AddItemWidget(

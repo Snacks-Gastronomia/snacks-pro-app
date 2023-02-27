@@ -10,12 +10,14 @@ import 'package:flutter/foundation.dart';
 // import 'package:meta/meta.dart';
 import 'package:snacks_pro_app/models/ingredient_model.dart';
 import 'package:snacks_pro_app/models/item_model.dart';
+import 'package:snacks_pro_app/services/items_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 
 import 'package:snacks_pro_app/services/stock_service.dart';
 import 'package:snacks_pro_app/utils/md5.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
+import 'package:snacks_pro_app/views/home/repository/items_repository.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/repository/stock_repository.dart';
 import 'package:snacks_pro_app/views/success/success_screen.dart';
@@ -23,7 +25,7 @@ import 'package:snacks_pro_app/views/success/success_screen.dart';
 part 'menu_state.dart';
 
 class MenuCubit extends Cubit<MenuState> {
-  final repository = ItemsRepository();
+  final repository = ItemsRepository(services: ItemsApiServices());
   final storage = AppStorage.initStorage;
   final fs = FirebaseStorage.instance.ref();
   MenuCubit() : super(MenuState.initial());
@@ -69,6 +71,9 @@ class MenuCubit extends Cubit<MenuState> {
   //   newList.remove(item);
   //   emit(state.copyWith(item: state.item.copyWith(ingredients: newList)));
   // }
+  updateItem(Item item) {
+    emit(state.copyWith(item: item, status: AppStatus.editing));
+  }
 
   void changeTitle(String value) {
     final item = state.item;
@@ -164,50 +169,64 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   void saveItem(context) async {
-    emit(state.copyWith(status: AppStatus.loading));
     final encrypt = AppMD5();
     final modal = AppModal();
 
     var storage = AppStorage();
-
-    Map<String, dynamic> data = await storage.getDataStorage("user");
-    // data = Map.from(jsonDecode(data["user"]));
-
-    var restaurant_id = data["restaurant"]["id"];
-
-    emit(state.copyWith(
-        item: state.item.copyWith(restaurant_id: restaurant_id)));
-    if (state.item.image_url != null) {
-      var ref =
-          fs.child("menu_images/${encrypt.getEncrypt(state.item.title)}.jpg");
-      File file = File(state.item.image_url!);
+    if (state.status == AppStatus.editing) {
       try {
-        // ref.putDa;ta(data);
-        final snapshot = await ref.putFile(file).whenComplete(() {});
-        var pathDownload = await snapshot.ref.getDownloadURL();
-        emit(state.copyWith(
-            item: state.item.copyWith(
-          value: double.parse(state.item.options[0]["value"].toString()),
-          image_url: pathDownload,
-        )));
+        await repository.updateItem(state.item);
+        clear();
       } catch (e) {
-        debugPrint(e.toString());
+        print(e);
       }
-    }
+      Navigator.pop(context);
+      modal.showIOSModalBottomSheet(
+          context: context,
+          content: const SuccessScreen(
+              title: "Item adicionado com sucesso!", backButton: true));
+    } else {
+      emit(state.copyWith(status: AppStatus.loading));
 
-    //ingredients: state.ingredients
+      Map<String, dynamic> data = await storage.getDataStorage("user");
+      // data = Map.from(jsonDecode(data["user"]));
 
-    try {
-      await repository.postItem(state.item);
-      clear();
-    } catch (e) {
-      print(e);
+      var restaurant_id = data["restaurant"]["id"];
+
+      emit(state.copyWith(
+          item: state.item.copyWith(restaurant_id: restaurant_id)));
+      if (state.item.image_url != null) {
+        var ref =
+            fs.child("menu_images/${encrypt.getEncrypt(state.item.title)}.jpg");
+        File file = File(state.item.image_url!);
+        try {
+          // ref.putDa;ta(data);
+          final snapshot = await ref.putFile(file).whenComplete(() {});
+          var pathDownload = await snapshot.ref.getDownloadURL();
+          emit(state.copyWith(
+              item: state.item.copyWith(
+            value: double.parse(state.item.options[0]["value"].toString()),
+            image_url: pathDownload,
+          )));
+        } catch (e) {
+          debugPrint(e.toString());
+        }
+      }
+
+      //ingredients: state.ingredients
+
+      try {
+        await repository.postItem(state.item);
+        clear();
+      } catch (e) {
+        print(e);
+      }
+      Navigator.pop(context);
+      modal.showIOSModalBottomSheet(
+          context: context,
+          content: const SuccessScreen(
+              title: "Item adicionado com sucesso!", backButton: true));
     }
-    Navigator.pop(context);
-    modal.showIOSModalBottomSheet(
-        context: context,
-        content: const SuccessScreen(
-            title: "Item adicionado com sucesso!", backButton: true));
   }
 
   void clear() {

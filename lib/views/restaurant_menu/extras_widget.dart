@@ -28,9 +28,11 @@ class ExtraWidget extends StatelessWidget {
               BlocBuilder<MenuCubit, MenuState>(builder: (context, state) {
             return CustomSubmitButton(
               onPressedAction: buttonAction,
-              label: "Adicionar item",
+              label: state.status == AppStatus.editing
+                  ? "Salvar alterações"
+                  : "Adicionar item",
               loading: state.status == AppStatus.loading,
-              loading_label: "Adicionando...",
+              loading_label: "Salvando...",
             );
           }),
           body: Column(

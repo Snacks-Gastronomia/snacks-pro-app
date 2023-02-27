@@ -11,8 +11,10 @@ import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/modal_content_obs.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 
 class ItemScreen extends StatefulWidget {
   ItemScreen({Key? key, required this.order, required this.permission})
@@ -46,29 +48,99 @@ class _ItemScreenState extends State<ItemScreen> {
         child: Scaffold(
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 25, right: 25, bottom: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            BlocBuilder<ItemScreenCubit, ItemScreenState>(
-              builder: (context, state) {
-                return Text(
-                  NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                      .format(context.read<ItemScreenCubit>().getNewValue()),
-                  style: AppTextStyles.medium(18, color: AppColors.highlight),
-                );
-              },
-            ),
-            ElevatedButton(
-              onPressed: () => null,
-              style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  backgroundColor: Colors.black,
-                  fixedSize: const Size(200, 52)),
-              child: Text(
-                'Atualizar',
-                style: AppTextStyles.regular(16, color: Colors.white),
+            SizedBox(
+              height: 45,
+              child: BlocBuilder<ItemScreenCubit, ItemScreenState>(
+                builder: (context, state) {
+                  return ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        var option = widget.order.item.options[index];
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.grey.shade300),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${option["title"]}',
+                                style: AppTextStyles.medium(16,
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                NumberFormat.currency(
+                                        locale: "pt", symbol: r"R$ ")
+                                    .format(double.parse(
+                                        option["value"].toString())),
+                                style: AppTextStyles.medium(12,
+                                    color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                            width: 10,
+                          ),
+                      itemCount: widget.order.item.options.length);
+                },
               ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      context.read<MenuCubit>().updateItem(widget.order.item);
+                      Navigator.pushNamed(context, AppRoutes.newItem);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      backgroundColor: Colors.black,
+                    ),
+                    child: Text(
+                      'Atualizar',
+                      style: AppTextStyles.regular(16, color: Colors.white),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      context
+                          .read<HomeCubit>()
+                          .removeItem(widget.order.item.id ?? "");
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      // minimumSize: Size(width, height),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      backgroundColor: const Color(0xffE20808),
+                    ),
+                    child: Text(
+                      'Remover',
+                      style: AppTextStyles.regular(16, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -289,22 +361,22 @@ class _ItemScreenState extends State<ItemScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  if (widget.permission == AppPermission.radm ||
-                      widget.permission == AppPermission.employee)
-                    Center(
-                      child: TextButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.delete,
-                          color: Color(0xffE20808),
-                        ),
-                        label: Text(
-                          'Remover item',
-                          style: AppTextStyles.medium(16,
-                              color: const Color(0xffE20808)),
-                        ),
-                      ),
-                    ),
+                  // if (widget.permission == AppPermission.radm ||
+                  //     widget.permission == AppPermission.employee)
+                  //   Center(
+                  //     child: TextButton.icon(
+                  //       onPressed: () {},
+                  //       icon: const Icon(
+                  //         Icons.delete,
+                  //         color: Color(0xffE20808),
+                  //       ),
+                  //       label: Text(
+                  //         'Remover item',
+                  //         style: AppTextStyles.medium(16,
+                  //             color: const Color(0xffE20808)),
+                  //       ),
+                  //     ),
+                  //   ),
                 ],
               ),
             )
