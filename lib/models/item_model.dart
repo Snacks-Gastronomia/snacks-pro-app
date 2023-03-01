@@ -108,8 +108,8 @@ class Item {
       measure: map['measure'],
       image_url: map['image_url'],
       ingredients: List<Ingredient>.from(map['ingredients']),
-      extra: List<dynamic>.from(map['extras']),
-      options: List<dynamic>.from(map['options']),
+      extra: List<dynamic>.from(map['extras'] ?? []),
+      options: List<dynamic>.from(map['options'] ?? []),
     );
   }
 

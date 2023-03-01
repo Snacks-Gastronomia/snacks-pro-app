@@ -5,7 +5,7 @@ class OrderModel {
   final Item item;
   int amount;
   String observations;
-  List<String> extras;
+  List<dynamic> extras;
   final dynamic option_selected;
   OrderModel({
     required this.item,
