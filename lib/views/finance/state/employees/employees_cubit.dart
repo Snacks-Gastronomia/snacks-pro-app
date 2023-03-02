@@ -27,7 +27,7 @@ class EmployeesCubit extends Cubit<EmployeesState> {
       var data = e.data();
       var el = EmployeeModel.fromMap(data);
 
-      total += data["salary"];
+      total += data["salary"] ?? 0;
 
       return el.copyWith(id: e.id);
     }).toList();
