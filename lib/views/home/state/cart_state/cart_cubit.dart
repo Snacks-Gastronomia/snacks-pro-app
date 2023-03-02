@@ -158,7 +158,7 @@ class CartCubit extends Cubit<CartState> {
 
   void changeStatus(
       context,
-      String table,
+      String? table,
       doc_id,
       List<dynamic> items,
       String payment_method,
@@ -167,19 +167,20 @@ class CartCubit extends Cubit<CartState> {
       bool isDelivery) async {
     final user = await storage.getDataStorage("user");
     var current_index = getStatusIndex(current);
-
+    print("object");
     if (user["access_level"] == AppPermission.employee.name &&
             current != OrderStatus.done.name ||
         user["access_level"] == AppPermission.cashier.name &&
             current_index >= 3 &&
             isDelivery ||
         user["access_level"] == AppPermission.waiter.name &&
-            current_index == 0) {
+            current_index == 0 ||
+        user["access_level"] == AppPermission.radm.name) {
       if (getStatusObject(current) == OrderStatus.in_delivery) {
         double total = items
             .map((e) => double.parse(e["item"]["value"].toString()))
             .reduce((value, element) => value + element);
-
+        print("object");
         var res = await AppModal().showModalBottomSheet(
             context: context,
             content: ConfirmOrderModal(value: total, method: payment_method));
