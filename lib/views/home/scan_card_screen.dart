@@ -143,8 +143,10 @@ class _ScanCardScreenState extends State<ScanCardScreen> {
                                             value: "",
                                           ));
                                     } else {
+                                      print("entrou aqui");
                                       final String card_code =
                                           barcode.barcodes[0].rawValue ?? "";
+                                      controller.dispose();
                                       Navigator.pop(context, card_code);
                                     }
                                   }

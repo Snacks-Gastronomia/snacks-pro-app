@@ -129,6 +129,7 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                       children: [
                         SnacksCardPresentation(
                           controller: controller,
+                          toast: toast,
                         ),
                         const SizedBox(
                           height: 10,
@@ -211,6 +212,7 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                               context: context,
                               content: ModalPaymentMethod(
                                 next: () async {
+                                  Navigator.pop(context);
                                   var cubit = context.read<RechargeCubit>();
                                   var card_code = await Navigator.pushNamed(
                                       context, AppRoutes.scanCard);
@@ -218,10 +220,12 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                                   if (card_code != null) {
                                     cubit.changeCode(card_code.toString());
 
-                                    if (cubit.state.cpf.isNotEmpty) {
-                                      await cubit.rechargeCard();
-                                    } else {
+                                    if (cubit.state.recharge_id.isEmpty) {
+                                      print("create order and recharge");
                                       await cubit.createOrderAndRecharge();
+                                    } else {
+                                      print("jus recharge");
+                                      await cubit.rechargeCard();
                                     }
                                     await modal.showModalBottomSheet(
                                         context: context,
@@ -275,25 +279,23 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
 }
 
 class SnacksCardPresentation extends StatelessWidget {
-  const SnacksCardPresentation({Key? key, required this.controller})
+  const SnacksCardPresentation(
+      {Key? key, required this.controller, required this.toast})
       : super(key: key);
   final PageController controller;
+  final AppToast toast;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
         var cubit = context.read<RechargeCubit>();
         var card_code = await Navigator.pushNamed(context, AppRoutes.scanCard);
-        // if (mounted) ;;
+        // if (mounted)
+        // print;;
+        // print("card_code" + card_code.toString());
         if (card_code != null) {
-          await cubit.readCard(card_code.toString(), controller);
-
-          // if (res == null) {
-          //   toast.showToast(
-          //       context: context,
-          //       content: "Snacks card não encontrado",
-          //       type: ToastType.info);
-          // }
+          await cubit.readCard(card_code.toString(), controller, context);
         }
         // await controller.animateToPage(2,
         //     duration: const Duration(milliseconds: 600),

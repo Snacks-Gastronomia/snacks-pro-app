@@ -31,7 +31,7 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   void changePaymentMethod(String? value) {
-    emit(state.copyWith(method: value?.toLowerCase()));
+    emit(state.copyWith(method: value));
     print(state);
   }
 
@@ -132,21 +132,8 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
 //card_code->recharges
-  readCard(String code, PageController controller) async {
-    // var now = DateTime.now();
-    // var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
-    // var day_id = "day-${now.day}";
+  readCard(String code, PageController controller, context) async {
     try {
-      // var response = await database
-      //     .collection("snacks_cards")
-      //     .doc(month_id)
-      //     .collection("days")
-      //     .doc(day_id)
-      //     .collection("recharges")
-      //     .where("card", isEqualTo: code)
-      //     .where("active", isEqualTo: true)
-      //     .get();
-
       var response = await repository.getCard(code);
 
       var data = response;
@@ -161,10 +148,13 @@ class RechargeCubit extends Cubit<RechargeState> {
             recharge_id: data["id"],
             value: double.parse(data["saldo"].toString()),
             name: data["nome"]));
+      } else {
+        toast.init(context: context);
+        toast.showToast(
+            context: context,
+            content: "Snacks card não reconhecido",
+            type: ToastType.info);
       }
-      // else {
-      //   return null;
-      // }
     } catch (e) {
       debugPrint(e.toString());
     }

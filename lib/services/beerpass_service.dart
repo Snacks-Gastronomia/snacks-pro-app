@@ -76,10 +76,13 @@ class BeerPassService {
         Uri.https(URL, "apiv2/comandas", {"rfid": rfid}),
         headers: header,
       );
+      print(rfid);
+      print("body - " + response.body);
+      if (response.statusCode == 200) {
+        var body = List.from(jsonDecode(response.body));
 
-      var body = List.from(jsonDecode(response.body));
-
-      return body.isNotEmpty ? body[0] : null;
+        return body.isNotEmpty ? body[0] : null;
+      }
     } catch (e) {
       print(e);
     }
