@@ -26,8 +26,22 @@ class OrdersApiServices {
         .snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrders() {
-    return database.collection("orders").snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersForWaiters() {
+    return database
+        .collection("orders")
+        .where("isDelivery", isEqualTo: false)
+        .where("status", whereIn: [
+      OrderStatus.done.name,
+      OrderStatus.waiting_payment.name
+    ]).snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrders(
+      {bool withDelivery = false}) {
+    return database
+        .collection("orders")
+        .where("isDelivery", isEqualTo: withDelivery)
+        .snapshots();
   }
 
   // Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrdersByNow() {
