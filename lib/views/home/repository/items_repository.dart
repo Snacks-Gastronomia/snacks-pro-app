@@ -53,9 +53,9 @@ class ItemsRepository {
     }
   }
 
-  Future<void> deleteItem(String doc) async {
+  Future<void> deleteItem(String doc, String img) async {
     try {
-      return services.deleteItem(doc);
+      return services.deleteItem(doc, img);
     } catch (e) {
       throw e.toString();
     }

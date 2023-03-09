@@ -59,12 +59,12 @@ class HomeCubit extends Cubit<HomeState> {
     }
     if (state.storage["access_level"] == AppPermission.waiter.name) {
       return ordersRepository.fetchAllOrdersForWaiters();
-    } else {
-      return ordersRepository.fetchAllOrders();
+    } else if (state.storage["access_level"] == AppPermission.radm.name) {
+      return ordersRepository
+          .fetchOrdersByRestaurantId(state.storage["restaurant"]["id"]);
     }
 
-    return ordersRepository
-        .fetchOrdersByRestaurantId(state.storage["restaurant"]["id"]);
+    return ordersRepository.fetchAllOrders();
   }
 
   Future<String> getProfileData() async {
@@ -175,8 +175,8 @@ class HomeCubit extends Cubit<HomeState> {
     // fetchItems();
   }
 
-  void removeItem(String doc) async {
-    await itemsRepository.deleteItem(doc);
+  void removeItem(String doc, String img) async {
+    await itemsRepository.deleteItem(doc, img);
     emit(state.copyWith(menu: []));
     fetchItems();
   }

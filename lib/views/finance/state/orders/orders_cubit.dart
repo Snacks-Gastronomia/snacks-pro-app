@@ -34,6 +34,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     int orders_amount = 0;
 
     for (var e in response.docs) {
+      print(e.data());
       orders_amount += e.data()["length"] as int;
       total_value += e.data()["total"];
     }

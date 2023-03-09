@@ -122,9 +122,9 @@ class _ItemScreenState extends State<ItemScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      context
-                          .read<HomeCubit>()
-                          .removeItem(widget.order.item.id ?? "");
+                      context.read<HomeCubit>().removeItem(
+                          widget.order.item.id ?? "",
+                          widget.order.item.image_url ?? "");
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(

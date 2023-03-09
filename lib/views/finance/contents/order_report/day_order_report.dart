@@ -38,7 +38,7 @@ class DayOrdersReportScreen extends StatelessWidget {
                     ),
                     Text(
                       DateFormat.MMMMd('pt_BR').format(DateTime.parse(
-                          '${DateTime.now().year}-${DateTime.now().month}-$day')),
+                          '${DateTime.now().year}-${DateFormat("MM").format(DateTime.now())}-${day}')),
                       style: AppTextStyles.light(18),
                     ),
                     const SizedBox(

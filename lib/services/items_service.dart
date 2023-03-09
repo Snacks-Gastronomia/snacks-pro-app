@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/services/firebase/database.dart';
@@ -8,6 +9,7 @@ import 'package:snacks_pro_app/services/firebase/database.dart';
 class ItemsApiServices {
   final http.Client httpClient = http.Client();
   final database = FirebaseFirestore.instance;
+  final fbStorage = FirebaseStorage.instance;
   final custom = FirebaseDataBase();
 
   Stream<QuerySnapshot<Map<String, dynamic>>> searchQuery(
@@ -53,8 +55,11 @@ class ItemsApiServices {
     }
   }
 
-  Future<void> deleteItem(String doc) {
+  Future<void> deleteItem(String doc, String imageUrl) async {
     try {
+      Reference photoRef = fbStorage.refFromURL(imageUrl);
+      await photoRef.delete();
+
       return database.collection("menu").doc(doc).delete();
     } catch (e) {
       rethrow;

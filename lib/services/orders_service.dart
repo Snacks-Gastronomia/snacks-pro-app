@@ -36,6 +36,13 @@ class OrdersApiServices {
     ]).snapshots();
   }
 
+  void addWaiterToOrderPayment(String id, String name) async {
+    return await database
+        .collection("orders")
+        .doc(id)
+        .set({"waiter_payment": name});
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrders(
       {bool withDelivery = false}) {
     return database

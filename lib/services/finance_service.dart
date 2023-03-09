@@ -277,7 +277,7 @@ class FinanceApiServices {
 
     var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
     // var day_id = "day-${now.day}";
-    print(month_id);
+
     return await firebase
         .collection("receipts")
         .doc(restaurant_id)

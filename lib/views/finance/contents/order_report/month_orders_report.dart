@@ -113,7 +113,7 @@ class OrdersReportScreen extends StatelessWidget {
                               tileColor: Colors.black,
                               title: Text(
                                 DateFormat.MMMMd('pt_BR').format(DateTime.parse(
-                                    '${DateTime.now().year}-${DateTime.now().month}-${item.id}')),
+                                    '${DateTime.now().year}-${DateFormat("MM").format(DateTime.now())}-${item.id}')),
                                 style: AppTextStyles.semiBold(18,
                                     color: Colors.white),
                               ),

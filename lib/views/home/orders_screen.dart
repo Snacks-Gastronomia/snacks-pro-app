@@ -144,6 +144,8 @@ class OrdersScreen extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   bottom: 10),
                                               child: CardOrderWidget(
+                                                  change: item["money_change"] ??
+                                                      false,
                                                   permission: access_level,
                                                   doubleTap: () => context
                                                       .read<CartCubit>()
@@ -176,8 +178,7 @@ class OrdersScreen extends StatelessWidget {
                                                   time: time,
                                                   total: double.parse(
                                                       item["value"].toString()),
-                                                  method:
-                                                      item["payment_method"],
+                                                  method: item["payment_method"],
                                                   items: item["items"] ?? []),
                                             );
                                           })),
@@ -202,6 +203,9 @@ class OrdersScreen extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   bottom: 10),
                                               child: CardOrderWidget(
+                                                  change:
+                                                      item["money_change"] ??
+                                                          false,
                                                   permission: access_level,
                                                   doubleTap: () => context
                                                       .read<CartCubit>()
@@ -260,6 +264,7 @@ class OrdersScreen extends StatelessWidget {
 
 class CardOrderWidget extends StatelessWidget {
   final bool isDelivery;
+  final bool change;
   final String? leading;
   final String status;
   final String address;
@@ -277,6 +282,7 @@ class CardOrderWidget extends StatelessWidget {
     required this.leading,
     required this.permission,
     required this.status,
+    this.change = false,
     required this.address,
     required this.total,
     required this.method,
@@ -418,91 +424,87 @@ class CardOrderWidget extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 var order = OrderModel.fromMap(items[index]);
 
-                                if (order.item.restaurant_id ==
-                                        context
-                                            .read<HomeCubit>()
-                                            .state
-                                            .storage["restaurant"]["id"] ||
-                                    permission == AppPermission.waiter) {
-                                  return Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                              width: 18,
-                                              height: 23,
-                                              // padding: EdgeInsets.symmetric(
-                                              //     horizontal: 7, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: Colors.black),
-                                              child: Center(
-                                                child: Text(
-                                                  order.amount.toString(),
-                                                  style: AppTextStyles.regular(
-                                                      14,
-                                                      color: Colors.white),
-                                                ),
-                                              )),
-                                          const SizedBox(
-                                            width: 15,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '${order.item.title} - ${order.option_selected["title"]}',
-                                                style:
-                                                    AppTextStyles.regular(14),
+                                // if (order.item.restaurant_id ==
+                                //         context
+                                //             .read<HomeCubit>()
+                                //             .state
+                                //             .storage["restaurant"]["id"] ||
+                                //     permission == AppPermission.waiter) {
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                            width: 18,
+                                            height: 23,
+                                            // padding: EdgeInsets.symmetric(
+                                            //     horizontal: 7, vertical: 2),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                color: Colors.black),
+                                            child: Center(
+                                              child: Text(
+                                                order.amount.toString(),
+                                                style: AppTextStyles.regular(14,
+                                                    color: Colors.white),
                                               ),
-                                              if (order.observations.isNotEmpty)
+                                            )),
+                                        const SizedBox(
+                                          width: 15,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${order.item.title} - ${order.option_selected["title"]}',
+                                              style: AppTextStyles.regular(14),
+                                            ),
+                                            if (order.observations.isNotEmpty)
+                                              SizedBox(
+                                                width: 200,
+                                                child: Text(
+                                                  order.observations,
+                                                  style: AppTextStyles.regular(
+                                                      12,
+                                                      color: Colors.grey),
+                                                ),
+                                              ),
+                                            if (order.extras.isNotEmpty)
+                                              for (int i = 0;
+                                                  i < order.extras.length;
+                                                  i++)
                                                 SizedBox(
                                                   width: 200,
                                                   child: Text(
-                                                    order.observations,
+                                                    '+${order.extras[i]["title"]}  (${NumberFormat.currency(locale: "pt", symbol: r"R$").format(double.parse(order.extras[i]["value"].toString()))})',
                                                     style:
                                                         AppTextStyles.regular(
                                                             12,
                                                             color: Colors.grey),
                                                   ),
                                                 ),
-                                              if (order.extras.isNotEmpty)
-                                                for (int i = 0;
-                                                    i < order.extras.length;
-                                                    i++)
-                                                  SizedBox(
-                                                    width: 200,
-                                                    child: Text(
-                                                      '+${order.extras[i]["title"]}  (${NumberFormat.currency(locale: "pt", symbol: r"R$").format(double.parse(order.extras[i]["value"].toString()))})',
-                                                      style:
-                                                          AppTextStyles.regular(
-                                                              12,
-                                                              color:
-                                                                  Colors.grey),
-                                                    ),
-                                                  ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      Text(
-                                        NumberFormat.currency(
-                                                locale: "pt", symbol: r"R$ ")
-                                            .format(double.parse(order
-                                                .option_selected["value"]
-                                                .toString())),
-                                        style: AppTextStyles.regular(14,
-                                            color: Colors.grey),
-                                      ),
-                                    ],
-                                  );
-                                } else {
-                                  return const SizedBox();
-                                }
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    Text(
+                                      NumberFormat.currency(
+                                              locale: "pt", symbol: r"R$ ")
+                                          .format(double.parse(order
+                                              .option_selected["value"]
+                                              .toString())),
+                                      style: AppTextStyles.regular(14,
+                                          color: Colors.grey),
+                                    ),
+                                  ],
+                                );
+                                // } else {
+                                //   return const SizedBox();
+                                // }
                               },
                             ),
                           ],
@@ -539,15 +541,32 @@ class CardOrderWidget extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Colors.black),
-                child: Text(
-                  items.length.toString(),
-                  style: AppTextStyles.regular(16, color: Colors.white),
-                ))
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: Colors.black),
+                    child: Text(
+                      items.length.toString(),
+                      style: AppTextStyles.regular(16, color: Colors.white),
+                    )),
+                if (change)
+                  Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 7, vertical: 3),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: Color(0xffFFCA44)),
+                      child: Text(
+                        "Precisa de troco",
+                        style: AppTextStyles.regular(16),
+                      ))
+              ],
+            )
           ])),
     );
     // );

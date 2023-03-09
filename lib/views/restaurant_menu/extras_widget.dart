@@ -30,7 +30,7 @@ class ExtraWidget extends StatelessWidget {
               onPressedAction: buttonAction,
               label: state.status == AppStatus.editing
                   ? "Salvar alterações"
-                  : "Adicionar item",
+                  : "Salvar",
               loading: state.status == AppStatus.loading,
               loading_label: "Salvando...",
             );

@@ -57,6 +57,14 @@ class OrdersRepository {
     }
   }
 
+  void addWaiterToOrderPayment(String name, String id) {
+    try {
+      return services.addWaiterToOrderPayment(id, name);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   // Stream<QuerySnapshot> fetchOrdersByUserId(String id) {
   // return services.getOrdersByUserId(id);
   // }

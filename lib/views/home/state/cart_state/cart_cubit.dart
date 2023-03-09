@@ -167,15 +167,21 @@ class CartCubit extends Cubit<CartState> {
       bool isDelivery) async {
     final user = await storage.getDataStorage("user");
     var current_index = getStatusIndex(current);
-    print("object");
+
+// if(user["access_level"] == AppPermission.employee.name &&
+//             current != OrderStatus.done.name )
     if (user["access_level"] == AppPermission.employee.name &&
             current != OrderStatus.done.name ||
         user["access_level"] == AppPermission.cashier.name &&
             current_index >= 3 &&
             isDelivery ||
         user["access_level"] == AppPermission.waiter.name &&
-            current_index == 0 ||
-        user["access_level"] == AppPermission.radm.name) {
+            (current_index == 0 || current_index == 3)) {
+      if (current_index == 0) {
+        repository.addWaiterToOrderPayment(
+            '${user["name"]}-${user["phone"]}', doc_id);
+      }
+
       if (getStatusObject(current) == OrderStatus.in_delivery) {
         double total = items
             .map((e) => double.parse(e["item"]["value"].toString()))
@@ -190,7 +196,11 @@ class CartCubit extends Cubit<CartState> {
           changeStatusFoward(doc_id, items, payment_method, current, datetime);
         }
       } else {
-        changeStatusFoward(doc_id, items, payment_method, current, datetime);
+        if (!isDelivery && current_index == 3) {
+          changeStatusOrder(doc_id, OrderStatus.delivered);
+        } else {
+          changeStatusFoward(doc_id, items, payment_method, current, datetime);
+        }
       }
     } else if (user["access_level"] == AppPermission.employee.name) {
       final notification = AppNotification();
@@ -204,6 +214,10 @@ class CartCubit extends Cubit<CartState> {
 
   OrderStatus getStatusObject(String status) {
     return OrderStatus.values.firstWhere((e) => e.name == status);
+  }
+
+  void changeStatusOrder(doc_id, OrderStatus status) async {
+    await repository.updateStatus(doc_id, status);
   }
 
   void changeStatusFoward(doc_id, List<dynamic> items, String payment_method,
