@@ -343,7 +343,7 @@ class CardOrderWidget extends StatelessWidget {
                                     )
                                   : Text(
                                       '#$leading',
-                                      style: AppTextStyles.bold(52,
+                                      style: AppTextStyles.bold(42,
                                           color: const Color(0xff263238)),
                                     ),
                               const SizedBox(
