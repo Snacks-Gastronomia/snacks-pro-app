@@ -50,7 +50,7 @@ class ItemDetailsWidget extends StatelessWidget {
                     radius: const Radius.circular(12),
                     child: TextFormField(
                       keyboardType:
-                          TextInputType.numberWithOptions(signed: true),
+                          const TextInputType.numberWithOptions(signed: true),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
                       ],

@@ -31,7 +31,7 @@ class OptionsWidget extends StatelessWidget {
                 onPressedAction: () {
                   if (state.item.options.isNotEmpty) buttonAction();
                 },
-                label: "Adicionar opções");
+                label: "Salvar opções");
           }),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

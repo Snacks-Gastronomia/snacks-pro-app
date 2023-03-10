@@ -11,6 +11,7 @@ class Item {
   final double value;
   final int time;
   final String restaurant_id;
+  final String restaurant_name;
   final String? category;
   final String? measure;
   final String? image_url;
@@ -27,6 +28,7 @@ class Item {
     required this.value,
     required this.time,
     required this.restaurant_id,
+    required this.restaurant_name,
     this.category,
     this.measure,
     this.image_url,
@@ -43,6 +45,7 @@ class Item {
     double? value,
     int? time,
     String? restaurant_id,
+    String? restaurant_name,
     String? category,
     String? measure,
     String? image_url,
@@ -57,6 +60,7 @@ class Item {
       description: description ?? this.description,
       value: value ?? this.value,
       restaurant_id: restaurant_id ?? this.restaurant_id,
+      restaurant_name: restaurant_name ?? this.restaurant_name,
       category: category ?? this.category,
       measure: measure ?? this.measure,
       image_url: image_url ?? this.image_url,
@@ -75,6 +79,8 @@ class Item {
       'description': description,
       'value': value,
       'restaurant_id': restaurant_id,
+      'restaurant_id': restaurant_id,
+      'restaurant_name': restaurant_name,
       'category': category,
       'measure': measure,
       'active': active,
@@ -93,6 +99,7 @@ class Item {
         description: "",
         value: 0,
         restaurant_id: "",
+        restaurant_name: "",
         time: 0);
   }
   factory Item.fromMap(Map<String, dynamic> map) {
@@ -104,6 +111,7 @@ class Item {
       description: map['description'] ?? '',
       value: map['value']?.toDouble() ?? 0.0,
       restaurant_id: map['restaurant_id'] ?? '',
+      restaurant_name: map['restaurant_name'] ?? '',
       category: map['category'],
       measure: map['measure'],
       image_url: map['image_url'],
@@ -130,6 +138,7 @@ class Item {
         value.hashCode ^
         time.hashCode ^
         restaurant_id.hashCode ^
+        restaurant_name.hashCode ^
         category.hashCode ^
         measure.hashCode ^
         image_url.hashCode ^
@@ -148,6 +157,8 @@ class Item {
         other.value == value &&
         other.time == time &&
         other.restaurant_id == restaurant_id &&
+        other.restaurant_id == restaurant_id &&
+        other.restaurant_name == restaurant_name &&
         other.category == category &&
         other.measure == measure &&
         other.image_url == image_url &&

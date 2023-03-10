@@ -146,7 +146,7 @@ class MenuCubit extends Cubit<MenuState> {
 
   void changeTime(String value) {
     final item = state.item;
-    emit(state.copyWith(item: item.copyWith(time: int.parse(value))));
+    emit(state.copyWith(item: item.copyWith(time: int.tryParse(value) ?? 0)));
   }
 
   itemSelected() {
@@ -191,10 +191,12 @@ class MenuCubit extends Cubit<MenuState> {
       Map<String, dynamic> data = await storage.getDataStorage("user");
       // data = Map.from(jsonDecode(data["user"]));
 
-      var restaurant_id = data["restaurant"]["id"];
+      var restaurant = data["restaurant"];
 
       emit(state.copyWith(
-          item: state.item.copyWith(restaurant_id: restaurant_id)));
+          item: state.item.copyWith(
+              restaurant_id: restaurant["id"],
+              restaurant_name: restaurant["name"])));
       if (state.item.image_url != null) {
         var ref =
             fs.child("menu_images/${encrypt.getEncrypt(state.item.title)}.jpg");

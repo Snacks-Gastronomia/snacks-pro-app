@@ -144,8 +144,11 @@ class OrdersScreen extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   bottom: 10),
                                               child: CardOrderWidget(
-                                                  change: item["money_change"] ??
-                                                      false,
+                                                  restaurant:
+                                                      item["restaurant_name"],
+                                                  change:
+                                                      item["money_change"] ??
+                                                          false,
                                                   permission: access_level,
                                                   doubleTap: () => context
                                                       .read<CartCubit>()
@@ -176,8 +179,8 @@ class OrdersScreen extends StatelessWidget {
                                                   isDelivery:
                                                       item["isDelivery"],
                                                   time: time,
-                                                  total: double.parse(
-                                                      item["value"].toString()),
+                                                  total:
+                                                      double.parse(item["value"].toString()),
                                                   method: item["payment_method"],
                                                   items: item["items"] ?? []),
                                             );
@@ -203,6 +206,8 @@ class OrdersScreen extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   bottom: 10),
                                               child: CardOrderWidget(
+                                                  restaurant:
+                                                      item["restaurant_name"],
                                                   change:
                                                       item["money_change"] ??
                                                           false,
@@ -221,7 +226,11 @@ class OrdersScreen extends StatelessWidget {
                                                         item["created_at"],
                                                         item["isDelivery"],
                                                       ),
-                                                  onLongPress: () {},
+                                                  onLongPress: () async =>
+                                                      context
+                                                          .read<HomeCubit>()
+                                                          .printerOrder(
+                                                              item, context),
                                                   leading: item["isDelivery"]
                                                       ? null
                                                       : item["table"],
@@ -267,6 +276,7 @@ class CardOrderWidget extends StatelessWidget {
   final bool change;
   final String? leading;
   final String status;
+  final String restaurant;
   final String address;
   final AppPermission permission;
   final double total;
@@ -282,6 +292,7 @@ class CardOrderWidget extends StatelessWidget {
     required this.leading,
     required this.permission,
     required this.status,
+    required this.restaurant,
     this.change = false,
     required this.address,
     required this.total,
@@ -312,53 +323,61 @@ class CardOrderWidget extends StatelessWidget {
                   Padding(
                     padding:
                         const EdgeInsets.only(left: 20, top: 15, right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Column(
                       children: [
-                        Row(children: [
-                          leading == null
-                              ? SvgPicture.asset(
-                                  AppImages.snacks_logo,
-                                  width: 50,
-                                  color:
-                                      const Color(0xff263238).withOpacity(0.7),
-                                )
-                              : Text(
-                                  '#$leading',
-                                  style: AppTextStyles.bold(52,
-                                      color: const Color(0xff263238)),
-                                ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 160,
-                                child: Text(
-                                  method,
-                                  style: AppTextStyles.regular(16,
-                                      color: const Color(0xff979797)),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                        Text(restaurant),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(children: [
+                              leading == null
+                                  ? SvgPicture.asset(
+                                      AppImages.snacks_logo,
+                                      width: 50,
+                                      color: const Color(0xff263238)
+                                          .withOpacity(0.7),
+                                    )
+                                  : Text(
+                                      '#$leading',
+                                      style: AppTextStyles.bold(52,
+                                          color: const Color(0xff263238)),
+                                    ),
+                              const SizedBox(
+                                width: 15,
                               ),
-                              Text(
-                                NumberFormat.currency(
-                                        locale: "pt", symbol: r"R$ ")
-                                    .format(total),
-                                style: AppTextStyles.semiBold(16,
-                                    color: const Color(0xff979797)),
-                              ),
-                            ],
-                          )
-                        ]),
-                        Text(
-                          time,
-                          style: AppTextStyles.light(14,
-                              color: const Color(0xff979797)),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 160,
+                                    child: Text(
+                                      method,
+                                      style: AppTextStyles.regular(16,
+                                          color: const Color(0xff979797)),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Text(
+                                    NumberFormat.currency(
+                                            locale: "pt", symbol: r"R$ ")
+                                        .format(total),
+                                    style: AppTextStyles.semiBold(16,
+                                        color: const Color(0xff979797)),
+                                  ),
+                                ],
+                              )
+                            ]),
+                            Text(
+                              time,
+                              style: AppTextStyles.light(14,
+                                  color: const Color(0xff979797)),
+                            ),
+                          ],
                         ),
                       ],
                     ),

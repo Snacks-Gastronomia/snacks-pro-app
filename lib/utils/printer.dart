@@ -38,7 +38,8 @@ class AppPrinter {
     }
   }
 
-  printOrderTemplate(NetworkPrinter printer, List<OrderModel> orders) async {
+  printOrderTemplate(NetworkPrinter printer, List<OrderModel> orders,
+      bool isDelivery, String destination) async {
     // print("printing order...");
     // final ByteData data = await rootBundle.load('assets/icons/snacks.png');
     // final Uint8List bytes = data.buffer.asUint8List();
@@ -89,7 +90,7 @@ class AppPrinter {
       printer.row([
         PosColumn(text: e.observations, width: 12),
       ]);
-      // for (var element in e.extras) {
+
       printer.row([
         PosColumn(text: "Adicionais", width: 3),
         PosColumn(
@@ -99,7 +100,27 @@ class AppPrinter {
     }
     printer.emptyLines(1);
     printer.hr();
-
+    printer.emptyLines(1);
+    if (isDelivery) {
+      printer.text(
+        'Endereço para entrega: $destination',
+        styles: const PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+      );
+    } else {
+      printer.text(
+        'Mesa $destination',
+        styles: const PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+      );
+    }
+    printer.emptyLines(1);
     // printer.row([
     //   PosColumn(
     //       text: 'TOTAL',
@@ -155,7 +176,8 @@ class AppPrinter {
     printer.cut();
   }
 
-  printOrders(context, String ip, List<OrderModel> orders) async {
+  printOrders(context, String ip, List<OrderModel> orders, bool isDelivery,
+      String destination) async {
     print("try connect...");
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
@@ -173,7 +195,7 @@ class AppPrinter {
 
       if (res == PosPrintResult.success) {
         // printImageOrderTemplate(printer);
-        printOrderTemplate(printer, orders);
+        printOrderTemplate(printer, orders, isDelivery, destination);
         // printer.beep();
         // printer.
         printer.disconnect();

@@ -54,9 +54,9 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchOrders() {
-    if (state.storage["access_level"] == AppPermission.cashier.name) {
-      return ordersRepository.fetchOrdersByStatus(OrderStatus.done);
-    }
+    // if (state.storage["access_level"] == AppPermission.cashier.name) {
+    //   return ordersRepository.fetchOrdersByStatus(OrderStatus.done);
+    // }
     if (state.storage["access_level"] == AppPermission.waiter.name) {
       return ordersRepository.fetchAllOrdersForWaiters();
     } else if (state.storage["access_level"] == AppPermission.radm.name) {
@@ -95,7 +95,12 @@ class HomeCubit extends Cubit<HomeState> {
           content: "imprimindo pedido...",
           type: ToastType.info);
       print(printer.docs[0].get("ip"));
-      appPrinter.printOrders(context, printer.docs[0].get("ip"), orders);
+      appPrinter.printOrders(
+          context,
+          printer.docs[0].get("ip"),
+          orders,
+          data["isDelivery"],
+          data["isDelivery"] ? data["address"] : data["table"]);
     }
   }
 
