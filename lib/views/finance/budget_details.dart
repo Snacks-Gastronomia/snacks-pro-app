@@ -110,7 +110,7 @@ class BudgetDetailsContent extends StatelessWidget {
                         height: 35,
                       ),
                       SizedBox(
-                        //  height: MediaQuery.of(context).size.height * 0.40,
+                        height: MediaQuery.of(context).size.height * 0.40,
                         child: FutureBuilder(
                             future: context
                                 .read<FinanceCubit>()
