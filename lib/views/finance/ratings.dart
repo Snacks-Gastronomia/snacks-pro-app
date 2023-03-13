@@ -7,8 +7,8 @@ import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.da
 class RatingsContent extends StatelessWidget {
   RatingsContent({super.key});
   final List<String> questions = [
-    "Você indicaria o Snacks para um amigo?",
-    "O que você achou da usabilidade do nosso aplicativo?",
+    "Você indicaria o Snacks para um amigo? 0-10",
+    "O que você achou da usabilidade do nosso aplicativo? 5-10",
     "O quanto você está satisfeito, em termos gerais, com a nossa empresa?"
   ];
   int current = 0;
@@ -182,7 +182,18 @@ class CardRate extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               for (int i = 0; i < questions.length; i++)
-                getIconFeedback(i + 1, questions[i]["rate"]),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: getColor(i + 1)),
+                  child: Text(
+                    questions[i]["rate"],
+                    style: AppTextStyles.medium(14, color: Colors.white),
+                  ),
+                )
+              // getIconFeedback(i + 1, questions[i]["rate"]),
             ],
           )
         ],
@@ -191,70 +202,70 @@ class CardRate extends StatelessWidget {
     // );
   }
 
-  Widget getIconFeedback(question, value) {
-    switch (value) {
-      case 0:
-        return Column(
-          children: [
-            Icon(
-              Icons.sentiment_dissatisfied_rounded,
-              color: getColor(question),
-              size: 45,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(
-              "Insastisfeito",
-              style: AppTextStyles.light(10),
-            )
-          ],
-        );
-      case 1:
-        return Column(
-          children: [
-            Icon(
-              Icons.sentiment_neutral_rounded,
-              color: getColor(question),
-              size: 40,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text("Suficiente", style: AppTextStyles.light(10))
-          ],
-        );
-      case 2:
-        return Column(
-          children: [
-            Icon(
-              Icons.sentiment_satisfied_rounded,
-              size: 40,
-              color: getColor(question),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text("Satisfeito", style: AppTextStyles.light(10))
-          ],
-        );
+  // Widget getIconFeedback(question, value) {
+  //   switch (value) {
+  //     case 0:
+  //       return Column(
+  //         children: [
+  //           Icon(
+  //             Icons.sentiment_dissatisfied_rounded,
+  //             color: getColor(question),
+  //             size: 45,
+  //           ),
+  //           const SizedBox(
+  //             height: 5,
+  //           ),
+  //           Text(
+  //             "Insastisfeito",
+  //             style: AppTextStyles.light(10),
+  //           )
+  //         ],
+  //       );
+  //     case 1:
+  //       return Column(
+  //         children: [
+  //           Icon(
+  //             Icons.sentiment_neutral_rounded,
+  //             color: getColor(question),
+  //             size: 40,
+  //           ),
+  //           const SizedBox(
+  //             height: 5,
+  //           ),
+  //           Text("Suficiente", style: AppTextStyles.light(10))
+  //         ],
+  //       );
+  //     case 2:
+  //       return Column(
+  //         children: [
+  //           Icon(
+  //             Icons.sentiment_satisfied_rounded,
+  //             size: 40,
+  //             color: getColor(question),
+  //           ),
+  //           const SizedBox(
+  //             height: 5,
+  //           ),
+  //           Text("Satisfeito", style: AppTextStyles.light(10))
+  //         ],
+  //       );
 
-      default:
-        return Column(
-          children: [
-            Icon(
-              Icons.sentiment_very_satisfied_rounded,
-              color: getColor(question),
-              size: 40,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text("Muito Satisfeito", style: AppTextStyles.light(10))
-          ],
-        );
-    }
-  }
+  //     default:
+  //       return Column(
+  //         children: [
+  //           Icon(
+  //             Icons.sentiment_very_satisfied_rounded,
+  //             color: getColor(question),
+  //             size: 40,
+  //           ),
+  //           const SizedBox(
+  //             height: 5,
+  //           ),
+  //           Text("Muito Satisfeito", style: AppTextStyles.light(10))
+  //         ],
+  //       );
+  //   }
+  // }
 
   Color getColor(int value) {
     switch (value) {
