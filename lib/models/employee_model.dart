@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:snacks_pro_app/utils/enums.dart';
+
 class EmployeeModel {
   final String? id;
   final String name;
@@ -26,7 +28,7 @@ class EmployeeModel {
       first_access: true,
       name: "",
       phone_number: "",
-      access_level: "",
+      access_level: AppPermission.employee.name,
       uid: "",
       ocupation: "",
       salary: 0,

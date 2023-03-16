@@ -178,6 +178,7 @@ class CartCubit extends Cubit<CartState> {
         user["access_level"] == AppPermission.waiter.name &&
             (current_index == 0 || current_index == 3)) {
       if (current_index == 0) {
+        print(user);
         repository.addWaiterToOrderPayment(
             '${user["name"]}-${user["phone"]}', doc_id);
       }

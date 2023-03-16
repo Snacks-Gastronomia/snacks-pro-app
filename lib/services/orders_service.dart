@@ -40,7 +40,7 @@ class OrdersApiServices {
     return await database
         .collection("orders")
         .doc(id)
-        .set({"waiter_payment": name});
+        .update({"waiter_payment": name});
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrders(

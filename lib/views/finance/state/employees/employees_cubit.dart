@@ -53,9 +53,6 @@ class EmployeesCubit extends Cubit<EmployeesState> {
   saveEmployee() async {
     final emp = state.newEmployee;
     // if (emp != null) {
-    if (emp.access_level.isEmpty) {
-      emp.copyWith(access_level: AppPermission.employee.name);
-    }
 
     var data = emp.toMap();
 
