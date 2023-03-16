@@ -128,18 +128,14 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
       ]);
     }
-    if (access == AppPermission.waiter.name ||
-        access == AppPermission.cashier.name ||
-        access == AppPermission.radm.name) {
-      items.addAll([
-        Content(
-            screen: const OrdersScreen(),
-            button: const GButton(
-              icon: Icons.receipt_rounded,
-              text: 'Pedidos',
-            )),
-      ]);
-    }
+    items.addAll([
+      Content(
+          screen: const OrdersScreen(),
+          button: const GButton(
+            icon: Icons.receipt_rounded,
+            text: 'Pedidos',
+          )),
+    ]);
     if (access == AppPermission.sadm.name ||
         access == AppPermission.radm.name) {
       items.add(Content(

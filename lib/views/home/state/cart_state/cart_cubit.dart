@@ -234,10 +234,11 @@ class CartCubit extends Cubit<CartState> {
     if (status == OrderStatus.done) {
       double total = 0;
       var submitItems = items.map((e) {
-        total += e["item"]["option_selected"]["value"];
+        double value = double.parse(e["option_selected"]["value"].toString());
+        total += value;
         return {
           "name": e["item"]["title"],
-          "value": e["item"]["option_selected"]["value"],
+          "value": value,
           "amount": e["amount"],
         };
       }).toList();

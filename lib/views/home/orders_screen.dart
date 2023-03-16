@@ -49,7 +49,7 @@ class OrdersScreen extends StatelessWidget {
 
     getTextTab() {
       if (access_level == AppPermission.employee) {
-        return ["Pronto para Começar", "Em andamento"];
+        return ["Em preparação", "Em andamento"];
       } else if (access_level == AppPermission.waiter) {
         return ["À pagar", "Prontos"];
       } else {
