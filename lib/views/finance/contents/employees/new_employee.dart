@@ -5,13 +5,14 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/authentication/state/auth_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class NewEmployeeScreen extends StatelessWidget {
-  const NewEmployeeScreen({Key? key}) : super(key: key);
-
+  NewEmployeeScreen({Key? key}) : super(key: key);
+  final toast = AppToast();
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -23,9 +24,19 @@ class NewEmployeeScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   final navigator = Navigator.of(context);
-                  await context.read<EmployeesCubit>().saveEmployee();
+                  toast.init(context: context);
 
-                  navigator.pop();
+                  var res = await context.read<EmployeesCubit>().saveEmployee();
+
+                  if (res) {
+                    navigator.pop();
+                  } else {
+                    toast.showToast(
+                        context: context,
+                        content:
+                            "Não foi possível salvar o funcionário: verifique o número, ele pode já está cadastrado!",
+                        type: ToastType.error);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -204,21 +215,19 @@ class NewEmployeeScreen extends StatelessWidget {
                             .changeSalary,
                         textInputAction: TextInputAction.next,
                         keyboardType:
-                            TextInputType.numberWithOptions(signed: true),
-                        controller: TextEditingController(
-                            text: context
+                            const TextInputType.numberWithOptions(signed: true),
+                        controller:
+                            context.read<EmployeesCubit>().state.updateEmp ==
+                                    true
+                                ? TextEditingController(
+                                    text: context
                                         .read<EmployeesCubit>()
                                         .state
-                                        .updateEmp ==
-                                    true
-                                ? context
-                                    .read<EmployeesCubit>()
-                                    .state
-                                    .newEmployee
-                                    .salary
-                                    .toInt()
-                                    .toString()
-                                : null),
+                                        .newEmployee
+                                        .salary
+                                        .toInt()
+                                        .toString())
+                                : null,
                         decoration: InputDecoration(
                           fillColor: const Color(0xffF7F8F9),
                           filled: true,

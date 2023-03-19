@@ -139,11 +139,14 @@ class OrdersScreen extends StatelessWidget {
                                             // time.toDate();
                                             String time = DateFormat("HH:mm")
                                                 .format(date.toDate());
-
+                                            var waiter =
+                                                item?["waiter_delivery"] ?? "";
+                                            print(waiter);
                                             return Padding(
                                               padding: const EdgeInsets.only(
                                                   bottom: 10),
                                               child: CardOrderWidget(
+                                                  waiter: waiter,
                                                   restaurant:
                                                       item["restaurant_name"],
                                                   change:
@@ -282,6 +285,7 @@ class CardOrderWidget extends StatelessWidget {
   final double total;
   final String method;
   final String time;
+  final String waiter;
   final List items;
   final VoidCallback doubleTap;
   final VoidCallback onLongPress;
@@ -290,6 +294,7 @@ class CardOrderWidget extends StatelessWidget {
     Key? key,
     this.isDelivery = false,
     required this.leading,
+    this.waiter = "",
     required this.permission,
     required this.status,
     required this.restaurant,
@@ -552,7 +557,7 @@ class CardOrderWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Center(
                       child: Text(
-                        OrderStatus.values.byName(status).displayEnum,
+                        "${OrderStatus.values.byName(status).displayEnum} ${waiter.isNotEmpty ? "- $waiter" : ""}",
                         style: AppTextStyles.regular(14, color: Colors.white54),
                       ),
                     ),

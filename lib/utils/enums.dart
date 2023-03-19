@@ -83,6 +83,8 @@ extension ParseToString on OrderStatus {
         return "Aguardando motoboy";
       case OrderStatus.in_delivery:
         return "Pedido à caminho";
+      case OrderStatus.delivered:
+        return "Pedido entregue";
       default:
         return "Status inválido";
     }

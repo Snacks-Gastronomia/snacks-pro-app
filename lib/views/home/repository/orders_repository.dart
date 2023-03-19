@@ -26,10 +26,9 @@ class OrdersRepository {
     return services.getOrdersByStatus(status);
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> fetchAllOrders(
-      {bool withDelivery = false}) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchAllOrders() {
     // return await services.getOrdersByRestaurantId(id);
-    return services.getAllOrders(withDelivery: withDelivery);
+    return services.getAllOrders();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchAllOrdersForWaiters() {
@@ -60,6 +59,14 @@ class OrdersRepository {
   void addWaiterToOrderPayment(String name, String id) {
     try {
       return services.addWaiterToOrderPayment(id, name);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void addWaiterToOrderDelivered(String name, String id) {
+    try {
+      return services.addWaiterToOrderDelivered(id, name);
     } catch (e) {
       print(e);
     }

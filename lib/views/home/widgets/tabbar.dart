@@ -68,7 +68,7 @@ class TabarBar extends StatelessWidget {
                             child: Text(
                               new_items_page1.toString(),
                               style:
-                                  AppTextStyles.medium(13, color: Colors.white),
+                                  AppTextStyles.medium(11, color: Colors.white),
                             ),
                           )
                       ],
@@ -91,7 +91,7 @@ class TabarBar extends StatelessWidget {
                             child: Text(
                               new_items_page2.toString(),
                               style:
-                                  AppTextStyles.medium(13, color: Colors.white),
+                                  AppTextStyles.medium(11, color: Colors.white),
                             ),
                           )
                       ],

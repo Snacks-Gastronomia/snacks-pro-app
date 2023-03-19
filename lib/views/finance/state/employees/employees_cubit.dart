@@ -8,6 +8,7 @@ import 'package:snacks_pro_app/models/employee_model.dart';
 import 'package:snacks_pro_app/services/employees_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
+import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/finance/repository/employees_repository.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
@@ -59,12 +60,19 @@ class EmployeesCubit extends Cubit<EmployeesState> {
     if (state.updateEmp) {
       await repository.updateEmployee(emp.id!, data);
     } else {
-      var user = await storage.getDataStorage("user");
-      data.addAll({"restaurant": user["restaurant"]});
+      var phone =
+          await repository.fetchSingleEmployeeByPhoneNumber(emp.phone_number);
 
-      await repository.createEmployee(data);
+      if (phone.docs.isEmpty) {
+        var user = await storage.getDataStorage("user");
+        data.addAll({"restaurant": user["restaurant"]});
+        await repository.createEmployee(data);
+        clearSelect();
+        return true;
+      } else {
+        return false;
+      }
     }
-    clearSelect();
   }
   // }
 

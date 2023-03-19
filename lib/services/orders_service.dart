@@ -43,12 +43,15 @@ class OrdersApiServices {
         .update({"waiter_payment": name});
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrders(
-      {bool withDelivery = false}) {
-    return database
+  void addWaiterToOrderDelivered(String id, String name) async {
+    return await database
         .collection("orders")
-        .where("isDelivery", isEqualTo: withDelivery)
-        .snapshots();
+        .doc(id)
+        .update({"waiter_delivery": name});
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrders() {
+    return database.collection("orders").snapshots();
   }
 
   // Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrdersByNow() {

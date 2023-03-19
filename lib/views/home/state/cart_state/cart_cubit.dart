@@ -178,9 +178,14 @@ class CartCubit extends Cubit<CartState> {
         user["access_level"] == AppPermission.waiter.name &&
             (current_index == 0 || current_index == 3)) {
       if (current_index == 0) {
-        print(user);
         repository.addWaiterToOrderPayment(
             '${user["name"]}-${user["phone"]}', doc_id);
+      }
+      //done
+      if (current_index == 3 &&
+          user["access_level"] == AppPermission.waiter.name &&
+          isDelivery == false) {
+        repository.addWaiterToOrderDelivered('${user["name"]}}', doc_id);
       }
 
       if (getStatusObject(current) == OrderStatus.in_delivery) {
@@ -194,8 +199,8 @@ class CartCubit extends Cubit<CartState> {
 
         if (res != null && res != payment_method) {
           repository.updatePaymentMethod(doc_id, res);
-          changeStatusFoward(doc_id, items, payment_method, current, datetime);
         }
+        changeStatusFoward(doc_id, items, payment_method, current, datetime);
       } else {
         if (!isDelivery && current_index == 3) {
           changeStatusOrder(doc_id, OrderStatus.delivered);
