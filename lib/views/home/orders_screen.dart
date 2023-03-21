@@ -149,9 +149,9 @@ class OrdersScreen extends StatelessWidget {
                                                   waiter: waiter,
                                                   restaurant:
                                                       item["restaurant_name"],
-                                                  change:
-                                                      item["money_change"] ??
-                                                          false,
+                                                  change: item["need_change"]
+                                                      ? item["change_money"]
+                                                      : "",
                                                   permission: access_level,
                                                   doubleTap: () => context
                                                       .read<CartCubit>()
@@ -182,8 +182,8 @@ class OrdersScreen extends StatelessWidget {
                                                   isDelivery:
                                                       item["isDelivery"],
                                                   time: time,
-                                                  total:
-                                                      double.parse(item["value"].toString()),
+                                                  total: double.parse(
+                                                      item["value"].toString()),
                                                   method: item["payment_method"],
                                                   items: item["items"] ?? []),
                                             );
@@ -212,8 +212,10 @@ class OrdersScreen extends StatelessWidget {
                                                   restaurant:
                                                       item["restaurant_name"],
                                                   change:
-                                                      item["money_change"] ??
-                                                          false,
+                                                      (item["need_change"] ??
+                                                              false)
+                                                          ? item["money_change"]
+                                                          : "",
                                                   permission: access_level,
                                                   doubleTap: () => context
                                                       .read<CartCubit>()
@@ -276,7 +278,7 @@ class OrdersScreen extends StatelessWidget {
 
 class CardOrderWidget extends StatelessWidget {
   final bool isDelivery;
-  final bool change;
+  final String change;
   final String? leading;
   final String status;
   final String restaurant;
@@ -298,7 +300,7 @@ class CardOrderWidget extends StatelessWidget {
     required this.permission,
     required this.status,
     required this.restaurant,
-    this.change = false,
+    this.change = "",
     required this.address,
     required this.total,
     required this.method,
@@ -578,15 +580,15 @@ class CardOrderWidget extends StatelessWidget {
                       items.length.toString(),
                       style: AppTextStyles.regular(16, color: Colors.white),
                     )),
-                if (change)
+                if (change.isNotEmpty)
                   Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 7, vertical: 3),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          color: Color(0xffFFCA44)),
+                          color: const Color(0xffFFCA44)),
                       child: Text(
-                        "Precisa de troco",
+                        "Troco: $change",
                         style: AppTextStyles.regular(16),
                       ))
               ],
