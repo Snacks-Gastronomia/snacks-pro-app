@@ -106,73 +106,67 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void fetchItems() async {
-    if (!state.listIsLastPage) {
-      emit(state.copyWith(status: AppStatus.loading));
-      var data = await storage.getDataStorage("user");
-      print(data);
-      var permission = data["access_level"].toString().stringToEnum;
-      var id = permission == AppPermission.radm ||
-              permission == AppPermission.employee
-          ? data["restaurant"]["id"]
-          : null;
-      itemsRepository
-          .fetchItems(id.toString().trim(), state.lastDocument)
-          .distinct()
-          .listen((event) {
-        if (event.docs.isNotEmpty) {
-          var data = event.docs.map<Map<String, dynamic>>((e) {
-            var el = e.data();
-            el.addAll({"id": e.id});
-            return el;
-          }).toList();
-          emit(state.copyWith(
-              lastDocument: event.docs.last, menu: [...state.menu, ...data]));
-        } else {
-          emit(state.copyWith(listIsLastPage: true));
-        }
-        emit(state.copyWith(status: AppStatus.loaded));
-      });
-    }
+    var data = await storage.getDataStorage("user");
+    var permission = data["access_level"].toString().stringToEnum;
+
+    var id =
+        permission == AppPermission.radm || permission == AppPermission.employee
+            ? data["restaurant"]["id"]
+            : null;
+    var _stream = itemsRepository
+        .fetchItems(id.toString().trim(), state.lastDocument)
+        .distinct();
+
+    emit(state.copyWith(menu: _stream));
   }
 
   Future<void> fetchQuery(String query) async {
-    emit(state.copyWith(status: AppStatus.loading));
+    var data = await storage.getDataStorage("user");
+    var permission = data["access_level"].toString().stringToEnum;
 
-    try {
-      itemsRepository
-          .searchQuery(query, state.category, state.storage["restaurant"]["id"])
-          .listen((event) {
-        if (event.docs.isNotEmpty) {
-          emit(state.copyWith(
-              menu: event.docs.map<Map<String, dynamic>>((e) {
-            var el = e.data();
-            el.addAll({"id": e.id});
-            return el;
-          }).toList()));
-        }
-        emit(state.copyWith(
-          status: AppStatus.loaded,
-        ));
-      });
-    } catch (e) {
-      emit(state.copyWith(
-        status: AppStatus.error,
-        error: e.toString(),
-      ));
-      print('state: $e');
-    }
+    var id =
+        permission == AppPermission.radm || permission == AppPermission.employee
+            ? data["restaurant"]["id"]
+            : null;
+    var _stream = itemsRepository.searchQuery(
+        query, state.category, state.storage["restaurant"]["id"]);
+    // .distinct();
+
+    emit(state.copyWith(menu: _stream));
+    // try {
+    //   itemsRepository
+    //       .searchQuery(query, state.category, state.storage["restaurant"]["id"])
+    //       .listen((event) {
+    //     if (event.docs.isNotEmpty) {
+    //       emit(state.copyWith(
+    //           menu: event.docs.map<Map<String, dynamic>>((e) {
+    //         var el = e.data();
+    //         el.addAll({"id": e.id});
+    //         return el;
+    //       }).toList()));
+    //     }
+    //     emit(state.copyWith(
+    //       status: AppStatus.loaded,
+    //     ));
+    //   });
+    // } catch (e) {
+    //   emit(state.copyWith(
+    //     status: AppStatus.error,
+    //     error: e.toString(),
+    //   ));
+    //   print('state: $e');
+    // }
   }
 
   void disableItem(String docID, bool value) async {
     await fb.updateDocumentToCollectionById(
         collection: "menu", id: docID, data: {"active": value});
-    emit(state.copyWith(menu: []));
+
     fetchItems();
   }
 
   void updateCategory(String category) {
     emit(state.copyWith(category: category));
-    emit(state.copyWith(menu: []));
     fetchItems();
   }
 
@@ -183,7 +177,6 @@ class HomeCubit extends Cubit<HomeState> {
 
   void removeItem(String doc, String img) async {
     await itemsRepository.deleteItem(doc, img);
-    emit(state.copyWith(menu: []));
     fetchItems();
   }
 }

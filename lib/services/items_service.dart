@@ -25,7 +25,7 @@ class ItemsApiServices {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getItems(
       String? restaurant_id, DocumentSnapshot? document,
-      {int limit = 5, bool item_active = true}) {
+      {int limit = 5}) {
     try {
       var ref = database
           .collection("menu")

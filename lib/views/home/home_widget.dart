@@ -198,65 +198,65 @@ class AllItemsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return context.watch<HomeCubit>().state.menu.isEmpty
-        ? const Center(
-            child: Text("Cardapio vazio"),
-          )
-        : GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
-                mainAxisExtent: 160),
-            shrinkWrap: true,
-            cacheExtent: 100,
-            addAutomaticKeepAlives: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: context.watch<HomeCubit>().state.menu.length +
-                (!context.watch<HomeCubit>().state.listIsLastPage &&
-                        context.watch<HomeCubit>().state.status ==
-                            AppStatus.loading
-                    ? 3
-                    : 0),
-            // itemCount: data.length,
-            // controller: controller,
-            itemBuilder: (BuildContext ctx, index) {
-              // if (data.length <= index && state.listIsLastPage) {
-              //   return Transform.scale(
-              //       scale: 0.9, child: const CardSkeleton());
-              // } else {
-              // if (ctx.) print("loading more");
-              return BlocBuilder<HomeCubit, HomeState>(
-                  builder: (context, state) {
-                // if (state.status == AppStatus.loading) {
-                //   return const ListSkeletons(direction: Axis.vertical);
-                // }
-                var data = state.menu;
-                // var data = [];
+    bool isTablet = MediaQuery.of(context).size.width > 600;
 
-                if (data.isNotEmpty && index < data.length) {
-                  var item = Item.fromMap(data[index]);
-                  var id = data[index]["id"];
-                  item = item.copyWith(id: id);
-                  return GestureDetector(
-                      onTap: () => modal.showIOSModalBottomSheet(
-                          context: context,
-                          content: ItemScreen(
-                              permission: access_level,
-                              order: OrderModel(
-                                  item: item,
-                                  observations: "",
-                                  option_selected: {}))),
-                      child: CardItemWidget(
-                        // ns: ns,
-                        permission: access_level,
-                        item: item,
-                      ));
-                }
+    return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
+      return StreamBuilder<QuerySnapshot>(
+        stream: state.menu,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final List<QueryDocumentSnapshot> docs = snapshot.data?.docs ?? [];
 
-                return const ListSkeletons(direction: Axis.horizontal);
-              });
-            });
+            return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: isTablet ? 4 : 2,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
+                    mainAxisExtent: isTablet ? 230 : 160),
+                shrinkWrap: true,
+                cacheExtent: 100,
+                addAutomaticKeepAlives: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: docs.length +
+                    (!context.watch<HomeCubit>().state.listIsLastPage &&
+                            context.watch<HomeCubit>().state.status ==
+                                AppStatus.loading
+                        ? 4
+                        : 0),
+                itemBuilder: (BuildContext ctx, index) {
+                  return BlocBuilder<HomeCubit, HomeState>(
+                      builder: (context, state) {
+                    // }
+                    var data = state.menu;
+
+                    if (docs.isNotEmpty && index < docs.length) {
+                      var item = Item.fromJson(jsonEncode(docs[index].data()));
+                      var id = docs[index].id;
+                      item = item.copyWith(id: id);
+                      return GestureDetector(
+                          onTap: () => modal.showIOSModalBottomSheet(
+                              context: context,
+                              content: ItemScreen(
+                                  permission: access_level,
+                                  order: OrderModel(
+                                      item: item,
+                                      observations: "",
+                                      option_selected: {}))),
+                          child: CardItemWidget(
+                            // ns: ns,
+                            permission: access_level,
+                            item: item,
+                          ));
+                    }
+
+                    return const ListSkeletons(direction: Axis.horizontal);
+                  });
+                });
+          }
+          return const Center(child: Text("Cardapio vazio"));
+        },
+      );
+    });
   }
 }
 
