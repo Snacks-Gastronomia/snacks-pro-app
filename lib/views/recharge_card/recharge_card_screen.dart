@@ -220,11 +220,15 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                                   if (card_code != null) {
                                     cubit.changeCode(card_code.toString());
 
+                                    if (!mounted) {
+                                      return;
+                                    }
                                     if (cubit.state.recharge_id.isEmpty) {
                                       print("create order and recharge");
-                                      await cubit.createOrderAndRecharge();
+                                      await cubit
+                                          .createOrderAndRecharge(context);
                                     } else {
-                                      print("jus recharge");
+                                      print("just recharge");
                                       await cubit.rechargeCard();
                                     }
                                     await modal.showModalBottomSheet(

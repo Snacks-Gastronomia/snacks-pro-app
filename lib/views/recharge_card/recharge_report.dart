@@ -16,16 +16,16 @@ class RechargeReportContent extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          FutureBuilder<List<dynamic>>(
+          FutureBuilder<void>(
               future: context.read<RechargeCubit>().fetchRecharges(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List data = snapshot.data!;
+                if (snapshot.connectionState == ConnectionState.done) {
+                  List data = context.read<RechargeCubit>().state.recharges;
 
                   var total = data.isEmpty
                       ? 0
                       : data.map((e) => e["value"]).reduce((a, b) => a + b);
-                  print(data);
+
                   return Column(
                     children: [
                       Container(
@@ -112,7 +112,8 @@ class RechargeReportContent extends StatelessWidget {
                                       final items = [
                                         "Tudo",
                                         "Pix",
-                                        "Cartão de crédito/débito",
+                                        "Cartão de crédito",
+                                        "Cartão de débito",
                                         "Dinheiro",
                                       ];
                                       return items
@@ -154,7 +155,7 @@ class RechargeReportContent extends StatelessWidget {
                                       ),
                                   shrinkWrap: true,
                                   physics: const BouncingScrollPhysics(),
-                                  itemCount: snapshot.data!.length,
+                                  itemCount: data.length,
                                   itemBuilder: (context, index) => CardExpense(
                                       title: data[index]["responsible"],
                                       time: data[index]["created_at"],

@@ -36,8 +36,18 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   void changeFilter(String value) {
-    emit(state.copyWith(filter: value));
-    print(state);
+    String? filter;
+    if (value == "Pix") {
+      filter = "pix";
+    } else if (value == "Cartão de crédito") {
+      filter = "creditCard";
+    } else if (value == "Cartão de débito") {
+      filter = "debitCard";
+    } else if (value == "Dinheiro") {
+      filter = "money";
+    }
+    emit(state.copyWith(recharges: []));
+    fetchRecharges(filter: filter);
   }
 
   void changeValue(String value) {
@@ -60,71 +70,40 @@ class RechargeCubit extends Cubit<RechargeState> {
     ));
   }
 
-  Future<List<dynamic>> fetchRecharges() async {
-    // var now = DateTime.now();
-
-    // var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
-    // var day_id = "day-${now.day}";
-
-    // var fb = await database
-    //     .collection("snacks_cards")
-    //     .doc(month_id)
-    //     .collection("days")
-    //     .doc(day_id)
-    //     .collection("recharges")
-    //     .get();
-
-    var response = await repository.fetchRecharges();
-    print(response);
+  Future<void> fetchRecharges({String? filter = "notSet"}) async {
+    var response = await repository.fetchRecharges(filter);
     var data = response
         .map((e) => {
               "responsible": e["nomeUsuario"],
               "value": e["Value"],
-              // "method": e["Value"],
               "created_at":
                   DateFormat("HH:m").format(DateTime.parse(e["createdAt"])),
             })
         .toList();
 
-    return data;
+    print(response);
+
+    emit(state.copyWith(recharges: data));
   }
 
   Future<void> rechargeCard() async {
     await repository.rechargeCard(state.card_code, state.value);
   }
 
-  Future<void> createOrderAndRecharge() async {
+  Future<void> createOrderAndRecharge(context) async {
     try {
       emit(state.copyWith(status: AppStatus.loading));
-      // var now = DateTime.now();
 
-      // var month_id = "${DateFormat.MMMM("pt_BR").format(now)}-${now.year}";
-      // var day_id = "day-${now.day}";
-      // var config_cards = await database
-      //     .collection("snacks_config")
-      //     .doc("snacks_cards")
-      //     .collection("active_cards")
-      //     .doc(state.card_code)
-      //     .get();
-      // config_cards.get("active_cards");
+      var response =
+          await repository.createOrderAndRecharge(state.toMap(), state.value);
 
-      await repository.createOrderAndRecharge(state.toMap(), state.value);
-      // if (config_cards.exists) {
-      //   final dataStorage = await storage.getDataStorage("user");
-
-      //   var data = state.toMap();
-      //   data.addAll({
-      //     "responsible": dataStorage["name"],
-      //     "created_at": DateFormat.Hm().format(now)
-      //   });
-      //   await database
-      //       .collection("snacks_cards")
-      //       .doc(month_id)
-      //       .collection("days")
-      //       .doc(day_id)
-      //       .collection("recharges")
-      //       .add(data);
-      // }
+      if (response != null) {
+        toast.init(context: context);
+        toast.showToast(
+            context: context,
+            content: response?["descricaoErro"] ?? "",
+            type: ToastType.info);
+      }
     } catch (e) {
       debugPrint(e.toString());
     }

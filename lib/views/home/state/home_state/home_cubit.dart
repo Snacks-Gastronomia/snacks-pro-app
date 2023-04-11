@@ -109,14 +109,14 @@ class HomeCubit extends Cubit<HomeState> {
     if (!state.listIsLastPage) {
       emit(state.copyWith(status: AppStatus.loading));
       var data = await storage.getDataStorage("user");
+      print(data);
       var permission = data["access_level"].toString().stringToEnum;
       var id = permission == AppPermission.radm ||
               permission == AppPermission.employee
           ? data["restaurant"]["id"]
           : null;
-
       itemsRepository
-          .fetchItems(id, state.lastDocument)
+          .fetchItems(id.toString().trim(), state.lastDocument)
           .distinct()
           .listen((event) {
         if (event.docs.isNotEmpty) {

@@ -8,17 +8,33 @@ class BeerPassService {
   final http.Client httpClient = http.Client();
   static const URL = "us-central1-beerpass-1500423500833.cloudfunctions.net";
 
-  Future<void> createOrder(data, double value) async {
+  Future<dynamic> createOrder(data, double value) async {
     try {
       var header = await getReqHeader();
+
+      var alreadyExist = await getCard(null, data["cpf"]);
+
+      if (alreadyExist != null) {
+        var oldOrder = {
+          "nome": alreadyExist["nome"],
+          "cpf": alreadyExist["cpf"],
+          "rfid": alreadyExist["rfid"],
+        };
+        value += double.parse(alreadyExist["saldo"].toString());
+
+        var res = await closeCard(oldOrder);
+        if (res != null) {
+          return res;
+        }
+      }
+
       var response = await httpClient.post(Uri.https(URL, "apiv2/comandas"),
           body: jsonEncode(data), headers: header);
 
       if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
-        rechargeCard(data["rfid"], value);
+        return await rechargeCard(data["rfid"], value);
       } else {
-        print(response.statusCode);
+        return jsonDecode(response.body);
       }
     } catch (e) {
       print(e);
@@ -45,8 +61,9 @@ class BeerPassService {
             "apiv2/autenticacao/obter-token",
             {"usuario": "snacks", "senha": r"sDbw203@#$nd234"}));
 
-        var body = jsonDecode(response.body)["token"];
-        box.put('value', body);
+        token = jsonDecode(response.body)["token"];
+
+        box.put('value', token);
       }
 
       box.close();
@@ -64,20 +81,23 @@ class BeerPassService {
         headers: header);
 
     if (response.statusCode != 200) {
-      print(response.statusCode);
+      return jsonDecode(response.body);
     }
   }
 
-  Future<dynamic> getCard(String rfid) async {
+  Future<dynamic> getCard(String? rfid, String? cpf) async {
     try {
+      var queryParans = {"rfid": rfid, "cpf": cpf};
+
+      final params = Map.fromEntries(
+          queryParans.entries.where((element) => element.value != null));
+
       var header = await getReqHeader();
 
       var response = await httpClient.get(
-        Uri.https(URL, "apiv2/comandas", {"rfid": rfid}),
+        Uri.https(URL, "apiv2/comandas", params),
         headers: header,
       );
-      print(rfid);
-      print("body - " + response.body);
       if (response.statusCode == 200) {
         var body = List.from(jsonDecode(response.body));
 
@@ -88,24 +108,24 @@ class BeerPassService {
     }
   }
 
-  Future<List<dynamic>> fetchRecharges() async {
+  Future<List<dynamic>> fetchRecharges({String paymentType = "notSet"}) async {
     var header = await getReqHeader();
+
     var date = DateFormat("y-M-d").format(DateTime.now());
     var response = await httpClient.get(
-        Uri.https(URL, 'apiv2/recargas', {"inicio": date}),
+        Uri.https(URL, 'apiv2/recargas',
+            {"inicio": date, "tipoPagamento": paymentType}),
         headers: header);
 
     if (response.statusCode == 200) {
-      var body = jsonDecode(response.body);
-      print(response.body);
-      return body;
+      return jsonDecode(response.body);
     } else {
-      print(response.statusCode);
+      print(response.body);
     }
     return [];
   }
 
-  Future<void> rechargeCard(rfid, double valor) async {
+  Future<dynamic> rechargeCard(rfid, double valor) async {
     var data = {
       "rfid": rfid,
       "tipoPagamento": "money",
@@ -120,7 +140,7 @@ class BeerPassService {
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
     } else {
-      print(response.statusCode);
+      return response.body;
     }
   }
 }

@@ -7,7 +7,7 @@ class RechargeRepository {
 
   Future<dynamic> getCard(String rfid) async {
     try {
-      return await services.getCard(rfid);
+      return await services.getCard(rfid, null);
     } catch (e) {
       throw e.toString();
     }
@@ -30,9 +30,9 @@ class RechargeRepository {
     }
   }
 
-  Future<List<dynamic>> fetchRecharges() async {
+  Future<List<dynamic>> fetchRecharges(filter) async {
     try {
-      return await services.fetchRecharges();
+      return await services.fetchRecharges(paymentType: filter);
     } catch (e) {
       throw e.toString();
     }

@@ -10,6 +10,7 @@ class RechargeState {
   final String filter;
   final AppStatus? status;
   final String? error;
+  final List<dynamic> recharges;
   RechargeState({
     required this.name,
     required this.cpf,
@@ -18,6 +19,7 @@ class RechargeState {
     required this.recharge_id,
     required this.card_code,
     required this.method,
+    required this.recharges,
     this.status,
     this.error,
   });
@@ -30,6 +32,7 @@ class RechargeState {
         value: 0,
         status: AppStatus.initial,
         error: null,
+        recharges: [],
         card_code: '',
         recharge_id: '',
       );
@@ -44,9 +47,11 @@ class RechargeState {
     String? filter,
     AppStatus? status,
     String? error,
+    List<dynamic>? recharges,
   }) {
     return RechargeState(
       name: name ?? this.name,
+      recharges: recharges ?? this.recharges,
       method: method ?? this.method,
       filter: filter ?? this.filter,
       cpf: cpf ?? this.cpf,
