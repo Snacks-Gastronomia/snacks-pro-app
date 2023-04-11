@@ -15,27 +15,23 @@ class BeerPassService {
       var alreadyExist = await getCard(null, data["cpf"]);
 
       if (alreadyExist != null) {
-        var oldOrder = {
-          "nome": alreadyExist["nome"],
-          "cpf": alreadyExist["cpf"],
-          "rfid": alreadyExist["rfid"],
-        };
-        value += double.parse(alreadyExist["saldo"].toString());
+        var res = await updateOrder(
+            id: alreadyExist["id"],
+            newRfid: data["rfid"],
+            cpf: alreadyExist["cpf"]);
 
-        var res = await closeCard(oldOrder);
         if (res != null) {
-          return res;
+          return res.body;
+        }
+      } else {
+        var response = await httpClient.post(Uri.https(URL, "apiv2/comandas"),
+            body: jsonEncode(data), headers: header);
+        if (response.statusCode != 200) {
+          return response.body;
         }
       }
 
-      var response = await httpClient.post(Uri.https(URL, "apiv2/comandas"),
-          body: jsonEncode(data), headers: header);
-
-      if (response.statusCode == 200) {
-        return await rechargeCard(data["rfid"], value);
-      } else {
-        return jsonDecode(response.body);
-      }
+      return await rechargeCard(data["rfid"], value);
     } catch (e) {
       print(e);
     }
@@ -136,6 +132,22 @@ class BeerPassService {
         Uri.https(URL, "apiv2/comandas/recarregar"),
         body: jsonEncode(data),
         headers: header);
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(response.body);
+    } else {
+      return response.body;
+    }
+  }
+
+  Future<dynamic> updateOrder(
+      {required String id,
+      required String newRfid,
+      required String cpf}) async {
+    var data = {"rfid": newRfid, "cpf": cpf, "comandaAberta": true};
+    var header = await getReqHeader();
+    var response = await httpClient.put(Uri.https(URL, "apiv2/comandas/$id"),
+        body: jsonEncode(data), headers: header);
 
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);

@@ -2,13 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:meta/meta.dart';
-import 'package:snacks_pro_app/firebase_options.dart';
-import 'package:snacks_pro_app/services/beerpass_service.dart';
 import 'dart:convert';
 
 import 'package:snacks_pro_app/utils/enums.dart';
-import 'package:snacks_pro_app/utils/snackbar.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/recharge_card/repository/recharge_repositoy.dart';
@@ -80,8 +76,6 @@ class RechargeCubit extends Cubit<RechargeState> {
                   DateFormat("HH:m").format(DateTime.parse(e["createdAt"])),
             })
         .toList();
-
-    print(response);
 
     emit(state.copyWith(recharges: data));
   }

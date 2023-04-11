@@ -223,6 +223,7 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                                     if (!mounted) {
                                       return;
                                     }
+                                    print(card_code);
                                     if (cubit.state.recharge_id.isEmpty) {
                                       print("create order and recharge");
                                       await cubit
@@ -295,15 +296,10 @@ class SnacksCardPresentation extends StatelessWidget {
       onTap: () async {
         var cubit = context.read<RechargeCubit>();
         var card_code = await Navigator.pushNamed(context, AppRoutes.scanCard);
-        // if (mounted)
-        // print;;
-        // print("card_code" + card_code.toString());
+
         if (card_code != null) {
           await cubit.readCard(card_code.toString(), controller, context);
         }
-        // await controller.animateToPage(2,
-        //     duration: const Duration(milliseconds: 600),
-        //     curve: Curves.easeInOut);
       },
       onLongPress: () => context.read<RechargeCubit>().clear(controller),
       child: Container(
