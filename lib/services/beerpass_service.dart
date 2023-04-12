@@ -27,7 +27,7 @@ class BeerPassService {
         var response = await httpClient.post(Uri.https(URL, "apiv2/comandas"),
             body: jsonEncode(data), headers: header);
         if (response.statusCode != 200) {
-          return response.body;
+          return jsonDecode(response.body);
         }
       }
 
@@ -72,7 +72,7 @@ class BeerPassService {
   Future closeCard(Map<String, dynamic> data) async {
     var header = await getReqHeader();
     var response = await httpClient.post(
-        Uri.https(URL, "apiv2/comandas/fechar"),
+        Uri.https(URL, "apiv2/comandas/remover"),
         body: jsonEncode(data),
         headers: header);
 
@@ -136,7 +136,7 @@ class BeerPassService {
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
     } else {
-      return response.body;
+      return jsonDecode(response.body);
     }
   }
 

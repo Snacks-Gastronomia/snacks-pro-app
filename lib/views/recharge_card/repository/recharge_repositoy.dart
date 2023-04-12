@@ -16,7 +16,7 @@ class RechargeRepository {
   Future<dynamic> createOrderAndRecharge(
       Map<String, dynamic> data, double value) async {
     try {
-      await services.createOrder(data, value);
+      return await services.createOrder(data, value);
     } catch (e) {
       throw e.toString();
     }
@@ -24,7 +24,7 @@ class RechargeRepository {
 
   Future<dynamic> rechargeCard(String rfid, double value) async {
     try {
-      await services.rechargeCard(rfid, value);
+      return await services.rechargeCard(rfid, value);
     } catch (e) {
       throw e.toString();
     }
@@ -40,7 +40,7 @@ class RechargeRepository {
 
   Future<dynamic> closeOrderAndCard(Map<String, dynamic> data) async {
     try {
-      await services.closeCard(data);
+      return await services.closeCard(data);
     } catch (e) {
       throw e.toString();
     }

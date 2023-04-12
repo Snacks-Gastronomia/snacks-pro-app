@@ -188,11 +188,12 @@ class CartCubit extends Cubit<CartState> {
         repository.addWaiterToOrderDelivered('${user["name"]}}', doc_id);
       }
 
-      if (getStatusObject(current) == OrderStatus.in_delivery) {
+      if (getStatusObject(current) == OrderStatus.in_delivery ||
+          getStatusObject(current) == OrderStatus.waiting_payment) {
         double total = items
             .map((e) => double.parse(e["item"]["value"].toString()))
             .reduce((value, element) => value + element);
-        print("object");
+
         var res = await AppModal().showModalBottomSheet(
             context: context,
             content: ConfirmOrderModal(value: total, method: payment_method));

@@ -5,9 +5,11 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/recharge_card/repository/recharge_repositoy.dart';
+import 'package:snacks_pro_app/views/recharge_card/widgets/recharge_success.dart';
 
 part 'recharge_state.dart';
 
@@ -16,6 +18,7 @@ class RechargeCubit extends Cubit<RechargeState> {
   final repository = RechargeRepository();
   final storage = AppStorage();
   final toast = AppToast();
+  final modal = AppModal();
   RechargeCubit() : super(RechargeState.initial());
 
   void changeCpf(String value) {
@@ -80,8 +83,20 @@ class RechargeCubit extends Cubit<RechargeState> {
     emit(state.copyWith(recharges: data));
   }
 
-  Future<void> rechargeCard() async {
-    await repository.rechargeCard(state.card_code, state.value);
+  Future<void> rechargeCard(context) async {
+    var response = await repository.rechargeCard(state.card_code, state.value);
+
+    if (response != null) {
+      emit(state.copyWith(status: AppStatus.error));
+      toast.init(context: context);
+      toast.showToast(
+          context: context,
+          content: response?["descricaoErro"] ?? "",
+          type: ToastType.error);
+    } else {
+      await modal.showModalBottomSheet(
+          context: context, content: const RechargeSuccess());
+    }
   }
 
   Future<void> createOrderAndRecharge(context) async {
@@ -92,14 +107,18 @@ class RechargeCubit extends Cubit<RechargeState> {
           await repository.createOrderAndRecharge(state.toMap(), state.value);
 
       if (response != null) {
+        emit(state.copyWith(status: AppStatus.error));
         toast.init(context: context);
         toast.showToast(
             context: context,
             content: response?["descricaoErro"] ?? "",
-            type: ToastType.info);
+            type: ToastType.error);
+      } else {
+        await modal.showModalBottomSheet(
+            context: context, content: const RechargeSuccess());
       }
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("Debug error $e");
     }
     emit(state.copyWith(status: AppStatus.loaded));
   }

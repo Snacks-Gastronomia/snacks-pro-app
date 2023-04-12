@@ -13,6 +13,7 @@ import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/recharge_card/modal_payment.dart';
 import 'package:snacks_pro_app/views/recharge_card/recharge_report.dart';
 import 'package:snacks_pro_app/views/recharge_card/state/recharge/recharge_cubit.dart';
+import 'package:snacks_pro_app/views/recharge_card/widgets/modal_card_change.dart';
 import 'package:snacks_pro_app/views/recharge_card/widgets/recharge_success.dart';
 import 'package:snacks_pro_app/views/splash/loading_screen.dart';
 
@@ -68,8 +69,18 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)),
                       tooltip: "Fechar cartão",
-                      onPressed: () =>
-                          context.read<RechargeCubit>().closeCard(controller),
+                      onPressed: () async {
+                        var cubit = context.read<RechargeCubit>();
+                        var res = false;
+                        if (state.value != 0) {
+                          res = await modal.showModalBottomSheet(
+                              context: context,
+                              content: const CardChangeModal());
+                        } else {
+                          res = true;
+                        }
+                        if (res) cubit.closeCard(controller);
+                      },
                       elevation: 4,
                       backgroundColor: Colors.white,
                       child: const Icon(
@@ -92,19 +103,6 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // ElevatedButton(
-                    //     onPressed: () {},
-                    //     style: ElevatedButton.styleFrom(
-                    //         shape: RoundedRectangleBorder(
-                    //             borderRadius: BorderRadius.circular(12)),
-                    //         backgroundColor: const Color(0xffF6F6F6),
-                    //         padding: EdgeInsets.zero,
-                    //         minimumSize: const Size(41, 41)),
-                    //     child: const Icon(
-                    //       Icons.arrow_back_ios_rounded,
-                    //       color: Colors.black,
-                    //       size: 19,
-                    //     )),
                     Text(
                       'Recharge card',
                       style: AppTextStyles.medium(20),
@@ -147,7 +145,7 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                                 maxLength:
                                     index == 1 ? 11 : TextField.noMaxLength,
                                 keyboardType: index != 0
-                                    ? TextInputType.numberWithOptions(
+                                    ? const TextInputType.numberWithOptions(
                                         signed: true)
                                     : TextInputType.name,
                                 // keyboardType: TextInputType.text,
@@ -207,7 +205,7 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                               duration: const Duration(milliseconds: 600),
                               curve: Curves.easeInOut);
                         } else {
-                          AppModal().showModalBottomSheet(
+                          modal.showModalBottomSheet(
                               withPadding: false,
                               context: context,
                               content: ModalPaymentMethod(
@@ -223,18 +221,19 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
                                     if (!mounted) {
                                       return;
                                     }
-                                    print(card_code);
                                     if (cubit.state.recharge_id.isEmpty) {
                                       print("create order and recharge");
                                       await cubit
                                           .createOrderAndRecharge(context);
                                     } else {
                                       print("just recharge");
-                                      await cubit.rechargeCard();
+                                      await cubit.rechargeCard(context);
                                     }
-                                    await modal.showModalBottomSheet(
-                                        context: context,
-                                        content: const RechargeSuccess());
+                                    // if (cubit.state.status != AppStatus.error) {
+                                    //   await modal.showModalBottomSheet(
+                                    //       context: context,
+                                    //       content: const RechargeSuccess());
+                                    // }
                                     cubit.clear(controller);
 
                                     focus[page].unfocus();
