@@ -188,7 +188,7 @@ class AllItemsWidget extends StatelessWidget {
       return StreamBuilder<QuerySnapshot>(
         stream: state.menu,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && (snapshot.data?.docs ?? []).isNotEmpty) {
             final List<QueryDocumentSnapshot> docs = snapshot.data?.docs ?? [];
 
             return GridView.builder(

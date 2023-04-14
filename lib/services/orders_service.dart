@@ -11,8 +11,7 @@ class OrdersApiServices {
         .collection("orders")
         .where("status", whereIn: [
           OrderStatus.order_in_progress.name,
-          OrderStatus.ready_to_start.name,
-          OrderStatus.done.name
+          OrderStatus.ready_to_start.name
         ])
         .where("restaurant", isEqualTo: id)
         .snapshots();

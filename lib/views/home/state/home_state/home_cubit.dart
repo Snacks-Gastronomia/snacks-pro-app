@@ -103,9 +103,8 @@ class HomeCubit extends Cubit<HomeState> {
         permission == AppPermission.radm || permission == AppPermission.employee
             ? data["restaurant"]["id"]
             : null;
-    var _stream = itemsRepository
-        .fetchItems(id.toString().trim(), state.lastDocument)
-        .distinct();
+
+    var _stream = itemsRepository.fetchItems(id, state.lastDocument).distinct();
 
     emit(state.copyWith(menu: _stream));
   }

@@ -453,13 +453,6 @@ class SnacksAdmSummaryCards extends StatelessWidget {
           separatorBuilder: (context, index) => const SizedBox(width: 15),
           itemCount: list.length),
     );
-
-    // Row(
-    //   children: [
-
-    //     const SizedBox(width: 15),
-    //   ],
-    // );
   }
 }
 

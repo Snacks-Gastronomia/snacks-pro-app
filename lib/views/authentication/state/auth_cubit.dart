@@ -29,8 +29,8 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> appSingOut(context) async {
     await auth.signOut();
     await storage.delete(key: "user");
-    // .then((value) =>
-    Navigator.pushReplacementNamed(context, AppRoutes.restaurantAuth);
+
+    await Navigator.pushReplacementNamed(context, AppRoutes.restaurantAuth);
   }
 
   otpVerification(String value, context) async {
