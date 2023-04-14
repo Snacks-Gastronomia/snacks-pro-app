@@ -150,11 +150,16 @@ class _HomeFinanceWidgetState extends State<HomeFinanceWidget> {
                             style: AppTextStyles.semiBold(22),
                           ),
                           const SizedBox(height: 10),
-                          SummaryCards(access: access, modal: modal)
+                          SummaryCards(access: access, modal: modal),
+                          const SizedBox(height: 30),
+                          BottomSheet(access: access, modal: modal),
                         ],
                       ),
                     ),
-                    BottomSheet(access: access, modal: modal)
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child:
+                    // )
                   ],
                 ),
               ),
@@ -208,10 +213,11 @@ class SnacksAdmBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 35),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           color: Colors.black,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+          // borderRadius: BorderRadius.only(
+          //     topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+          borderRadius: BorderRadius.circular(30)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -275,10 +281,8 @@ class RestaurantBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 35),
-      decoration: const BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+      decoration: BoxDecoration(
+          color: Colors.black, borderRadius: BorderRadius.circular(30)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

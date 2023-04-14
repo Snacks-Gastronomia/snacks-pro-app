@@ -149,7 +149,17 @@ class ItemDetailsWidget extends StatelessWidget {
                         onChanged: (String? value) =>
                             context.read<MenuCubit>().changeCategory(value),
                         borderRadius: BorderRadius.circular(15),
-                        items: ["Bebidas", "Comida Japonesa", "Outros"]
+                        items: [
+                          "Bebidas",
+                          "Drinks",
+                          "Grill",
+                          "Hambúguer",
+                          "Pizza",
+                          "Comida Japonesa",
+                          "Petiscos",
+                          "Sobremes",
+                          "Vinhos"
+                        ]
                             .map((String value) => DropdownMenuItem(
                                   value: value,
                                   child: Text(value),

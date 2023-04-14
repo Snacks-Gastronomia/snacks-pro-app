@@ -93,94 +93,94 @@ class ListEmployees extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var data = context.read<HomeCubit>().state.storage;
-    print(data);
-    return StreamBuilder(
-        stream: context
-            .read<EmployeesCubit>()
-            .fetchData(data["uid"], data["restaurant"]["id"]),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            context.read<EmployeesCubit>().convertData(snapshot.data!);
-            print("calling again");
-            return ListView.separated(
-              separatorBuilder: (context, index) => const Divider(
-                color: Color(0xffE7E7E7),
-              ),
-              itemCount: snapshot.data!.docs.length,
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                return BlocBuilder<EmployeesCubit, EmployeesState>(
-                    builder: (context, state) {
-                  var emp = state.employees[index];
-                  return Slidable(
-                      key: const ValueKey(0),
-                      endActionPane: ActionPane(
-                        motion: const ScrollMotion(),
-                        extentRatio: 0.4,
-                        children: [
-                          CustomSlidableAction(
-                            onPressed: (context) {},
-                            autoClose: true,
-                            flex: 2,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  onPressed: () => context
-                                      .read<EmployeesCubit>()
-                                      .selectToUpdate(emp, context),
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Color(0xff28B1EC),
-                                  ),
-                                ),
-                                IconButton(
+    return BlocBuilder<EmployeesCubit, EmployeesState>(
+        builder: (context, state) {
+      return StreamBuilder(
+          stream: state.employees,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var response = snapshot.data!.docs;
+              var data = context.read<EmployeesCubit>().convertData(response);
+
+              return ListView.separated(
+                separatorBuilder: (context, index) => const Divider(
+                  color: Color(0xffE7E7E7),
+                ),
+                itemCount: snapshot.data!.docs.length,
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return BlocBuilder<EmployeesCubit, EmployeesState>(
+                      builder: (context, state) {
+                    var emp = data[index];
+                    return Slidable(
+                        key: const ValueKey(0),
+                        endActionPane: ActionPane(
+                          motion: const ScrollMotion(),
+                          extentRatio: 0.4,
+                          children: [
+                            CustomSlidableAction(
+                              onPressed: (context) {},
+                              autoClose: true,
+                              flex: 2,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  IconButton(
                                     onPressed: () => context
                                         .read<EmployeesCubit>()
-                                        .deleteEmployee(emp.id!),
+                                        .selectToUpdate(emp, context),
                                     icon: const Icon(
-                                      Icons.delete,
-                                      color: Color(0xffE20808),
-                                    ))
-                              ],
+                                      Icons.edit,
+                                      color: Color(0xff28B1EC),
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () => context
+                                          .read<EmployeesCubit>()
+                                          .deleteEmployee(emp.id!),
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Color(0xffE20808),
+                                      ))
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      child: SizedBox(
-                        height: 70,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            emp.name,
-                            style:
-                                AppTextStyles.semiBold(18, color: Colors.black),
-                          ),
-                          subtitle: Text(
-                            '${emp.ocupation} - ${NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(emp.salary)}',
-                            style: AppTextStyles.light(13,
-                                color: const Color(0xffB3B3B3)),
-                          ),
-                          trailing: Transform.scale(
-                            scale: 0.75,
-                            child: CupertinoSwitch(
-                              value: emp.access,
-                              activeColor: AppColors.highlight,
-                              onChanged: (value) => context
-                                  .read<EmployeesCubit>()
-                                  .disableEmployee(value, emp.id!),
-                            ),
-                          ),
+                          ],
                         ),
-                      ));
-                });
-              },
-            );
-          }
-          return const CustomCircularProgress();
-        });
+                        child: SizedBox(
+                          height: 70,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              emp.name,
+                              style: AppTextStyles.semiBold(18,
+                                  color: Colors.black),
+                            ),
+                            subtitle: Text(
+                              '${emp.ocupation} - ${NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(emp.salary)}',
+                              style: AppTextStyles.light(13,
+                                  color: const Color(0xffB3B3B3)),
+                            ),
+                            trailing: Transform.scale(
+                              scale: 0.75,
+                              child: CupertinoSwitch(
+                                value: emp.access,
+                                activeColor: AppColors.highlight,
+                                onChanged: (value) => context
+                                    .read<EmployeesCubit>()
+                                    .disableEmployee(value, emp.id!),
+                              ),
+                            ),
+                          ),
+                        ));
+                  });
+                },
+              );
+            }
+            return const CustomCircularProgress();
+          });
+    });
   }
 }

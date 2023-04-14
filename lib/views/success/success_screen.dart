@@ -37,7 +37,7 @@ class SuccessScreen extends StatelessWidget {
                             style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12)),
-                                primary: const Color(0xffF6F6F6),
+                                backgroundColor: const Color(0xffF6F6F6),
                                 padding: EdgeInsets.zero,
                                 minimumSize: const Size(41, 41)),
                             child: const Icon(

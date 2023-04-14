@@ -43,7 +43,6 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeState.initial()) {
     saveStorage();
     fetchItems();
-    print("user logged: ${auth.currentUser!.uid}");
   }
 
   Future<void> saveStorage() async {
@@ -54,9 +53,6 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchOrders() {
-    // if (state.storage["access_level"] == AppPermission.cashier.name) {
-    //   return ordersRepository.fetchOrdersByStatus(OrderStatus.done);
-    // }
     if (state.storage["access_level"] == AppPermission.waiter.name) {
       return ordersRepository.fetchAllOrdersForWaiters();
     } else if (state.storage["access_level"] == AppPermission.radm.name ||
@@ -67,12 +63,6 @@ class HomeCubit extends Cubit<HomeState> {
 
     return ordersRepository.fetchAllOrders();
   }
-
-  Future<String> getProfileData() async {
-    return "";
-  }
-
-  // Future<dynamic> getOrderByItemId(String id) async {}
 
   void printerOrder(data, context) async {
     var toast = AppToast();
@@ -130,32 +120,8 @@ class HomeCubit extends Cubit<HomeState> {
             : null;
     var _stream = itemsRepository.searchQuery(
         query, state.category, state.storage["restaurant"]["id"]);
-    // .distinct();
 
     emit(state.copyWith(menu: _stream));
-    // try {
-    //   itemsRepository
-    //       .searchQuery(query, state.category, state.storage["restaurant"]["id"])
-    //       .listen((event) {
-    //     if (event.docs.isNotEmpty) {
-    //       emit(state.copyWith(
-    //           menu: event.docs.map<Map<String, dynamic>>((e) {
-    //         var el = e.data();
-    //         el.addAll({"id": e.id});
-    //         return el;
-    //       }).toList()));
-    //     }
-    //     emit(state.copyWith(
-    //       status: AppStatus.loaded,
-    //     ));
-    //   });
-    // } catch (e) {
-    //   emit(state.copyWith(
-    //     status: AppStatus.error,
-    //     error: e.toString(),
-    //   ));
-    //   print('state: $e');
-    // }
   }
 
   void disableItem(String docID, bool value) async {

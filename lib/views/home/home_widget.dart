@@ -31,34 +31,18 @@ class HomeScreenWidget extends StatefulWidget {
 
 class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   late ScrollController controller;
-  bool showButton = false;
 
   @override
   void initState() {
     controller = ScrollController();
+    context.read<HomeCubit>().fetchItems();
     super.initState();
-    setState(() {
-      showButton = false;
-    });
   }
 
   @override
   void didChangeDependencies() {
     controller.addListener(
       () {
-        var cart = context.read<CartCubit>().state;
-
-        if (controller.offset > 60 && cart.cart.isNotEmpty) {
-          // context.read<HomeCubit>().changeButtonDone(true);
-          setState(() {
-            showButton = true;
-          });
-        } else {
-          setState(() {
-            showButton = false;
-          });
-        }
-
         if (controller.position.maxScrollExtent == controller.offset &&
             context.read<HomeCubit>().state.status == AppStatus.loaded) {
           context.read<HomeCubit>().fetchItems();

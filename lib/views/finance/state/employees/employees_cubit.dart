@@ -1,14 +1,13 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/models/employee_model.dart';
 import 'package:snacks_pro_app/services/employees_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
-import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/finance/repository/employees_repository.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
@@ -19,46 +18,45 @@ class EmployeesCubit extends Cubit<EmployeesState> {
   final repository = EmployeesRepository(services: EmployeesApiServices());
 
   EmployeesCubit() : super(EmployeesState.initial()) {
-    // fetchData();
+    fetchData();
   }
 
-  void convertData(QuerySnapshot<Map<String, dynamic>> event) {
+  List<EmployeeModel> convertData(List<QueryDocumentSnapshot> event) {
     double total = 0;
-    List<EmployeeModel> data = event.docs.map((e) {
-      var data = e.data();
-      var el = EmployeeModel.fromMap(data);
 
-      total += data["salary"] ?? 0;
+    List<EmployeeModel> data = event.map((e) {
+      var el = EmployeeModel.fromJson(jsonEncode(e.data()));
+
+      total += el.salary;
 
       return el.copyWith(id: e.id);
     }).toList();
 
     emit(state.copyWith(
-        employees: data,
+        // employees: data,
         amount: data.length,
         expenses: total,
         status: AppStatus.loaded));
+    return data;
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> fetchData(
-      user_id, restaurant_id) {
+  void fetchData() async {
     emit(state.copyWith(status: AppStatus.loading));
-    return repository.fetchEmployees(user_id, restaurant_id);
+    var _storage = await storage.getDataStorage("user");
+    var _stream = repository.fetchEmployees(
+        _storage["uid"], _storage["restaurant"]["id"]);
 
-    // await for (final event in response) {
-    //   convertData(event);
-    // }
-    // print(response.docs[0]);
+    emit(state.copyWith(employees: _stream, status: AppStatus.loaded));
   }
 
-  saveEmployee() async {
+  Future<bool> saveEmployee() async {
     final emp = state.newEmployee;
-    // if (emp != null) {
 
     var data = emp.toMap();
 
     if (state.updateEmp) {
       await repository.updateEmployee(emp.id!, data);
+      return true;
     } else {
       var phone =
           await repository.fetchSingleEmployeeByPhoneNumber(emp.phone_number);
@@ -68,10 +66,10 @@ class EmployeesCubit extends Cubit<EmployeesState> {
         data.addAll({"restaurant": user["restaurant"]});
         await repository.createEmployee(data);
         clearSelect();
+        fetchData();
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
   }
   // }
@@ -109,14 +107,12 @@ class EmployeesCubit extends Cubit<EmployeesState> {
     var emp = state.newEmployee;
 
     emit(state.copyWith(newEmployee: emp.copyWith(phone_number: value)));
-    print(state);
   }
 
   void changeOcupation(String value) {
     var emp = state.newEmployee;
 
     emit(state.copyWith(newEmployee: emp.copyWith(ocupation: value)));
-    print(state);
   }
 
   void changePermission(String? value) {
@@ -126,7 +122,6 @@ class EmployeesCubit extends Cubit<EmployeesState> {
       value = value.stringLabelToEnum.name;
       emit(state.copyWith(newEmployee: emp.copyWith(access_level: value)));
     }
-    print(state);
   }
 
   void changeSalary(String value) {
@@ -135,6 +130,5 @@ class EmployeesCubit extends Cubit<EmployeesState> {
     emit(state.copyWith(
         newEmployee: emp.copyWith(
             salary: value.isNotEmpty ? double.tryParse(value) : 0)));
-    print(state);
   }
 }

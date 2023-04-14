@@ -59,8 +59,10 @@ class ItemsApiServices {
 
   Future<void> deleteItem(String doc, String imageUrl) async {
     try {
-      Reference photoRef = fbStorage.refFromURL(imageUrl);
-      await photoRef.delete();
+      if (imageUrl.isNotEmpty) {
+        Reference photoRef = fbStorage.refFromURL(imageUrl);
+        await photoRef.delete();
+      }
 
       return database.collection("menu").doc(doc).delete();
     } catch (e) {

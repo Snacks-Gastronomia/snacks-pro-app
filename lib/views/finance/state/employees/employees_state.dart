@@ -1,7 +1,7 @@
 part of 'employees_cubit.dart';
 
 class EmployeesState {
-  final List<EmployeeModel> employees;
+  final Stream<QuerySnapshot> employees;
   final int amount;
   final EmployeeModel newEmployee;
   final double expenses;
@@ -18,14 +18,14 @@ class EmployeesState {
 
   factory EmployeesState.initial() => EmployeesState(
       newEmployee: EmployeeModel.initial(),
-      employees: [],
+      employees: const Stream.empty(),
       amount: 0,
       expenses: 0,
       updateEmp: false,
       status: AppStatus.initial);
 
   EmployeesState copyWith({
-    List<EmployeeModel>? employees,
+    Stream<QuerySnapshot>? employees,
     int? amount,
     bool? updateEmp,
     EmployeeModel? newEmployee,
