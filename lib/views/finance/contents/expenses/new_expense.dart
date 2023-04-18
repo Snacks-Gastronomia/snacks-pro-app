@@ -102,12 +102,9 @@ class NewExpenseContent extends StatelessWidget {
                 height: 20,
               ),
               CustomSubmitButton(
-                  onPressedAction: () => restaurantExpense
-                      ? context.read<FinanceCubit>().saveRestaurantExpense(
-                          context,
-                          context.read<HomeCubit>().state.storage["restaurant"]
-                              ["id"])
-                      : context.read<FinanceCubit>().saveExpense(context),
+                  onPressedAction: () => context
+                      .read<FinanceCubit>()
+                      .saveExpense(context, restaurantExpense),
                   label: "Adicionar depesa"),
               TextButton(
                 onPressed: () => Navigator.pop(context),

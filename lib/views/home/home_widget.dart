@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
@@ -16,6 +17,7 @@ import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/services/beerpass_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
+import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/item_screen.dart';
 import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
@@ -31,7 +33,7 @@ class HomeScreenWidget extends StatefulWidget {
 
 class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   late ScrollController controller;
-
+  final storage = AppStorage();
   @override
   void initState() {
     controller = ScrollController();
@@ -65,108 +67,121 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   final modal = AppModal();
   @override
   Widget build(BuildContext context) {
-    final access_level = context
-        .read<HomeCubit>()
-        .state
-        .storage["access_level"]
-        .toString()
-        .stringToEnum;
-    return Scaffold(
-      floatingActionButton: (access_level == AppPermission.radm ||
-              access_level == AppPermission.employee)
-          ? Padding(
-              padding: const EdgeInsets.only(bottom: 70),
-              child: FloatingActionButton(
-                backgroundColor: Colors.black,
-                onPressed: () =>
-                    Navigator.pushNamed(context, AppRoutes.newItem),
-                child: const Icon(Icons.plus_one),
-              ),
-            )
-          : null,
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0),
-        child: Container(
-          padding: const EdgeInsets.only(top: 15, left: 20, right: 20),
-          // color: Colors.black.withOpacity(.8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const SizedBox(
-                width: 20,
-              ),
-              SvgPicture.asset(
-                AppImages.snacks,
-                width: 140,
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 25, top: 25, right: 25),
-        child: SingleChildScrollView(
-          controller: controller,
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 15,
-              ),
-              const TopWidget(),
-              const SizedBox(
-                height: 45,
-              ),
-              TextFormField(
-                style: AppTextStyles.light(16, color: const Color(0xff8391A1)),
-                autofocus: false,
-                onChanged: context.read<HomeCubit>().fetchQuery,
-                decoration: InputDecoration(
-                  fillColor: Colors.black.withOpacity(0.033),
-                  filled: true,
-                  hintStyle: AppTextStyles.light(16,
-                      color: Colors.black.withOpacity(0.5)),
-                  contentPadding:
-                      const EdgeInsets.only(left: 17, top: 15, bottom: 15),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none),
-                  suffixIcon: const Icon(Icons.search),
-                  hintText: 'Pesquise um item',
+    // final access_level = context
+    //     .read<HomeCubit>()
+    //     .state
+    //     .storage["access_level"]
+    //     .toString()
+    //     .stringToEnum;
+    var getStorage = storage.getDataStorage("user");
+
+    return FutureBuilder(
+        future: getStorage,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var user = snapshot.data ?? {};
+            var access_level = user["access_level"].toString().stringToEnum;
+            return Scaffold(
+              floatingActionButton: (access_level == AppPermission.radm ||
+                      access_level == AppPermission.employee)
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 70),
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.black,
+                        onPressed: () =>
+                            Navigator.pushNamed(context, AppRoutes.newItem),
+                        child: const Icon(Icons.plus_one),
+                      ),
+                    )
+                  : null,
+              backgroundColor: Colors.white,
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(70.0),
+                child: Container(
+                  padding: const EdgeInsets.only(top: 15, left: 20, right: 20),
+                  // color: Colors.black.withOpacity(.8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      SvgPicture.asset(
+                        AppImages.snacks,
+                        width: 140,
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(
-                height: 40,
+              body: Padding(
+                padding: const EdgeInsets.only(left: 25, top: 25, right: 25),
+                child: SingleChildScrollView(
+                  controller: controller,
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const TopWidget(),
+                      const SizedBox(
+                        height: 45,
+                      ),
+                      TextFormField(
+                        style: AppTextStyles.light(16,
+                            color: const Color(0xff8391A1)),
+                        autofocus: false,
+                        onChanged: context.read<HomeCubit>().fetchQuery,
+                        decoration: InputDecoration(
+                          fillColor: Colors.black.withOpacity(0.033),
+                          filled: true,
+                          hintStyle: AppTextStyles.light(16,
+                              color: Colors.black.withOpacity(0.5)),
+                          contentPadding: const EdgeInsets.only(
+                              left: 17, top: 15, bottom: 15),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none),
+                          suffixIcon: const Icon(Icons.search),
+                          hintText: 'Pesquise um item',
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      // PopularItemsWidget(ns: _navigator),
+                      // const SizedBox(
+                      //   height: 25,
+                      // ),
+                      Text(
+                        'Cardápio',
+                        style: AppTextStyles.medium(18),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      AllItemsWidget(
+                        ns: _navigator,
+                        access_level: access_level,
+                        // controller: controller,
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      )
+                    ],
+                  ),
+                ),
               ),
-              // PopularItemsWidget(ns: _navigator),
-              // const SizedBox(
-              //   height: 25,
-              // ),
-              Text(
-                'Cardápio',
-                style: AppTextStyles.medium(18),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              AllItemsWidget(
-                ns: _navigator,
-                access_level: access_level,
-                // controller: controller,
-              ),
-              const SizedBox(
-                height: 30,
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+            );
+          }
+
+          return const CustomCircularProgress();
+        });
   }
 }
 

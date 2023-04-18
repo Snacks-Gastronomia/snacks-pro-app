@@ -139,13 +139,11 @@ class AddStockScreen extends StatelessWidget {
               height: 25,
             ),
             CustomSubmitButton(
-                onPressedAction: () {
-                  context.read<StockCubit>().save(context
-                      .read<HomeCubit>()
-                      .state
-                      .storage["restaurant"]["id"]);
+                onPressedAction: () async {
+                  var navigator = Navigator.of(context);
+                  await context.read<StockCubit>().save();
 
-                  Navigator.pop(context);
+                  navigator.pop();
                 },
                 label: "Adicionar"),
             TextButton(

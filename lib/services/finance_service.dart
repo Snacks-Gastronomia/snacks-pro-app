@@ -242,33 +242,37 @@ class FinanceApiServices {
       "length": FieldValue.increment(1)
     }, SetOptions(merge: true));
 
+    await docref.set({
+      "total": FieldValue.increment(total),
+    }, SetOptions(merge: true));
+
     await snacks.set({
       "total": FieldValue.increment(total),
       "length": FieldValue.increment(1)
     }, SetOptions(merge: true));
 
     // print("run transactions");
-    await firebase.runTransaction((transaction) async {
-      final snapshot = await transaction.get(docref);
-      final snacks_snapshot = await transaction.get(snacks);
+//     await firebase.runTransaction((transaction) async {
+//       final snapshot = await transaction.get(docref);
+//       final snacks_snapshot = await transaction.get(snacks);
 
-      if (snapshot.data() == null || snapshot.data()!.isEmpty) {
-        transaction.set(docref, {"total": total});
-      } else {
-        final newTotalValue = snapshot.get("total") + total;
-        transaction.update(docref, {"total": newTotalValue});
-      }
-//snacks total
-      if (snacks_snapshot.data() == null || snacks_snapshot.data()!.isEmpty) {
-        transaction.set(docref, {"total": total});
-      } else {
-        final newTotalValue = snacks_snapshot.get("total") + total;
-        transaction.update(docref, {"total": newTotalValue});
-      }
-    }).then(
-      (value) => print("Document snapshot successfully updated!"),
-      onError: (e) => print("Error updating document $e"),
-    );
+//       if (snapshot.data() == null || snapshot.data()!.isEmpty) {
+//         transaction.set(docref, {"total": total});
+//       } else {
+//         final newTotalValue = snapshot.get("total") + total;
+//         transaction.update(docref, {"total": newTotalValue});
+//       }
+// //snacks total
+//       if (snacks_snapshot.data() == null || snacks_snapshot.data()!.isEmpty) {
+//         transaction.set(docref, {"total": total});
+//       } else {
+//         final newTotalValue = snacks_snapshot.get("total") + total;
+//         transaction.update(docref, {"total": newTotalValue});
+//       }
+//     }).then(
+//       (value) => print("Document snapshot successfully updated!"),
+//       onError: (e) => print("Error updating document $e"),
+//     );
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getMonthlyOrders(
@@ -276,7 +280,6 @@ class FinanceApiServices {
     var now = DateTime.now();
 
     var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
-    // var day_id = "day-${now.day}";
 
     return await firebase
         .collection("receipts")

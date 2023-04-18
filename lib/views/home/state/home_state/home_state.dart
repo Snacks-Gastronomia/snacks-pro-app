@@ -12,7 +12,6 @@ class HomeState {
   final String? query;
   final String? error;
   final Stream<QuerySnapshot> menu;
-  final Map<String, dynamic> storage;
   HomeState({
     required this.items,
     required this.numberOfPostsPerRequest,
@@ -25,14 +24,12 @@ class HomeState {
     required this.query,
     required this.error,
     required this.menu,
-    required this.storage,
   });
 
   factory HomeState.initial() => HomeState(
       search: false,
       category: null,
       query: "",
-      storage: {},
       items: [],
       menu: const Stream.empty(),
       popular: [],
@@ -55,24 +52,21 @@ class HomeState {
         search.hashCode ^
         query.hashCode ^
         category.hashCode ^
-        error.hashCode ^
-        storage.hashCode;
+        error.hashCode;
   }
 
-  HomeState copyWith({
-    List<Item>? items,
-    int? numberOfPostsPerRequest,
-    bool? listIsLastPage,
-    DocumentSnapshot? lastDocument,
-    List<Item>? popular,
-    AppStatus? status,
-    Stream<QuerySnapshot>? menu,
-    bool? search,
-    String? category,
-    String? query,
-    String? error,
-    Map<String, dynamic>? storage,
-  }) {
+  HomeState copyWith(
+      {List<Item>? items,
+      int? numberOfPostsPerRequest,
+      bool? listIsLastPage,
+      DocumentSnapshot? lastDocument,
+      List<Item>? popular,
+      AppStatus? status,
+      Stream<QuerySnapshot>? menu,
+      bool? search,
+      String? category,
+      String? query,
+      String? error}) {
     return HomeState(
       items: items ?? this.items,
       numberOfPostsPerRequest:
@@ -86,7 +80,6 @@ class HomeState {
       category: category ?? this.category,
       menu: menu ?? this.menu,
       error: error ?? this.error,
-      storage: storage ?? this.storage,
     );
   }
 
@@ -105,7 +98,6 @@ class HomeState {
         other.query == query &&
         other.category == category &&
         other.menu == menu &&
-        other.error == error &&
-        mapEquals(other.storage, storage);
+        other.error == error;
   }
 }

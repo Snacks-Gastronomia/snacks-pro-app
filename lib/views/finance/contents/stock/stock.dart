@@ -57,12 +57,9 @@ class StockScreen extends StatelessWidget {
                                       .ceil();
                               return SleekCircularSlider(
                                 onChangeEnd: (double value) {
-                                  context.read<StockCubit>().updateVolume(
-                                      context
-                                          .read<HomeCubit>()
-                                          .state
-                                          .storage["restaurant"]["id"],
-                                      value.ceil().toInt());
+                                  context
+                                      .read<StockCubit>()
+                                      .updateVolume(value.ceil().toInt());
                                 },
 
                                 innerWidget: (percentage) {
@@ -111,11 +108,7 @@ class StockScreen extends StatelessWidget {
                 // ),
                 Expanded(
                   child: ListItems(
-                      modal: modal,
-                      fetch: stockRepo.fetchStock(context
-                          .read<HomeCubit>()
-                          .state
-                          .storage["restaurant"]["id"])),
+                      modal: modal, fetch: context.read<StockCubit>().fetch()),
                 ),
                 const SizedBox(
                   height: 20,

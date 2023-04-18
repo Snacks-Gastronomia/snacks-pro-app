@@ -62,7 +62,12 @@ class ModalPaymentMethod extends StatelessWidget {
                         BlocProvider.of<RechargeCubit>(context)
                             .changePaymentMethod(value),
                     borderRadius: BorderRadius.circular(15),
-                    items: ["PIX", "Cartão de crédito/débito", "Dinheiro"]
+                    items: [
+                      "PIX",
+                      "Cartão de crédito/",
+                      "Cartão de débito",
+                      "Dinheiro"
+                    ]
                         .map((String value) => DropdownMenuItem(
                               value: value,
                               child: Text(value),

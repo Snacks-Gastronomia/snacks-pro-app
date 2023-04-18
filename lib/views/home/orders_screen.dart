@@ -4,27 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/tabbar.dart';
 
 class OrdersScreen extends StatelessWidget {
-  const OrdersScreen({Key? key}) : super(key: key);
+  OrdersScreen({Key? key}) : super(key: key);
+  final storage = AppStorage();
+
+  Future<AppPermission> getAccessLevel() async {
+    var user = await storage.getDataStorage("user");
+    String access = user["access_level"].toString();
+
+    return access.stringToEnum;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final access_level = context
-        .read<HomeCubit>()
-        .state
-        .storage["access_level"]
-        .toString()
-        .stringToEnum;
-
     getCountByStatus(List data, OrderStatus status) {
       return data.isNotEmpty
           ? data
@@ -33,7 +36,7 @@ class OrdersScreen extends StatelessWidget {
           : 0;
     }
 
-    getCountBadgeTab(orders_page1, orders_page2) {
+    getCountBadgeTab(access_level, orders_page1, orders_page2) {
       var count1 = 0;
       var count2 = 0;
       if (access_level == AppPermission.employee) {
@@ -47,7 +50,7 @@ class OrdersScreen extends StatelessWidget {
       return [count1, count2];
     }
 
-    getTextTab() {
+    getTextTab({required AppPermission access_level}) {
       if (access_level == AppPermission.employee) {
         return ["Em preparação", "Em andamento"];
       } else if (access_level == AppPermission.waiter) {
@@ -73,206 +76,246 @@ class OrdersScreen extends StatelessWidget {
           ),
         ),
         backgroundColor: Colors.white,
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
-          child:
-              // Builder(
-              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: BlocProvider.of<HomeCubit>(context).fetchOrders(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      var orders = snapshot.data!.docs;
-                      List<dynamic> orders_page2 = [];
-                      List<dynamic> orders_page1 = [];
+        body: FutureBuilder<AppPermission>(
+            future: getAccessLevel(),
+            builder: (context, snapshot) {
+              var access_level = snapshot.data;
 
-                      print(orders.length);
-                      orders.map((e) {
-                        Map<String, dynamic> data = e.data();
-                        data["id"] = e.id;
+              if (snapshot.hasData) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                  child:
+                      // Builder(
+                      StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                          stream:
+                              BlocProvider.of<HomeCubit>(context).fetchOrders(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              var orders = snapshot.data!.docs;
+                              List<dynamic> orders_page2 = [];
+                              List<dynamic> orders_page1 = [];
 
-                        if (access_level == AppPermission.waiter) {
-                          if (data["status"] ==
-                              OrderStatus.waiting_payment.name) {
-                            orders_page1.add(data);
-                          } else {
-                            orders_page2.add(data);
-                          }
-                        } else if (access_level == AppPermission.employee) {
-                          if (data["status"] ==
-                              OrderStatus.ready_to_start.name) {
-                            orders_page1.add(data);
-                          } else {
-                            orders_page2.add(data);
-                          }
-                        } else {
-                          if (data["isDelivery"] == true) {
-                            orders_page2.add(data);
-                          } else {
-                            orders_page1.add(data);
-                          }
-                        }
-                      }).toList();
+                              print(orders.length);
+                              orders.map((e) {
+                                Map<String, dynamic> data = e.data();
+                                data["id"] = e.id;
 
-                      List<String> tabs = getTextTab();
-                      List<int> counts =
-                          getCountBadgeTab(orders_page1, orders_page2);
-                      return Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          children: [
-                            TabarBar(
-                              tab1_text: tabs[0],
-                              tab2_text: tabs[1],
-                              new_items_page1: counts[0],
-                              new_items_page2: counts[1],
-                              page1: Column(
-                                children: [
-                                  Expanded(
-                                      child: ListView.builder(
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          itemCount: orders_page1.length,
-                                          shrinkWrap: true,
-                                          itemBuilder: (_, index) {
-                                            var item = orders_page1[index];
-                                            Timestamp date = item["created_at"];
-                                            // time.toDate();
-                                            String time = DateFormat("HH:mm")
-                                                .format(date.toDate());
-                                            var waiter =
-                                                item?["waiter_delivery"] ?? "";
-                                            print(waiter);
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 10),
-                                              child: CardOrderWidget(
-                                                  waiter: waiter,
-                                                  restaurant:
-                                                      item["restaurant_name"],
-                                                  change: item["need_change"]
-                                                      ? item["change_money"]
-                                                      : "",
-                                                  permission: access_level,
-                                                  doubleTap: () => context
-                                                      .read<CartCubit>()
-                                                      .changeStatus(
-                                                          context,
-                                                          item["isDelivery"]
+                                if (access_level == AppPermission.waiter) {
+                                  if (data["status"] ==
+                                      OrderStatus.waiting_payment.name) {
+                                    orders_page1.add(data);
+                                  } else {
+                                    orders_page2.add(data);
+                                  }
+                                } else if (access_level ==
+                                    AppPermission.employee) {
+                                  if (data["status"] ==
+                                      OrderStatus.ready_to_start.name) {
+                                    orders_page1.add(data);
+                                  } else {
+                                    orders_page2.add(data);
+                                  }
+                                } else {
+                                  if (data["isDelivery"] == true) {
+                                    orders_page2.add(data);
+                                  } else {
+                                    orders_page1.add(data);
+                                  }
+                                }
+                              }).toList();
+
+                              List<String> tabs =
+                                  getTextTab(access_level: access_level!);
+                              List<int> counts = getCountBadgeTab(
+                                  access_level, orders_page1, orders_page2);
+                              return Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  children: [
+                                    TabarBar(
+                                      tab1_text: tabs[0],
+                                      tab2_text: tabs[1],
+                                      new_items_page1: counts[0],
+                                      new_items_page2: counts[1],
+                                      page1: Column(
+                                        children: [
+                                          Expanded(
+                                              child: ListView.builder(
+                                                  physics:
+                                                      const BouncingScrollPhysics(),
+                                                  itemCount:
+                                                      orders_page1.length,
+                                                  shrinkWrap: true,
+                                                  itemBuilder: (_, index) {
+                                                    var item =
+                                                        orders_page1[index];
+                                                    Timestamp date =
+                                                        item["created_at"];
+                                                    // time.toDate();
+                                                    String time = DateFormat(
+                                                            "HH:mm")
+                                                        .format(date.toDate());
+                                                    var waiter = item?[
+                                                            "waiter_delivery"] ??
+                                                        "";
+                                                    var _change = (item[
+                                                                "need_change"] ??
+                                                            false)
+                                                        ? (item["change_money"] ??
+                                                            "")
+                                                        : "";
+
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 10),
+                                                      child: CardOrderWidget(
+                                                          waiter: waiter,
+                                                          restaurant: item[
+                                                              "restaurant_name"],
+                                                          change: _change,
+                                                          permission:
+                                                              access_level,
+                                                          doubleTap: () => context.read<CartCubit>().changeStatus(
+                                                              context,
+                                                              item["isDelivery"]
+                                                                  ? null
+                                                                  : item[
+                                                                      "table"],
+                                                              item["id"],
+                                                              item["items"],
+                                                              item[
+                                                                  "payment_method"],
+                                                              item["status"],
+                                                              item[
+                                                                  "created_at"],
+                                                              item[
+                                                                  "isDelivery"]),
+                                                          onLongPress: () async => context
+                                                              .read<HomeCubit>()
+                                                              .printerOrder(
+                                                                  item, context),
+                                                          leading: item["isDelivery"]
                                                               ? null
                                                               : item["table"],
-                                                          item["id"],
-                                                          item["items"],
-                                                          item[
+                                                          address: item["isDelivery"]
+                                                              ? item["address"]
+                                                              : "",
+                                                          status:
+                                                              item["status"],
+                                                          isDelivery: item[
+                                                              "isDelivery"],
+                                                          time: time,
+                                                          total: double.parse(
+                                                              item["value"]
+                                                                  .toString()),
+                                                          method: item["payment_method"],
+                                                          items: item["items"] ?? []),
+                                                    );
+                                                  })),
+                                        ],
+                                      ),
+                                      page2: Column(
+                                        children: [
+                                          Expanded(
+                                              child: ListView.builder(
+                                                  physics:
+                                                      const BouncingScrollPhysics(),
+                                                  itemCount:
+                                                      orders_page2.length,
+                                                  shrinkWrap: true,
+                                                  itemBuilder: (_, index) {
+                                                    var item =
+                                                        orders_page2[index];
+                                                    Timestamp date =
+                                                        item["created_at"];
+
+                                                    String time = DateFormat(
+                                                            "HH:mm")
+                                                        .format(date.toDate());
+                                                    var _change = (item[
+                                                                "need_change"] ??
+                                                            false)
+                                                        ? (item["change_money"] ??
+                                                            "")
+                                                        : "";
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 10),
+                                                      child: CardOrderWidget(
+                                                          restaurant: item[
+                                                              "restaurant_name"],
+                                                          change: _change,
+                                                          permission:
+                                                              access_level,
+                                                          doubleTap: () => context
+                                                              .read<CartCubit>()
+                                                              .changeStatus(
+                                                                context,
+                                                                item["isDelivery"]
+                                                                    ? null
+                                                                    : item[
+                                                                        "table"],
+                                                                item["id"],
+                                                                item["items"],
+                                                                item[
+                                                                    "payment_method"],
+                                                                item["status"],
+                                                                item[
+                                                                    "created_at"],
+                                                                item[
+                                                                    "isDelivery"],
+                                                              ),
+                                                          onLongPress: () async => context
+                                                              .read<HomeCubit>()
+                                                              .printerOrder(
+                                                                  item, context),
+                                                          leading: item["isDelivery"]
+                                                              ? null
+                                                              : item["table"],
+                                                          address: item["isDelivery"]
+                                                              ? item["address"]
+                                                              : "",
+                                                          status:
+                                                              item["status"],
+                                                          isDelivery: item[
+                                                              "isDelivery"],
+                                                          time: time,
+                                                          total: double.parse(
+                                                              item["value"]
+                                                                  .toString()),
+                                                          method: item[
                                                               "payment_method"],
-                                                          item["status"],
-                                                          item["created_at"],
-                                                          item["isDelivery"]),
-                                                  onLongPress: () async =>
-                                                      context
-                                                          .read<HomeCubit>()
-                                                          .printerOrder(
-                                                              item, context),
-                                                  leading: item["isDelivery"]
-                                                      ? null
-                                                      : item["table"],
-                                                  address: item["isDelivery"]
-                                                      ? item["address"]
-                                                      : "",
-                                                  status: item["status"],
-                                                  isDelivery:
-                                                      item["isDelivery"],
-                                                  time: time,
-                                                  total: double.parse(
-                                                      item["value"].toString()),
-                                                  method: item["payment_method"],
-                                                  items: item["items"] ?? []),
-                                            );
-                                          })),
-                                ],
-                              ),
-                              page2: Column(
-                                children: [
-                                  Expanded(
-                                      child: ListView.builder(
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          itemCount: orders_page2.length,
-                                          shrinkWrap: true,
-                                          itemBuilder: (_, index) {
-                                            var item = orders_page2[index];
-                                            Timestamp date = item["created_at"];
+                                                          items:
+                                                              item["items"] ??
+                                                                  []),
+                                                    );
+                                                    // );
+                                                  })),
+                                        ],
+                                      ),
+                                      onChange: (p0) {},
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+                            return const Center(
+                              child: SizedBox(
+                                  height: 60,
+                                  width: 60,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                    backgroundColor: Colors.black12,
+                                  )),
+                            );
+                          }),
+                );
+              }
 
-                                            String time = DateFormat("HH:mm")
-                                                .format(date.toDate());
-
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 10),
-                                              child: CardOrderWidget(
-                                                  restaurant:
-                                                      item["restaurant_name"],
-                                                  change:
-                                                      (item["need_change"] ??
-                                                              false)
-                                                          ? item["money_change"]
-                                                          : "",
-                                                  permission: access_level,
-                                                  doubleTap: () => context
-                                                      .read<CartCubit>()
-                                                      .changeStatus(
-                                                        context,
-                                                        item["isDelivery"]
-                                                            ? null
-                                                            : item["table"],
-                                                        item["id"],
-                                                        item["items"],
-                                                        item["payment_method"],
-                                                        item["status"],
-                                                        item["created_at"],
-                                                        item["isDelivery"],
-                                                      ),
-                                                  onLongPress: () async =>
-                                                      context
-                                                          .read<HomeCubit>()
-                                                          .printerOrder(
-                                                              item, context),
-                                                  leading: item["isDelivery"]
-                                                      ? null
-                                                      : item["table"],
-                                                  address: item["isDelivery"]
-                                                      ? item["address"]
-                                                      : "",
-                                                  status: item["status"],
-                                                  isDelivery:
-                                                      item["isDelivery"],
-                                                  time: time,
-                                                  total: double.parse(
-                                                      item["value"].toString()),
-                                                  method:
-                                                      item["payment_method"],
-                                                  items: item["items"] ?? []),
-                                            );
-                                            // );
-                                          })),
-                                ],
-                              ),
-                              onChange: (p0) {},
-                            )
-                          ],
-                        ),
-                      );
-                    }
-                    return const Center(
-                      child: SizedBox(
-                          height: 60,
-                          width: 60,
-                          child: CircularProgressIndicator(
-                            color: Colors.black,
-                            backgroundColor: Colors.black12,
-                          )),
-                    );
-                  }),
-        ));
+              return const CustomCircularProgress();
+            }));
   }
 }
 

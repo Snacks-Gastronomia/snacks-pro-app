@@ -5,6 +5,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/authentication/state/auth_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
@@ -13,6 +14,8 @@ import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 class NewEmployeeScreen extends StatelessWidget {
   NewEmployeeScreen({Key? key}) : super(key: key);
   final toast = AppToast();
+
+  final storage = AppStorage();
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -247,62 +250,77 @@ class NewEmployeeScreen extends StatelessWidget {
                       const SizedBox(
                         height: 10,
                       ),
-                      if (context
-                              .read<HomeCubit>()
-                              .state
-                              .storage["access_level"] ==
-                          AppPermission.sadm.name)
-                        BlocBuilder<EmployeesCubit, EmployeesState>(
-                            builder: (context, snapshot) {
-                          List<String> items = [
-                            AppPermission.waiter.displayEnum,
-                            AppPermission.cashier.displayEnum,
-                            AppPermission.employee.displayEnum,
-                            AppPermission.sadm.displayEnum
-                          ];
 
-                          return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: const Color(0xffF7F8F9),
-                              border: const Border.fromBorderSide(BorderSide(
-                                  color: Color(0xffE8ECF4), width: 1)),
-                            ),
-                            child: DropdownButton<String>(
-                              value: snapshot.newEmployee.access_level.isEmpty
-                                  ? null
-                                  : AppPermission.values
-                                      .byName(snapshot.newEmployee.access_level)
-                                      .displayEnum,
-                              hint: Text(
-                                "Permissão",
-                                style: AppTextStyles.regular(16,
-                                    color: Colors.black26),
-                              ),
-                              icon: const Icon(Icons.arrow_downward),
-                              elevation: 16,
-                              style: AppTextStyles.medium(16,
-                                  color: Colors.black54),
-                              isExpanded: true,
-                              itemHeight: 55,
-                              underline: Container(
-                                height: 2,
-                                color: Colors.transparent,
-                              ),
-                              onChanged: (String? value) => context
-                                  .read<EmployeesCubit>()
-                                  .changePermission(value),
-                              borderRadius: BorderRadius.circular(15),
-                              items: items
-                                  .map((String value) => DropdownMenuItem(
-                                        value: value,
-                                        child: Text(value),
-                                      ))
-                                  .toList(),
-                            ),
-                          );
-                        }),
+                      FutureBuilder(
+                          future: storage.getDataStorage("user"),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              var user = snapshot.data ?? {};
+                              var access_level =
+                                  user["access_level"].toString().stringToEnum;
+                              if (access_level == AppPermission.sadm) {
+                                return BlocBuilder<EmployeesCubit,
+                                        EmployeesState>(
+                                    builder: (context, snapshot) {
+                                  List<String> items = [
+                                    AppPermission.waiter.displayEnum,
+                                    AppPermission.cashier.displayEnum,
+                                    AppPermission.employee.displayEnum,
+                                    AppPermission.sadm.displayEnum
+                                  ];
+
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: const Color(0xffF7F8F9),
+                                      border: const Border.fromBorderSide(
+                                          BorderSide(
+                                              color: Color(0xffE8ECF4),
+                                              width: 1)),
+                                    ),
+                                    child: DropdownButton<String>(
+                                      value: snapshot
+                                              .newEmployee.access_level.isEmpty
+                                          ? null
+                                          : AppPermission.values
+                                              .byName(snapshot
+                                                  .newEmployee.access_level)
+                                              .displayEnum,
+                                      hint: Text(
+                                        "Permissão",
+                                        style: AppTextStyles.regular(16,
+                                            color: Colors.black26),
+                                      ),
+                                      icon: const Icon(Icons.arrow_downward),
+                                      elevation: 16,
+                                      style: AppTextStyles.medium(16,
+                                          color: Colors.black54),
+                                      isExpanded: true,
+                                      itemHeight: 55,
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.transparent,
+                                      ),
+                                      onChanged: (String? value) => context
+                                          .read<EmployeesCubit>()
+                                          .changePermission(value),
+                                      borderRadius: BorderRadius.circular(15),
+                                      items: items
+                                          .map((String value) =>
+                                              DropdownMenuItem(
+                                                value: value,
+                                                child: Text(value),
+                                              ))
+                                          .toList(),
+                                    ),
+                                  );
+                                });
+                              }
+                            }
+                            return const SizedBox();
+                          }),
                     ],
                   ),
                 ),

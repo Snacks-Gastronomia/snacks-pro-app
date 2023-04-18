@@ -2,12 +2,14 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/repository/stock_repository.dart';
 
 part 'stock_state.dart';
 
 class StockCubit extends Cubit<StockState> {
   final repository = StockRepository();
+  final storage = AppStorage();
   StockCubit() : super(StockState.initial());
 
   void changeTitle(String value) {
@@ -48,27 +50,39 @@ class StockCubit extends Cubit<StockState> {
     emit(state.copyWith(unit: value));
   }
 
-  save(restaurant_id) {
+  save() async {
+    var user = await storage.getDataStorage("user");
+    var rest_id = user["restaurant"]["id"];
     if (state.status == AppStatus.editing) {
-      updateData(restaurant_id);
+      updateData();
     } else {}
-    repository.addStockItem(restaurant_id, state.toMap());
+    repository.addStockItem(rest_id, state.toMap());
   }
 
-  updateData(restaurant_id) {
+  updateData() async {
+    var user = await storage.getDataStorage("user");
+    var rest_id = user["restaurant"]["id"];
     var value = int.parse(state.volume.toString());
     var data = {
       "volume": FieldValue.increment(value),
       "current": FieldValue.increment(value)
     };
-    repository.updateStock(restaurant_id, state.doc, data);
+    repository.updateStock(rest_id, state.doc, data);
     clear();
   }
 
-  updateVolume(restaurant_id, volume) {
+  updateVolume(volume) async {
+    var user = await storage.getDataStorage("user");
+    var rest_id = user["restaurant"]["id"];
     var value = int.parse(volume.toString());
     var data = {"current": value};
-    repository.updateStockItem(restaurant_id, state.selected["doc"], data);
+    repository.updateStockItem(rest_id, state.selected["doc"], data);
     // repository.addStockItem(restaurant_id, state.toMap());
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetch() async* {
+    var user = await storage.getDataStorage("user");
+    var rest_id = user["restaurant"]["id"];
+    yield* repository.fetchStock(rest_id);
   }
 }

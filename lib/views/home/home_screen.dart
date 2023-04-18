@@ -7,6 +7,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
+import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/home_finance.dart';
 import 'package:snacks_pro_app/views/home/home_widget.dart';
 import 'package:snacks_pro_app/views/home/orders_screen.dart';
@@ -33,27 +34,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
-
-  // late List<Widget> _widgetOptions;
-  // late List<Content> contents;
+  final storage = AppStorage();
 
   @override
   void initState() {
-    context.read<HomeCubit>().saveStorage();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, snapshot) {
-      var contents = getButtons(snapshot.storage["access_level"]);
+      var contents = getButtons();
 
       return SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: Center(
-            child: contents.elementAt(_selectedIndex).screen,
-          ),
+          body: FutureBuilder<List<Content>>(
+              future: contents,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child:
+                        (snapshot.data ?? []).elementAt(_selectedIndex).screen,
+                  );
+                }
+                return const SizedBox();
+              }),
           extendBody: true,
           bottomNavigationBar: Container(
             // margin: const EdgeInsets.fromLTRB(20, 0, 15, 15),
@@ -72,30 +78,38 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-              child: GNav(
-                backgroundColor: Colors.transparent,
-                curve: Curves.easeInOut,
-                rippleColor: Colors.grey[300]!,
-                hoverColor: Colors.grey[100]!,
-                gap: 8,
-                activeColor: Colors.black,
-                iconSize: 24,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                duration: const Duration(milliseconds: 400),
-                tabBackgroundColor: Colors.grey[100]!,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                color: Colors.black,
-                tabs: contents.map((e) => e.button).toList(),
-                selectedIndex: _selectedIndex,
-                onTabChange: (index) async {
-                  setState(() {
-                    if (index < contents.length - 1) {
-                      _selectedIndex = index;
+              child: FutureBuilder<List<Content>>(
+                  future: contents,
+                  builder: (context, snapshot) {
+                    var _contents = snapshot.data ?? [];
+                    if (snapshot.hasData) {
+                      return GNav(
+                        backgroundColor: Colors.transparent,
+                        curve: Curves.easeInOut,
+                        rippleColor: Colors.grey[300]!,
+                        hoverColor: Colors.grey[100]!,
+                        gap: 8,
+                        activeColor: Colors.black,
+                        iconSize: 24,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
+                        duration: const Duration(milliseconds: 400),
+                        tabBackgroundColor: Colors.grey[100]!,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        color: Colors.black,
+                        tabs: _contents.map((e) => e.button).toList(),
+                        selectedIndex: _selectedIndex,
+                        onTabChange: (index) async {
+                          setState(() {
+                            if (index < _contents.length - 1) {
+                              _selectedIndex = index;
+                            }
+                          });
+                        },
+                      );
                     }
-                  });
-                },
-              ),
+                    return const SizedBox();
+                  }),
             ),
           ),
         ),
@@ -103,7 +117,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  List<Content> getButtons(access) {
+  Future<List<Content>> getButtons() async {
+    var _storage = await storage.getDataStorage("user");
+    var access = _storage["access_level"];
     List<Content> items = [];
 
     if (access == AppPermission.cashier.name) {
@@ -130,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     items.addAll([
       Content(
-          screen: const OrdersScreen(),
+          screen: OrdersScreen(),
           button: const GButton(
             icon: Icons.receipt_rounded,
             text: 'Pedidos',
@@ -155,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 withPadding: false,
                 context: context,
                 content: Builder(builder: (context) {
-                  var data = context.read<HomeCubit>().state.storage;
+                  var data = _storage;
 
                   return ProfileModal(
                       name: data["name"] ?? "",

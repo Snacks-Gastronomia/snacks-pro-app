@@ -190,8 +190,11 @@ class CartCubit extends Cubit<CartState> {
 
       if (getStatusObject(current) == OrderStatus.in_delivery ||
           getStatusObject(current) == OrderStatus.waiting_payment) {
+        print(items);
         double total = items
-            .map((e) => double.parse(e["item"]["value"].toString()))
+            .map((e) =>
+                double.parse(e["option_selected"]["value"].toString()) *
+                double.parse(e["amount"].toString()))
             .reduce((value, element) => value + element);
 
         var res = await AppModal().showModalBottomSheet(
@@ -238,27 +241,29 @@ class CartCubit extends Cubit<CartState> {
 
     await repository.updateStatus(doc_id, status);
 
-    if (status == OrderStatus.done) {
-      double total = 0;
-      var submitItems = items.map((e) {
-        double value = double.parse(e["option_selected"]["value"].toString());
-        total += value;
-        return {
-          "name": e["item"]["title"],
-          "value": value,
-          "amount": e["amount"],
-        };
-      }).toList();
-
-      String time = DateFormat("HH:mm").format(datetime.toDate());
-      var data = {
-        "total": total,
-        "orders": submitItems,
-        "time": time,
-        "payment": payment_method,
+    //if (status == OrderStatus.done) {
+    double total = 0;
+    var submitItems = items.map((e) {
+      double value = double.parse(e["option_selected"]["value"].toString());
+      double amount = double.parse(e["amount"].toString());
+      total += value * amount;
+      return {
+        "name": e["item"]["title"],
+        "value": value,
+        "amount": e["amount"],
       };
-      await finance.setMonthlyBudgetFirebase(
-          dataStorage["restaurant"]["id"], data, total);
-    }
+    }).toList();
+
+    String time = DateFormat("HH:mm").format(datetime.toDate());
+    var data = {
+      "total": total,
+      "orders": submitItems,
+      "time": time,
+      "payment": payment_method,
+    };
+    print(data);
+    await finance.setMonthlyBudgetFirebase(
+        dataStorage["restaurant"]["id"], data, total);
   }
+//  }
 }

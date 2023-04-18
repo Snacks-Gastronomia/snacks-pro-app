@@ -20,7 +20,12 @@ class ConfirmOrderModal extends StatefulWidget {
 }
 
 class _ConfirmOrderModalState extends State<ConfirmOrderModal> {
-  final List<String> items = ["Cartão de crédito/débito", "Pix", "Dinheiro"];
+  final List<String> items = [
+    "Cartão de crédito",
+    "Cartão de débito",
+    "Pix",
+    "Dinheiro"
+  ];
   String method = "";
   @override
   void initState() {

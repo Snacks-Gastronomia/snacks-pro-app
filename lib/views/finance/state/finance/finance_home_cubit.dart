@@ -323,10 +323,19 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     print(state);
   }
 
-  void saveExpense(context) async {
+  void saveExpense(context, bool restaurant_exp) async {
+    var user = await storage.getDataStorage("user");
+
+    var access_Level = user["access_level"].toString().stringToEnum;
     if (state.expenseAUX.name.isNotEmpty && state.expenseAUX.value != 0) {
-      changeExpenseType("snacks");
-      await repository.saveExpense(state.expenseAUX.toMap());
+      if (restaurant_exp) {
+        changeExpenseType("restaurant");
+        await repository.saveRestExpense(
+            state.expenseAUX.toMap(), user["restaurant"]["id"]);
+      } else {
+        changeExpenseType("snacks");
+        await repository.saveExpense(state.expenseAUX.toMap());
+      }
       clearAUX();
 
       Navigator.pop(context);
@@ -335,8 +344,6 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
 
   void saveRestaurantExpense(context, rest_id) async {
     if (state.expenseAUX.name.isNotEmpty && state.expenseAUX.value != 0) {
-      changeExpenseType("restaurant");
-      await repository.saveRestExpense(state.expenseAUX.toMap(), rest_id);
       clearAUX();
 
       Navigator.pop(context);

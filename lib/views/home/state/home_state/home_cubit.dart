@@ -41,37 +41,31 @@ class HomeCubit extends Cubit<HomeState> {
   final OrdersRepository ordersRepository = OrdersRepository();
 
   HomeCubit() : super(HomeState.initial()) {
-    saveStorage();
     fetchItems();
   }
 
-  Future<void> saveStorage() async {
-    print("init storage");
-    var stor = await storage.getDataStorage("user");
-    emit(state.copyWith(storage: stor));
-    print("finish storage");
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> fetchOrders() {
-    if (state.storage["access_level"] == AppPermission.waiter.name) {
-      return ordersRepository.fetchAllOrdersForWaiters();
-    } else if (state.storage["access_level"] == AppPermission.radm.name ||
-        state.storage["access_level"] == AppPermission.employee.name) {
-      return ordersRepository
-          .fetchOrdersByRestaurantId(state.storage["restaurant"]["id"]);
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchOrders() async* {
+    var user = await storage.getDataStorage("user");
+    if (user["access_level"] == AppPermission.waiter.name) {
+      yield* ordersRepository.fetchAllOrdersForWaiters();
+    } else if (user["access_level"] == AppPermission.radm.name ||
+        user["access_level"] == AppPermission.employee.name) {
+      yield* ordersRepository
+          .fetchOrdersByRestaurantId(user["restaurant"]["id"]);
     }
 
-    return ordersRepository.fetchAllOrders();
+    yield* ordersRepository.fetchAllOrders();
   }
 
   void printerOrder(data, context) async {
     var toast = AppToast();
+    var user = await storage.getDataStorage("user");
     toast.init(context: context);
     // debugPrint(data.toString());
     List<dynamic> items = data["items"] ?? [];
     List<OrderModel> orders = items.map((e) => OrderModel.fromMap(e)).toList();
 
-    var id = state.storage["restaurant"]["id"];
+    var id = user["restaurant"]["id"];
     var printer = await financeRepository.getPrinterByGoal(id, "Pedidos");
 
     if (printer.docs.isEmpty) {
@@ -110,15 +104,15 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> fetchQuery(String query) async {
-    var data = await storage.getDataStorage("user");
-    var permission = data["access_level"].toString().stringToEnum;
+    var user = await storage.getDataStorage("user");
+    var permission = user["access_level"].toString().stringToEnum;
 
     var id =
         permission == AppPermission.radm || permission == AppPermission.employee
-            ? data["restaurant"]["id"]
+            ? user["restaurant"]["id"]
             : null;
     var _stream = itemsRepository.searchQuery(
-        query, state.category, state.storage["restaurant"]["id"]);
+        query, state.category, user["restaurant"]["id"]);
 
     emit(state.copyWith(menu: _stream));
   }
