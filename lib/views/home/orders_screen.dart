@@ -60,6 +60,17 @@ class OrdersScreen extends StatelessWidget {
       }
     }
 
+    double getTotal(List<dynamic> items) {
+      double total = 0;
+
+      for (var element in items) {
+        var order = OrderModel.fromMap(element);
+        total += order.amount *
+            double.parse(order.option_selected["value"].toString());
+      }
+      return total;
+    }
+
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60.0),
@@ -95,7 +106,6 @@ class OrdersScreen extends StatelessWidget {
                               List<dynamic> orders_page2 = [];
                               List<dynamic> orders_page1 = [];
 
-                              print(orders.length);
                               orders.map((e) {
                                 Map<String, dynamic> data = e.data();
                                 data["id"] = e.id;
@@ -176,39 +186,42 @@ class OrdersScreen extends StatelessWidget {
                                                           change: _change,
                                                           permission:
                                                               access_level,
-                                                          doubleTap: () => context.read<CartCubit>().changeStatus(
-                                                              context,
-                                                              item["isDelivery"]
-                                                                  ? null
-                                                                  : item[
-                                                                      "table"],
-                                                              item["id"],
-                                                              item["items"],
-                                                              item[
-                                                                  "payment_method"],
-                                                              item["status"],
-                                                              item[
-                                                                  "created_at"],
-                                                              item[
-                                                                  "isDelivery"]),
+                                                          doubleTap: () => context
+                                                              .read<CartCubit>()
+                                                              .changeStatus(
+                                                                  context,
+                                                                  item["isDelivery"]
+                                                                      ? null
+                                                                      : item[
+                                                                          "table"],
+                                                                  item["id"],
+                                                                  item["items"],
+                                                                  item[
+                                                                      "payment_method"],
+                                                                  item[
+                                                                      "status"],
+                                                                  item[
+                                                                      "created_at"],
+                                                                  item[
+                                                                      "isDelivery"]),
                                                           onLongPress: () async => context
                                                               .read<HomeCubit>()
                                                               .printerOrder(
-                                                                  item, context),
+                                                                  item,
+                                                                  context),
                                                           leading: item["isDelivery"]
                                                               ? null
                                                               : item["table"],
-                                                          address: item["isDelivery"]
+                                                          address: item[
+                                                                  "isDelivery"]
                                                               ? item["address"]
                                                               : "",
                                                           status:
                                                               item["status"],
-                                                          isDelivery: item[
-                                                              "isDelivery"],
+                                                          isDelivery:
+                                                              item["isDelivery"],
                                                           time: time,
-                                                          total: double.parse(
-                                                              item["value"]
-                                                                  .toString()),
+                                                          total: getTotal(item["items"]),
                                                           method: item["payment_method"],
                                                           items: item["items"] ?? []),
                                                     );
@@ -274,7 +287,8 @@ class OrdersScreen extends StatelessWidget {
                                                           leading: item["isDelivery"]
                                                               ? null
                                                               : item["table"],
-                                                          address: item["isDelivery"]
+                                                          address: item[
+                                                                  "isDelivery"]
                                                               ? item["address"]
                                                               : "",
                                                           status:
@@ -282,9 +296,8 @@ class OrdersScreen extends StatelessWidget {
                                                           isDelivery: item[
                                                               "isDelivery"],
                                                           time: time,
-                                                          total: double.parse(
-                                                              item["value"]
-                                                                  .toString()),
+                                                          total: getTotal(
+                                                              item["items"]),
                                                           method: item[
                                                               "payment_method"],
                                                           items:

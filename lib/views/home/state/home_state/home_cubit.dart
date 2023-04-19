@@ -1,21 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:meta/meta.dart';
 import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/services/firebase/database.dart';
-import 'package:snacks_pro_app/services/orders_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/printer.dart';
-import 'package:snacks_pro_app/utils/snackbar.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/finance/repository/finance_repository.dart';
@@ -28,10 +22,10 @@ part "home_state.dart";
 class HomeCubit extends Cubit<HomeState> {
   final storage = AppStorage();
   final fb = FirebaseDataBase();
-  final auth = FirebaseAuth.instance;
   final appPrinter = AppPrinter();
-  // final StreamController<QuerySnapshot> fetchItemsController =
-  //     StreamController();
+
+  final auth = FirebaseAuth.instance;
+
   final ItemsRepository itemsRepository =
       ItemsRepository(services: ItemsApiServices());
 
