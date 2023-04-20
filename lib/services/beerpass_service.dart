@@ -104,14 +104,18 @@ class BeerPassService {
     }
   }
 
-  Future<List<dynamic>> fetchRecharges({String paymentType = "notSet"}) async {
+  Future<List<dynamic>> fetchRecharges({String? paymentType}) async {
     var header = await getReqHeader();
 
     var date = DateFormat("y-M-d").format(DateTime.now());
-    var response = await httpClient.get(
-        Uri.https(URL, 'apiv2/recargas',
-            {"inicio": date, "tipoPagamento": paymentType}),
-        headers: header);
+
+    var filter = {
+      "inicio": date,
+      if (paymentType != null) "tipoPagamento": paymentType
+    };
+
+    var response = await httpClient
+        .get(Uri.https(URL, 'apiv2/recargas', filter), headers: header);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

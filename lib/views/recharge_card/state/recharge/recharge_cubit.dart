@@ -44,6 +44,8 @@ class RechargeCubit extends Cubit<RechargeState> {
       filter = "debitCard";
     } else if (value == "Dinheiro") {
       filter = "money";
+    } else {
+      filter = null;
     }
     emit(state.copyWith(recharges: []));
     fetchRecharges(filter: filter);
@@ -69,7 +71,7 @@ class RechargeCubit extends Cubit<RechargeState> {
     ));
   }
 
-  Future<void> fetchRecharges({String? filter = "notSet"}) async {
+  Future<void> fetchRecharges({String? filter}) async {
     var response = await repository.fetchRecharges(filter);
     var data = response
         .map((e) => {
