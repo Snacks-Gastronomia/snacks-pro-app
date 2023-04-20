@@ -48,7 +48,7 @@ class BudgetDetailsContent extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Receita bruta',
+                              'Receita líquida',
                               style: AppTextStyles.regular(16,
                                   color: Colors.white),
                             ),
@@ -103,7 +103,7 @@ class BudgetDetailsContent extends StatelessWidget {
                       ),
                       CardExpenseContent(
                         iconColorBlack: false,
-                        title: "Receita líquida",
+                        title: "Receita bruta",
                         month: DateFormat.MMMM("pt_BR").format(DateTime.now()),
                         value: context.read<FinanceCubit>().state.budget,
                         icon: Icons.attach_money_rounded,

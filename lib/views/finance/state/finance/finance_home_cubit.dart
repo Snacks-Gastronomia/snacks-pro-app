@@ -27,7 +27,8 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     var user = (await storage.getDataStorage("user"));
     var access = user["access_level"];
 
-    var id = access == AppPermission.sadm ? "snacks" : user["restaurant"]["id"];
+    var id =
+        access == AppPermission.sadm.name ? "snacks" : user["restaurant"]["id"];
     var count = await repository.getCountRestaurants();
     var data = await Future.wait([
       repository.getMonthlyBudget(id),
