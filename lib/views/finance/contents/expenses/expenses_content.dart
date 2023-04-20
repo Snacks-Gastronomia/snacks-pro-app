@@ -44,11 +44,6 @@ class ExpensesContent extends StatelessWidget {
                   children: [
                     Column(
                       children: [
-                        // Text(
-                        //   'Quantidade',
-                        //   style: AppTextStyles.regular(18,
-                        //       color: Colors.grey.shade400),
-                        // ),
                         BlocBuilder<FinanceCubit, FinanceHomeState>(
                             builder: (context, _) {
                           return Text(

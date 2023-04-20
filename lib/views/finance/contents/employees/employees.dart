@@ -98,7 +98,8 @@ class ListEmployees extends StatelessWidget {
       return StreamBuilder(
           stream: state.employees,
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.hasData ||
+                snapshot.connectionState == ConnectionState.done) {
               var response = snapshot.data!.docs;
               var data = context.read<EmployeesCubit>().convertData(response);
 
@@ -106,7 +107,7 @@ class ListEmployees extends StatelessWidget {
                 separatorBuilder: (context, index) => const Divider(
                   color: Color(0xffE7E7E7),
                 ),
-                itemCount: snapshot.data!.docs.length,
+                itemCount: response.length,
                 shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {

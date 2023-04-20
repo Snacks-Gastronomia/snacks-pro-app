@@ -64,7 +64,7 @@ class ModalPaymentMethod extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     items: [
                       "PIX",
-                      "Cartão de crédito/",
+                      "Cartão de crédito",
                       "Cartão de débito",
                       "Dinheiro"
                     ]

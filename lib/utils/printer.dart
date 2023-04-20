@@ -90,13 +90,24 @@ class AppPrinter {
       printer.row([
         PosColumn(text: e.observations, width: 12),
       ]);
+      String extras = "";
+
+      if (e.extras.isEmpty) {
+        extras = "Nenhum";
+      } else {
+        e.extras.map((e) {});
+        for (var i = 0; i < e.extras.length; i++) {
+          extras += e.extras[i]["title"];
+          if (i < e.extras.length - 1) {
+            extras += ", ";
+          }
+        }
+      }
 
       printer.row([
         PosColumn(text: "Adicionais", width: 3),
-        PosColumn(
-            text: e.extras.isEmpty ? "Nenhum" : e.extras.toString(), width: 9),
+        PosColumn(text: extras, width: 9),
       ]);
-      // }
     }
     printer.emptyLines(1);
     printer.hr();
