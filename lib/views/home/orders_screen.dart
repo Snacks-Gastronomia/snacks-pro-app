@@ -65,8 +65,16 @@ class OrdersScreen extends StatelessWidget {
 
       for (var element in items) {
         var order = OrderModel.fromMap(element);
+
+        double extras = order.extras.isEmpty
+            ? 0.0
+            : order.extras
+                .map((extra) => double.parse(extra["value"].toString()))
+                .reduce((value, element) => value + element);
+
         total += order.amount *
             double.parse(order.option_selected["value"].toString());
+        total += extras;
       }
       return total;
     }

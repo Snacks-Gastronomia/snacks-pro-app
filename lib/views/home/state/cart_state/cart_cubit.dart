@@ -1,12 +1,8 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:meta/meta.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/services/firebase/notifications.dart';
@@ -26,10 +22,6 @@ class CartCubit extends Cubit<CartState> {
   CartCubit() : super(CartState.initial());
 
   void addToCart(OrderModel newOrder) {
-    // print(newOrder);
-
-    // newOrder.observations = state.temp_observation;
-
     if (hasItem(newOrder.item.id!)) {
       OrderModel? ord = getOrderByItemId(newOrder.item.id!);
       if (ord != null) {
@@ -40,10 +32,8 @@ class CartCubit extends Cubit<CartState> {
 
     final newCart = [...state.cart, newOrder];
 
-    emit(state.copyWith(cart: newCart));
+    emit(state.copyWith(cart: newCart, temp_observation: ""));
     updateTotalValue();
-    emit(state.copyWith(temp_observation: ""));
-    print(state);
   }
 
   updateItemFromCart(OrderModel order) {
@@ -95,8 +85,6 @@ class CartCubit extends Cubit<CartState> {
 
     emit(state.copyWith(cart: newCart));
     updateTotalValue();
-    print(state);
-    print(state.total);
   }
 
   void removeToCart(OrderModel order) {
@@ -106,7 +94,6 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(cart: newCart));
 
     updateTotalValue();
-    print(state);
   }
 
   void updateTotalValue() {
@@ -114,7 +101,6 @@ class CartCubit extends Cubit<CartState> {
     for (var element in state.cart) {
       total += element.item.value * element.amount;
     }
-    print(total);
     emit(state.copyWith(total: total));
   }
 
@@ -245,9 +231,17 @@ class CartCubit extends Cubit<CartState> {
       var submitItems = items.map((e) {
         double value = double.parse(e["option_selected"]["value"].toString());
         double amount = double.parse(e["amount"].toString());
+        List extrasList = e["extras"] ?? [];
+        double extras = extrasList.isEmpty
+            ? 0.0
+            : extrasList
+                .map((extra) => double.parse(extra["value"].toString()))
+                .reduce((value, element) => value + element);
         total += value * amount;
+        total += extras;
         return {
           "name": e["item"]["title"],
+          "extras": e["extras"],
           "value": value,
           "amount": e["amount"],
         };

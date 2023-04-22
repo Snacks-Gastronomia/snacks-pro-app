@@ -26,7 +26,6 @@ class DayOrdersReportScreen extends StatelessWidget {
             future: BlocProvider.of<OrdersCubit>(context).fetchDaily(day),
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data != null) {
-                print(snapshot.data!.docs.length);
                 return Column(
                   children: [
                     Text(
@@ -109,8 +108,25 @@ class DayOrdersReportScreen extends StatelessWidget {
                                       itemBuilder: (context, index) {
                                         var order =
                                             item.data()["orders"][index];
+                                        List extras = order["extras"] ?? [];
+
+                                        var extraDescription = "";
+
+                                        for (var i = 0;
+                                            i < extras.length;
+                                            i++) {
+                                          var element = extras[i];
+                                          extraDescription += element["title"] +
+                                              '(${NumberFormat.currency(locale: "pt", symbol: r"R$").format(double.parse(element["value"].toString()))})';
+                                        }
+
                                         var text =
                                             '${order["amount"]} ${order["name"]}';
+
+                                        if (extraDescription.isNotEmpty) {
+                                          text += ' + $extraDescription';
+                                        }
+
                                         return Text(
                                           text,
                                           style: AppTextStyles.light(14,
