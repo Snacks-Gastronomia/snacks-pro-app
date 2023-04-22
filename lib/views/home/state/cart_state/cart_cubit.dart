@@ -241,7 +241,7 @@ class CartCubit extends Cubit<CartState> {
         total += extras;
         return {
           "name": e["item"]["title"],
-          "extras": e["extras"],
+          "extras": extrasList,
           "value": value,
           "amount": e["amount"],
         };
