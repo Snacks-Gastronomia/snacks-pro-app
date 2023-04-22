@@ -11,8 +11,19 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
-class EmployeesContentWidget extends StatelessWidget {
+class EmployeesContentWidget extends StatefulWidget {
   const EmployeesContentWidget({super.key});
+
+  @override
+  State<EmployeesContentWidget> createState() => _EmployeesContentWidgetState();
+}
+
+class _EmployeesContentWidgetState extends State<EmployeesContentWidget> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<EmployeesCubit>().fetchData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +111,7 @@ class ListEmployees extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData ||
                 snapshot.connectionState == ConnectionState.done) {
-              var response = snapshot.data!.docs;
+              var response = snapshot.data?.docs ?? [];
               var data = context.read<EmployeesCubit>().convertData(response);
 
               return ListView.separated(

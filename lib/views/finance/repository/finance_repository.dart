@@ -195,6 +195,14 @@ class FinanceRepository {
     }
   }
 
+  // Stream<QuerySnapshot<Map<String, dynamic>>> fetchExpenses(doc) {
+  //   try {
+  //     return services.getExpensesStream(doc);
+  //   } catch (e) {
+  //     throw e.toString();
+  //   }
+  // }
+
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       getRestaurantExpenses(docID) async {
     try {

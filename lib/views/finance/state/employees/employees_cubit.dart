@@ -9,7 +9,6 @@ import 'package:snacks_pro_app/services/employees_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/repository/employees_repository.dart';
-import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 part 'employees_state.dart';
 
@@ -17,9 +16,7 @@ class EmployeesCubit extends Cubit<EmployeesState> {
   final storage = AppStorage();
   final repository = EmployeesRepository(services: EmployeesApiServices());
 
-  EmployeesCubit() : super(EmployeesState.initial()) {
-    fetchData();
-  }
+  EmployeesCubit() : super(EmployeesState.initial());
 
   List<EmployeeModel> convertData(List<QueryDocumentSnapshot> event) {
     double total = 0;
@@ -33,10 +30,7 @@ class EmployeesCubit extends Cubit<EmployeesState> {
     }).toList();
 
     emit(state.copyWith(
-        // employees: data,
-        amount: data.length,
-        expenses: total,
-        status: AppStatus.loaded));
+        amount: data.length, expenses: total, status: AppStatus.loaded));
     return data;
   }
 
@@ -72,7 +66,6 @@ class EmployeesCubit extends Cubit<EmployeesState> {
       return false;
     }
   }
-  // }
 
   disableEmployee(bool access, String id) async {
     await repository.updateAppAccess(access, id);
@@ -100,7 +93,6 @@ class EmployeesCubit extends Cubit<EmployeesState> {
     var emp = state.newEmployee;
 
     emit(state.copyWith(newEmployee: emp.copyWith(name: value)));
-    print(state);
   }
 
   void changePhoneNumber(String value) {

@@ -150,6 +150,15 @@ class FinanceApiServices {
     return data.docs;
   }
 
+  // Stream<QuerySnapshot<Map<String, dynamic>>> getExpensesStream(doc) {
+  //   // try {
+  //   return firebase
+  //       .collection("restaurants")
+  //       .doc(doc)
+  //       .collection("expenses")
+  //       .snapshots();
+  // }
+
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       getRestaurantExpenses(doc) async {
     // try {

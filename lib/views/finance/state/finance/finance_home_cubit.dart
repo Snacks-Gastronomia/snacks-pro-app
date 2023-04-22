@@ -114,23 +114,23 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
 
   Future<void> fetchExpenses(String docID) async {
     emit(state.copyWith(status: AppStatus.loading));
-
+    double total = 0;
     var data = await repository.getExpenses();
+
     if (docID.isNotEmpty) {
       var dataRestaurant = await repository.getRestaurantExpenses(docID);
-      data = [...data, ...dataRestaurant];
+
+      if (dataRestaurant.isNotEmpty) data.addAll(dataRestaurant);
     }
 
     if (data.isNotEmpty) {
-      double total = totalExpenses(data);
-
-      emit(state.copyWith(
-          expenses_value: total, expensesData: data, status: AppStatus.loaded));
+      total = totalExpenses(data);
     }
+    emit(state.copyWith(
+        expenses_value: total, expensesData: data, status: AppStatus.loaded));
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchExpensesStream() {
-    // emit(state.copyWith(status: AppStatus.loading));
     return repository.getExpensesStream();
   }
 
@@ -338,15 +338,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
         await repository.saveExpense(state.expenseAUX.toMap());
       }
       clearAUX();
-
-      Navigator.pop(context);
-    }
-  }
-
-  void saveRestaurantExpense(context, rest_id) async {
-    if (state.expenseAUX.name.isNotEmpty && state.expenseAUX.value != 0) {
-      clearAUX();
-
+      fetchExpenses(user["restaurant"]["id"]);
       Navigator.pop(context);
     }
   }
@@ -357,10 +349,11 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   }
 
   void deleteRestaurantExpense(doc_id, String restaurant_id) async {
-    print("delete" + doc_id);
     await repository
         .deleteRestaurantExpense(doc_id, restaurant_id)
         .then((value) => {fetchExpenses(restaurant_id)});
+    emit(state.copyWith(expensesData: []));
+    fetchExpenses(restaurant_id);
     clearAUX();
   }
 

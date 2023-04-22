@@ -47,8 +47,10 @@ class BeerPassService {
   Future<String?> getToken() async {
     try {
       await Hive.initFlutter();
+
       Box box = await Hive.openBox('token');
 
+      box = await Hive.openBox('token');
       var token = box.get('value');
 
       if (token == null || JwtDecoder.isExpired(token)) {
@@ -61,8 +63,9 @@ class BeerPassService {
 
         box.put('value', token);
       }
-
-      box.close();
+      // if (box.isOpen) {
+      //box.close();
+      // }
       return token;
     } catch (e) {
       print(e);
@@ -104,14 +107,14 @@ class BeerPassService {
     }
   }
 
-  Future<List<dynamic>> fetchRecharges({String? paymentType}) async {
+  Future<List<dynamic>> fetchRecharges({required String paymentType}) async {
     var header = await getReqHeader();
 
     var date = DateFormat("y-M-d").format(DateTime.now());
 
     var filter = {
       "inicio": date,
-      if (paymentType != null) "tipoPagamento": paymentType
+      if (paymentType.isNotEmpty) "tipoPagamento": paymentType
     };
 
     var response = await httpClient

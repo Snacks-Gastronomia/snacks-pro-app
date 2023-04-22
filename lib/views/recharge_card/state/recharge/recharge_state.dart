@@ -4,6 +4,7 @@ class RechargeState {
   final String name;
   final String cpf;
   final double value;
+  final double totalRechargesValue;
   final String recharge_id;
   final String card_code;
   final String? method;
@@ -16,6 +17,7 @@ class RechargeState {
     required this.cpf,
     required this.filter,
     required this.value,
+    required this.totalRechargesValue,
     required this.recharge_id,
     required this.card_code,
     required this.method,
@@ -28,8 +30,9 @@ class RechargeState {
         name: "",
         method: null,
         cpf: "",
-        filter: "Tudo",
+        filter: "",
         value: 0,
+        totalRechargesValue: 0,
         status: AppStatus.initial,
         error: null,
         recharges: [],
@@ -41,6 +44,7 @@ class RechargeState {
     String? name,
     String? cpf,
     double? value,
+    double? totalRechargesValue,
     String? card_code,
     String? method,
     String? recharge_id,
@@ -56,6 +60,7 @@ class RechargeState {
       filter: filter ?? this.filter,
       cpf: cpf ?? this.cpf,
       value: value ?? this.value,
+      totalRechargesValue: totalRechargesValue ?? this.totalRechargesValue,
       status: status ?? this.status,
       error: error ?? this.error,
       card_code: card_code ?? this.card_code,
@@ -94,6 +99,7 @@ class RechargeState {
         other.method == method &&
         other.status == status &&
         other.filter == filter &&
+        other.totalRechargesValue == totalRechargesValue &&
         other.error == error;
   }
 

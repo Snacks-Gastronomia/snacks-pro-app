@@ -35,20 +35,8 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   void changeFilter(String value) {
-    String? filter;
-    if (value == "Pix") {
-      filter = "pix";
-    } else if (value == "Cartão de crédito") {
-      filter = "creditCard";
-    } else if (value == "Cartão de débito") {
-      filter = "debitCard";
-    } else if (value == "Dinheiro") {
-      filter = "money";
-    } else {
-      filter = null;
-    }
-    emit(state.copyWith(recharges: []));
-    fetchRecharges(filter: filter);
+    emit(state.copyWith(filter: value, status: AppStatus.loading));
+    fetchRecharges();
   }
 
   void changeValue(String value) {
@@ -71,9 +59,20 @@ class RechargeCubit extends Cubit<RechargeState> {
     ));
   }
 
-  Future<void> fetchRecharges({String? filter}) async {
-    var response = await repository.fetchRecharges(filter);
-    var data = response
+  Future<void> fetchRecharges() async {
+    var response = await repository.fetchRecharges(state.filter);
+    var data = treatDataResponse(response);
+    var total = data.isEmpty
+        ? 0.0
+        : data.map((e) => e["value"]).reduce((a, b) => a + b);
+    emit(state.copyWith(
+        status: AppStatus.loaded,
+        recharges: data,
+        totalRechargesValue: double.parse(total.toString())));
+  }
+
+  treatDataResponse(List items) {
+    return items
         .map((e) => {
               "responsible": e["nomeUsuario"],
               "value": e["Value"],
@@ -81,8 +80,6 @@ class RechargeCubit extends Cubit<RechargeState> {
                   DateFormat("HH:m").format(DateTime.parse(e["createdAt"])),
             })
         .toList();
-
-    emit(state.copyWith(recharges: data));
   }
 
   Future<void> rechargeCard(context) async {
