@@ -20,6 +20,7 @@ import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dar
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
+import 'package:snacks_pro_app/views/recharge_card/recharge_report.dart';
 
 import './contents/employees/employees.dart';
 import './contents/order_report/month_orders_report.dart';
@@ -347,10 +348,12 @@ class CardSummary extends StatelessWidget {
     required this.icon,
     this.bgHighlight = false,
     required this.action,
+    required this.blackContent,
   }) : super(key: key);
   final String title;
   final IconData icon;
   final bool bgHighlight;
+  final bool blackContent;
   final VoidCallback action;
   @override
   Widget build(BuildContext context) {
@@ -361,15 +364,20 @@ class CardSummary extends StatelessWidget {
         height: 170,
         padding: const EdgeInsets.all(20),
         decoration: bgHighlight
-            ? BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                    begin: Alignment.bottomLeft,
-                    end: Alignment.topRight,
-                    colors: [
-                      Color(0xff5CE2FF),
-                      Color(0xff0038FF),
-                    ]))
+            ? blackContent
+                ? BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    // border: const Border.fromBorderSide(BorderSide(width: 2)),
+                    color: Colors.black)
+                : BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: const LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        colors: [
+                          Color(0xff5CE2FF),
+                          Color(0xff0038FF),
+                        ]))
             : BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 border: const Border.fromBorderSide(BorderSide(width: 2)),
@@ -408,6 +416,7 @@ class SnacksAdmSummaryCards extends StatelessWidget {
       "title": "Despesas",
       "icon": Icons.list,
       "highlight": false,
+      "blackContent": false,
       "action": const ExpensesContent()
     },
     // {
@@ -420,19 +429,29 @@ class SnacksAdmSummaryCards extends StatelessWidget {
       "title": "Impressoras",
       "icon": Icons.print,
       "highlight": false,
+      "blackContent": false,
       "action": const PrinterContent()
     },
     {
       "title": "Funcionários",
       "icon": Icons.people_outline_rounded,
       "highlight": true,
+      "blackContent": false,
       "action": const EmployeesContentWidget()
     },
     {
       "title": "Restaurantes",
       "icon": Icons.restaurant,
       "highlight": true,
+      "blackContent": false,
       "action": const RestaurantsContent()
+    },
+    {
+      "title": "Cartão snacks",
+      "icon": Icons.credit_card_rounded,
+      "highlight": true,
+      "blackContent": true,
+      "action": const RechargeReportContent(),
     }
   ];
   @override
@@ -443,6 +462,7 @@ class SnacksAdmSummaryCards extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) => CardSummary(
+              blackContent: list[index]["blackContent"],
               title: list[index]["title"],
               icon: list[index]["icon"],
               bgHighlight: list[index]["highlight"],
@@ -491,6 +511,7 @@ class RestaurantSummaryCards extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) => CardSummary(
+                blackContent: false,
                 title: list[index]["title"],
                 icon: list[index]["icon"],
                 bgHighlight: list[index]["highlight"],
@@ -500,42 +521,6 @@ class RestaurantSummaryCards extends StatelessWidget {
                     expand: true)),
             separatorBuilder: (context, index) => const SizedBox(width: 15),
             itemCount: list.length));
-    // return Row(
-    //   children: [
-    //     CardSummary(
-    //       title: "Pedidos",
-    //       icon: Icons.format_align_left_rounded,
-    //       action: () => modal.showIOSModalBottomSheet(
-    //           context: context,
-    //           content: BlocProvider.value(
-    //               value: BlocProvider.of<OrdersCubit>(context),
-    //               child: OrdersReportScreen()),
-    //           expand: true),
-    //     ),
-    //     const SizedBox(width: 15),
-    //     CardSummary(
-    //       title: "Impressoras",
-    //       icon: Icons.print,
-    //       action: () => modal.showIOSModalBottomSheet(
-    //           context: context,
-    //           content: BlocProvider.value(
-    //               value: BlocProvider.of<EmployeesCubit>(context),
-    //               child: const PrinterContent()),
-    //           expand: true),
-    //     ),
-    //     const SizedBox(width: 15),
-    //     CardSummary(
-    //       title: "Funcionários",
-    //       icon: Icons.people_outline_rounded,
-    //       action: () => modal.showIOSModalBottomSheet(
-    //           context: context,
-    //           content: BlocProvider.value(
-    //               value: BlocProvider.of<EmployeesCubit>(context),
-    //               child: const EmployeesContentWidget()),
-    //           expand: true),
-    //     ),
-    //   ],
-    // );
   }
 }
 

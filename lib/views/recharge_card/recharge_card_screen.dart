@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
@@ -52,7 +53,8 @@ class _RechargeCardScreenState extends State<RechargeCardScreen> {
     return BlocBuilder<RechargeCubit, RechargeState>(builder: (context, state) {
       return LoadingPage(
         text: "Recarregando cartão",
-        loading: state.status == AppStatus.loading,
+        loading:
+            state.status == AppStatus.loading && state.card_code.isNotEmpty,
         backgroundPage: SafeArea(
           child: Scaffold(
             floatingActionButton: BlocBuilder<RechargeCubit, RechargeState>(
@@ -306,21 +308,26 @@ class SnacksCardPresentation extends StatelessWidget {
         height: 220,
         decoration: BoxDecoration(
             color: Colors.black, borderRadius: BorderRadius.circular(15)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
+        child: BlocBuilder<RechargeCubit, RechargeState>(
+          builder: (context, state) {
+            if (state.status == AppStatus.loading) {
+              return const Center(
+                child: CustomCircularProgress(dark: false),
+              );
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SvgPicture.asset(
-                  AppImages.snacks_logo,
-                  height: 60,
-                  color: Colors.white,
+                Column(
+                  children: [
+                    SvgPicture.asset(
+                      AppImages.snacks_logo,
+                      height: 60,
+                      color: Colors.white,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            BlocBuilder<RechargeCubit, RechargeState>(
-              builder: (context, state) {
-                return Column(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -338,10 +345,10 @@ class SnacksCardPresentation extends StatelessWidget {
                         style: AppTextStyles.light(18, color: Colors.white70),
                       ),
                   ],
-                );
-              },
-            ),
-          ],
+                )
+              ],
+            );
+          },
         ),
       ),
     );

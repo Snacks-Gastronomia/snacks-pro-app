@@ -125,6 +125,7 @@ class RechargeCubit extends Cubit<RechargeState> {
 //card_code->recharges
   readCard(String code, PageController controller, context) async {
     try {
+      emit(state.copyWith(status: AppStatus.loading));
       var response = await repository.getCard(code);
 
       var data = response;
@@ -146,6 +147,7 @@ class RechargeCubit extends Cubit<RechargeState> {
             content: "Snacks card não reconhecido",
             type: ToastType.info);
       }
+      emit(state.copyWith(status: AppStatus.loaded));
     } catch (e) {
       debugPrint(e.toString());
     }

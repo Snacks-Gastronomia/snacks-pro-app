@@ -1,17 +1,17 @@
 import "package:flutter/material.dart";
 
 class CustomCircularProgress extends StatelessWidget {
-  const CustomCircularProgress({super.key});
-
+  const CustomCircularProgress({super.key, this.dark = true});
+  final bool dark;
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
         child: SizedBox(
             height: 60,
             width: 60,
             child: CircularProgressIndicator(
-              color: Colors.black,
-              backgroundColor: Colors.black12,
+              color: dark ? Colors.black : Colors.white,
+              backgroundColor: dark ? Colors.black12 : Colors.white12,
             )));
   }
 }
