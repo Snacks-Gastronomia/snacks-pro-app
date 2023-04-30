@@ -78,6 +78,9 @@ class ListRestaurants extends StatelessWidget {
                           .read<FinanceCubit>()
                           .deleteRestaurant(
                               item.id, item.data()["owner"]["id"]),
+                      onTap: () {
+                        // if (item.data()["name"] != "SNACKS") print(item.id);
+                      },
                       title: item.data()["name"],
                       owner: item.data()["owner"]["name"]);
                 });
@@ -94,12 +97,14 @@ class CardRestaurant extends StatelessWidget {
     required this.owner,
     this.icon = Icons.business_outlined,
     required this.editAction,
+    required this.onTap,
     required this.removeAction,
   }) : super(key: key);
   final String title;
   final String owner;
   final IconData? icon;
   final VoidCallback editAction;
+  final VoidCallback onTap;
   final VoidCallback removeAction;
   @override
   Widget build(BuildContext context) {
@@ -138,61 +143,64 @@ class CardRestaurant extends StatelessWidget {
         //   ),
         //   child:
 
-        Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                  color: const Color(0xffF0F6F5),
-                  borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTextStyles.medium(16),
-                ),
-                Text(
-                  owner,
-                  style: AppTextStyles.light(12),
-                ),
-              ],
-            ),
-          ],
-        ),
-        if (title != "SNACKS")
+        GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                onPressed: editAction,
-                icon: const Icon(
-                  Icons.edit,
-                  size: 20,
-                  color: Colors.black,
-                ),
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: const Color(0xffF0F6F5),
+                    borderRadius: BorderRadius.circular(8)),
+                child: Icon(icon),
               ),
-              IconButton(
-                  onPressed: removeAction,
-                  icon: const Icon(
-                    Icons.delete,
-                    size: 20,
-                    color: Color(0xffE20808),
-                  ))
+              const SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppTextStyles.medium(16),
+                  ),
+                  Text(
+                    owner,
+                    style: AppTextStyles.light(12),
+                  ),
+                ],
+              ),
             ],
-          )
-      ],
+          ),
+          if (title != "SNACKS")
+            Row(
+              children: [
+                IconButton(
+                  onPressed: editAction,
+                  icon: const Icon(
+                    Icons.edit,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                ),
+                IconButton(
+                    onPressed: removeAction,
+                    icon: const Icon(
+                      Icons.delete,
+                      size: 20,
+                      color: Color(0xffE20808),
+                    ))
+              ],
+            )
+        ],
+      ),
     );
     // );
   }

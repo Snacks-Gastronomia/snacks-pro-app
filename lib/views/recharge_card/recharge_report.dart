@@ -14,6 +14,11 @@ class RechargeReportContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var day = context.read<RechargeCubit>().state.day;
+    var now = DateTime.now();
+
+    var dmyString = '$day/${now.month}/${now.year}';
+    var date = DateFormat('d/M/y').parse(dmyString);
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size(double.maxFinite, 170),
@@ -103,7 +108,7 @@ class RechargeReportContent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    DateFormat.yMMMMd('pt_BR').format(DateTime.now()),
+                    DateFormat.yMMMMd('pt_BR').format(date),
                     style: AppTextStyles.light(20),
                   ),
                   BlocBuilder<RechargeCubit, RechargeState>(

@@ -101,6 +101,51 @@ class BudgetDetailsContent extends StatelessWidget {
                       const SizedBox(
                         height: 35,
                       ),
+                      FutureBuilder(
+                          future: context
+                              .read<FinanceCubit>()
+                              .fetchRestaurantsProfits(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              return BlocBuilder<FinanceCubit,
+                                  FinanceHomeState>(builder: (context, state) {
+                                var list = snapshot.data ?? [];
+
+                                return ListView.separated(
+                                    separatorBuilder: (context, index) =>
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: list.length,
+                                    itemBuilder: (context, index) {
+                                      var item = list[index];
+                                      final value = double.parse(
+                                          item["total"].toString());
+                                      return CardExpense(
+                                          enableDelete: false,
+                                          deleteAction: null,
+                                          title: item["name"],
+                                          icon: Icons.restaurant,
+                                          iconColorBlack: true,
+                                          value: value);
+                                    });
+                              });
+                            }
+                            return const Center(
+                              child: SizedBox(
+                                  height: 60,
+                                  width: 60,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                    backgroundColor: Colors.black12,
+                                  )),
+                            );
+                          }),
+                      Divider(),
                       CardExpenseContent(
                         iconColorBlack: false,
                         title: "Receita bruta",

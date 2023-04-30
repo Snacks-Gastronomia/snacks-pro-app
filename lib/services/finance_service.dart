@@ -25,6 +25,39 @@ class FinanceApiServices {
     return [];
   }
 
+  Future<List<Map<String, dynamic>>?> getRestaurantsProfits() async {
+    try {
+      var restaurants = await firebase.collection("restaurants").get();
+      var now = DateTime.now();
+      var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
+      const snacksID = "lR27wpHNHI9VajiQBpKJ";
+
+      List<Map<String, dynamic>> list = [];
+
+      for (var element in restaurants.docs) {
+        if (element.id != snacksID) {
+          var res = await firebase
+              .collection("receipts")
+              .doc(element.id)
+              .collection("months")
+              .doc(month_id)
+              .get();
+
+          var data = {
+            "name": element.data()["name"],
+            "total": res.data()?["total"] ?? 0
+          };
+
+          list.add(data);
+        }
+      }
+
+      return list;
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getSchedule() {
     try {
       return firebase
@@ -224,18 +257,22 @@ class FinanceApiServices {
     return 0;
   }
 
-  Future<void> setMonthlyBudgetFirebase(
-      String restaurant_id, Map<String, dynamic> data, double total) async {
+  // Future getReceiptsByRestaurant() async{
+  //   return await firebase.collection("receipts");
+  // }
+
+  Future<void> setMonthlyBudgetFirebase(String restaurant_id,
+      Map<String, dynamic> data, double total, String name) async {
     var now = DateTime.now();
 
     var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
     var day_id = DateFormat("dd").format(now);
 
-    var docref = firebase
-        .collection("receipts")
-        .doc(restaurant_id)
-        .collection("months")
-        .doc(month_id);
+    var restRef = firebase.collection("receipts").doc(restaurant_id);
+
+    await restRef.set({"name": name});
+
+    var docref = restRef.collection("months").doc(month_id);
     var snacks = firebase
         .collection("receipts")
         .doc("snacks")

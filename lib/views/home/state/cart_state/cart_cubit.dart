@@ -153,9 +153,8 @@ class CartCubit extends Cubit<CartState> {
       bool isDelivery) async {
     final user = await storage.getDataStorage("user");
     var current_index = getStatusIndex(current);
+    final restaurant_name = user["restaurant"]["name"];
 
-// if(user["access_level"] == AppPermission.employee.name &&
-//             current != OrderStatus.done.name )
     if (user["access_level"] == AppPermission.employee.name &&
             current != OrderStatus.done.name ||
         user["access_level"] == AppPermission.cashier.name &&
@@ -164,8 +163,7 @@ class CartCubit extends Cubit<CartState> {
         user["access_level"] == AppPermission.waiter.name &&
             (current_index == 0 || current_index == 3)) {
       if (current_index == 0) {
-        repository.addWaiterToOrderPayment(
-            '${user["name"]}-${user["phone"]}', doc_id);
+        repository.addWaiterToOrderPayment('-${user["name"]}-', doc_id);
       }
       //done
       if (current_index == 3 &&
@@ -189,12 +187,14 @@ class CartCubit extends Cubit<CartState> {
         if (res != null && res != payment_method) {
           repository.updatePaymentMethod(doc_id, res);
         }
-        changeStatusFoward(doc_id, items, payment_method, current, datetime);
+        changeStatusFoward(
+            doc_id, items, payment_method, current, datetime, restaurant_name);
       } else {
         if (!isDelivery && current_index == 3) {
           changeStatusOrder(doc_id, OrderStatus.delivered);
         } else {
-          changeStatusFoward(doc_id, items, payment_method, current, datetime);
+          changeStatusFoward(doc_id, items, payment_method, current, datetime,
+              restaurant_name);
         }
       }
     } else if (user["access_level"] == AppPermission.employee.name) {
@@ -216,7 +216,7 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void changeStatusFoward(doc_id, List<dynamic> items, String payment_method,
-      String current, dynamic datetime) async {
+      String current, dynamic datetime, restaurant_name) async {
     var finance = FinanceApiServices();
     final dataStorage = await storage.getDataStorage("user");
 
@@ -256,7 +256,7 @@ class CartCubit extends Cubit<CartState> {
       };
 
       await finance.setMonthlyBudgetFirebase(
-          dataStorage["restaurant"]["id"], data, total);
+          dataStorage["restaurant"]["id"], data, total, restaurant_name);
     }
   }
 }

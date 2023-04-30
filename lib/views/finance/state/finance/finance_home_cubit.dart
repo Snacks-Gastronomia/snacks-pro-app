@@ -112,6 +112,13 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     emit(state.copyWith(printerAUX: state.printerAUX.copyWith(goal: value)));
   }
 
+  Future<List<Map<String, dynamic>>?> fetchRestaurantsProfits() async {
+    emit(state.copyWith(status: AppStatus.loading));
+    var res = await repository.fetchRestaurantsProfits();
+    emit(state.copyWith(status: AppStatus.loaded));
+    return res;
+  }
+
   Future<void> fetchExpenses(String docID) async {
     emit(state.copyWith(status: AppStatus.loading));
     double total = 0;

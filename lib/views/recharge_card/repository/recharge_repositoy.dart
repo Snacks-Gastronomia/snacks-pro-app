@@ -30,9 +30,9 @@ class RechargeRepository {
     }
   }
 
-  Future<List<dynamic>> fetchRecharges(String filter) async {
+  Future<List<dynamic>> fetchRecharges(String filter, int day) async {
     try {
-      return await services.fetchRecharges(paymentType: filter);
+      return await services.fetchRecharges(paymentType: filter, day: day);
     } catch (e) {
       throw e.toString();
     }

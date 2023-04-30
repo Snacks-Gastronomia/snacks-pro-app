@@ -32,6 +32,14 @@ class FinanceRepository {
     }
   }
 
+  Future<List<Map<String, dynamic>>?> fetchRestaurantsProfits() async {
+    try {
+      return await services.getRestaurantsProfits();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<int> getCountRestaurants() async {
     try {
       return await services.getCountRestaunts();

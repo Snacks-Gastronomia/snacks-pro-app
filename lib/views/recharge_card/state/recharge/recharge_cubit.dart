@@ -25,6 +25,10 @@ class RechargeCubit extends Cubit<RechargeState> {
     emit(state.copyWith(cpf: value));
   }
 
+  void changeDay(int value) {
+    emit(state.copyWith(day: value));
+  }
+
   void changeName(String value) {
     emit(state.copyWith(name: value));
   }
@@ -60,7 +64,7 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   Future<void> fetchRecharges() async {
-    var response = await repository.fetchRecharges(state.filter);
+    var response = await repository.fetchRecharges(state.filter, state.day);
     var data = treatDataResponse(response);
     var total = data.isEmpty
         ? 0.0
