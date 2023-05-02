@@ -297,7 +297,8 @@ class OrdersScreen extends StatelessWidget {
                                                               : item["table"],
                                                           address: item[
                                                                   "isDelivery"]
-                                                              ? item["address"]
+                                                              ? item["address"] ??
+                                                                  ""
                                                               : "",
                                                           status:
                                                               item["status"],
@@ -309,8 +310,7 @@ class OrdersScreen extends StatelessWidget {
                                                           method: item[
                                                               "payment_method"],
                                                           items:
-                                                              item["items"] ??
-                                                                  []),
+                                                              item["items"] ?? []),
                                                     );
                                                     // );
                                                   })),

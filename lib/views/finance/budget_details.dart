@@ -25,7 +25,7 @@ class BudgetDetailsContent extends StatelessWidget {
             var user = snapshot.data ?? {};
             final restaurantID = user["restaurant"]["id"];
             final access_level = user["access_level"];
-            print("access_Level");
+
             return Scaffold(
               // bottomSheet:
               appBar: PreferredSize(
@@ -57,10 +57,7 @@ class BudgetDetailsContent extends StatelessWidget {
                             ),
                             BlocBuilder<FinanceCubit, FinanceHomeState>(
                               builder: (context, state) {
-                                var total =
-                                    access_level == AppPermission.sadm.name
-                                        ? state.budget
-                                        : state.budget - state.expenses_value;
+                                var total = state.budget - state.expenses_value;
                                 return Text(
                                   NumberFormat.currency(
                                           locale: "pt", symbol: r"R$ ")
@@ -101,50 +98,52 @@ class BudgetDetailsContent extends StatelessWidget {
                       const SizedBox(
                         height: 35,
                       ),
-                      FutureBuilder(
-                          future: context
-                              .read<FinanceCubit>()
-                              .fetchRestaurantsProfits(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              return BlocBuilder<FinanceCubit,
-                                  FinanceHomeState>(builder: (context, state) {
-                                var list = snapshot.data ?? [];
+                      if (access_level == AppPermission.sadm.name)
+                        FutureBuilder(
+                            future: context
+                                .read<FinanceCubit>()
+                                .fetchRestaurantsProfits(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                return BlocBuilder<FinanceCubit,
+                                        FinanceHomeState>(
+                                    builder: (context, state) {
+                                  var list = snapshot.data ?? [];
 
-                                return ListView.separated(
-                                    separatorBuilder: (context, index) =>
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: list.length,
-                                    itemBuilder: (context, index) {
-                                      var item = list[index];
-                                      final value = double.parse(
-                                          item["total"].toString());
-                                      return CardExpense(
-                                          enableDelete: false,
-                                          deleteAction: null,
-                                          title: item["name"],
-                                          icon: Icons.restaurant,
-                                          iconColorBlack: true,
-                                          value: value);
-                                    });
-                              });
-                            }
-                            return const Center(
-                              child: SizedBox(
-                                  height: 60,
-                                  width: 60,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.black,
-                                    backgroundColor: Colors.black12,
-                                  )),
-                            );
-                          }),
+                                  return ListView.separated(
+                                      separatorBuilder: (context, index) =>
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: list.length,
+                                      itemBuilder: (context, index) {
+                                        var item = list[index];
+                                        final value = double.parse(
+                                            item["total"].toString());
+                                        return CardExpense(
+                                            enableDelete: false,
+                                            deleteAction: null,
+                                            title: item["name"],
+                                            icon: Icons.restaurant,
+                                            iconColorBlack: true,
+                                            value: value);
+                                      });
+                                });
+                              }
+                              return const Center(
+                                child: SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.black,
+                                      backgroundColor: Colors.black12,
+                                    )),
+                              );
+                            }),
                       Divider(),
                       CardExpenseContent(
                         iconColorBlack: false,
@@ -160,7 +159,7 @@ class BudgetDetailsContent extends StatelessWidget {
                         child: FutureBuilder(
                             future: context
                                 .read<FinanceCubit>()
-                                .fetchExpenses(restaurantID),
+                                .fetchExpenses(access_level, restaurantID),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
@@ -193,12 +192,17 @@ class BudgetDetailsContent extends StatelessWidget {
                                             iconColorBlack:
                                                 item.data()["type"] ==
                                                     "restaurant",
-                                            value:
-                                                (item.data()["sharedValue"] ??
-                                                        false)
-                                                    ? value /
-                                                        state.restaurant_count
-                                                    : value);
+                                            icon: (item.data()["sharedValue"] ??
+                                                    false)
+                                                ? Icons.groups
+                                                : null,
+                                            value: (item.data()[
+                                                            "sharedValue"] ??
+                                                        false) &&
+                                                    access_level ==
+                                                        AppPermission.radm.name
+                                                ? value / state.restaurant_count
+                                                : value);
                                       });
                                 });
                               }

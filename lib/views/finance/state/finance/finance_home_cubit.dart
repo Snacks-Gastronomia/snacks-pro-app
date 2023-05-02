@@ -119,7 +119,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     return res;
   }
 
-  Future<void> fetchExpenses(String docID) async {
+  Future<void> fetchExpenses(access, String docID) async {
     emit(state.copyWith(status: AppStatus.loading));
     double total = 0;
     var data = await repository.getExpenses();
@@ -131,7 +131,9 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     }
 
     if (data.isNotEmpty) {
-      total = totalExpenses(data);
+      total = access == AppPermission.sadm.name
+          ? totalExpensesForSnacks(data)
+          : totalExpenses(data);
     }
     emit(state.copyWith(
         expenses_value: total, expensesData: data, status: AppStatus.loaded));
@@ -148,6 +150,13 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
               ? double.parse(item.data()["value"].toString()) /
                   state.restaurant_count
               : double.parse(item.data()["value"].toString()))
+          .reduce((a, b) => a + b)
+          .toString());
+
+  double totalExpensesForSnacks(
+          List<QueryDocumentSnapshot<Map<String, dynamic>>> data) =>
+      double.parse(data
+          .map((item) => double.parse(item.data()["value"].toString()))
           .reduce((a, b) => a + b)
           .toString());
 
@@ -345,22 +354,23 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
         await repository.saveExpense(state.expenseAUX.toMap());
       }
       clearAUX();
-      fetchExpenses(user["restaurant"]["id"]);
+      fetchExpenses(user["restaurant"]["id"], user["access_level"].toString());
       Navigator.pop(context);
     }
   }
 
   void deleteExpense(doc_id) async {
-    await repository.deleteExpense(doc_id).then((value) => fetchExpenses(""));
+    await repository
+        .deleteExpense(doc_id)
+        .then((value) => fetchExpenses("", AppPermission.radm.name));
     // clearAUX();
   }
 
   void deleteRestaurantExpense(doc_id, String restaurant_id) async {
-    await repository
-        .deleteRestaurantExpense(doc_id, restaurant_id)
-        .then((value) => {fetchExpenses(restaurant_id)});
+    await repository.deleteRestaurantExpense(doc_id, restaurant_id).then(
+        (value) => {fetchExpenses(restaurant_id, AppPermission.radm.name)});
     emit(state.copyWith(expensesData: []));
-    fetchExpenses(restaurant_id);
+    fetchExpenses(restaurant_id, AppPermission.radm.name);
     clearAUX();
   }
 
