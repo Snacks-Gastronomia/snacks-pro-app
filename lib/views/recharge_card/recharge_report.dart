@@ -167,7 +167,7 @@ class RechargeReportContent extends StatelessWidget {
                             child: ListView.separated(
                                 separatorBuilder: (context, index) =>
                                     const SizedBox(
-                                      height: 15,
+                                      height: 20,
                                     ),
                                 shrinkWrap: true,
                                 physics: const BouncingScrollPhysics(),

@@ -85,7 +85,8 @@ class AppPrinter {
     for (var e in orders) {
       printer.row([
         PosColumn(text: e.amount.toString(), width: 1),
-        PosColumn(text: e.item.title, width: 11),
+        PosColumn(
+            text: '${e.item.title} - ${e.option_selected["title"]}', width: 11),
       ]);
       printer.row([
         PosColumn(text: e.observations, width: 12),

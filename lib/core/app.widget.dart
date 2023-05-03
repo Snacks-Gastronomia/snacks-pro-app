@@ -45,6 +45,10 @@ class AppWidget extends StatelessWidget {
     Future<String> getRouter() async {
       await initializeDateFormatting("pt_BR");
       var user = await storage.getDataStorage("user");
+
+//       var appDir = (await getTemporaryDirectory()).path + '/<package_name>';
+// new Directory(appDir).delete(recursive: true);
+
       return auth.currentUser != null && user.isNotEmpty
           ? AppRoutes.home
           : AppRoutes.restaurantAuth;

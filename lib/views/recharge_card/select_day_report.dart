@@ -40,7 +40,8 @@ class SelectDayReport extends StatelessWidget {
                           content: const RechargeReportContent(),
                           expand: true);
                     },
-                    child: SizedBox(
+                    child: Container(
+                      color: Colors.transparent,
                       height: 40,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
