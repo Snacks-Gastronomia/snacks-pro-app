@@ -174,21 +174,32 @@ class CartCubit extends Cubit<CartState> {
 
       if (getStatusObject(current) == OrderStatus.in_delivery ||
           getStatusObject(current) == OrderStatus.waiting_payment) {
+        double extras = items.map((e) {
+          var ex = List.from(e["extras"]);
+          return ex.isNotEmpty
+              ? double.parse((e["extras"]["value"].toString()))
+              : 0.0;
+        }).reduce((value, element) => value + element);
+
         double total = items
             .map((e) =>
-                double.parse(e["option_selected"]["value"].toString()) *
+                (double.parse((e["option_selected"]["value"].toString())) +
+                    extras) *
                 double.parse(e["amount"].toString()))
             .reduce((value, element) => value + element);
 
         var res = await AppModal().showModalBottomSheet(
             context: context,
+            dimissible: false,
             content: ConfirmOrderModal(value: total, method: payment_method));
 
-        if (res != null && res != payment_method) {
-          repository.updatePaymentMethod(doc_id, res);
+        if (res != null) {
+          if (res != payment_method) {
+            repository.updatePaymentMethod(doc_id, res);
+          }
+          changeStatusFoward(doc_id, items, payment_method, current, datetime,
+              restaurant_name);
         }
-        changeStatusFoward(
-            doc_id, items, payment_method, current, datetime, restaurant_name);
       } else {
         if (!isDelivery && current_index == 3) {
           changeStatusOrder(doc_id, OrderStatus.delivered);
@@ -215,14 +226,19 @@ class CartCubit extends Cubit<CartState> {
     await repository.updateStatus(doc_id, status);
   }
 
-  void changeStatusFoward(doc_id, List<dynamic> items, String payment_method,
+  void deleteOrder(docId) async {
+    await repository.cancelOrder(docId);
+  }
+
+  changeStatusFoward(doc_id, List<dynamic> items, String payment_method,
       String current, dynamic datetime, restaurant_name) async {
+    var current_index = getStatusIndex(current);
+    var status = OrderStatus.values[current_index + 1];
+    print(OrderStatus.values);
+    if (status == OrderStatus.invalid) return;
+
     var finance = FinanceApiServices();
     final dataStorage = await storage.getDataStorage("user");
-
-    var current_index = getStatusIndex(current);
-
-    var status = OrderStatus.values[current_index + 1];
 
     await repository.updateStatus(doc_id, status);
 

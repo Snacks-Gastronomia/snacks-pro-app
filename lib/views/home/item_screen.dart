@@ -57,6 +57,7 @@ class _ItemScreenState extends State<ItemScreen> {
                 builder: (context, state) {
                   return ListView.separated(
                       scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
                         var option = widget.order.item.options[index];
                         return Container(
@@ -158,7 +159,10 @@ class _ItemScreenState extends State<ItemScreen> {
                       bottomLeft: Radius.circular(55),
                       bottomRight: Radius.circular(55)),
                   child: widget.order.item.image_url == null ||
-                          widget.order.item.image_url!.isEmpty
+                          widget.order.item.image_url!.isEmpty ||
+                          (Uri.tryParse(widget.order.item.image_url ?? "")
+                                  ?.hasAbsolutePath ??
+                              false)
                       ? Container(
                           color: Colors.grey.shade200,
                           height: MediaQuery.of(context).size.height * 0.5,

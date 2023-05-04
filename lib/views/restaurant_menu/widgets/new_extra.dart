@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
@@ -50,7 +51,11 @@ class NewExtraModal extends StatelessWidget {
               TextFormField(
                 style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
                 textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.numberWithOptions(signed: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(RegExp('[-\\,]'))
+                ],
+                keyboardType: const TextInputType.numberWithOptions(
+                    signed: true, decimal: true),
                 controller: value,
                 decoration: InputDecoration(
                   fillColor: const Color(0xffF7F8F9),

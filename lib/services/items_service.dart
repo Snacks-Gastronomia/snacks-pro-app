@@ -29,8 +29,7 @@ class ItemsApiServices {
     try {
       var ref = database
           .collection("menu")
-          .where("restaurant_id", isEqualTo: restaurant_id)
-          ;
+          .where("restaurant_id", isEqualTo: restaurant_id);
 
       // print(restaurant_id);
       // if (document != null) {
@@ -59,7 +58,8 @@ class ItemsApiServices {
 
   Future<void> deleteItem(String doc, String imageUrl) async {
     try {
-      if (imageUrl.isNotEmpty) {
+      if (imageUrl.isNotEmpty &&
+          !(Uri.tryParse(imageUrl)?.hasAbsolutePath ?? false)) {
         Reference photoRef = fbStorage.refFromURL(imageUrl);
         await photoRef.delete();
       }

@@ -54,7 +54,11 @@ class CardItemWidget extends StatelessWidget {
                 SizedBox(
                   height: 100,
                   width: double.maxFinite,
-                  child: item.image_url == null || item.image_url!.isEmpty
+                  child: item.image_url == null ||
+                          item.image_url!.isEmpty ||
+                          (Uri.tryParse(item.image_url ?? "")
+                                  ?.hasAbsolutePath ??
+                              false)
                       ? Center(
                           child: SvgPicture.asset(
                             AppImages.snacks,

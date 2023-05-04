@@ -125,7 +125,17 @@ class _ConfirmOrderModalState extends State<ConfirmOrderModal> {
               onPressedAction: () {
                 Navigator.pop(context, method);
               },
-              label: "Confirmar")
+              label: "Confirmar"),
+          const SizedBox(
+            height: 10,
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, null),
+            child: Text(
+              "Cancelar",
+              style: AppTextStyles.medium(16, color: Colors.black),
+            ),
+          ),
         ],
       ),
     );

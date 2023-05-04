@@ -36,11 +36,25 @@ class OrdersRepository {
     return services.getOrdersForWaiters();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchAllOrdersByInterval(
+      DateTime start, DateTime end) {
+    // return await services.getOrdersByRestaurantId(id);
+    return services.getOrdersByInterval(start, end);
+  }
+
   updateStatus(String id, OrderStatus new_status) async {
     // return await services.getOrdersByRestaurantId(id);
 
     try {
       return await services.changeOrderStatus(id, new_status);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  cancelOrder(String id) async {
+    try {
+      return await services.cancelOrderByDocId(id);
     } catch (e) {
       print(e);
     }

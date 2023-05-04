@@ -35,6 +35,18 @@ class OrdersApiServices {
     ]).snapshots();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByInterval(
+      DateTime start, DateTime end) {
+    return database
+        .collection("orders")
+        .where("created_at", isGreaterThanOrEqualTo: start.toLocal())
+        .where(
+          "created_at",
+          isLessThanOrEqualTo: end,
+        )
+        .snapshots();
+  }
+
   void addWaiterToOrderPayment(String id, String name) async {
     return await database
         .collection("orders")
@@ -70,6 +82,10 @@ class OrdersApiServices {
     //     .collection("orders")
     //     .doc(id)
     // .update({"status": new_status.name});
+  }
+
+  Future<void> cancelOrderByDocId(String id) async {
+    return await database.collection("orders").doc(id).delete();
   }
 
   Future<void> updatePaymentMethod(String id, String newMethod) async {

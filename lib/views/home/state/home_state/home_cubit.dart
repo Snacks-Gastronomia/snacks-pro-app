@@ -47,6 +47,11 @@ class HomeCubit extends Cubit<HomeState> {
       yield* ordersRepository
           .fetchOrdersByRestaurantId(user["restaurant"]["id"]);
     }
+    // else if (user["access_level"] == AppPermission.cashier.name) {
+    //   var start = DateTime.now().add(const Duration(hours: 6));
+    //   var end = DateTime.now().subtract(const Duration(hours: 6));
+    //   yield* ordersRepository.fetchAllOrdersByInterval(start, end);
+    // }
 
     yield* ordersRepository.fetchAllOrders();
   }
@@ -130,6 +135,6 @@ class HomeCubit extends Cubit<HomeState> {
 
   void removeItem(String doc, String img) async {
     await itemsRepository.deleteItem(doc, img);
-    fetchItems();
+    // fetchItems();
   }
 }

@@ -6,10 +6,12 @@ class AppModal {
     required context,
     required Widget content,
     bool withPadding = true,
+    bool dimissible = true,
   }) =>
       showMaterialModalBottomSheet(
         bounce: true,
         context: context,
+        isDismissible: dimissible,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
         ),
