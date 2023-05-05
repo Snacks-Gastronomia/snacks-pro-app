@@ -1,16 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
+
 import './day_order_report.dart';
 
 class OrdersReportScreen extends StatelessWidget {
-  OrdersReportScreen({Key? key}) : super(key: key);
+  OrdersReportScreen({
+    Key? key,
+    this.restaurant_id = "",
+  }) : super(key: key);
   final modal = AppModal();
+
+  final String restaurant_id;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +25,8 @@ class OrdersReportScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         child: FutureBuilder(
-            future: BlocProvider.of<OrdersCubit>(context).fetchMonthly(),
+            future: BlocProvider.of<OrdersCubit>(context)
+                .fetchMonthly(restaurant_id: restaurant_id),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var data = snapshot.data!.docs;
@@ -104,6 +112,7 @@ class OrdersReportScreen extends StatelessWidget {
                               onTap: () => modal.showIOSModalBottomSheet(
                                 context: context,
                                 content: DayOrdersReportScreen(
+                                    restaurant_id: restaurant_id,
                                     day: item.id,
                                     amount: item.data()["length"],
                                     total: NumberFormat.currency(

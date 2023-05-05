@@ -594,10 +594,13 @@ class CardOrderWidget extends StatelessWidget {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                '${order.item.title} - ${order.option_selected["title"]}',
-                                                style:
-                                                    AppTextStyles.regular(14),
+                                              SizedBox(
+                                                width: 200,
+                                                child: Text(
+                                                  '${order.item.title} - ${order.option_selected["title"]}',
+                                                  style:
+                                                      AppTextStyles.regular(14),
+                                                ),
                                               ),
                                               if (order.observations.isNotEmpty)
                                                 SizedBox(

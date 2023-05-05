@@ -58,8 +58,7 @@ class ItemsApiServices {
 
   Future<void> deleteItem(String doc, String imageUrl) async {
     try {
-      if (imageUrl.isNotEmpty &&
-          !(Uri.tryParse(imageUrl)?.hasAbsolutePath ?? false)) {
+      if (imageUrl.isNotEmpty && imageUrl.contains("https")) {
         Reference photoRef = fbStorage.refFromURL(imageUrl);
         await photoRef.delete();
       }

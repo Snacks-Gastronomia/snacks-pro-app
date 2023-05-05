@@ -15,8 +15,14 @@ class OrdersCubit extends Cubit<OrdersState> {
   final storage = AppStorage();
   OrdersCubit() : super(OrdersState.initial());
 
-  Future<QuerySnapshot<Map<String, dynamic>>> fetchDaily(day) async {
-    var id = await getRestaurantId();
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchDaily(day,
+      {String restaurant_id = ""}) async {
+    var id = "";
+    if (restaurant_id.isEmpty) {
+      await getRestaurantId();
+    } else {
+      id = restaurant_id;
+    }
     return await repository.getDayOrders(id, day);
   }
 
@@ -25,9 +31,15 @@ class OrdersCubit extends Cubit<OrdersState> {
     return user["restaurant"]["id"];
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> fetchMonthly() async {
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchMonthly(
+      {String restaurant_id = ""}) async {
     emit(state.copyWith(status: AppStatus.loading));
-    var id = await getRestaurantId();
+    var id = "";
+    if (restaurant_id.isEmpty) {
+      await getRestaurantId();
+    } else {
+      id = restaurant_id;
+    }
 
     var response = await repository.getMonthlyOrders(id);
     double total_value = 0;

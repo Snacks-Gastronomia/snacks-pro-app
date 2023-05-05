@@ -8,11 +8,13 @@ import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
 class DayOrdersReportScreen extends StatelessWidget {
   const DayOrdersReportScreen({
     Key? key,
+    this.restaurant_id = "",
     required this.day,
     required this.total,
     required this.amount,
   }) : super(key: key);
 
+  final String restaurant_id;
   final String day;
   final String total;
   final int amount;
@@ -23,7 +25,8 @@ class DayOrdersReportScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         child: FutureBuilder(
-            future: BlocProvider.of<OrdersCubit>(context).fetchDaily(day),
+            future: BlocProvider.of<OrdersCubit>(context)
+                .fetchDaily(day, restaurant_id: restaurant_id),
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data != null) {
                 return Column(

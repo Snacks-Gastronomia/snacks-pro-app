@@ -10,6 +10,7 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/budget_details.dart';
+import 'package:snacks_pro_app/views/finance/contents/Features/features_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/printer/printers.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/restaurants_content.dart';
@@ -446,6 +447,13 @@ class SnacksAdmSummaryCards extends StatelessWidget {
       "highlight": true,
       "blackContent": false,
       "action": const RestaurantsContent()
+    },
+    {
+      "title": "Funcionalidades",
+      "icon": Icons.settings,
+      "highlight": true,
+      "blackContent": false,
+      "action": const FeaturesContent()
     },
     {
       "title": "Cartão snacks",

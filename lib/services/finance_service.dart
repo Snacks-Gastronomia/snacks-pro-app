@@ -30,7 +30,7 @@ class FinanceApiServices {
       var restaurants = await firebase.collection("restaurants").get();
       var now = DateTime.now();
       var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
-      const snacksID = "lR27wpHNHI9VajiQBpKJ";
+      const snacksID = "clvyfPUDl2nZhVUWQT8n";
 
       List<Map<String, dynamic>> list = [];
 
@@ -44,6 +44,7 @@ class FinanceApiServices {
               .get();
 
           var data = {
+            "id": element.id,
             "name": element.data()["name"],
             "total": res.data()?["total"] ?? 0
           };
@@ -147,6 +148,17 @@ class FinanceApiServices {
     // return data.docs;
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getFeatures() {
+    // try {
+    return firebase
+        .collection("snacks_config")
+        .doc("features")
+        .collection("all")
+        .snapshots();
+
+    // return data.docs;
+  }
+
   Future<void> updateTime(int day, Map<String, dynamic> data) {
     // try {
     print(day.toString());
@@ -156,6 +168,19 @@ class FinanceApiServices {
         .collection("days")
         .doc(day.toString())
         .update(data);
+
+    // return data.docs;
+  }
+
+  Future<void> updateFeatureValue(String docID, bool value) {
+    Map<String, dynamic> data = {"active": value};
+    // try {
+    return firebase
+        .collection("snacks_config")
+        .doc("features")
+        .collection("all")
+        .doc(docID)
+        .set(data, SetOptions(merge: true));
 
     // return data.docs;
   }

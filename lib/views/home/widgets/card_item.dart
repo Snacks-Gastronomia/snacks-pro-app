@@ -56,9 +56,7 @@ class CardItemWidget extends StatelessWidget {
                   width: double.maxFinite,
                   child: item.image_url == null ||
                           item.image_url!.isEmpty ||
-                          (Uri.tryParse(item.image_url ?? "")
-                                  ?.hasAbsolutePath ??
-                              false)
+                          !item.image_url!.contains("https")
                       ? Center(
                           child: SvgPicture.asset(
                             AppImages.snacks,

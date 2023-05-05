@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 
+import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/new_expense.dart';
+import 'package:snacks_pro_app/views/finance/contents/order_report/month_orders_report.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/widgets/card_expense.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
@@ -16,6 +17,7 @@ import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 class BudgetDetailsContent extends StatelessWidget {
   const BudgetDetailsContent({Key? key}) : super(key: key);
   static final storage = AppStorage();
+  static final modal = AppModal();
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -84,162 +86,179 @@ class BudgetDetailsContent extends StatelessWidget {
                     ],
                   )),
               body: Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Relatório de receita',
-                        style: AppTextStyles.semiBold(22),
-                      ),
-                      Text(
-                        DateFormat.MMMM("pt_BR").format(DateTime.now()),
-                        style: AppTextStyles.light(18),
-                      ),
-                      const SizedBox(
-                        height: 35,
-                      ),
-                      if (access_level == AppPermission.sadm.name)
-                        FutureBuilder(
-                            future: context
-                                .read<FinanceCubit>()
-                                .fetchRestaurantsProfits(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                return BlocBuilder<FinanceCubit,
-                                        FinanceHomeState>(
-                                    builder: (context, state) {
-                                  var list = snapshot.data ?? [];
-
-                                  return ListView.separated(
-                                      separatorBuilder: (context, index) =>
-                                          const SizedBox(
-                                            height: 15,
-                                          ),
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: list.length,
-                                      itemBuilder: (context, index) {
-                                        var item = list[index];
-                                        final value = double.parse(
-                                            item["total"].toString());
-                                        return CardExpense(
-                                            enableDelete: false,
-                                            deleteAction: null,
-                                            title: item["name"],
-                                            icon: Icons.restaurant,
-                                            iconColorBlack: true,
-                                            value: value);
-                                      });
-                                });
-                              }
-                              return const Center(
-                                child: SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.black,
-                                      backgroundColor: Colors.black12,
-                                    )),
-                              );
-                            }),
-                      Divider(),
-                      CardExpenseContent(
-                        iconColorBlack: false,
-                        title: "Receita bruta",
-                        month: DateFormat.MMMM("pt_BR").format(DateTime.now()),
-                        value: context.read<FinanceCubit>().state.budget,
-                        icon: Icons.attach_money_rounded,
-                      ),
-                      const SizedBox(
-                        height: 35,
-                      ),
-                      Expanded(
-                        child: FutureBuilder(
-                            future: context
-                                .read<FinanceCubit>()
-                                .fetchExpenses(access_level, restaurantID),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                return BlocBuilder<FinanceCubit,
-                                        FinanceHomeState>(
-                                    builder: (context, state) {
-                                  var list = state.expensesData;
-                                  return ListView.separated(
-                                      separatorBuilder: (context, index) =>
-                                          const SizedBox(
-                                            height: 15,
-                                          ),
-                                      // shrinkWrap: true,
-                                      physics: const BouncingScrollPhysics(),
-                                      itemCount: list.length,
-                                      itemBuilder: (context, index) {
-                                        var item = list[index];
-                                        final value = double.parse(item
-                                                .data()["value"]
-                                                .toString()) *
-                                            -1;
-                                        return CardExpense(
-                                            enableDelete: item.data()["type"] ==
-                                                "restaurant",
-                                            deleteAction: () => context
-                                                .read<FinanceCubit>()
-                                                .deleteRestaurantExpense(
-                                                    item.id, restaurantID),
-                                            title: item.data()["name"],
-                                            iconColorBlack:
-                                                item.data()["type"] ==
-                                                    "restaurant",
-                                            icon: (item.data()["sharedValue"] ??
-                                                    false)
-                                                ? Icons.groups
-                                                : null,
-                                            value: (item.data()[
-                                                            "sharedValue"] ??
-                                                        false) &&
-                                                    access_level ==
-                                                        AppPermission.radm.name
-                                                ? value / state.restaurant_count
-                                                : value);
-                                      });
-                                });
-                              }
-                              return const Center(
-                                child: SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.black,
-                                      backgroundColor: Colors.black12,
-                                    )),
-                              );
-                            }),
-                      ),
-                      if (access_level == AppPermission.radm.name)
-                        SizedBox(
-                          height: 50,
-                          child: Center(
-                            child: TextButton(
-                              onPressed: () => AppModal().showModalBottomSheet(
-                                  withPadding: false,
-                                  context: context,
-                                  content: NewExpenseContent(
-                                    restaurantDocId: restaurantID,
-                                    restaurantExpense: true,
-                                    accessLevel:
-                                        access_level.toString().stringToEnum,
-                                  )),
-                              child: const Text('Adicionar depesa adicional'),
-                            ),
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Relatório de receita',
+                      style: AppTextStyles.semiBold(22),
+                    ),
+                    Text(
+                      DateFormat.MMMM("pt_BR").format(DateTime.now()),
+                      style: AppTextStyles.light(18),
+                    ),
+                    const SizedBox(
+                      height: 35,
+                    ),
+                    if (access_level == AppPermission.sadm.name)
+                      ListRestaurantsProfits(modal: modal),
+                    const Divider(),
+                    CardExpenseContent(
+                      iconColorBlack: false,
+                      title: "Receita bruta",
+                      month: DateFormat.MMMM("pt_BR").format(DateTime.now()),
+                      value: context.read<FinanceCubit>().state.budget,
+                      icon: Icons.attach_money_rounded,
+                    ),
+                    const SizedBox(
+                      height: 35,
+                    ),
+                    ListAllExpenses(
+                        access_level: access_level, restaurantID: restaurantID),
+                    if (access_level == AppPermission.radm.name)
+                      SizedBox(
+                        height: 50,
+                        child: Center(
+                          child: TextButton(
+                            onPressed: () => AppModal().showModalBottomSheet(
+                                withPadding: false,
+                                context: context,
+                                content: NewExpenseContent(
+                                  restaurantDocId: restaurantID,
+                                  restaurantExpense: true,
+                                  accessLevel:
+                                      access_level.toString().stringToEnum,
+                                )),
+                            child: const Text('Adicionar depesa adicional'),
                           ),
                         ),
-                    ],
-                  )),
+                      ),
+                  ],
+                ),
+              ),
             );
           }
           return const CustomCircularProgress();
         });
+  }
+}
+
+class ListAllExpenses extends StatelessWidget {
+  const ListAllExpenses({
+    Key? key,
+    required this.access_level,
+    required this.restaurantID,
+  }) : super(key: key);
+  final String access_level;
+  final String restaurantID;
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: FutureBuilder(
+          future: context
+              .read<FinanceCubit>()
+              .fetchExpenses(access_level, restaurantID),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return BlocBuilder<FinanceCubit, FinanceHomeState>(
+                  builder: (context, state) {
+                var list = state.expensesData;
+                return ListView.separated(
+                    separatorBuilder: (context, index) => const SizedBox(
+                          height: 15,
+                        ),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      var item = list[index];
+                      final value =
+                          double.parse(item.data()["value"].toString()) * -1;
+                      return CardExpense(
+                          enableDelete: item.data()["type"] == "restaurant",
+                          deleteAction: () => context
+                              .read<FinanceCubit>()
+                              .deleteRestaurantExpense(item.id, restaurantID),
+                          title: item.data()["name"],
+                          iconColorBlack: item.data()["type"] == "restaurant",
+                          icon: (item.data()["sharedValue"] ?? false)
+                              ? Icons.groups
+                              : null,
+                          value: (item.data()["sharedValue"] ?? false) &&
+                                  access_level == AppPermission.radm.name
+                              ? value / state.restaurant_count
+                              : value);
+                    });
+              });
+            }
+            return const Center(
+              child: SizedBox(
+                  height: 60,
+                  width: 60,
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                    backgroundColor: Colors.black12,
+                  )),
+            );
+          }),
+    );
+  }
+}
+
+class ListRestaurantsProfits extends StatelessWidget {
+  const ListRestaurantsProfits({super.key, required this.modal});
+  final modal;
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: FutureBuilder(
+          future: context.read<FinanceCubit>().fetchRestaurantsProfits(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return BlocBuilder<FinanceCubit, FinanceHomeState>(
+                  builder: (context, state) {
+                var list = snapshot.data ?? [];
+
+                return ListView.separated(
+                    separatorBuilder: (context, index) => const SizedBox(
+                          height: 15,
+                        ),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      var item = list[index];
+                      final value = double.parse(item["total"].toString());
+
+                      return GestureDetector(
+                        onTap: () {
+                          modal.showIOSModalBottomSheet(
+                              context: context,
+                              content:
+                                  OrdersReportScreen(restaurant_id: item["id"]),
+                              expand: true);
+                        },
+                        child: CardExpense(
+                            enableDelete: false,
+                            deleteAction: null,
+                            title: item["name"],
+                            icon: Icons.restaurant,
+                            iconColorBlack: true,
+                            value: value),
+                      );
+                    });
+              });
+            }
+            return const Center(
+              child: SizedBox(
+                  height: 60,
+                  width: 60,
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                    backgroundColor: Colors.black12,
+                  )),
+            );
+          }),
+    );
   }
 }

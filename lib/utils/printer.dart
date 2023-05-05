@@ -98,9 +98,9 @@ class AppPrinter {
       } else {
         e.extras.map((e) {});
         for (var i = 0; i < e.extras.length; i++) {
-          extras += e.extras[i]["title"];
+          extras += "+" + e.extras[i]["title"];
           if (i < e.extras.length - 1) {
-            extras += ", ";
+            extras += "\n";
           }
         }
       }
@@ -194,33 +194,29 @@ class AppPrinter {
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
     final printer = NetworkPrinter(paper, profile);
-    try {
-      // await Socket.connect(ip, 9100)
-      //     .then((value) => print(value.remoteAddress))
-      //     .catchError((err) => print(err));
-      // print(socket.socket);
+    var toast = AppToast();
 
+    try {
       var res = await printer.connect(ip,
           port: 9100, timeout: const Duration(seconds: 15));
 
       print("connected.");
 
       if (res == PosPrintResult.success) {
-        // printImageOrderTemplate(printer);
+        printer.beep();
         printOrderTemplate(printer, orders, isDelivery, destination);
-        // printer.beep();
-        // printer.
         printer.disconnect();
-        print("disconnected");
       } else {
-        var toast = AppToast();
         toast.showToast(
             context: context,
             content: "Não foi possível imprimir o pedido",
             type: ToastType.error);
       }
     } catch (e) {
-      print(e);
+      toast.showToast(
+          context: context,
+          content: "Não foi possível imprimir o pedido: $e",
+          type: ToastType.error);
       // printer.reset();
       print("error socket");
     }

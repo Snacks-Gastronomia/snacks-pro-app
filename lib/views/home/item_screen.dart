@@ -147,6 +147,7 @@ class _ItemScreenState extends State<ItemScreen> {
         ),
       ),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             Stack(
@@ -160,9 +161,7 @@ class _ItemScreenState extends State<ItemScreen> {
                       bottomRight: Radius.circular(55)),
                   child: widget.order.item.image_url == null ||
                           widget.order.item.image_url!.isEmpty ||
-                          (Uri.tryParse(widget.order.item.image_url ?? "")
-                                  ?.hasAbsolutePath ??
-                              false)
+                          !widget.order.item.image_url!.contains("https")
                       ? Container(
                           color: Colors.grey.shade200,
                           height: MediaQuery.of(context).size.height * 0.5,
@@ -365,22 +364,88 @@ class _ItemScreenState extends State<ItemScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  // if (widget.permission == AppPermission.radm ||
-                  //     widget.permission == AppPermission.employee)
-                  //   Center(
-                  //     child: TextButton.icon(
-                  //       onPressed: () {},
-                  //       icon: const Icon(
-                  //         Icons.delete,
-                  //         color: Color(0xffE20808),
-                  //       ),
-                  //       label: Text(
-                  //         'Remover item',
-                  //         style: AppTextStyles.medium(16,
-                  //             color: const Color(0xffE20808)),
-                  //       ),
-                  //     ),
-                  //   ),
+                  if (widget.order.item.extra.isNotEmpty)
+                    Column(
+                      children: [
+                        Text(
+                          "Extras",
+                          style: AppTextStyles.medium(16),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ListView.separated(
+                            itemCount: widget.order.item.extra.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              var list = List.from(widget.order.item.extra);
+                              double value =
+                                  double.parse(list[index]['value'].toString());
+
+                              return BlocBuilder<ItemScreenCubit,
+                                      ItemScreenState>(
+                                  // stream: null,
+                                  builder: (context, state) {
+                                bool selected =
+                                    state.order!.extras.contains(list[index]);
+                                return Container(
+                                  // height: 50,
+                                  padding: const EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                      color: selected
+                                          ? Colors.black
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: const Border.fromBorderSide(
+                                          BorderSide(width: 2))),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.plus_one_rounded,
+                                            color: selected
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text(
+                                            list[index]["title"],
+                                            style: AppTextStyles.medium(
+                                              16,
+                                              color: selected
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        "+${NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value)}",
+                                        style: AppTextStyles.medium(16,
+                                            color: AppColors.highlight),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              });
+                            })
+                      ],
+                    ),
+                  const SizedBox(
+                    height: 20,
+                  )
                 ],
               ),
             )

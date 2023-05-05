@@ -160,6 +160,22 @@ class FinanceRepository {
     }
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getFeatures() {
+    try {
+      return services.getFeatures();
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> updateFeatureValue(String doc, bool value) async {
+    try {
+      return await services.updateFeatureValue(doc, value);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<dynamic> getMonthlyBudget(String restaurant_id) async {
     try {
       return await services.getMonthlyBudget(restaurant_id);

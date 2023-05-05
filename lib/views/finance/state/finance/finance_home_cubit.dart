@@ -177,6 +177,14 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     return repository.getRestaurants();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchFeatures() {
+    return repository.getFeatures();
+  }
+
+  void changeFeatureValue(String doc, bool value) async {
+    await repository.updateFeatureValue(doc, value);
+  }
+
   Future<List<String>> fetchBanks() async {
     List<String> items = (await repository.fetchBanks())
         .where((element) => element["code"] != null)
