@@ -18,6 +18,7 @@ class BudgetDetailsContent extends StatelessWidget {
   const BudgetDetailsContent({Key? key}) : super(key: key);
   static final storage = AppStorage();
   static final modal = AppModal();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -85,61 +86,132 @@ class BudgetDetailsContent extends StatelessWidget {
                       ),
                     ],
                   )),
-              body: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Column(
-                  children: [
-                    Text(
-                      'Relatório de receita',
-                      style: AppTextStyles.semiBold(22),
-                    ),
-                    Text(
-                      DateFormat.MMMM("pt_BR").format(DateTime.now()),
-                      style: AppTextStyles.light(18),
-                    ),
-                    const SizedBox(
-                      height: 35,
-                    ),
-                    if (access_level == AppPermission.sadm.name)
-                      ListRestaurantsProfits(modal: modal),
-                    const Divider(),
-                    CardExpenseContent(
-                      iconColorBlack: false,
-                      title: "Receita bruta",
-                      month: DateFormat.MMMM("pt_BR").format(DateTime.now()),
-                      value: context.read<FinanceCubit>().state.budget,
-                      icon: Icons.attach_money_rounded,
-                    ),
-                    const SizedBox(
-                      height: 35,
-                    ),
-                    ListAllExpenses(
-                        access_level: access_level, restaurantID: restaurantID),
-                    if (access_level == AppPermission.radm.name)
-                      SizedBox(
-                        height: 50,
-                        child: Center(
-                          child: TextButton(
-                            onPressed: () => AppModal().showModalBottomSheet(
-                                withPadding: false,
-                                context: context,
-                                content: NewExpenseContent(
-                                  restaurantDocId: restaurantID,
-                                  restaurantExpense: true,
-                                  accessLevel:
-                                      access_level.toString().stringToEnum,
-                                )),
-                            child: const Text('Adicionar depesa adicional'),
-                          ),
-                        ),
+              body: DefaultTabController(
+                length: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Relatório de receita',
+                        style: AppTextStyles.semiBold(22),
                       ),
-                  ],
+                      Text(
+                        DateFormat.MMMM("pt_BR").format(DateTime.now()),
+                        style: AppTextStyles.light(18),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      CardExpenseContent(
+                        iconColorBlack: false,
+                        title: "Receita bruta",
+                        month: DateFormat.MMMM("pt_BR").format(DateTime.now()),
+                        value: context.read<FinanceCubit>().state.budget,
+                        icon: Icons.attach_money_rounded,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      (access_level == AppPermission.sadm.name)
+                          ? Expanded(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 40,
+                                    child: TabBar(
+                                      indicator: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius:
+                                              BorderRadius.circular(50)),
+                                      labelColor: Colors.white,
+                                      unselectedLabelColor: Colors.black,
+                                      tabs: const [
+                                        Tab(
+                                          height: 30,
+                                          text: 'Despesas',
+                                        ),
+                                        Tab(
+                                          text: 'Restaurantes',
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: TabBarView(
+                                      children: [
+                                        ExpensesTab(
+                                            access_level: access_level,
+                                            restaurantID: restaurantID),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 15),
+                                          child: ListRestaurantsProfits(
+                                              modal: modal),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          : Expanded(
+                              child: ExpensesTab(
+                                  access_level: access_level,
+                                  restaurantID: restaurantID),
+                            ),
+                    ],
+                  ),
                 ),
               ),
             );
           }
           return const CustomCircularProgress();
         });
+  }
+}
+
+class ExpensesTab extends StatelessWidget {
+  const ExpensesTab(
+      {super.key, required this.access_level, required this.restaurantID});
+  final access_level;
+  final restaurantID;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 15,
+        ),
+        ListAllExpenses(access_level: access_level, restaurantID: restaurantID),
+        if (access_level == AppPermission.radm.name)
+          SizedBox(
+            height: 50,
+            child: Center(
+              child: TextButton(
+                onPressed: () => AppModal().showModalBottomSheet(
+                    withPadding: false,
+                    context: context,
+                    content: NewExpenseContent(
+                      restaurantDocId: restaurantID,
+                      restaurantExpense: true,
+                      accessLevel: access_level.toString().stringToEnum,
+                    )),
+                child: const Text('Adicionar depesa adicional'),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class RestaurantsTab extends StatelessWidget {
+  const RestaurantsTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
 
@@ -153,17 +225,18 @@ class ListAllExpenses extends StatelessWidget {
   final String restaurantID;
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: FutureBuilder(
-          future: context
-              .read<FinanceCubit>()
-              .fetchExpenses(access_level, restaurantID),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return BlocBuilder<FinanceCubit, FinanceHomeState>(
-                  builder: (context, state) {
-                var list = state.expensesData;
-                return ListView.separated(
+    return FutureBuilder(
+        future: context
+            .read<FinanceCubit>()
+            .fetchExpenses(access_level, restaurantID),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return BlocBuilder<FinanceCubit, FinanceHomeState>(
+                builder: (context, state) {
+              var list = state.expensesData;
+              // print(list.length);
+              return Expanded(
+                child: ListView.separated(
                     separatorBuilder: (context, index) => const SizedBox(
                           height: 15,
                         ),
@@ -188,20 +261,20 @@ class ListAllExpenses extends StatelessWidget {
                                   access_level == AppPermission.radm.name
                               ? value / state.restaurant_count
                               : value);
-                    });
-              });
-            }
-            return const Center(
-              child: SizedBox(
-                  height: 60,
-                  width: 60,
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                    backgroundColor: Colors.black12,
-                  )),
-            );
-          }),
-    );
+                    }),
+              );
+            });
+          }
+          return const Center(
+            child: SizedBox(
+                height: 60,
+                width: 60,
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                  backgroundColor: Colors.black12,
+                )),
+          );
+        });
   }
 }
 
@@ -210,55 +283,53 @@ class ListRestaurantsProfits extends StatelessWidget {
   final modal;
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: FutureBuilder(
-          future: context.read<FinanceCubit>().fetchRestaurantsProfits(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return BlocBuilder<FinanceCubit, FinanceHomeState>(
-                  builder: (context, state) {
-                var list = snapshot.data ?? [];
+    return FutureBuilder(
+        future: context.read<FinanceCubit>().fetchRestaurantsProfits(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return BlocBuilder<FinanceCubit, FinanceHomeState>(
+                builder: (context, state) {
+              var list = snapshot.data ?? [];
 
-                return ListView.separated(
-                    separatorBuilder: (context, index) => const SizedBox(
-                          height: 15,
-                        ),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      var item = list[index];
-                      final value = double.parse(item["total"].toString());
+              return ListView.separated(
+                  separatorBuilder: (context, index) => const SizedBox(
+                        height: 15,
+                      ),
+                  shrinkWrap: false,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    var item = list[index];
+                    final value = double.parse(item["total"].toString());
 
-                      return GestureDetector(
-                        onTap: () {
-                          modal.showIOSModalBottomSheet(
-                              context: context,
-                              content:
-                                  OrdersReportScreen(restaurant_id: item["id"]),
-                              expand: true);
-                        },
-                        child: CardExpense(
-                            enableDelete: false,
-                            deleteAction: null,
-                            title: item["name"],
-                            icon: Icons.restaurant,
-                            iconColorBlack: true,
-                            value: value),
-                      );
-                    });
-              });
-            }
-            return const Center(
-              child: SizedBox(
-                  height: 60,
-                  width: 60,
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                    backgroundColor: Colors.black12,
-                  )),
-            );
-          }),
-    );
+                    return GestureDetector(
+                      onTap: () {
+                        modal.showIOSModalBottomSheet(
+                            context: context,
+                            content:
+                                OrdersReportScreen(restaurant_id: item["id"]),
+                            expand: true);
+                      },
+                      child: CardExpense(
+                          enableDelete: false,
+                          deleteAction: null,
+                          title: item["name"],
+                          icon: Icons.restaurant,
+                          iconColorBlack: true,
+                          value: value),
+                    );
+                  });
+            });
+          }
+          return const Center(
+            child: SizedBox(
+                height: 60,
+                width: 60,
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                  backgroundColor: Colors.black12,
+                )),
+          );
+        });
   }
 }

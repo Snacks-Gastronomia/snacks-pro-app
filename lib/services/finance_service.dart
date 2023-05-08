@@ -33,7 +33,6 @@ class FinanceApiServices {
       const snacksID = "clvyfPUDl2nZhVUWQT8n";
 
       List<Map<String, dynamic>> list = [];
-
       for (var element in restaurants.docs) {
         if (element.id != snacksID) {
           var res = await firebase
@@ -249,9 +248,7 @@ class FinanceApiServices {
           .doc(restaurant_id)
           .collection("months")
           .doc(month_id)
-          // .doc("augut-2022")
           .get();
-
       var map = data.data();
       if (data.exists) return map?["total"];
     } catch (e) {

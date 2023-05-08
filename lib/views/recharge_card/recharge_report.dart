@@ -173,7 +173,7 @@ class RechargeReportContent extends StatelessWidget {
                                 physics: const BouncingScrollPhysics(),
                                 itemCount: data.length,
                                 itemBuilder: (context, index) => CardExpense(
-                                    title: data[index]["responsible"],
+                                    title: data[index]["customer"],
                                     time: data[index]["created_at"],
                                     value: double.parse(
                                         data[index]["value"].toString()))),
@@ -249,9 +249,12 @@ class CardExpense extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: AppTextStyles.medium(16),
+                SizedBox(
+                  width: 150,
+                  child: Text(
+                    title,
+                    style: AppTextStyles.medium(16),
+                  ),
                 ),
                 Text(
                   time,

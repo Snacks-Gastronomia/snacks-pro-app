@@ -19,7 +19,7 @@ class OrdersCubit extends Cubit<OrdersState> {
       {String restaurant_id = ""}) async {
     var id = "";
     if (restaurant_id.isEmpty) {
-      await getRestaurantId();
+      id = await getRestaurantId();
     } else {
       id = restaurant_id;
     }
@@ -36,11 +36,12 @@ class OrdersCubit extends Cubit<OrdersState> {
     emit(state.copyWith(status: AppStatus.loading));
     var id = "";
     if (restaurant_id.isEmpty) {
-      await getRestaurantId();
+      id = await getRestaurantId();
     } else {
       id = restaurant_id;
     }
 
+    print(id);
     var response = await repository.getMonthlyOrders(id);
     double total_value = 0;
     int orders_amount = 0;

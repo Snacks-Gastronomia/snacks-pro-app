@@ -78,7 +78,7 @@ class RechargeCubit extends Cubit<RechargeState> {
   treatDataResponse(List items) {
     return items
         .map((e) => {
-              "responsible": e["nomeUsuario"],
+              "customer": e["nomeCartao"],
               "value": e["Value"],
               "created_at":
                   DateFormat("HH:m").format(DateTime.parse(e["createdAt"])),
