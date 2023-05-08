@@ -107,18 +107,21 @@ class BeerPassService {
     }
   }
 
+  parseDate(String dateStr) =>
+      DateFormat("y-M-d").format(DateFormat('d/M/y').parse(dateStr));
+
   Future<List<dynamic>> fetchRecharges(
       {required String paymentType, required int day}) async {
     var header = await getReqHeader();
 
     var now = DateTime.now();
 
-    var dmyString = '$day/${now.month}/${now.year}';
-    var dateTime = DateFormat('d/M/y').parse(dmyString);
-    var date = DateFormat("y-M-d").format(dateTime);
+    var startAt = parseDate('$day/${now.month}/${now.year}');
+    var endAt = parseDate('${day + 1}/${now.month}/${now.year}');
 
     var filter = {
-      "inicio": date,
+      "inicio": startAt,
+      "fim": endAt,
       if (paymentType.isNotEmpty) "tipoPagamento": paymentType
     };
 
