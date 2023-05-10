@@ -163,21 +163,24 @@ class CartCubit extends Cubit<CartState> {
         user["access_level"] == AppPermission.waiter.name &&
             (current_index == 0 || current_index == 3)) {
       if (current_index == 0) {
-        repository.addWaiterToOrderPayment('-${user["name"]}-', doc_id);
+        repository.addWaiterToOrderPayment('${user["name"]}', doc_id);
       }
       //done
       if (current_index == 3 &&
           user["access_level"] == AppPermission.waiter.name &&
           isDelivery == false) {
-        repository.addWaiterToOrderDelivered('${user["name"]}}', doc_id);
+        repository.addWaiterToOrderDelivered('${user["name"]}', doc_id);
       }
 
       if (getStatusObject(current) == OrderStatus.in_delivery ||
           getStatusObject(current) == OrderStatus.waiting_payment) {
         double extras = items.map((e) {
           var ex = List.from(e["extras"]);
+
           return ex.isNotEmpty
-              ? double.parse((e["extras"]["value"].toString()))
+              ? ex
+                  .map((extra) => double.parse(extra["value"]))
+                  .reduce((value, element) => value + element)
               : 0.0;
         }).reduce((value, element) => value + element);
 

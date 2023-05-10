@@ -14,6 +14,7 @@ class OrdersApiServices {
           OrderStatus.ready_to_start.name
         ])
         .where("restaurant", isEqualTo: id)
+        .orderBy("created_at", descending: false)
         .snapshots();
   }
 
@@ -29,17 +30,17 @@ class OrdersApiServices {
     return database
         .collection("orders")
         .where("isDelivery", isEqualTo: false)
-        .where("status", whereIn: [
-      OrderStatus.done.name,
-      OrderStatus.waiting_payment.name
-    ]).snapshots();
+        .where("status",
+            whereIn: [OrderStatus.done.name, OrderStatus.waiting_payment.name])
+        .orderBy("created_at", descending: false)
+        .snapshots();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByInterval(
       DateTime start, DateTime end) {
     return database
         .collection("orders")
-        .where("created_at", isGreaterThanOrEqualTo: start.toLocal())
+        .where("created_at", isGreaterThanOrEqualTo: start)
         .where(
           "created_at",
           isLessThanOrEqualTo: end,

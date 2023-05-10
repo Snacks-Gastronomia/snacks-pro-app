@@ -45,10 +45,10 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   void didChangeDependencies() {
     controller.addListener(
       () {
-        if (controller.position.maxScrollExtent == controller.offset &&
-            context.read<HomeCubit>().state.status == AppStatus.loaded) {
-          context.read<HomeCubit>().fetchItems();
-        }
+        // if (controller.position.maxScrollExtent == controller.offset &&
+        //     context.read<HomeCubit>().state.status == AppStatus.loaded) {
+        //   context.read<HomeCubit>().fetchItems();
+        // }
       },
     );
     _navigator = Navigator.of(context);

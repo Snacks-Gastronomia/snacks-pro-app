@@ -46,12 +46,11 @@ class HomeCubit extends Cubit<HomeState> {
         user["access_level"] == AppPermission.employee.name) {
       yield* ordersRepository
           .fetchOrdersByRestaurantId(user["restaurant"]["id"]);
+    } else if (user["access_level"] == AppPermission.cashier.name) {
+      var end = DateTime.now().add(const Duration(hours: 12));
+      var start = DateTime.now().subtract(const Duration(hours: 12));
+      yield* ordersRepository.fetchAllOrdersByInterval(start, end);
     }
-    // else if (user["access_level"] == AppPermission.cashier.name) {
-    //   var start = DateTime.now().add(const Duration(hours: 6));
-    //   var end = DateTime.now().subtract(const Duration(hours: 6));
-    //   yield* ordersRepository.fetchAllOrdersByInterval(start, end);
-    // }
 
     yield* ordersRepository.fetchAllOrders();
   }
