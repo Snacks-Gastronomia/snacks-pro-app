@@ -30,9 +30,10 @@ class SuccessScreen extends StatelessWidget {
                       children: [
                         ElevatedButton(
                             onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pushReplacementNamed(
-                                  context, AppRoutes.home);
+                              Navigator.popUntil(
+                                  context, ModalRoute.withName(AppRoutes.home));
+                              // Navigator.pushReplacementNamed(
+                              //     context, AppRoutes.home);
                             },
                             style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
