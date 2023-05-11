@@ -171,9 +171,11 @@ class OrdersScreen extends StatelessWidget {
                                                     Timestamp date =
                                                         item["created_at"];
                                                     // time.toDate();
-                                                    String time = DateFormat(
-                                                            "HH:mm")
-                                                        .format(date.toDate());
+                                                    String time =
+                                                        DateFormat("HH:mm")
+                                                            .format(date
+                                                                .toDate()
+                                                                .toLocal());
                                                     var waiter = item?[
                                                             "waiter_delivery"] ??
                                                         "";
@@ -245,9 +247,11 @@ class OrdersScreen extends StatelessWidget {
                                                     Timestamp date =
                                                         item["created_at"];
 
-                                                    String time = DateFormat(
-                                                            "HH:mm")
-                                                        .format(date.toDate());
+                                                    String time =
+                                                        DateFormat("HH:mm")
+                                                            .format(date
+                                                                .toDate()
+                                                                .toLocal());
                                                     var _change = (item[
                                                                 "need_change"] ??
                                                             false)

@@ -23,6 +23,20 @@ class Expense {
       'type': type,
     };
   }
+
+  Expense copyWith({
+    String? name,
+    double? value,
+    String? type,
+    bool? sharedValue,
+  }) {
+    return Expense(
+      name: name ?? this.name,
+      value: value ?? this.value,
+      type: type ?? this.type,
+      sharedValue: sharedValue ?? this.sharedValue,
+    );
+  }
 }
 
 class Restaurant {

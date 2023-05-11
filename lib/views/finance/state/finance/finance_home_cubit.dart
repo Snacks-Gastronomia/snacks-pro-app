@@ -330,8 +330,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
 
   void changeExpenseDividerValue(bool? value) {
     var ex = state.expenseAUX;
-    ex.sharedValue = value ?? false;
-    emit(state.copyWith(expenseAUX: ex));
+    emit(state.copyWith(expenseAUX: ex.copyWith(sharedValue: value)));
   }
 
   void changeExpenseValue(String value) {

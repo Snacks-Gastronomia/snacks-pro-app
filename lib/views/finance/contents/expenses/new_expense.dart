@@ -84,8 +84,9 @@ class NewExpenseContent extends StatelessWidget {
                     ),
                     BlocBuilder<FinanceCubit, FinanceHomeState>(
                       builder: (context, state) {
+                        bool value = state.expenseAUX.sharedValue;
                         return CheckboxListTile(
-                          value: state.expenseAUX.sharedValue,
+                          value: value,
                           onChanged: context
                               .read<FinanceCubit>()
                               .changeExpenseDividerValue,

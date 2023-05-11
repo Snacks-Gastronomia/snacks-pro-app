@@ -80,8 +80,8 @@ class RechargeCubit extends Cubit<RechargeState> {
         .map((e) => {
               "customer": e["nomeCartao"],
               "value": e["Value"],
-              "created_at":
-                  DateFormat("HH:m").format(DateTime.parse(e["createdAt"])),
+              "created_at": DateFormat("HH:mm")
+                  .format(DateTime.parse(e["createdAt"]).toLocal()),
             })
         .toList();
   }

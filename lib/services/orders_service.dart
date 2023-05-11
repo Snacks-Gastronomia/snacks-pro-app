@@ -45,6 +45,7 @@ class OrdersApiServices {
           "created_at",
           isLessThanOrEqualTo: end,
         )
+        .orderBy("created_at", descending: false)
         .snapshots();
   }
 

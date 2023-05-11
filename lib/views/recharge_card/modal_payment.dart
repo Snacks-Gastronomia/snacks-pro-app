@@ -63,14 +63,14 @@ class ModalPaymentMethod extends StatelessWidget {
                             .changePaymentMethod(value),
                     borderRadius: BorderRadius.circular(15),
                     items: [
-                      "PIX",
-                      "Cartão de crédito",
-                      "Cartão de débito",
-                      "Dinheiro"
+                      {"label": "Pix", "value": "pix"},
+                      {"label": "Cartão de crédito", "value": "creditCard"},
+                      {"label": "Cartão de débito", "value": "debitCard"},
+                      {"label": "Dinheiro", "value": "money"},
                     ]
-                        .map((String value) => DropdownMenuItem(
-                              value: value,
-                              child: Text(value),
+                        .map((item) => DropdownMenuItem(
+                              value: item["value"],
+                              child: Text(item["label"] ?? ""),
                             ))
                         .toList(),
                   ),
