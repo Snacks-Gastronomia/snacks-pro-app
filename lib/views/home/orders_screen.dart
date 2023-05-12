@@ -203,6 +203,7 @@ class OrdersScreen extends StatelessWidget {
                                                               access_level,
                                                           doubleTap: () => context.read<CartCubit>().changeStatus(
                                                               context,
+                                                               getTotal(item["items"]),
                                                               item["isDelivery"]
                                                                   ? null
                                                                   : item[
@@ -276,6 +277,7 @@ class OrdersScreen extends StatelessWidget {
                                                               .read<CartCubit>()
                                                               .changeStatus(
                                                                 context,
+                                                                 getTotal(item["items"]),
                                                                 item["isDelivery"]
                                                                     ? null
                                                                     : item[

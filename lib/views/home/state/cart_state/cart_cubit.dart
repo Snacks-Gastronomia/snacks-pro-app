@@ -144,6 +144,7 @@ class CartCubit extends Cubit<CartState> {
 
   void changeStatus(
       context,
+      double total,
       String? table,
       doc_id,
       List<dynamic> items,
@@ -184,13 +185,6 @@ class CartCubit extends Cubit<CartState> {
               : 0.0;
         }).reduce((value, element) => value + element);
 
-        double total = items
-            .map((e) =>
-                (double.parse((e["option_selected"]["value"].toString())) +
-                    extras) *
-                double.parse(e["amount"].toString()))
-            .reduce((value, element) => value + element);
-
         var res = await AppModal().showModalBottomSheet(
             context: context,
             dimissible: false,
@@ -200,15 +194,15 @@ class CartCubit extends Cubit<CartState> {
           if (res != payment_method) {
             repository.updatePaymentMethod(doc_id, res);
           }
-          changeStatusFoward(doc_id, items, payment_method, current, datetime,
-              restaurant_name);
+          changeStatusFoward(total, doc_id, items, payment_method, current,
+              datetime, restaurant_name);
         }
       } else {
         if (!isDelivery && current_index == 3) {
           changeStatusOrder(doc_id, OrderStatus.delivered);
         } else {
-          changeStatusFoward(doc_id, items, payment_method, current, datetime,
-              restaurant_name);
+          changeStatusFoward(total, doc_id, items, payment_method, current,
+              datetime, restaurant_name);
         }
       }
     } else if (user["access_level"] == AppPermission.employee.name) {
@@ -233,11 +227,17 @@ class CartCubit extends Cubit<CartState> {
     await repository.cancelOrder(docId);
   }
 
-  changeStatusFoward(doc_id, List<dynamic> items, String payment_method,
-      String current, dynamic datetime, restaurant_name) async {
+  changeStatusFoward(
+      double total,
+      doc_id,
+      List<dynamic> items,
+      String payment_method,
+      String current,
+      dynamic datetime,
+      restaurant_name) async {
     var current_index = getStatusIndex(current);
     var status = OrderStatus.values[current_index + 1];
-    print(OrderStatus.values);
+
     if (status == OrderStatus.invalid) return;
 
     var finance = FinanceApiServices();
@@ -246,22 +246,21 @@ class CartCubit extends Cubit<CartState> {
     await repository.updateStatus(doc_id, status);
 
     if (status == OrderStatus.done) {
-      double total = 0;
       var submitItems = items.map((e) {
         double value = double.parse(e["option_selected"]["value"].toString());
-        double amount = double.parse(e["amount"].toString());
+
         List extrasList = e["extras"] ?? [];
         double extras = extrasList.isEmpty
             ? 0.0
             : extrasList
                 .map((extra) => double.parse(extra["value"].toString()))
                 .reduce((value, element) => value + element);
-        total += value * amount;
-        total += extras;
+
         return {
           "name": e["item"]["title"],
           "extras": extrasList,
           "value": value,
+          "extrasTotal": extras,
           "amount": e["amount"],
         };
       }).toList();

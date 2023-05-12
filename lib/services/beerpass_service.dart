@@ -8,7 +8,7 @@ class BeerPassService {
   final http.Client httpClient = http.Client();
   static const URL = "us-central1-beerpass-1500423500833.cloudfunctions.net";
 
-  Future<dynamic> createOrder(data, double value) async {
+  Future<dynamic> createOrder(data, double value, String method) async {
     try {
       var header = await getReqHeader();
 
@@ -31,7 +31,7 @@ class BeerPassService {
         }
       }
 
-      return await rechargeCard(data["rfid"], value);
+      return await rechargeCard(data["rfid"], value, method);
     } catch (e) {
       print(e);
     }
@@ -136,10 +136,10 @@ class BeerPassService {
     return [];
   }
 
-  Future<dynamic> rechargeCard(rfid, double valor) async {
+  Future<dynamic> rechargeCard(rfid, double valor, String method) async {
     var data = {
       "rfid": rfid,
-      "tipoPagamento": "money",
+      "tipoPagamento": method,
       "valor": valor,
     };
     var header = await getReqHeader();

@@ -87,7 +87,8 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   Future<void> rechargeCard(context) async {
-    var response = await repository.rechargeCard(state.card_code, state.value);
+    var response = await repository.rechargeCard(
+        state.card_code, state.value, state.method ?? "");
 
     if (response != null) {
       emit(state.copyWith(status: AppStatus.error));
@@ -106,8 +107,8 @@ class RechargeCubit extends Cubit<RechargeState> {
     try {
       emit(state.copyWith(status: AppStatus.loading));
 
-      var response =
-          await repository.createOrderAndRecharge(state.toMap(), state.value);
+      var response = await repository.createOrderAndRecharge(
+          state.toMap(), state.value, state.method ?? "");
 
       if (response != null) {
         emit(state.copyWith(status: AppStatus.error));

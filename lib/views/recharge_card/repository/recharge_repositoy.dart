@@ -14,17 +14,17 @@ class RechargeRepository {
   }
 
   Future<dynamic> createOrderAndRecharge(
-      Map<String, dynamic> data, double value) async {
+      Map<String, dynamic> data, double value, String method) async {
     try {
-      return await services.createOrder(data, value);
+      return await services.createOrder(data, value, method);
     } catch (e) {
       throw e.toString();
     }
   }
 
-  Future<dynamic> rechargeCard(String rfid, double value) async {
+  Future<dynamic> rechargeCard(String rfid, double value, String method) async {
     try {
-      return await services.rechargeCard(rfid, value);
+      return await services.rechargeCard(rfid, value, method);
     } catch (e) {
       throw e.toString();
     }

@@ -372,6 +372,7 @@ class FinanceApiServices {
         .collection("days")
         .doc(day)
         .collection("items")
+        .orderBy("time")
         .get();
   }
 
