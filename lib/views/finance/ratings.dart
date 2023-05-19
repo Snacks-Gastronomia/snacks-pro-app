@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
@@ -124,9 +126,13 @@ class ListRatings extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   var item = snapshot.data!.docs[index];
-                  print(snapshot.data!.docs[index].data());
+                  Timestamp? dateTime = item.data()["created_at"];
+                  String date = dateTime != null
+                      ? DateFormat("dd/MM/yyyy")
+                          .format(dateTime.toDate().toLocal())
+                      : "";
                   return CardRate(
-                    title: "",
+                    title: date,
                     description: item.data()["observations"],
                     questions: item.data()["questions"],
                   );
@@ -153,7 +159,7 @@ class CardRate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Color(0xffF0F6F5).withOpacity(0.5),
+          color: const Color(0xffF0F6F5).withOpacity(0.5),
           borderRadius: BorderRadius.circular(10)),
       padding: const EdgeInsets.all(15),
       child: Column(
@@ -161,18 +167,22 @@ class CardRate extends StatelessWidget {
         children: [
           Text(
             title,
-            style: AppTextStyles.semiBold(16),
+            style: AppTextStyles.semiBold(12),
           ),
           const SizedBox(
             height: 10,
           ),
           Center(
-            child: Text(
-              description.isEmpty ? "Não deixou comentários" : description,
-              style: AppTextStyles.light(14,
-                  color: description.isEmpty
-                      ? Colors.grey.shade400
-                      : Colors.black),
+            child: SizedBox(
+              width: 250,
+              child: Text(
+                description.isEmpty ? "Não deixou comentários" : description,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.light(14,
+                    color: description.isEmpty
+                        ? Colors.grey.shade400
+                        : Colors.black),
+              ),
             ),
           ),
           const SizedBox(
@@ -201,71 +211,6 @@ class CardRate extends StatelessWidget {
     );
     // );
   }
-
-  // Widget getIconFeedback(question, value) {
-  //   switch (value) {
-  //     case 0:
-  //       return Column(
-  //         children: [
-  //           Icon(
-  //             Icons.sentiment_dissatisfied_rounded,
-  //             color: getColor(question),
-  //             size: 45,
-  //           ),
-  //           const SizedBox(
-  //             height: 5,
-  //           ),
-  //           Text(
-  //             "Insastisfeito",
-  //             style: AppTextStyles.light(10),
-  //           )
-  //         ],
-  //       );
-  //     case 1:
-  //       return Column(
-  //         children: [
-  //           Icon(
-  //             Icons.sentiment_neutral_rounded,
-  //             color: getColor(question),
-  //             size: 40,
-  //           ),
-  //           const SizedBox(
-  //             height: 5,
-  //           ),
-  //           Text("Suficiente", style: AppTextStyles.light(10))
-  //         ],
-  //       );
-  //     case 2:
-  //       return Column(
-  //         children: [
-  //           Icon(
-  //             Icons.sentiment_satisfied_rounded,
-  //             size: 40,
-  //             color: getColor(question),
-  //           ),
-  //           const SizedBox(
-  //             height: 5,
-  //           ),
-  //           Text("Satisfeito", style: AppTextStyles.light(10))
-  //         ],
-  //       );
-
-  //     default:
-  //       return Column(
-  //         children: [
-  //           Icon(
-  //             Icons.sentiment_very_satisfied_rounded,
-  //             color: getColor(question),
-  //             size: 40,
-  //           ),
-  //           const SizedBox(
-  //             height: 5,
-  //           ),
-  //           Text("Muito Satisfeito", style: AppTextStyles.light(10))
-  //         ],
-  //       );
-  //   }
-  // }
 
   Color getColor(int value) {
     switch (value) {

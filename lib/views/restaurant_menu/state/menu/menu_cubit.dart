@@ -94,14 +94,13 @@ class MenuCubit extends Cubit<MenuState> {
   void addOptionToItem(String title, dynamic value) {
     final item = state.item;
     var el = {
-      "id": state.item.options.length + 1,
+      "id": item.options.length + 1,
       "title": title,
       "value": value.toString()
     };
 
     emit(state.copyWith(
         item: item.copyWith(options: [...item.options, el].toList())));
-    print(state.item.options);
   }
 
   void removeExtraItem(id) {

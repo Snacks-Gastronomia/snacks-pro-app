@@ -60,7 +60,6 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   @override
   void dispose() {
     controller.dispose();
-    _navigator.dispose();
     // TODO: implement dispose
     super.dispose();
   }
