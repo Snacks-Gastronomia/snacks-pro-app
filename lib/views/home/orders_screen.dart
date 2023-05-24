@@ -201,28 +201,26 @@ class OrdersScreen extends StatelessWidget {
                                                           change: _change,
                                                           permission:
                                                               access_level,
-                                                          doubleTap: () => context.read<CartCubit>().changeStatus(
-                                                              context,
-                                                               getTotal(item["items"]),
-                                                              item["isDelivery"]
-                                                                  ? null
-                                                                  : item[
-                                                                      "table"],
-                                                              item["id"],
-                                                              item["items"],
-                                                              item[
-                                                                  "payment_method"],
-                                                              item["status"],
-                                                              item[
-                                                                  "created_at"],
-                                                              item[
-                                                                  "isDelivery"]),
-                                                          onLongPress: () async => context
-                                                              .read<HomeCubit>()
-                                                              .printerOrder(
-                                                                  item, context),
+                                                          doubleTap: () => context
+                                                              .read<CartCubit>()
+                                                              .changeStatus(
+                                                                  context,
+                                                                  getTotal(item[
+                                                                      "items"]),
+                                                                  item["isDelivery"]
+                                                                      ? null
+                                                                      : item[
+                                                                          "table"],
+                                                                  item["id"],
+                                                                  item["items"],
+                                                                  item[
+                                                                      "payment_method"],
+                                                                  item["status"],
+                                                                  item["created_at"],
+                                                                  item["isDelivery"]),
+                                                          onLongPress: () async => context.read<HomeCubit>().printerOrder(item, context),
                                                           leading: item["isDelivery"] ? null : item["table"],
-                                                          address: item["isDelivery"] ? item["address"] : "",
+                                                          address: item["isDelivery"] ? item["address"] ?? 'Endereço não informado' : "",
                                                           status: item["status"],
                                                           isDelivery: item["isDelivery"],
                                                           time: time,
@@ -277,7 +275,8 @@ class OrdersScreen extends StatelessWidget {
                                                               .read<CartCubit>()
                                                               .changeStatus(
                                                                 context,
-                                                                 getTotal(item["items"]),
+                                                                getTotal(item[
+                                                                    "items"]),
                                                                 item["isDelivery"]
                                                                     ? null
                                                                     : item[
@@ -292,20 +291,19 @@ class OrdersScreen extends StatelessWidget {
                                                                 item[
                                                                     "isDelivery"],
                                                               ),
-                                                          onLongPress:
-                                                              () async => context
-                                                                  .read<
-                                                                      HomeCubit>()
-                                                                  .printerOrder(
-                                                                      item,
-                                                                      context),
-                                                          leading: item["isDelivery"]
+                                                          onLongPress: () async => context
+                                                              .read<HomeCubit>()
+                                                              .printerOrder(
+                                                                  item, context),
+                                                          leading: item[
+                                                                  "isDelivery"]
                                                               ? null
                                                               : item["table"],
-                                                          address: item["isDelivery"]
-                                                              ? item["address"] ??
-                                                                  ""
-                                                              : "",
+                                                          address:
+                                                              item["isDelivery"]
+                                                                  ? item["address"] ??
+                                                                      ""
+                                                                  : "",
                                                           status:
                                                               item["status"],
                                                           isDelivery:
