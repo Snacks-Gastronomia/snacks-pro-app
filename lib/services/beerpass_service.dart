@@ -111,13 +111,15 @@ class BeerPassService {
       DateFormat("y-M-d").format(DateFormat('d/M/y').parse(dateStr));
 
   Future<List<dynamic>> fetchRecharges(
-      {required String paymentType, required int day}) async {
+      {required String paymentType,
+      required int day,
+      required int month}) async {
     var header = await getReqHeader();
 
     var now = DateTime.now();
 
-    var startAt = parseDate('$day/${now.month}/${now.year}');
-    var endAt = parseDate('${day + 1}/${now.month}/${now.year}');
+    var startAt = parseDate('$day/$month/${now.year}');
+    var endAt = parseDate('${day + 1}/$month/${now.year}');
 
     var filter = {
       "inicio": startAt,

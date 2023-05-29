@@ -109,17 +109,9 @@ class CardExpenseContent extends StatelessWidget {
             const SizedBox(
               width: 10,
             ),
-            SizedBox(
-              width: 150,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.medium(16),
-                  ),
-                ],
-              ),
+            Text(
+              title,
+              style: AppTextStyles.medium(16),
             ),
           ],
         ),

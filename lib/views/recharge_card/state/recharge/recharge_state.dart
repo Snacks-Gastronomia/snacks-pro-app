@@ -10,12 +10,14 @@ class RechargeState {
   final String? method;
   final String filter;
   final int day;
+  final int month;
   final AppStatus? status;
   final String? error;
   final List<dynamic> recharges;
   RechargeState({
     required this.name,
     required this.day,
+    required this.month,
     required this.cpf,
     required this.filter,
     required this.value,
@@ -35,6 +37,7 @@ class RechargeState {
         filter: "",
         value: 0,
         day: DateTime.now().day,
+        month: DateTime.now().month,
         totalRechargesValue: 0,
         status: AppStatus.initial,
         error: null,
@@ -50,6 +53,7 @@ class RechargeState {
     double? totalRechargesValue,
     String? card_code,
     int? day,
+    int? month,
     String? method,
     String? recharge_id,
     String? filter,
@@ -61,6 +65,7 @@ class RechargeState {
       name: name ?? this.name,
       recharges: recharges ?? this.recharges,
       day: day ?? this.day,
+      month: month ?? this.month,
       method: method ?? this.method,
       filter: filter ?? this.filter,
       cpf: cpf ?? this.cpf,
@@ -106,6 +111,7 @@ class RechargeState {
         other.filter == filter &&
         other.totalRechargesValue == totalRechargesValue &&
         other.day == day &&
+        other.month == month &&
         other.error == error;
   }
 

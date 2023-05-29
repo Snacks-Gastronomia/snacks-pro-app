@@ -344,10 +344,11 @@ class FinanceApiServices {
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getMonthlyOrders(
-      String restaurant_id) async {
+      String restaurant_id, String month) async {
     var now = DateTime.now();
-
-    var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
+    var monthFormat = DateFormat.MMMM().format(now);
+    var month_id =
+        month.isEmpty ? "$monthFormat-${now.year}" : "$month-${now.year}";
 
     return await firebase
         .collection("receipts")

@@ -32,17 +32,17 @@ class OrdersCubit extends Cubit<OrdersState> {
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> fetchMonthly(
-      {String restaurant_id = ""}) async {
+      {String restaurant_id = "", String month = ""}) async {
     emit(state.copyWith(status: AppStatus.loading));
     var id = "";
+    // var month = "";
     if (restaurant_id.isEmpty) {
       id = await getRestaurantId();
     } else {
       id = restaurant_id;
     }
 
-    print(id);
-    var response = await repository.getMonthlyOrders(id);
+    var response = await repository.getMonthlyOrders(id, month);
     double total_value = 0;
     int orders_amount = 0;
 

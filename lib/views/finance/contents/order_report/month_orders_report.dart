@@ -14,22 +14,29 @@ class OrdersReportScreen extends StatelessWidget {
   OrdersReportScreen({
     Key? key,
     this.restaurant_id = "",
+    this.month = 0,
   }) : super(key: key);
   final modal = AppModal();
 
   final String restaurant_id;
+  final int month;
   @override
   Widget build(BuildContext context) {
+    DateTime getDateTime() => month != 0 ? DateTime(0, month) : DateTime.now();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         child: FutureBuilder(
-            future: BlocProvider.of<OrdersCubit>(context)
-                .fetchMonthly(restaurant_id: restaurant_id),
+            future: BlocProvider.of<OrdersCubit>(context).fetchMonthly(
+                restaurant_id: restaurant_id,
+                month: DateFormat('MMMM').format(getDateTime())),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 var data = snapshot.data!.docs;
+                var monthStr = DateFormat.MMMM('pt_BR').format(getDateTime());
+
                 return Column(
                   children: [
                     Text(
@@ -40,9 +47,7 @@ class OrdersReportScreen extends StatelessWidget {
                       height: 5,
                     ),
                     Text(
-                      toBeginningOfSentenceCase(
-                              DateFormat.MMMM("pt_BR").format(DateTime.now()))
-                          .toString(),
+                      toBeginningOfSentenceCase(monthStr).toString(),
                       style: AppTextStyles.light(18),
                     ),
                     const SizedBox(
@@ -63,7 +68,7 @@ class OrdersReportScreen extends StatelessWidget {
                                     .state
                                     .total_orders_monthly
                                     .toString(),
-                                style: AppTextStyles.semiBold(32)),
+                                style: AppTextStyles.semiBold(22)),
                           ],
                         ),
                         Container(
@@ -86,7 +91,7 @@ class OrdersReportScreen extends StatelessWidget {
                                         BlocProvider.of<OrdersCubit>(context)
                                             .state
                                             .budget_monthly),
-                                style: AppTextStyles.semiBold(32)),
+                                style: AppTextStyles.semiBold(22)),
                           ],
                         )
                       ],
@@ -94,8 +99,10 @@ class OrdersReportScreen extends StatelessWidget {
                     const SizedBox(
                       height: 20,
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * .60,
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.height * .60,
+                    //   child:
+                    Expanded(
                       child: ListView.separated(
                         // shrinkWrap: true,
                         physics: const BouncingScrollPhysics(),
@@ -142,7 +149,8 @@ class OrdersReportScreen extends StatelessWidget {
                           );
                         },
                       ),
-                    )
+                    ),
+                    // )
                   ],
                 );
               }

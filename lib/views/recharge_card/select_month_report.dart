@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
+import 'package:snacks_pro_app/views/finance/contents/order_report/month_orders_report.dart';
 import 'package:snacks_pro_app/views/recharge_card/recharge_report.dart';
+import 'package:snacks_pro_app/views/recharge_card/select_day_report.dart';
 import 'package:snacks_pro_app/views/recharge_card/state/recharge/recharge_cubit.dart';
 
-class SelectDayReport extends StatelessWidget {
-  const SelectDayReport({super.key, this.month = 0});
-  final int month;
+class SelectMonthRechargeReport extends StatelessWidget {
+  SelectMonthRechargeReport({Key? key}) : super(key: key);
 
+  final DateTime dateTime = DateTime.now();
   @override
   Widget build(BuildContext context) {
-    var dt = month != 0 ? DateTime(0, month) : DateTime.now();
-
-    int daysInMonth(DateTime date) {
-      var firstDayThisMonth = DateTime(date.year, date.month, date.day);
-      var firstDayNextMonth = DateTime(firstDayThisMonth.year,
-          firstDayThisMonth.month + 1, firstDayThisMonth.day);
-      return firstDayNextMonth.difference(firstDayThisMonth).inDays;
-    }
-
-    var list = Iterable<int>.generate(daysInMonth(dt)).toList();
-    var monthStr = DateFormat.MMMM('pt_BR').format(dt);
+    var list = Iterable<int>.generate(dateTime.month).toList();
 
     return Scaffold(
       body: Padding(
@@ -30,7 +23,7 @@ class SelectDayReport extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'Relatório de $monthStr',
+              'Relatório de pedidos ${dateTime.year}',
               style: AppTextStyles.bold(20),
             ),
             const SizedBox(height: 20),
@@ -39,31 +32,37 @@ class SelectDayReport extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemCount: list.length,
                 separatorBuilder: (BuildContext context, int index) {
-                  return const Divider();
+                  return const SizedBox(
+                    height: 10,
+                  );
                 },
                 itemBuilder: (BuildContext context, int index) {
-                  int day = list[index] + 1;
+                  var monthDt = DateTime(0, index + 1);
+                  var month = DateFormat.MMMM('pt_BR').format(monthDt);
+
                   return GestureDetector(
                     onTap: () {
-                      context.read<RechargeCubit>().changeDay(day);
-                      context.read<RechargeCubit>().changeMonth(dt.month);
                       AppModal().showIOSModalBottomSheet(
                           context: context,
-                          content: const RechargeReportContent(),
+                          content: SelectDayReport(month: index + 1),
                           expand: true);
                     },
                     child: Container(
-                      color: Colors.transparent,
-                      height: 40,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: const Color(0xffd4d4d4).withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '$day de $monthStr',
+                            toBeginningOfSentenceCase(month).toString(),
                             style: AppTextStyles.semiBold(16),
                           ),
                           Icon(
-                            Icons.arrow_forward_ios_rounded,
+                            Icons.calendar_month,
                             color: Colors.grey.shade400,
                           )
                         ],

@@ -15,9 +15,10 @@ class RechargeReportContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var day = context.read<RechargeCubit>().state.day;
+    var month = context.read<RechargeCubit>().state.month;
     var now = DateTime.now();
 
-    var dmyString = '$day/${now.month}/${now.year}';
+    var dmyString = '$day/$month/${now.year}';
     var date = DateFormat('d/M/y').parse(dmyString);
     return Scaffold(
         appBar: PreferredSize(

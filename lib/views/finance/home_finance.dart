@@ -23,6 +23,7 @@ import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/recharge_card/recharge_report.dart';
 import 'package:snacks_pro_app/views/recharge_card/select_day_report.dart';
+import 'package:snacks_pro_app/views/recharge_card/select_month_report.dart';
 
 import './contents/employees/employees.dart';
 import './contents/order_report/month_orders_report.dart';
@@ -460,7 +461,7 @@ class SnacksAdmSummaryCards extends StatelessWidget {
       "icon": Icons.credit_card_rounded,
       "highlight": true,
       "blackContent": true,
-      "action": SelectDayReport(),
+      "action": SelectMonthRechargeReport(),
     }
   ];
   @override
