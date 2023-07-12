@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
@@ -55,11 +56,22 @@ class HomeCubit extends Cubit<HomeState> {
     yield* ordersRepository.fetchAllOrders();
   }
 
+  transformRealFormat(String value) =>
+      NumberFormat.currency(locale: "pt", symbol: r"R$ ")
+          .format(double.parse(value));
+
   void printerOrder(data, context) async {
     var toast = AppToast();
-    var user = await storage.getDataStorage("user");
     toast.init(context: context);
-    // debugPrint(data.toString());
+
+    String value = transformRealFormat(data["value"].toString());
+    String delivery = transformRealFormat(data["deliveryValue"].toString());
+
+    var total =
+        NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value);
+
+    var user = await storage.getDataStorage("user");
+
     List<dynamic> items = data["items"] ?? [];
     List<OrderModel> orders = items.map((e) => OrderModel.fromMap(e)).toList();
 
@@ -67,7 +79,6 @@ class HomeCubit extends Cubit<HomeState> {
     var printer = await financeRepository.getPrinterByGoal(id, "Pedidos");
 
     if (printer.docs.isEmpty) {
-      // print("impressora não cadastrada");
       toast.showToast(
           context: context,
           content: "Impressora não cadastrada",
@@ -77,13 +88,16 @@ class HomeCubit extends Cubit<HomeState> {
           context: context,
           content: "imprimindo pedido...",
           type: ToastType.info);
-      print(printer.docs[0].get("ip"));
+
       appPrinter.printOrders(
           context,
           printer.docs[0].get("ip"),
           orders,
-          data["isDelivery"],
-          data["isDelivery"] ? data["address"] : data["table"]);
+          data["isDelivery"] ? delivery : "",
+          data["isDelivery"] ? data["address"] : data["table"],
+          total,
+          data["part_code"] ?? "",
+          data["payment_method"]);
     }
   }
 

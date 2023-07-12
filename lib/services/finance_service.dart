@@ -360,11 +360,9 @@ class FinanceApiServices {
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getDayOrders(
-      String restaurant_id, String day) async {
-    var now = DateTime.now();
-
-    var month_id = "${DateFormat.MMMM().format(now)}-${now.year}";
-
+      String restaurant_id, String day, DateTime month) async {
+    var month_id = "${DateFormat.MMMM().format(month)}-${month.year}";
+    print(month);
     return await firebase
         .collection("receipts")
         .doc(restaurant_id)

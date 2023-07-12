@@ -202,9 +202,9 @@ class FinanceRepository {
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getDayOrders(
-      String restaurant_id, String day) async {
+      String restaurant_id, String day, DateTime month) async {
     try {
-      return await services.getDayOrders(restaurant_id, day);
+      return await services.getDayOrders(restaurant_id, day, month);
     } catch (e) {
       throw e.toString();
     }

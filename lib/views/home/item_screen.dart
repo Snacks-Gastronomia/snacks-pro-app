@@ -10,7 +10,7 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
-import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/modal_content_obs.dart';
@@ -32,14 +32,7 @@ class _ItemScreenState extends State<ItemScreen> {
   void initState() {
     super.initState();
 
-    var item =
-        context.read<CartCubit>().getOrderByItemId(widget.order.item.id!);
-
-    if (item != null) {
-      context.read<ItemScreenCubit>().insertItem(item, false);
-    } else {
-      context.read<ItemScreenCubit>().insertItem(widget.order, true);
-    }
+    context.read<ItemScreenCubit>().insertItem(widget.order, true);
   }
 
   @override

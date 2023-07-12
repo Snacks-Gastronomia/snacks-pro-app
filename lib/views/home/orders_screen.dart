@@ -12,8 +12,9 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
-import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
+import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/tabbar.dart';
 
 class OrdersScreen extends StatelessWidget {
@@ -59,25 +60,6 @@ class OrdersScreen extends StatelessWidget {
       } else {
         return ["Local", "Entrega"];
       }
-    }
-
-    double getTotal(List<dynamic> items) {
-      double total = 0;
-
-      for (var element in items) {
-        var order = OrderModel.fromMap(element);
-
-        double extras = order.extras.isEmpty
-            ? 0.0
-            : order.extras
-                .map((extra) => double.parse(extra["value"].toString()))
-                .reduce((value, element) => value + element);
-
-        total += order.amount *
-            double.parse(order.option_selected["value"].toString());
-        total += extras;
-      }
-      return total;
     }
 
     return Scaffold(
@@ -191,8 +173,11 @@ class OrdersScreen extends StatelessWidget {
                                                           const EdgeInsets.only(
                                                               bottom: 10),
                                                       child: CardOrderWidget(
+                                                          total: context.read<OrdersCubit>().getTotal(
+                                                              item["items"]),
                                                           onCancelOrder: () => context
-                                                              .read<CartCubit>()
+                                                              .read<
+                                                                  OrdersCubit>()
                                                               .deleteOrder(
                                                                   item["id"]),
                                                           waiter: waiter,
@@ -202,19 +187,16 @@ class OrdersScreen extends StatelessWidget {
                                                           permission:
                                                               access_level,
                                                           doubleTap: () => context
-                                                              .read<CartCubit>()
+                                                              .read<
+                                                                  OrdersCubit>()
                                                               .changeStatus(
                                                                   context,
-                                                                  getTotal(item[
-                                                                      "items"]),
                                                                   item["isDelivery"]
                                                                       ? null
-                                                                      : item[
-                                                                          "table"],
+                                                                      : item["table"],
                                                                   item["id"],
                                                                   item["items"],
-                                                                  item[
-                                                                      "payment_method"],
+                                                                  item["payment_method"],
                                                                   item["status"],
                                                                   item["created_at"],
                                                                   item["isDelivery"]),
@@ -224,7 +206,6 @@ class OrdersScreen extends StatelessWidget {
                                                           status: item["status"],
                                                           isDelivery: item["isDelivery"],
                                                           time: time,
-                                                          total: getTotal(item["items"]),
                                                           method: item["payment_method"],
                                                           items: item["items"] ?? []),
                                                     );
@@ -262,9 +243,8 @@ class OrdersScreen extends StatelessWidget {
                                                           const EdgeInsets.only(
                                                               bottom: 10),
                                                       child: CardOrderWidget(
-                                                          onCancelOrder: () => context
-                                                              .read<CartCubit>()
-                                                              .deleteOrder(
+                                                          onCancelOrder: () =>
+                                                              context.read<OrdersCubit>().deleteOrder(
                                                                   item["id"]),
                                                           restaurant: item[
                                                               "restaurant_name"],
@@ -272,11 +252,10 @@ class OrdersScreen extends StatelessWidget {
                                                           permission:
                                                               access_level,
                                                           doubleTap: () => context
-                                                              .read<CartCubit>()
+                                                              .read<
+                                                                  OrdersCubit>()
                                                               .changeStatus(
                                                                 context,
-                                                                getTotal(item[
-                                                                    "items"]),
                                                                 item["isDelivery"]
                                                                     ? null
                                                                     : item[
@@ -295,8 +274,7 @@ class OrdersScreen extends StatelessWidget {
                                                               .read<HomeCubit>()
                                                               .printerOrder(
                                                                   item, context),
-                                                          leading: item[
-                                                                  "isDelivery"]
+                                                          leading: item["isDelivery"]
                                                               ? null
                                                               : item["table"],
                                                           address:
@@ -306,10 +284,12 @@ class OrdersScreen extends StatelessWidget {
                                                                   : "",
                                                           status:
                                                               item["status"],
-                                                          isDelivery:
-                                                              item["isDelivery"],
+                                                          isDelivery: item[
+                                                              "isDelivery"],
                                                           time: time,
-                                                          total: getTotal(item["items"]),
+                                                          total: context
+                                                              .read<OrdersCubit>()
+                                                              .getTotal(item["items"]),
                                                           method: item["payment_method"],
                                                           items: item["items"] ?? []),
                                                     );

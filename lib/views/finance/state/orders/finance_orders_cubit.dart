@@ -8,14 +8,14 @@ import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/repository/finance_repository.dart';
 import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
 
-part 'orders_state.dart';
+part 'finance_orders_state.dart';
 
-class OrdersCubit extends Cubit<OrdersState> {
+class FinanceOrdersCubit extends Cubit<FinanceOrdersState> {
   final repository = FinanceRepository(services: FinanceApiServices());
   final storage = AppStorage();
-  OrdersCubit() : super(OrdersState.initial());
+  FinanceOrdersCubit() : super(FinanceOrdersState.initial());
 
-  Future<QuerySnapshot<Map<String, dynamic>>> fetchDaily(day,
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchDaily(day, month,
       {String restaurant_id = ""}) async {
     var id = "";
     if (restaurant_id.isEmpty) {
@@ -23,7 +23,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     } else {
       id = restaurant_id;
     }
-    return await repository.getDayOrders(id, day);
+    return await repository.getDayOrders(id, day, month);
   }
 
   getRestaurantId() async {
@@ -42,6 +42,7 @@ class OrdersCubit extends Cubit<OrdersState> {
       id = restaurant_id;
     }
 
+    print(restaurant_id);
     var response = await repository.getMonthlyOrders(id, month);
     double total_value = 0;
     int orders_amount = 0;

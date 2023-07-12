@@ -19,7 +19,7 @@ import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/item_screen.dart';
-import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/card_item.dart';
 import 'package:snacks_pro_app/views/home/widgets/skeletons.dart';

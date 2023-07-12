@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
-import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
+import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 import './day_order_report.dart';
@@ -20,16 +20,17 @@ class OrdersReportScreen extends StatelessWidget {
 
   final String restaurant_id;
   final int month;
+  final DateTime now = DateTime.now();
   @override
   Widget build(BuildContext context) {
-    DateTime getDateTime() => month != 0 ? DateTime(0, month) : DateTime.now();
+    DateTime getDateTime() => month != 0 ? DateTime(now.year, month) : now;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         child: FutureBuilder(
-            future: BlocProvider.of<OrdersCubit>(context).fetchMonthly(
+            future: BlocProvider.of<FinanceOrdersCubit>(context).fetchMonthly(
                 restaurant_id: restaurant_id,
                 month: DateFormat('MMMM').format(getDateTime())),
             builder: (context, snapshot) {
@@ -64,7 +65,7 @@ class OrdersReportScreen extends StatelessWidget {
                               style: AppTextStyles.regular(16),
                             ),
                             Text(
-                                BlocProvider.of<OrdersCubit>(context)
+                                BlocProvider.of<FinanceOrdersCubit>(context)
                                     .state
                                     .total_orders_monthly
                                     .toString(),
@@ -87,10 +88,10 @@ class OrdersReportScreen extends StatelessWidget {
                             Text(
                                 NumberFormat.currency(
                                         locale: "pt", symbol: r"R$ ")
-                                    .format(
-                                        BlocProvider.of<OrdersCubit>(context)
-                                            .state
-                                            .budget_monthly),
+                                    .format(BlocProvider.of<FinanceOrdersCubit>(
+                                            context)
+                                        .state
+                                        .budget_monthly),
                                 style: AppTextStyles.semiBold(22)),
                           ],
                         )
@@ -121,6 +122,7 @@ class OrdersReportScreen extends StatelessWidget {
                                 content: DayOrdersReportScreen(
                                     restaurant_id: restaurant_id,
                                     day: item.id,
+                                    month: getDateTime(),
                                     amount: item.data()["length"],
                                     total: NumberFormat.currency(
                                             locale: "pt", symbol: r"R$ ")
@@ -129,7 +131,7 @@ class OrdersReportScreen extends StatelessWidget {
                               tileColor: Colors.black,
                               title: Text(
                                 DateFormat.MMMMd('pt_BR').format(DateTime.parse(
-                                    '${DateTime.now().year}-${DateFormat("MM").format(DateTime.now())}-${item.id}')),
+                                    '${DateTime.now().year}-${DateFormat("MM").format(getDateTime())}-${item.id}')),
                                 style: AppTextStyles.semiBold(18,
                                     color: Colors.white),
                               ),

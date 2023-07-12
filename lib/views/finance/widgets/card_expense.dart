@@ -11,8 +11,8 @@ class CardExpense extends StatelessWidget {
     this.month,
     required this.value,
     this.iconColorBlack = false,
-    this.icon = Icons.pie_chart_outline_rounded,
     this.enableDelete = true,
+    this.icon,
     this.deleteAction,
   }) : super(key: key);
   final String title;
@@ -64,7 +64,7 @@ class CardExpense extends StatelessWidget {
           title: title,
           value: value,
           iconColorBlack: iconColorBlack,
-          icon: icon,
+          icon: icon ?? Icons.pie_chart_outline_rounded,
           month: month,
         ));
   }
@@ -109,9 +109,12 @@ class CardExpenseContent extends StatelessWidget {
             const SizedBox(
               width: 10,
             ),
-            Text(
-              title,
-              style: AppTextStyles.medium(16),
+            SizedBox(
+              width: 130,
+              child: Text(
+                title,
+                style: AppTextStyles.medium(16),
+              ),
             ),
           ],
         ),

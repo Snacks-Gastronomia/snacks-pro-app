@@ -301,6 +301,7 @@ class ListRestaurantsProfits extends StatelessWidget {
                   itemCount: list.length,
                   itemBuilder: (context, index) {
                     var item = list[index];
+
                     final value = double.parse(item["total"].toString());
 
                     return GestureDetector(

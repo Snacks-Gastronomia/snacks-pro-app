@@ -19,7 +19,7 @@ import 'package:snacks_pro_app/views/finance/ratings.dart';
 import 'package:snacks_pro_app/views/finance/schedule.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
-import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
+import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/recharge_card/recharge_report.dart';
 import 'package:snacks_pro_app/views/recharge_card/select_day_report.dart';

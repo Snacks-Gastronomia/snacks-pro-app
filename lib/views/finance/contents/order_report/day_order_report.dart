@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'package:snacks_pro_app/core/app.text.dart';
-import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
+import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 
 class DayOrdersReportScreen extends StatelessWidget {
   const DayOrdersReportScreen({
@@ -11,12 +12,14 @@ class DayOrdersReportScreen extends StatelessWidget {
     this.restaurant_id = "",
     required this.day,
     required this.total,
+    required this.month,
     required this.amount,
   }) : super(key: key);
 
   final String restaurant_id;
   final String day;
   final String total;
+  final DateTime month;
   final int amount;
   @override
   Widget build(BuildContext context) {
@@ -24,11 +27,13 @@ class DayOrdersReportScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: FutureBuilder(
-            future: BlocProvider.of<OrdersCubit>(context)
-                .fetchDaily(day, restaurant_id: restaurant_id),
+        child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            future: BlocProvider.of<FinanceOrdersCubit>(context)
+                .fetchDaily(day, month, restaurant_id: restaurant_id),
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data != null) {
+                var item = snapshot.data!.docs;
+                print(item.length);
                 return Column(
                   children: [
                     Text(
@@ -40,7 +45,7 @@ class DayOrdersReportScreen extends StatelessWidget {
                     ),
                     Text(
                       DateFormat.MMMMd('pt_BR').format(DateTime.parse(
-                          '${DateTime.now().year}-${DateFormat("MM").format(DateTime.now())}-${day}')),
+                          '${DateTime.now().year}-${DateFormat("MM").format(month)}-$day')),
                       style: AppTextStyles.light(18),
                     ),
                     const SizedBox(
@@ -73,7 +78,7 @@ class DayOrdersReportScreen extends StatelessWidget {
                               'Receita obtida',
                               style: AppTextStyles.regular(16),
                             ),
-                            Text(total, style: AppTextStyles.semiBold(32)),
+                            Text(total, style: AppTextStyles.semiBold(25)),
                           ],
                         )
                       ],
@@ -90,6 +95,7 @@ class DayOrdersReportScreen extends StatelessWidget {
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
                           var item = snapshot.data!.docs[index];
+                          print(item.data());
                           return Card(
                             elevation: 0,
                             child: ListTile(

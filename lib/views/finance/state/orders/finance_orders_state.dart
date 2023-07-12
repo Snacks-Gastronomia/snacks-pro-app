@@ -1,6 +1,6 @@
-part of 'orders_cubit.dart';
+part of 'finance_orders_cubit.dart';
 
-class OrdersState {
+class FinanceOrdersState {
   final AppStatus status;
   final int total_orders_monthly;
   final int total_orders_daily;
@@ -8,7 +8,7 @@ class OrdersState {
   final double budget_daily;
   final List<dynamic> orders_monthly;
   final List<dynamic> orders_daily;
-  OrdersState({
+  FinanceOrdersState({
     required this.status,
     required this.total_orders_monthly,
     required this.total_orders_daily,
@@ -17,7 +17,7 @@ class OrdersState {
     required this.orders_monthly,
     required this.orders_daily,
   });
-  factory OrdersState.initial() => OrdersState(
+  factory FinanceOrdersState.initial() => FinanceOrdersState(
       status: AppStatus.initial,
       total_orders_monthly: 0,
       total_orders_daily: 0,
@@ -26,7 +26,7 @@ class OrdersState {
       orders_monthly: [],
       orders_daily: []);
 
-  OrdersState copyWith({
+  FinanceOrdersState copyWith({
     AppStatus? status,
     int? total_orders_monthly,
     int? total_orders_daily,
@@ -35,7 +35,7 @@ class OrdersState {
     List<dynamic>? orders_monthly,
     List<dynamic>? orders_daily,
   }) {
-    return OrdersState(
+    return FinanceOrdersState(
       status: status ?? this.status,
       total_orders_monthly: total_orders_monthly ?? this.total_orders_monthly,
       total_orders_daily: total_orders_daily ?? this.total_orders_daily,

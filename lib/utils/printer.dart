@@ -38,8 +38,14 @@ class AppPrinter {
     }
   }
 
-  printOrderTemplate(NetworkPrinter printer, List<OrderModel> orders,
-      bool isDelivery, String destination) async {
+  printOrderTemplate(
+      NetworkPrinter printer,
+      List<OrderModel> orders,
+      String deliveryValue,
+      String destination,
+      String method,
+      String total,
+      String code) async {
     // print("printing order...");
     // final ByteData data = await rootBundle.load('assets/icons/snacks.png');
     // final Uint8List bytes = data.buffer.asUint8List();
@@ -71,7 +77,7 @@ class AppPrinter {
 
     // printer.hr();
     printer.text(
-      'SNACKS - PEDIDOS',
+      'SNACKS - PEDIDO #$code',
       styles: const PosStyles(
         align: PosAlign.center,
         height: PosTextSize.size2,
@@ -86,12 +92,12 @@ class AppPrinter {
       printer.row([
         PosColumn(text: e.amount.toString(), width: 1),
         PosColumn(
-            text: '${e.item.title} - ${e.option_selected["title"]}', width: 11),
+            text: '${e.item.title} - ${e.option_selected["title"]}', width: 10),
+        PosColumn(text: '${e.option_selected["value"]}', width: 1),
       ]);
       printer.row([
         PosColumn(text: e.observations, width: 12),
       ]);
-      // String extras = "";
       printer.row([
         PosColumn(text: "Adicionais", width: 12),
       ]);
@@ -105,23 +111,35 @@ class AppPrinter {
           printer.row([
             PosColumn(text: extra, width: 12),
           ]);
-          // extras += "\n+" + e.extras[i]["title"];
-          // if (i < e.extras.length - 1) {
-          //   extras += "\n";
-          // }
         }
       }
     }
     printer.emptyLines(1);
     printer.hr();
+    if (deliveryValue.isNotEmpty) {
+      printer.row([
+        PosColumn(text: "Entrega", width: 10),
+        PosColumn(text: '+$deliveryValue', width: 2),
+      ]);
+    }
+    printer.row([
+      PosColumn(text: "Pagamento", width: 10),
+      PosColumn(text: method, width: 2),
+    ]);
+    printer.row([
+      PosColumn(text: "Total", width: 10),
+      PosColumn(text: total, width: 2),
+    ]);
     printer.emptyLines(1);
-    if (isDelivery) {
+    printer.hr();
+    printer.emptyLines(1);
+    if (deliveryValue.isNotEmpty) {
       printer.text(
         'Endereço para entrega: $destination',
         styles: const PosStyles(
           align: PosAlign.center,
-          height: PosTextSize.size2,
-          width: PosTextSize.size2,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
         ),
       );
     } else {
@@ -190,8 +208,8 @@ class AppPrinter {
     printer.cut();
   }
 
-  printOrders(context, String ip, List<OrderModel> orders, bool isDelivery,
-      String destination) async {
+  printOrders(context, String ip, List<OrderModel> orders, String deliveryValue,
+      String destination, String total, String code, String method) async {
     print("try connect...");
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
@@ -206,7 +224,8 @@ class AppPrinter {
 
       if (res == PosPrintResult.success) {
         printer.beep();
-        printOrderTemplate(printer, orders, isDelivery, destination);
+        printOrderTemplate(
+            printer, orders, deliveryValue, destination, total, code, method);
         printer.disconnect();
       } else {
         toast.showToast(

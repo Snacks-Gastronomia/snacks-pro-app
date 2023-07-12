@@ -12,131 +12,32 @@ import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/confirm_order.dart';
 
-part 'cart_state.dart';
+part 'orders_state.dart';
 
-class CartCubit extends Cubit<CartState> {
+class OrdersCubit extends Cubit<OrdersState> {
   final repository = OrdersRepository();
   final auth = FirebaseAuth.instance;
   final storage = AppStorage();
 
-  CartCubit() : super(CartState.initial());
+  OrdersCubit() : super(OrdersState.initial());
 
-  void addToCart(OrderModel newOrder) {
-    if (hasItem(newOrder.item.id!)) {
-      OrderModel? ord = getOrderByItemId(newOrder.item.id!);
-      if (ord != null) {
-        ord.copyWith(
-            amount: newOrder.amount, observations: newOrder.observations);
-      }
-    }
-
-    final newCart = [...state.cart, newOrder];
-
-    emit(state.copyWith(cart: newCart, temp_observation: ""));
-    updateTotalValue();
-  }
-
-  updateItemFromCart(OrderModel order) {
-    final newCart = state.cart.map((item) {
-      if (item.item.id == order.item.id) {
-        return item.copyWith(
-            amount: order.amount,
-            item: order.item,
-            observations: order.observations);
-      }
-      return item;
-    }).toList();
-
-    emit(state.copyWith(cart: newCart));
-    updateTotalValue();
-  }
-
-  bool hasItem(String id) {
-    var item = state.cart.where((element) => element.item.id == id);
-    return item.isNotEmpty;
-  }
-
-  OrderModel? getOrderByItemId(String id) {
-    return hasItem(id)
-        ? state.cart.singleWhere((el) => el.item.id == id)
-        : null;
-  }
-
-  void incrementItem(String id) {
-    final newCart = state.cart.map((item) {
-      if (item.item.id == id) {
-        return item.copyWith(amount: (item.amount + 1));
-      }
-      return item;
-    }).toList();
-
-    emit(state.copyWith(cart: newCart));
-    updateTotalValue();
-    print(state);
-  }
-
-  void decrementItem(String id) {
-    final newCart = state.cart.map((item) {
-      if (item.item.id == id) {
-        if (item.amount > 1) return item.copyWith(amount: (item.amount - 1));
-      }
-      return item;
-    }).toList();
-
-    emit(state.copyWith(cart: newCart));
-    updateTotalValue();
-  }
-
-  void removeToCart(OrderModel order) {
-    final newCart = state.cart;
-    newCart.removeWhere((element) => element.item.id == order.item.id);
-
-    emit(state.copyWith(cart: newCart));
-
-    updateTotalValue();
-  }
-
-  void updateTotalValue() {
+  double getTotal(List<dynamic> items) {
     double total = 0;
-    for (var element in state.cart) {
-      total += element.item.value * element.amount;
+
+    for (var element in items) {
+      var order = OrderModel.fromMap(element);
+
+      double extras = order.extras.isEmpty
+          ? 0.0
+          : order.extras
+              .map((extra) => double.parse(extra["value"].toString()))
+              .reduce((value, element) => value + element);
+
+      total += order.amount *
+          double.parse(order.option_selected["value"].toString());
+      total += extras;
     }
-    emit(state.copyWith(total: total));
-  }
-
-  void makeOrder(String method) async {
-    final dataStorage = await storage.getDataStorage("user");
-
-    bool isDelivery = !auth.currentUser!.isAnonymous;
-    var status = method == "Cartão Snacks" || isDelivery
-        ? OrderStatus.ready_to_start.name
-        : OrderStatus.waiting_payment.name;
-
-    final now = DateTime.now();
-    DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-    Map<String, dynamic> data = {
-      // "orders":
-      //     FieldValue.arrayUnion(state.cart.map((e) => e.toMap()).toList()),
-      "user_uid": auth.currentUser!.uid,
-      "payment_method": method,
-      "value": state.total,
-      "isDelivery": isDelivery,
-      "status": status,
-      "created_at": DateTime.now(),
-    };
-    // data.addAll(isDelivery
-    //     ? {"address": dataStorage["address"]}
-    //     : {"table": dataStorage["table"]});
-
-    var response = await repository.createOrder(data);
-
-    var items = state.cart.map((e) => e.toMap()).toList();
-    await repository.createItemstoOrder(items, response);
-    clearCart();
-  }
-
-  void clearCart() {
-    emit(state.copyWith(cart: []));
+    return total;
   }
 
   void changeStatusBackward(doc_id, List<Map<String, dynamic>> items,
@@ -144,7 +45,6 @@ class CartCubit extends Cubit<CartState> {
 
   void changeStatus(
       context,
-      double total,
       String? table,
       doc_id,
       List<dynamic> items,
@@ -152,6 +52,7 @@ class CartCubit extends Cubit<CartState> {
       String current,
       dynamic datetime,
       bool isDelivery) async {
+    double total = getTotal(items);
     final user = await storage.getDataStorage("user");
     var current_index = getStatusIndex(current);
     final restaurant_name = user["restaurant"]["name"];

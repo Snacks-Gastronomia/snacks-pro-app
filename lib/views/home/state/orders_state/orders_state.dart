@@ -1,6 +1,6 @@
-part of 'cart_cubit.dart';
+part of 'orders_cubit.dart';
 
-class CartState {
+class OrdersState {
   final List<OrderModel> cart;
   final String payment_method;
   final int table_code;
@@ -9,7 +9,7 @@ class CartState {
   final AppStatus status;
   final String? error;
   final String temp_observation;
-  CartState({
+  OrdersState({
     required this.cart,
     required this.payment_method,
     required this.table_code,
@@ -19,7 +19,7 @@ class CartState {
     required this.temp_observation,
   });
 
-  // CartState({
+  // OrdersState({
   //   required this.cart,
   //   required this.status,
   //   required this.total,
@@ -27,7 +27,7 @@ class CartState {
   //   required this.temp_observation,
   // });
 
-  factory CartState.initial() => CartState(
+  factory OrdersState.initial() => OrdersState(
         payment_method: "",
         table_code: 0,
         cart: [],
@@ -36,7 +36,7 @@ class CartState {
         error: "",
         temp_observation: "",
       );
-  // CartState copyWith({
+  // OrdersState copyWith({
   //   List<Order>? cart,
   //   AppStatus? status,
   //   double? total,
@@ -44,7 +44,7 @@ class CartState {
   //   String? temp_observation,
   //   List<String>? itens_added,
   // }) {
-  //   return CartState(
+  //   return OrdersState(
   //     cart: cart ?? this.cart,
   //     status: status ?? this.status,
   //     total: total ?? this.total,
@@ -53,7 +53,7 @@ class CartState {
   //   );
   // }
 
-  CartState copyWith({
+  OrdersState copyWith({
     List<OrderModel>? cart,
     String? payment_method,
     int? table_code,
@@ -62,7 +62,7 @@ class CartState {
     String? error,
     String? temp_observation,
   }) {
-    return CartState(
+    return OrdersState(
       cart: cart ?? this.cart,
       payment_method: payment_method ?? this.payment_method,
       table_code: table_code ?? this.table_code,

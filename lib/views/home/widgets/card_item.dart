@@ -10,9 +10,9 @@ import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
-import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 
 class CardItemWidget extends StatelessWidget {
   CardItemWidget({
@@ -132,63 +132,6 @@ class CardItemWidget extends StatelessWidget {
                                 ? const Color(0xffFE555D).withOpacity(0.3)
                                 : const Color(0xffFE555D),
                           )),
-                      color: Colors.black87,
-                      iconSize: 30,
-                    );
-                  },
-                ),
-              ),
-            )
-          else
-            Positioned(
-              top: -10,
-              right: 0,
-              child: SizedBox(
-                // height: 50,
-                child: BlocBuilder<CartCubit, CartState>(
-                  builder: (context, state) {
-                    // bool itemAdded = state.cart.contains(order);
-                    return IconButton(
-                      onPressed: () {
-                        context.read<ItemScreenCubit>().insertItem(order, true);
-                        context.read<CartCubit>().hasItem(order.item.id!)
-                            ? context.read<CartCubit>().removeToCart(order)
-                            : context.read<CartCubit>().addToCart(order);
-                        //  modal.showModalBottomSheet(
-                        //     context: context,
-                        //     // isScrollControlled: true,
-                        //     content: ModalContentObservation(
-                        //         action: () {
-                        //           BlocProvider.of<CartCubit>(context)
-                        //               .addToCart(order);
-                        //           Navigator.popUntil(context,
-                        //               ModalRoute.withName(AppRoutes.home));
-                        //         },
-                        //         value: context
-                        //             .read<ItemScreenCubit>()
-                        //             .state
-                        //             .order!
-                        //             .observations,
-                        //         onChanged: context
-                        //             .read<ItemScreenCubit>()
-                        //             .observationChanged));
-                      },
-                      tooltip: context.read<CartCubit>().hasItem(order.item.id!)
-                          ? "Remover pedido"
-                          : "Adicionar ao pedido",
-                      icon: Container(
-                          // height: 40,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child:
-                              context.read<CartCubit>().hasItem(order.item.id!)
-                                  ? Icon(
-                                      Icons.remove_rounded,
-                                      color: Colors.red.shade700,
-                                    )
-                                  : const Icon(Icons.add)),
                       color: Colors.black87,
                       iconSize: 30,
                     );

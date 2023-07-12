@@ -22,14 +22,14 @@ import 'package:snacks_pro_app/views/finance/contents/bank/add_bank_account.dart
 import 'package:snacks_pro_app/views/finance/contents/employees/new_employee.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
-import 'package:snacks_pro_app/views/finance/state/orders/orders_cubit.dart';
+import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
 import 'package:snacks_pro_app/views/home/home_screen.dart';
 import 'package:snacks_pro_app/views/home/orders_screen.dart';
 import 'package:snacks_pro_app/views/home/scan_card_screen.dart';
-import 'package:snacks_pro_app/views/home/state/cart_state/cart_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 import 'package:snacks_pro_app/views/recharge_card/recharge_card_screen.dart';
 import 'package:snacks_pro_app/views/recharge_card/state/recharge/recharge_cubit.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/new_item_screen.dart';
@@ -62,8 +62,8 @@ class AppWidget extends StatelessWidget {
         BlocProvider<HomeCubit>(
           create: (context) => HomeCubit(),
         ),
-        BlocProvider<CartCubit>(
-          create: (context) => CartCubit(),
+        BlocProvider<FinanceOrdersCubit>(
+          create: (context) => FinanceOrdersCubit(),
         ),
         BlocProvider<ItemScreenCubit>(
           create: (context) => ItemScreenCubit(),
