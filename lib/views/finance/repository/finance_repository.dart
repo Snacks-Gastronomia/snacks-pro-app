@@ -210,6 +210,23 @@ class FinanceRepository {
     }
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchFeatureByName(
+      {required String featName}) async {
+    try {
+      return await services.getFeatureByName(name: featName);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> updateFeature({required String docId, required data}) async {
+    try {
+      return await services.updateFeature(doc: docId, update: data);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       getExpenses() async {
     try {

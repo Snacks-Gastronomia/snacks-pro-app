@@ -20,6 +20,7 @@ import 'package:snacks_pro_app/views/finance/schedule.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
+import 'package:snacks_pro_app/views/finance/widgets/delivery_tax_modal.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/recharge_card/recharge_report.dart';
 import 'package:snacks_pro_app/views/recharge_card/select_day_report.dart';
@@ -246,6 +247,19 @@ class SnacksAdmBottomSheet extends StatelessWidget {
               description:
                   "Defina os horários de funcionamento do restaurante.",
               icon: Icons.access_time),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Divider(color: Color(0xff4A4A4A)),
+          ),
+
+          SettingButton(
+              onTap: () => modal.showIOSModalBottomSheet(
+                  context: context, content: DeliveryTax()),
+              title: "Delivery",
+              description:
+                  "Habilite ou desabilite a entrega pelo aplicativo. Defina a taxa.",
+              icon: Icons.delivery_dining),
+
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 5),
             child: Divider(color: Color(0xff4A4A4A)),

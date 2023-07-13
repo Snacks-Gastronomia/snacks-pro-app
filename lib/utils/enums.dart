@@ -10,6 +10,7 @@ enum OrderStatus {
   waiting_delivery,
   in_delivery,
   delivered,
+  canceled,
   invalid
 }
 
@@ -85,6 +86,8 @@ extension ParseToString on OrderStatus {
         return "Pedido à caminho";
       case OrderStatus.delivered:
         return "Pedido entregue";
+      case OrderStatus.canceled:
+        return "Pedido cancelado";
       default:
         return "Status inválido";
     }
@@ -100,6 +103,8 @@ extension ParseToString on OrderStatus {
         return Colors.green.shade400;
       case OrderStatus.in_delivery:
         return Colors.green.shade700;
+      case OrderStatus.canceled:
+        return const Color(0xffE20808);
 
       default:
         return Colors.black;

@@ -158,6 +158,31 @@ class FinanceApiServices {
     // return data.docs;
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> getFeatureByName(
+      {required String name}) {
+    // try {
+    return firebase
+        .collection("snacks_config")
+        .doc("features")
+        .collection("all")
+        .where("name", isEqualTo: name)
+        .get();
+
+    // return data.docs;
+  }
+
+  Future<void> updateFeature({required String doc, required update}) {
+    // try {
+    return firebase
+        .collection("snacks_config")
+        .doc("features")
+        .collection("all")
+        .doc(doc)
+        .update(update);
+
+    // return data.docs;
+  }
+
   Future<void> updateTime(int day, Map<String, dynamic> data) {
     // try {
     print(day.toString());

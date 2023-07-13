@@ -100,7 +100,7 @@ class OrdersCubit extends Cubit<OrdersState> {
         }
       } else {
         if (!isDelivery && current_index == 3) {
-          changeStatusOrder(doc_id, OrderStatus.delivered);
+          await repository.updateStatus(doc_id, OrderStatus.delivered);
         } else {
           changeStatusFoward(total, doc_id, items, payment_method, current,
               datetime, restaurant_name);
@@ -120,12 +120,8 @@ class OrdersCubit extends Cubit<OrdersState> {
     return OrderStatus.values.firstWhere((e) => e.name == status);
   }
 
-  void changeStatusOrder(doc_id, OrderStatus status) async {
-    await repository.updateStatus(doc_id, status);
-  }
-
-  void deleteOrder(docId) async {
-    await repository.cancelOrder(docId);
+  void cancelOrder(docId) async {
+    await repository.updateStatus(docId, OrderStatus.canceled);
   }
 
   changeStatusFoward(

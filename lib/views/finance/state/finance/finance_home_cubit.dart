@@ -119,6 +119,21 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     return res;
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchFeatureByName(
+      String name) async {
+    emit(state.copyWith(status: AppStatus.loading));
+    var res = repository.fetchFeatureByName(featName: name);
+    emit(state.copyWith(status: AppStatus.loaded));
+    return res;
+  }
+
+  Future<void> updateFeature(String docId, data) async {
+    emit(state.copyWith(status: AppStatus.loading));
+    var res = await repository.updateFeature(docId: docId, data: data);
+    emit(state.copyWith(status: AppStatus.loaded));
+    return res;
+  }
+
   Future<void> fetchExpenses(access, String docID) async {
     emit(state.copyWith(status: AppStatus.loading));
     double total = 0;

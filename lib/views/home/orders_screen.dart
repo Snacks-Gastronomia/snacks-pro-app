@@ -178,7 +178,7 @@ class OrdersScreen extends StatelessWidget {
                                                           onCancelOrder: () => context
                                                               .read<
                                                                   OrdersCubit>()
-                                                              .deleteOrder(
+                                                              .cancelOrder(
                                                                   item["id"]),
                                                           waiter: waiter,
                                                           restaurant: item[
@@ -244,7 +244,7 @@ class OrdersScreen extends StatelessWidget {
                                                               bottom: 10),
                                                       child: CardOrderWidget(
                                                           onCancelOrder: () =>
-                                                              context.read<OrdersCubit>().deleteOrder(
+                                                              context.read<OrdersCubit>().cancelOrder(
                                                                   item["id"]),
                                                           restaurant: item[
                                                               "restaurant_name"],

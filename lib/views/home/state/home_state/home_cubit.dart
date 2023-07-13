@@ -64,11 +64,11 @@ class HomeCubit extends Cubit<HomeState> {
     var toast = AppToast();
     toast.init(context: context);
 
-    String value = transformRealFormat(data["value"].toString());
-    String delivery = transformRealFormat(data["deliveryValue"].toString());
+    //String value = transformRealFormat(data["value"].toString());
+    //  String delivery = transformRealFormat(data["deliveryValue"].toString());
 
-    var total =
-        NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value);
+    // var total =
+    //     NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value);
 
     var user = await storage.getDataStorage("user");
 
@@ -93,9 +93,10 @@ class HomeCubit extends Cubit<HomeState> {
           context,
           printer.docs[0].get("ip"),
           orders,
-          data["isDelivery"] ? delivery : "",
+          //   data["isDelivery"] ? delivery : "",
+          "",
           data["isDelivery"] ? data["address"] : data["table"],
-          total,
+          data["value"].toString(),
           data["part_code"] ?? "",
           data["payment_method"]);
     }
