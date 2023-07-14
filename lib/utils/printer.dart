@@ -39,13 +39,13 @@ class AppPrinter {
   }
 
   printOrderTemplate(
-      NetworkPrinter printer,
-      List<OrderModel> orders,
-      String deliveryValue,
-      String destination,
-      String method,
-      String total,
-      String code) async {
+      {required NetworkPrinter printer,
+      required List<OrderModel> orders,
+      required String deliveryValue,
+      required String orderDestination,
+      required String method,
+      required String total,
+      required String orderCode}) async {
     // print("printing order...");
     // final ByteData data = await rootBundle.load('assets/icons/snacks.png');
     // final Uint8List bytes = data.buffer.asUint8List();
@@ -77,7 +77,7 @@ class AppPrinter {
 
     // printer.hr();
     printer.text(
-      'SNACKS - PEDIDO #$code',
+      'SNACKS - PEDIDO #$orderCode',
       styles: const PosStyles(
         align: PosAlign.center,
         height: PosTextSize.size2,
@@ -135,7 +135,7 @@ class AppPrinter {
     printer.emptyLines(1);
     if (deliveryValue.isNotEmpty) {
       printer.text(
-        'Endereço para entrega: $destination',
+        'Endereço para entrega: $orderDestination',
         styles: const PosStyles(
           align: PosAlign.center,
           height: PosTextSize.size3,
@@ -144,7 +144,7 @@ class AppPrinter {
       );
     } else {
       printer.text(
-        'Mesa $destination',
+        'Mesa $orderDestination',
         styles: const PosStyles(
           align: PosAlign.center,
           height: PosTextSize.size2,
@@ -225,7 +225,13 @@ class AppPrinter {
       if (res == PosPrintResult.success) {
         printer.beep();
         printOrderTemplate(
-            printer, orders, deliveryValue, destination, total, code, method);
+            printer: printer,
+            orders: orders,
+            deliveryValue: deliveryValue,
+            orderDestination: destination,
+            method: method,
+            total: total,
+            orderCode: code);
         printer.disconnect();
       } else {
         toast.showToast(

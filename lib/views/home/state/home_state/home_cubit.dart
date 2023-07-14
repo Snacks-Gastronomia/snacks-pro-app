@@ -96,7 +96,7 @@ class HomeCubit extends Cubit<HomeState> {
           //   data["isDelivery"] ? delivery : "",
           "",
           data["isDelivery"] ? data["address"] : data["table"],
-          data["value"].toString(),
+          transformRealFormat(data["value"].toString()),
           data["part_code"] ?? "",
           data["payment_method"]);
     }
