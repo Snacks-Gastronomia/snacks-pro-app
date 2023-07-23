@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,9 +9,10 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/widgets/limit_options.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/widgets/new_extra.dart';
 
-class ExtraWidget extends StatelessWidget {
+class ExtraWidget extends StatefulWidget {
   const ExtraWidget({
     Key? key,
     required this.backAction,
@@ -18,8 +20,20 @@ class ExtraWidget extends StatelessWidget {
   }) : super(key: key);
   final VoidCallback backAction;
   final VoidCallback buttonAction;
+
+  @override
+  State<ExtraWidget> createState() => _ExtraWidgetState();
+}
+
+class _ExtraWidgetState extends State<ExtraWidget> {
+  bool checkLimit = false;
+  final modal = AppModal();
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      checkLimit =
+          context.read<MenuCubit>().state.item.limit_extra_options != null;
+    });
     return BlocProvider.value(
       value: BlocProvider.of<MenuCubit>(context),
       child: Scaffold(
@@ -27,7 +41,24 @@ class ExtraWidget extends StatelessWidget {
           bottomNavigationBar:
               BlocBuilder<MenuCubit, MenuState>(builder: (context, state) {
             return CustomSubmitButton(
-              onPressedAction: buttonAction,
+              onPressedAction: () {
+                if (checkLimit) {
+                  context
+                      .read<MenuCubit>()
+                      .changeLimitOptions(state.item.options.length);
+
+                  modal.showModalBottomSheet(
+                      withPadding: false,
+                      context: context,
+                      content: LimitOptionsModal(
+                        submit: () {
+                          widget.buttonAction();
+                        },
+                      ));
+                } else {
+                  widget.buttonAction();
+                }
+              },
               label: state.status == AppStatus.editing
                   ? "Salvar alterações"
                   : "Salvar",
@@ -49,7 +80,7 @@ class ExtraWidget extends StatelessWidget {
                 height: 10,
               ),
               BlocBuilder<MenuCubit, MenuState>(builder: (context, state) {
-                if (state.item.extra.isEmpty) {
+                if (state.item.extras.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 40),
                     child: Center(
@@ -67,14 +98,14 @@ class ExtraWidget extends StatelessWidget {
                       ),
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
-                      itemCount: state.item.extra.length,
+                      itemCount: state.item.extras.length,
                       itemBuilder: (context, index) => CardExtra(
-                          title: state.item.extra[index]["title"],
-                          value: double.parse(state.item.extra[index]["value"]),
+                          title: state.item.extras[index]["title"],
+                          value:
+                              double.parse(state.item.extras[index]["value"]),
                           onDelete: () {
-                            context
-                                .read<MenuCubit>()
-                                .removeExtraItem(state.item.extra[index]["id"]);
+                            context.read<MenuCubit>().removeExtraItem(
+                                state.item.extras[index]["id"]);
                           }),
                     ),
                   );
@@ -94,7 +125,7 @@ class ExtraWidget extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       radius: const Radius.circular(10),
                       child: TextButton(
-                          onPressed: () => AppModal().showModalBottomSheet(
+                          onPressed: () => modal.showModalBottomSheet(
                               withPadding: false,
                               context: context,
                               content: NewExtraModal()),
@@ -109,6 +140,23 @@ class ExtraWidget extends StatelessWidget {
               ),
               const SizedBox(
                 height: 25,
+              ),
+              CheckboxListTile(
+                value: checkLimit,
+                contentPadding: EdgeInsets.zero,
+                checkboxShape: const StadiumBorder(),
+                onChanged: (value) {
+                  setState(() {
+                    checkLimit = value ?? false;
+                  });
+                },
+                title: Text(
+                  'Limitar número de opções',
+                  style: AppTextStyles.regular(15),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
               ),
             ],
           )),
@@ -141,9 +189,12 @@ class CardExtra extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: AppTextStyles.semiBold(17),
+              SizedBox(
+                width: 150,
+                child: Text(
+                  title,
+                  style: AppTextStyles.semiBold(17),
+                ),
               ),
               Text(
                 NumberFormat.currency(locale: "pt", symbol: r"R$ ")

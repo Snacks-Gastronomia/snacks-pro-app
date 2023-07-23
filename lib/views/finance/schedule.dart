@@ -73,7 +73,8 @@ class ScheduleContent extends StatelessWidget {
                                     },
                                   );
                                   if (time != null) {
-                                    DateTime submitTime = DateFormat("hh:mm a")
+                                    DateTime submitTime = DateFormat("HH:mm")
+                                        // ignore: use_build_context_synchronously
                                         .parse(time.format(
                                             context)); // think this will work better for you
 // format date

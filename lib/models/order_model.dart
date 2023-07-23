@@ -16,6 +16,15 @@ class OrderModel {
     // required this.restaurant_id,
   });
 
+  double get getTotalValue {
+    double extra = extras.isNotEmpty
+        ? extras
+            .map((e) => double.parse(e["value"].toString()))
+            .reduce((value, element) => value + element)
+        : 0;
+    return (double.parse(option_selected["value"].toString()) + extra) * amount;
+  }
+
   OrderModel copyWith({
     Item? item,
     int? amount,

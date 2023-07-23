@@ -33,7 +33,7 @@ class _DeliveryTaxState extends State<DeliveryTax> {
             setState(() {
               active = data?.data()["active"];
               doc = data?.id ?? "";
-              controller.setText(data?.data()["value"]);
+              controller.setText((data?.data()["value"]).toString());
               //value = ;
             });
             return Padding(

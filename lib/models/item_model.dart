@@ -10,22 +10,25 @@ class Item {
   final String? description;
   final double value;
   final int time;
+  final int? limit_extra_options;
+  final int num_served;
   final String restaurant_id;
   final String restaurant_name;
   final String? category;
   final String? measure;
   final String? image_url;
   final bool active;
-  // final Map<dynamic, String>? ingredients;
   final List<Ingredient> ingredients;
-  final List<dynamic> extra;
+  final List<dynamic> extras;
   final List<dynamic> options;
 
   Item({
     this.id,
     required this.title,
     this.description,
+    this.limit_extra_options,
     required this.value,
+    required this.num_served,
     required this.time,
     required this.restaurant_id,
     required this.restaurant_name,
@@ -34,7 +37,7 @@ class Item {
     this.image_url,
     required this.active,
     this.ingredients = const [],
-    this.extra = const [],
+    this.extras = const [],
     this.options = const [],
   });
 
@@ -44,13 +47,15 @@ class Item {
     String? description,
     double? value,
     int? time,
+    int? limit_extra_options,
+    int? num_served,
     String? restaurant_id,
     String? restaurant_name,
     String? category,
     String? measure,
     String? image_url,
     bool? active,
-    List<dynamic>? extra,
+    List<dynamic>? extras,
     List<dynamic>? options,
     List<Ingredient>? ingredients,
   }) {
@@ -58,15 +63,17 @@ class Item {
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
+      limit_extra_options: limit_extra_options ?? this.limit_extra_options,
       value: value ?? this.value,
       restaurant_id: restaurant_id ?? this.restaurant_id,
       restaurant_name: restaurant_name ?? this.restaurant_name,
+      num_served: num_served ?? this.num_served,
       category: category ?? this.category,
       measure: measure ?? this.measure,
       image_url: image_url ?? this.image_url,
       ingredients: ingredients ?? this.ingredients,
       time: time ?? this.time,
-      extra: extra ?? this.extra,
+      extras: extras ?? this.extras,
       options: options ?? this.options,
       active: active ?? this.active,
     );
@@ -79,13 +86,14 @@ class Item {
       'description': description,
       'value': value,
       'restaurant_id': restaurant_id,
-      'restaurant_id': restaurant_id,
+      'limit_extra_options': limit_extra_options,
       'restaurant_name': restaurant_name,
+      'num_served ': num_served,
       'category': category,
       'measure': measure,
       'active': active,
       'time': time,
-      'extras': extra,
+      'extras': extras,
       'options': options,
       'image_url': image_url,
       'ingredients': ingredients,
@@ -95,6 +103,7 @@ class Item {
   factory Item.initial() {
     return Item(
         active: true,
+        num_served: 1,
         title: "",
         description: "",
         value: 0,
@@ -106,6 +115,7 @@ class Item {
     return Item(
       id: map['id'],
       active: map['active'],
+      num_served: map['num_served'] ?? 1,
       title: map['title'] ?? '',
       time: map['time'] ?? 0,
       description: map['description'] ?? '',
@@ -113,10 +123,11 @@ class Item {
       restaurant_id: map['restaurant_id'] ?? '',
       restaurant_name: map['restaurant_name'] ?? '',
       category: map['category'],
+      limit_extra_options: map['limit_extra_options'],
       measure: map['measure'],
       image_url: map['image_url'],
       ingredients: List<Ingredient>.from(map['ingredients']),
-      extra: List<dynamic>.from(map['extras'] ?? []),
+      extras: List<dynamic>.from(map['extras'] ?? []),
       options: List<dynamic>.from(map['options'] ?? []),
     );
   }
@@ -163,8 +174,10 @@ class Item {
         other.measure == measure &&
         other.image_url == image_url &&
         other.active == active &&
+        other.limit_extra_options == limit_extra_options &&
+        other.num_served == num_served &&
         listEquals(other.ingredients, ingredients) &&
         listEquals(other.options, options) &&
-        listEquals(other.extra, extra);
+        listEquals(other.extras, extras);
   }
 }

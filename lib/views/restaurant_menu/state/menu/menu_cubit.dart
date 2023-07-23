@@ -37,6 +37,12 @@ class MenuCubit extends Cubit<MenuState> {
     emit(state.copyWith(item: item.copyWith(image_url: value)));
   }
 
+  void changeNumServed(String value) {
+    final item = state.item;
+
+    emit(state.copyWith(item: item.copyWith(num_served: int.tryParse(value))));
+  }
+
   void removeImage() {
     final item = state.item;
 
@@ -75,40 +81,40 @@ class MenuCubit extends Cubit<MenuState> {
     emit(state.copyWith(item: item, status: AppStatus.editing));
   }
 
+  changeLimitOptions(int value) {
+    final item = state.item;
+    emit(state.copyWith(item: item.copyWith(limit_extra_options: value)));
+  }
+
   void changeTitle(String value) {
     final item = state.item;
     emit(state.copyWith(item: item.copyWith(title: value)));
   }
 
+  String get generateId =>
+      DateTime.now().millisecondsSinceEpoch.remainder(100000).toString();
+
   void addExtraItem(String title, dynamic value) {
     final item = state.item;
-    var el = {
-      "id": state.item.extra.length + 1,
-      "title": title,
-      "value": value.toString()
-    };
+    var el = {"id": generateId, "title": title, "value": value.toString()};
 
-    emit(state.copyWith(item: item.copyWith(extra: [...item.extra, el])));
+    emit(state.copyWith(item: item.copyWith(extras: [...item.extras, el])));
   }
 
   void addOptionToItem(String title, dynamic value) {
     final item = state.item;
-    var el = {
-      "id": item.options.length + 1,
-      "title": title,
-      "value": value.toString()
-    };
+    var el = {"id": generateId, "title": title, "value": value.toString()};
 
     emit(state.copyWith(
         item: item.copyWith(options: [...item.options, el].toList())));
   }
 
   void removeExtraItem(id) {
-    var extras = List.from(state.item.extra);
+    var extras = List.from(state.item.extras);
 
     extras.removeWhere((element) => element["id"] == id);
 
-    emit(state.copyWith(item: state.item.copyWith(extra: extras)));
+    emit(state.copyWith(item: state.item.copyWith(extras: extras)));
   }
 
   void removeOptionItem(id) {

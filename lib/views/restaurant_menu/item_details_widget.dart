@@ -9,7 +9,9 @@ import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/extras_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/widgets/input_dashed_border.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/widgets/new_option_item.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/widgets/select_dashed_border.dart';
 
 class ItemDetailsWidget extends StatelessWidget {
   const ItemDetailsWidget({
@@ -35,139 +37,114 @@ class ItemDetailsWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Tempo de preparo(minutos)',
-                    style: AppTextStyles.medium(18),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DottedBorder(
-                    color: Colors.grey,
-                    strokeWidth: 1.5,
-                    dashPattern: const [7, 4],
-                    borderType: BorderType.RRect,
-                    radius: const Radius.circular(12),
-                    child: TextFormField(
-                      keyboardType:
-                          const TextInputType.numberWithOptions(signed: true),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-                      ],
-                      controller: context.read<MenuCubit>().state.status ==
-                              AppStatus.editing
-                          ? TextEditingController(
-                              text: context
-                                  .read<MenuCubit>()
-                                  .state
-                                  .item
-                                  .time
-                                  .toString())
-                          : null,
-                      textInputAction: TextInputAction.next,
-                      onChanged: context.read<MenuCubit>().changeTime,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 16),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(0),
-                        ),
-                        hintText: "Ex.: 30",
-                      ),
-                    ),
+                  DashedBorderInput(
+                    label: 'Tempo de preparo(minutos)',
+                    onChange: context.read<MenuCubit>().changeTime,
+                    status: context.read<MenuCubit>().state.status,
+                    value: context.read<MenuCubit>().state.item.time.toString(),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(signed: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                    ],
                   ),
                   const SizedBox(
                     height: 20,
                   ),
+                  DashedBorderInput(
+                    label: 'Serve quantas pessoas?',
+                    onChange: context.read<MenuCubit>().changeNumServed,
+                    status: context.read<MenuCubit>().state.status,
+                    value: context
+                        .read<MenuCubit>()
+                        .state
+                        .item
+                        .num_served
+                        .toString(),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(signed: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  BlocBuilder<MenuCubit, MenuState>(
+                    builder: (context, state) {
+                      return DashedBorderSelect(
+                          label: 'Categoria',
+                          items: const [
+                            "Bebidas",
+                            "Drinks",
+                            "Grill",
+                            "Hambúguer",
+                            "Pizza",
+                            "Comida Japonesa",
+                            "Petiscos",
+                            "Sobremes",
+                            "Vinhos"
+                          ],
+                          value: state.item.category,
+                          onChange: context.read<MenuCubit>().changeCategory,
+                          status: state.status);
+                    },
+                  ),
                   // Text(
-                  //   'Valor',
+                  //   'Categoria',
                   //   style: AppTextStyles.medium(18),
                   // ),
                   // const SizedBox(
                   //   height: 10,
                   // ),
+
                   // DottedBorder(
                   //   color: Colors.grey,
                   //   strokeWidth: 1.5,
-                  //   dashPattern: const [7, 4],
+                  //   dashPattern: [7, 4],
                   //   borderType: BorderType.RRect,
                   //   radius: const Radius.circular(12),
-                  //   child: TextFormField(
-                  //     keyboardType: TextInputType.numberWithOptions(signed: true),
-                  //     inputFormatters: [
-                  //       FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-                  //     ],
-                  //     textInputAction: TextInputAction.next,
-                  //     onChanged: context.read<MenuCubit>().changePrice,
-                  //     decoration: InputDecoration(
-                  //       contentPadding: const EdgeInsets.symmetric(
-                  //           horizontal: 15, vertical: 16),
-                  //       border: OutlineInputBorder(
-                  //         borderSide: BorderSide.none,
-                  //         borderRadius: BorderRadius.circular(0),
+                  //   padding: const EdgeInsets.symmetric(horizontal: 15),
+                  //   child: BlocBuilder<MenuCubit, MenuState>(
+                  //       builder: (context, snapshot) {
+                  //     return DropdownButton<String>(
+                  //       value: snapshot.item.category,
+                  //       hint: Text(
+                  //         "Selecione",
+                  //         style:
+                  //             AppTextStyles.regular(16, color: Colors.black26),
                   //       ),
-                  //       hintText: "Ex.: 2,00",
-                  //     ),
-                  //   ),
+                  //       icon: const Icon(Icons.arrow_downward),
+                  //       elevation: 16,
+                  //       style: AppTextStyles.medium(16, color: Colors.black54),
+                  //       isExpanded: true,
+                  //       itemHeight: 55,
+                  //       underline: Container(
+                  //         height: 2,
+                  //         color: Colors.transparent,
+                  //       ),
+                  //       onChanged: (String? value) =>
+                  //           context.read<MenuCubit>().changeCategory(value),
+                  //       borderRadius: BorderRadius.circular(15),
+                  //       items: [
+                  //         "Bebidas",
+                  //         "Drinks",
+                  //         "Grill",
+                  //         "Hambúguer",
+                  //         "Pizza",
+                  //         "Comida Japonesa",
+                  //         "Petiscos",
+                  //         "Sobremes",
+                  //         "Vinhos"
+                  //       ]
+                  //           .map((String value) => DropdownMenuItem(
+                  //                 value: value,
+                  //                 child: Text(value),
+                  //               ))
+                  //           .toList(),
+                  //     );
+                  //   }),
                   // ),
-                  // const SizedBox(
-                  //   height: 20,
-                  // ),
-                  Text(
-                    'Categoria',
-                    style: AppTextStyles.medium(18),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DottedBorder(
-                    color: Colors.grey,
-                    strokeWidth: 1.5,
-                    dashPattern: [7, 4],
-                    borderType: BorderType.RRect,
-                    radius: const Radius.circular(12),
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: BlocBuilder<MenuCubit, MenuState>(
-                        builder: (context, snapshot) {
-                      return DropdownButton<String>(
-                        value: snapshot.item.category,
-                        hint: Text(
-                          "Selecione",
-                          style:
-                              AppTextStyles.regular(16, color: Colors.black26),
-                        ),
-                        icon: const Icon(Icons.arrow_downward),
-                        elevation: 16,
-                        style: AppTextStyles.medium(16, color: Colors.black54),
-                        isExpanded: true,
-                        itemHeight: 55,
-                        underline: Container(
-                          height: 2,
-                          color: Colors.transparent,
-                        ),
-                        onChanged: (String? value) =>
-                            context.read<MenuCubit>().changeCategory(value),
-                        borderRadius: BorderRadius.circular(15),
-                        items: [
-                          "Bebidas",
-                          "Drinks",
-                          "Grill",
-                          "Hambúguer",
-                          "Pizza",
-                          "Comida Japonesa",
-                          "Petiscos",
-                          "Sobremes",
-                          "Vinhos"
-                        ]
-                            .map((String value) => DropdownMenuItem(
-                                  value: value,
-                                  child: Text(value),
-                                ))
-                            .toList(),
-                      );
-                    }),
-                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -223,25 +200,6 @@ class ItemDetailsWidget extends StatelessWidget {
                       loading_label: "",
                     );
                   }),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     var item = context.read<MenuCubit>().state.item;
-                  //     if (item.category != null &&
-                  //         item.value != 0 &&
-                  //         item.time != 0) {
-                  //       buttonAction();
-                  //     }
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //       shape: RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(15)),
-                  //       backgroundColor: Colors.black,
-                  //       fixedSize: const Size(double.maxFinite, 59)),
-                  //   child: Text(
-                  //     'Salvar',
-                  //     style: AppTextStyles.regular(16, color: Colors.white),
-                  //   ),
-                  // ),
                   TextButton(
                     onPressed: backAction,
                     child: Text(

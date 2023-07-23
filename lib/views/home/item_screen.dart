@@ -256,6 +256,13 @@ class _ItemScreenState extends State<ItemScreen> {
                     ],
                   ),
                   const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'Este prato serve ${widget.order.item.num_served} pessoa${widget.order.item.num_served > 1 ? "s" : ""}',
+                    style: AppTextStyles.regular(12),
+                  ),
+                  const SizedBox(
                     height: 25,
                   ),
 
@@ -267,18 +274,31 @@ class _ItemScreenState extends State<ItemScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  if (widget.order.item.extra.isNotEmpty)
+                  if (widget.order.item.extras.isNotEmpty)
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Extras",
-                          style: AppTextStyles.medium(16),
+                          style: AppTextStyles.semiBold(18),
                         ),
+                        if (widget.order.item.limit_extra_options != null)
+                          Column(
+                            children: [
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                'Selecione até ${widget.order.item.limit_extra_options} opções',
+                                style: AppTextStyles.light(12),
+                              ),
+                            ],
+                          ),
                         const SizedBox(
                           height: 10,
                         ),
                         ListView.separated(
-                            itemCount: widget.order.item.extra.length,
+                            itemCount: widget.order.item.extras.length,
                             separatorBuilder: (context, index) =>
                                 const SizedBox(
                                   height: 10,
@@ -286,7 +306,7 @@ class _ItemScreenState extends State<ItemScreen> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
-                              var list = List.from(widget.order.item.extra);
+                              var list = List.from(widget.order.item.extras);
                               double value =
                                   double.parse(list[index]['value'].toString());
 
@@ -323,13 +343,16 @@ class _ItemScreenState extends State<ItemScreen> {
                                           const SizedBox(
                                             width: 15,
                                           ),
-                                          Text(
-                                            list[index]["title"],
-                                            style: AppTextStyles.medium(
-                                              16,
-                                              color: selected
-                                                  ? Colors.white
-                                                  : Colors.black,
+                                          SizedBox(
+                                            width: 150,
+                                            child: Text(
+                                              list[index]["title"],
+                                              style: AppTextStyles.medium(
+                                                16,
+                                                color: selected
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                              ),
                                             ),
                                           ),
                                         ],

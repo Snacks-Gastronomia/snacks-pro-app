@@ -8,17 +8,22 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/widgets/limit_options.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/widgets/new_extra.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/widgets/new_option_item.dart';
 
 class OptionsWidget extends StatelessWidget {
-  const OptionsWidget({
+  OptionsWidget({
     Key? key,
     required this.backAction,
     required this.buttonAction,
   }) : super(key: key);
+
   final VoidCallback backAction;
   final VoidCallback buttonAction;
+
+  final AppModal modal = AppModal();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -29,7 +34,9 @@ class OptionsWidget extends StatelessWidget {
               BlocBuilder<MenuCubit, MenuState>(builder: (context, state) {
             return CustomSubmitButton(
                 onPressedAction: () {
-                  if (state.item.options.isNotEmpty) buttonAction();
+                  if (state.item.options.isNotEmpty) {
+                    buttonAction();
+                  }
                 },
                 label: "Salvar opções");
           }),
@@ -89,7 +96,7 @@ class OptionsWidget extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       radius: const Radius.circular(10),
                       child: TextButton(
-                          onPressed: () => AppModal().showModalBottomSheet(
+                          onPressed: () => modal.showModalBottomSheet(
                               withPadding: false,
                               context: context,
                               content: NewOptionItemModal()),
