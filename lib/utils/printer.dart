@@ -45,7 +45,8 @@ class AppPrinter {
       required String orderDestination,
       required String method,
       required String total,
-      required String orderCode}) async {
+      required String orderCode,
+      required String customer_name}) async {
     // print("printing order...");
     // final ByteData data = await rootBundle.load('assets/icons/snacks.png');
     // final Uint8List bytes = data.buffer.asUint8List();
@@ -78,6 +79,14 @@ class AppPrinter {
     // printer.hr();
     printer.text(
       'SNACKS - PEDIDO #$orderCode',
+      styles: const PosStyles(
+        align: PosAlign.center,
+        height: PosTextSize.size2,
+        width: PosTextSize.size2,
+      ),
+    );
+    printer.text(
+      '',
       styles: const PosStyles(
         align: PosAlign.center,
         height: PosTextSize.size2,
@@ -208,8 +217,16 @@ class AppPrinter {
     printer.cut();
   }
 
-  printOrders(context, String ip, List<OrderModel> orders, String deliveryValue,
-      String destination, String total, String code, String method) async {
+  printOrders(
+      context,
+      String ip,
+      List<OrderModel> orders,
+      String deliveryValue,
+      String destination,
+      String total,
+      String code,
+      String method,
+      String customer) async {
     print("try connect...");
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
@@ -231,7 +248,8 @@ class AppPrinter {
             orderDestination: destination,
             method: method,
             total: total,
-            orderCode: code);
+            orderCode: code,
+            customer_name: customer);
         printer.disconnect();
       } else {
         toast.showToast(

@@ -253,7 +253,7 @@ class SnacksAdmBottomSheet extends StatelessWidget {
           ),
 
           SettingButton(
-              onTap: () => modal.showIOSModalBottomSheet(
+              onTap: () => modal.showModalBottomSheet(
                   context: context, content: DeliveryTax()),
               title: "Delivery",
               description:

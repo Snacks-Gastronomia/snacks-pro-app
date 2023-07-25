@@ -126,13 +126,13 @@ class ListRatings extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   var item = snapshot.data!.docs[index];
-                  Timestamp? dateTime = item.data()["created_at"];
-                  String date = dateTime != null
-                      ? DateFormat("dd/MM/yyyy")
-                          .format(dateTime.toDate().toLocal())
-                      : "";
+                  // Timestamp? dateTime = item.data()["created_at"];
+                  // String date = dateTime != null
+                  //     ? DateFormat("dd/MM/yyyy")
+                  //         .format(dateTime.toDate().toLocal())
+                  //     : "";
                   return CardRate(
-                    title: date,
+                    title: item.data()["customer_name"] ?? "",
                     description: item.data()["observations"],
                     questions: item.data()["questions"],
                   );
