@@ -277,11 +277,10 @@ class OrdersScreen extends StatelessWidget {
                                                           leading: item["isDelivery"]
                                                               ? null
                                                               : item["table"],
-                                                          address:
-                                                              item["isDelivery"]
-                                                                  ? item["address"] ??
-                                                                      ""
-                                                                  : "",
+                                                          address: item["receive_order"] == "address"
+                                                              ? item["address"] ??
+                                                                  ""
+                                                              : "Irá até o local buscar o pedido",
                                                           status:
                                                               item["status"],
                                                           isDelivery: item[

@@ -89,13 +89,18 @@ class HomeCubit extends Cubit<HomeState> {
           content: "imprimindo pedido...",
           type: ToastType.info);
 
+      String destination = data["isDelivery"]
+          ? data["receive_order"] == "address"
+              ? data["address"]
+              : "Irá até o local buscar o pedido"
+          : data["table"];
+
       appPrinter.printOrders(
           context,
           printer.docs[0].get("ip"),
           orders,
-          //   data["isDelivery"] ? delivery : "",
           "",
-          data["isDelivery"] ? data["address"] : data["table"],
+          destination,
           transformRealFormat(data["value"].toString()),
           data["part_code"] ?? "",
           data["payment_method"],
