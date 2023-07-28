@@ -11,117 +11,125 @@ class ScheduleContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: BlocProvider.of<FinanceCubit>(context),
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          child: Column(
-            children: [
-              Text('Horário de funcionamento',
-                  style: AppTextStyles.semiBold(22)),
-              const SizedBox(
-                height: 30,
-              ),
-              Expanded(
-                child: StreamBuilder(
-                    stream: context.read<FinanceCubit>().fetchSchedule(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        // print(snapshot.data!.docs.length);
+    String getDayString(int day) {
+      final dt_weekdays = DateFormat(null, "pt_BR").dateSymbols.SHORTWEEKDAYS;
 
-                        var days = snapshot.data!.docs;
+      List<String> weekdays = List.from(dt_weekdays);
+      weekdays.add(dt_weekdays[0]);
 
-                        return ListView.separated(
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                            itemCount: DateFormat().dateSymbols.WEEKDAYS.length,
-                            itemBuilder: (context, index) {
-                              var day = DateFormat(null, "pt_BR")
-                                  .dateSymbols
-                                  .SHORTWEEKDAYS[index];
-                              DateTime dateTimeStart = DateFormat("HH:mm")
-                                  .parse(days[index].data()["start"]);
-                              DateTime dateTimeEnd = DateFormat("HH:mm")
-                                  .parse(days[index].data()["end"]);
+      return weekdays[day];
+    }
 
-                              return ScheduleDay(
-                                active: days[index].data()["active"],
-                                day: toBeginningOfSentenceCase(day) ?? "",
-                                startHour: days[index].data()["start"],
-                                endHour: days[index].data()["end"],
-                                changeStatus: (value) => context
-                                    .read<FinanceCubit>()
-                                    .changeActiveSchedule(
-                                        day: index, value: value!),
-                                actionStart: () async {
-                                  var cubit = context.read<FinanceCubit>();
-                                  var time = await showTimePicker(
-                                    context: context,
-                                    initialTime: TimeOfDay(
-                                        hour: dateTimeStart.hour,
-                                        minute: dateTimeStart.minute),
-                                    builder:
-                                        (BuildContext context, Widget? child) {
-                                      return MediaQuery(
-                                        data: MediaQuery.of(context).copyWith(
-                                            alwaysUse24HourFormat: true),
-                                        child: child!,
-                                      );
-                                    },
-                                  );
-                                  if (time != null) {
-                                    DateTime submitTime = DateFormat("HH:mm")
-                                        // ignore: use_build_context_synchronously
-                                        .parse(time.format(
-                                            context)); // think this will work better for you
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        child: Column(
+          children: [
+            Text('Horário de funcionamento', style: AppTextStyles.semiBold(22)),
+            const SizedBox(
+              height: 30,
+            ),
+            Expanded(
+              child: StreamBuilder(
+                  stream: context.read<FinanceCubit>().fetchSchedule(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      // print(snapshot.data!.docs.length);
+
+                      var days = snapshot.data!.docs;
+
+                      return ListView.separated(
+                          separatorBuilder: (context, index) => const SizedBox(
+                                height: 20,
+                              ),
+                          itemCount: DateFormat().dateSymbols.WEEKDAYS.length,
+                          itemBuilder: (context, index) {
+                            var string_day = DateFormat(null, "pt_BR")
+                                .dateSymbols
+                                .SHORTWEEKDAYS[index];
+                            int weekday = index + 1;
+                            DateTime dateTimeStart = DateFormat("HH:mm")
+                                .parse(days[index].data()["start"]);
+                            dateTimeStart.weekday;
+                            DateTime dateTimeEnd = DateFormat("HH:mm")
+                                .parse(days[index].data()["end"]);
+
+                            return ScheduleDay(
+                              active: days[index].data()["active"],
+                              day: toBeginningOfSentenceCase(
+                                      getDayString(weekday)) ??
+                                  "",
+                              startHour: days[index].data()["start"],
+                              endHour: days[index].data()["end"],
+                              changeStatus: (value) => context
+                                  .read<FinanceCubit>()
+                                  .changeActiveSchedule(
+                                      day: weekday, value: value!),
+                              actionStart: () async {
+                                var cubit = context.read<FinanceCubit>();
+                                var time = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay(
+                                      hour: dateTimeStart.hour,
+                                      minute: dateTimeStart.minute),
+                                  builder:
+                                      (BuildContext context, Widget? child) {
+                                    return MediaQuery(
+                                      data: MediaQuery.of(context).copyWith(
+                                          alwaysUse24HourFormat: true),
+                                      child: child!,
+                                    );
+                                  },
+                                );
+                                if (time != null) {
+                                  DateTime submitTime = DateFormat("HH:mm")
+                                      // ignore: use_build_context_synchronously
+                                      .parse(time.format(
+                                          context)); // think this will work better for you
 // format date
 
-                                    cubit.changeStartTime(
-                                        day: index,
-                                        value: DateFormat("HH:mm")
-                                            .format(submitTime));
-                                  }
-                                },
-                                actionEnd: () async {
-                                  var cubit = context.read<FinanceCubit>();
+                                  cubit.changeStartTime(
+                                      day: weekday,
+                                      value: DateFormat("HH:mm")
+                                          .format(submitTime));
+                                }
+                              },
+                              actionEnd: () async {
+                                var cubit = context.read<FinanceCubit>();
 
-                                  var time = await showTimePicker(
-                                    context: context,
-                                    initialTime: TimeOfDay(
-                                        hour: dateTimeEnd.hour,
-                                        minute: dateTimeEnd.minute),
-                                    builder:
-                                        (BuildContext context, Widget? child) {
-                                      return MediaQuery(
-                                        data: MediaQuery.of(context).copyWith(
-                                            alwaysUse24HourFormat: true),
-                                        child: child!,
-                                      );
-                                    },
-                                  );
-                                  if (time != null) {
-                                    DateTime submitTime = DateFormat("hh:mm")
-                                        .parse(time.format(
-                                            context)); // think this will work better for you
+                                var time = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay(
+                                      hour: dateTimeEnd.hour,
+                                      minute: dateTimeEnd.minute),
+                                  builder:
+                                      (BuildContext context, Widget? child) {
+                                    return MediaQuery(
+                                      data: MediaQuery.of(context).copyWith(
+                                          alwaysUse24HourFormat: true),
+                                      child: child!,
+                                    );
+                                  },
+                                );
+                                if (time != null) {
+                                  DateTime submitTime = DateFormat("hh:mm")
+                                      .parse(time.format(
+                                          context)); // think this will work better for you
 // format date
 
-                                    cubit.changeEndTime(
-                                        day: index,
-                                        value: DateFormat("HH:mm")
-                                            .format(submitTime));
-                                  }
-                                },
-                              );
-                            });
-                      }
-                      return const CustomCircularProgress();
-                    }),
-              )
-            ],
-          ),
+                                  cubit.changeEndTime(
+                                      day: weekday,
+                                      value: DateFormat("HH:mm")
+                                          .format(submitTime));
+                                }
+                              },
+                            );
+                          });
+                    }
+                    return const CustomCircularProgress();
+                  }),
+            )
+          ],
         ),
       ),
     );
@@ -153,8 +161,8 @@ class ScheduleDay extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          height: 25,
-          width: 25,
+          height: 30,
+          width: 30,
           child: Checkbox(
             value: active,
             onChanged: changeStatus,

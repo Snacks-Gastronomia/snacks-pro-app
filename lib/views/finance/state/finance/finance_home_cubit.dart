@@ -439,9 +439,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   }
 
   changeActiveSchedule({required int day, required bool value}) async {
-    print(value);
     await repository.updateActiveTime(day, value);
-    print(state);
   }
 
   changeStartTime({required int day, required String value}) async {
