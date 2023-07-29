@@ -190,10 +190,10 @@ class CardExtra extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 150,
+                width: 180,
                 child: Text(
                   title,
-                  style: AppTextStyles.semiBold(17),
+                  style: AppTextStyles.semiBold(16),
                 ),
               ),
               Text(

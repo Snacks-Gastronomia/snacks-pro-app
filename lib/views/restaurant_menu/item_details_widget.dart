@@ -82,7 +82,7 @@ class ItemDetailsWidget extends StatelessWidget {
                             "Pizza",
                             "Comida Japonesa",
                             "Petiscos",
-                            "Sobremes",
+                            "Sobremesa",
                             "Vinhos"
                           ],
                           value: state.item.category,

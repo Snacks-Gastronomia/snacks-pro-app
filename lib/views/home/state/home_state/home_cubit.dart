@@ -90,21 +90,22 @@ class HomeCubit extends Cubit<HomeState> {
           type: ToastType.info);
 
       String destination = data["isDelivery"]
-          ? data["receive_order"] == "address"
+          ? data["receive_order"] == "address" || data["delivery_value"] == null
               ? data["address"]
-              : "Irá até o local buscar o pedido"
+              : "Ir até o local buscar o pedido"
           : data["table"];
 
       appPrinter.printOrders(
           context,
           printer.docs[0].get("ip"),
           orders,
-          "",
+          data["delivery_value"],
           destination,
           transformRealFormat(data["value"].toString()),
           data["part_code"] ?? "",
           data["payment_method"],
-          data["customer_name"] ?? "");
+          data["customer_name"] ?? "",
+          data["phone_number"]);
     }
   }
 

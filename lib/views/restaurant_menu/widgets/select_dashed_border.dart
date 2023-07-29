@@ -19,6 +19,7 @@ class DashedBorderSelect extends DashedBorderInput {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
@@ -49,7 +50,7 @@ class DashedBorderSelect extends DashedBorderInput {
                 height: 2,
                 color: Colors.transparent,
               ),
-              onChanged: (value) => super.onChange,
+              onChanged: (value) => onChange(value ?? ""),
               borderRadius: BorderRadius.circular(15),
               items: items
                   .map((String value) => DropdownMenuItem(

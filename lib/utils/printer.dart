@@ -41,11 +41,12 @@ class AppPrinter {
   printOrderTemplate(
       {required NetworkPrinter printer,
       required List<OrderModel> orders,
-      required String deliveryValue,
+      required String? deliveryValue,
       required String orderDestination,
       required String method,
       required String total,
       required String orderCode,
+      required String phone_number,
       required String customer_name}) async {
     // print("printing order...");
     // final ByteData data = await rootBundle.load('assets/icons/snacks.png');
@@ -86,14 +87,22 @@ class AppPrinter {
       ),
     );
     printer.text(
-      '',
+      customer_name,
       styles: const PosStyles(
         align: PosAlign.center,
-        height: PosTextSize.size2,
-        width: PosTextSize.size2,
+        height: PosTextSize.size3,
+        width: PosTextSize.size3,
       ),
     );
-    printer.emptyLines(2);
+    printer.text(
+      phone_number,
+      styles: const PosStyles(
+        align: PosAlign.center,
+        height: PosTextSize.size3,
+        width: PosTextSize.size3,
+      ),
+    );
+    printer.emptyLines(1);
     printer.hr();
     printer.emptyLines(1);
 
@@ -125,7 +134,7 @@ class AppPrinter {
     }
     printer.emptyLines(1);
     printer.hr();
-    if (deliveryValue.isNotEmpty) {
+    if (deliveryValue == null || deliveryValue.isNotEmpty) {
       printer.row([
         PosColumn(text: "Entrega", width: 10),
         PosColumn(text: '+$deliveryValue', width: 2),
@@ -139,10 +148,9 @@ class AppPrinter {
       PosColumn(text: "Total", width: 10),
       PosColumn(text: total, width: 2),
     ]);
-    printer.emptyLines(1);
     printer.hr();
     printer.emptyLines(1);
-    if (deliveryValue.isNotEmpty) {
+    if (deliveryValue == null || deliveryValue.isNotEmpty) {
       printer.text(
         'Endereço para entrega: $orderDestination',
         styles: const PosStyles(
@@ -221,18 +229,20 @@ class AppPrinter {
       context,
       String ip,
       List<OrderModel> orders,
-      String deliveryValue,
+      String? deliveryValue,
       String destination,
       String total,
       String code,
       String method,
-      String customer) async {
+      String customer,
+      String phone_number) async {
     print("try connect...");
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
     final printer = NetworkPrinter(paper, profile);
+    printer.setGlobalCodeTable("CP1252");
     var toast = AppToast();
-
+    print(deliveryValue);
     try {
       var res = await printer.connect(ip,
           port: 9100, timeout: const Duration(seconds: 15));
@@ -247,9 +257,11 @@ class AppPrinter {
             deliveryValue: deliveryValue,
             orderDestination: destination,
             method: method,
+            phone_number: phone_number,
             total: total,
             orderCode: code,
             customer_name: customer);
+
         printer.disconnect();
       } else {
         toast.showToast(
