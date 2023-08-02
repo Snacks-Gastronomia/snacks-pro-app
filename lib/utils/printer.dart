@@ -41,7 +41,7 @@ class AppPrinter {
   printOrderTemplate(
       {required NetworkPrinter printer,
       required List<OrderModel> orders,
-      required String? deliveryValue,
+      required int deliveryValue,
       required String orderDestination,
       required String method,
       required String total,
@@ -134,7 +134,7 @@ class AppPrinter {
     }
     printer.emptyLines(1);
     printer.hr();
-    if (deliveryValue == null || deliveryValue.isNotEmpty) {
+    if (deliveryValue > 0) {
       printer.row([
         PosColumn(text: "Entrega", width: 10),
         PosColumn(text: '+$deliveryValue', width: 2),
@@ -150,7 +150,7 @@ class AppPrinter {
     ]);
     printer.hr();
     printer.emptyLines(1);
-    if (deliveryValue == null || deliveryValue.isNotEmpty) {
+    if (deliveryValue > 0) {
       printer.text(
         'Endereço para entrega: $orderDestination',
         styles: const PosStyles(
@@ -229,7 +229,7 @@ class AppPrinter {
       context,
       String ip,
       List<OrderModel> orders,
-      String? deliveryValue,
+      int deliveryValue,
       String destination,
       String total,
       String code,
