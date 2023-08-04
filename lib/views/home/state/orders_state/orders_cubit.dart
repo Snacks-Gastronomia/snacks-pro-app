@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/services/firebase/notifications.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
@@ -21,21 +22,26 @@ class OrdersCubit extends Cubit<OrdersState> {
 
   OrdersCubit() : super(OrdersState.initial());
 
-  double getTotal(List<dynamic> items) {
+  Future<String> getLevel() async {
+    var level = await storage.getDataStorage("user");
+    return level["access_level"] ?? "";
+  }
+
+  double getTotal(List<ItemResponse> items) {
     double total = 0;
-
+    items.map((e) => e.getTotalValue).reduce((c, n) => c + n);
     for (var element in items) {
-      var order = OrderModel.fromMap(element);
+      // var order = OrderModel.fromMap(element);
 
-      double extras = order.extras.isEmpty
-          ? 0.0
-          : order.extras
-              .map((extra) => double.parse(extra["value"].toString()))
-              .reduce((value, element) => value + element);
+      // double extras = element.extras!.isEmpty
+      //     ? 0.0
+      //     : element.extras!
+      //         .map((extra) => double.parse(extra["value"].toString()))
+      //         .reduce((value, element) => value + element);
 
-      total += order.amount *
-          double.parse(order.option_selected["value"].toString());
-      total += extras;
+      // total += element.amount *
+      //     double.parse(element.option_selected["value"].toString());
+      total += element.getTotalValue;
     }
     return total;
   }
@@ -47,12 +53,13 @@ class OrdersCubit extends Cubit<OrdersState> {
       context,
       String? table,
       doc_id,
-      List<dynamic> items,
+      List<ItemResponse> items,
       String payment_method,
       String current,
       dynamic datetime,
       bool isDelivery) async {
-    double total = getTotal(items);
+    double total = items.map((e) => e.getTotalValue).reduce((c, n) => c + n);
+
     final user = await storage.getDataStorage("user");
     var current_index = getStatusIndex(current);
     final restaurant_name = user["restaurant"]["name"];
@@ -77,7 +84,7 @@ class OrdersCubit extends Cubit<OrdersState> {
       if (getStatusObject(current) == OrderStatus.in_delivery ||
           getStatusObject(current) == OrderStatus.waiting_payment) {
         double extras = items.map((e) {
-          var ex = List.from(e["extras"]);
+          var ex = List.from(e.extras ?? []);
 
           return ex.isNotEmpty
               ? ex
@@ -120,14 +127,14 @@ class OrdersCubit extends Cubit<OrdersState> {
     return OrderStatus.values.firstWhere((e) => e.name == status);
   }
 
-  void cancelOrder(docId) async {
-    await repository.updateStatus(docId, OrderStatus.canceled);
+  void cancelOrder(ids) async {
+    await repository.updateStatus(ids, OrderStatus.canceled);
   }
 
   changeStatusFoward(
       double total,
       doc_id,
-      List<dynamic> items,
+      List<ItemResponse> items,
       String payment_method,
       String current,
       dynamic datetime,
@@ -144,9 +151,9 @@ class OrdersCubit extends Cubit<OrdersState> {
 
     if (status == OrderStatus.done) {
       var submitItems = items.map((e) {
-        double value = double.parse(e["option_selected"]["value"].toString());
+        double value = e.optionSelected.value;
 
-        List extrasList = e["extras"] ?? [];
+        List extrasList = e.extras ?? [];
         double extras = extrasList.isEmpty
             ? 0.0
             : extrasList
@@ -154,11 +161,11 @@ class OrdersCubit extends Cubit<OrdersState> {
                 .reduce((value, element) => value + element);
 
         return {
-          "name": e["item"]["title"],
+          "name": e.item.title,
           "extras": extrasList,
           "value": value,
           "extrasTotal": extras,
-          "amount": e["amount"],
+          "amount": e.amount,
         };
       }).toList();
 

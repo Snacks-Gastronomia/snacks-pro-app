@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/services/firebase/database.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
@@ -60,7 +61,7 @@ class HomeCubit extends Cubit<HomeState> {
       NumberFormat.currency(locale: "pt", symbol: r"R$ ")
           .format(double.parse(value));
 
-  void printerOrder(data, context) async {
+  void printerOrder(OrderResponse data, context) async {
     var toast = AppToast();
     toast.init(context: context);
 
@@ -72,8 +73,8 @@ class HomeCubit extends Cubit<HomeState> {
 
     var user = await storage.getDataStorage("user");
 
-    List<dynamic> items = data["items"] ?? [];
-    List<OrderModel> orders = items.map((e) => OrderModel.fromMap(e)).toList();
+    // List<dynamic> items = data.items ??;
+    // List<OrderModel> orders = items.map((e) => OrderResponse.fromMap(e)).toList();
 
     var id = user["restaurant"]["id"];
     var printer = await financeRepository.getPrinterByGoal(id, "Pedidos");
@@ -89,23 +90,25 @@ class HomeCubit extends Cubit<HomeState> {
           content: "imprimindo pedido...",
           type: ToastType.info);
 
-      String destination = data["isDelivery"]
-          ? data["receive_order"] == "address" || data["delivery_value"] == null
-              ? data["address"]
-              : "Ir até o local buscar o pedido"
-          : data["table"];
+      String destination = (data.isDelivery
+              ? data.receiveOrder == "address" || data.deliveryValue > 0
+                  ? data.address
+                  : "Ir até o local buscar o pedido"
+              : data.table) ??
+          "";
 
       appPrinter.printOrders(
           context,
           printer.docs[0].get("ip"),
-          orders,
-          data["delivery_value"],
+          data.items,
+          transformRealFormat(data.deliveryValue.toString()),
+          data.isDelivery,
           destination,
-          transformRealFormat(data["value"].toString()),
-          data["part_code"] ?? "",
-          data["payment_method"],
-          data["customer_name"] ?? "",
-          data["phone_number"]);
+          transformRealFormat(data.value.toString()),
+          data.partCode,
+          data.paymentMethod,
+          data.customerName ?? "",
+          data.phoneNumber ?? "");
     }
   }
 

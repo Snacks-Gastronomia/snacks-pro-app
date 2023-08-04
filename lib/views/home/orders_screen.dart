@@ -10,11 +10,13 @@ import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
+import 'package:snacks_pro_app/views/home/widgets/order/card.dart';
 import 'package:snacks_pro_app/views/home/widgets/tabbar.dart';
 
 class OrdersScreen extends StatelessWidget {
@@ -30,10 +32,10 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    getCountByStatus(List data, OrderStatus status) {
+    getCountByStatus(List<OrderResponse> data, OrderStatus status) {
       return data.isNotEmpty
           ? data
-              .map((element) => element["status"] == status.name ? 1 : 0)
+              .map((element) => element.status == status.name ? 1 : 0)
               .reduce((value, element) => value + element)
           : 0;
     }
@@ -86,232 +88,278 @@ class OrdersScreen extends StatelessWidget {
               if (snapshot.hasData) {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
-                  child:
-                      // Builder(
-                      StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                          stream:
-                              BlocProvider.of<HomeCubit>(context).fetchOrders(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              var orders = snapshot.data!.docs;
-                              List<dynamic> orders_page2 = [];
-                              List<dynamic> orders_page1 = [];
+                  child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                      stream: BlocProvider.of<HomeCubit>(context).fetchOrders(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var docs = snapshot.data!.docs;
 
-                              orders.map((e) {
-                                Map<String, dynamic> data = e.data();
-                                data["id"] = e.id;
+                          var orders =
+                              docs.map((e) => OrderResponse.fromFirebase(e));
 
-                                if (access_level == AppPermission.waiter) {
-                                  if (data["status"] ==
-                                      OrderStatus.waiting_payment.name) {
-                                    orders_page1.add(data);
-                                  } else {
-                                    orders_page2.add(data);
-                                  }
-                                } else if (access_level ==
-                                    AppPermission.employee) {
-                                  if (data["status"] ==
-                                      OrderStatus.ready_to_start.name) {
-                                    orders_page1.add(data);
-                                  } else {
-                                    orders_page2.add(data);
-                                  }
-                                } else {
-                                  if (data["isDelivery"] == true) {
-                                    orders_page2.add(data);
-                                  } else {
-                                    orders_page1.add(data);
-                                  }
-                                }
-                              }).toList();
+                          List<OrderResponse> orders_page1 = [];
+                          List<OrderResponse> orders_page2 = [];
 
-                              List<String> tabs =
-                                  getTextTab(access_level: access_level!);
-                              List<int> counts = getCountBadgeTab(
-                                  access_level, orders_page1, orders_page2);
-                              return Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  children: [
-                                    TabarBar(
-                                      tab1_text: tabs[0],
-                                      tab2_text: tabs[1],
-                                      new_items_page1: counts[0],
-                                      new_items_page2: counts[1],
-                                      page1: Column(
-                                        children: [
-                                          Expanded(
-                                              child: ListView.builder(
-                                                  physics:
-                                                      const BouncingScrollPhysics(),
-                                                  itemCount:
-                                                      orders_page1.length,
-                                                  shrinkWrap: true,
-                                                  itemBuilder: (_, index) {
-                                                    var item =
-                                                        orders_page1[index];
-                                                    Timestamp date =
-                                                        item["created_at"];
-                                                    // time.toDate();
-                                                    String time =
-                                                        DateFormat("HH:mm")
-                                                            .format(date
-                                                                .toDate()
-                                                                .toLocal());
-                                                    var waiter = item?[
-                                                            "waiter_delivery"] ??
-                                                        "";
-                                                    var _change = (item[
-                                                                "need_change"] ??
-                                                            false)
-                                                        ? (item["change_money"] ??
-                                                            "")
-                                                        : "";
+                          orders.map((element) {
+                            if (access_level == AppPermission.waiter) {
+                              if (element.status ==
+                                  OrderStatus.waiting_payment.name) {
+                                orders_page1.add(element);
+                              } else {
+                                orders_page2.add(element);
+                              }
+                            } else if (access_level == AppPermission.employee) {
+                              if (element.status ==
+                                  OrderStatus.ready_to_start.name) {
+                                orders_page1.add(element);
+                              } else {
+                                orders_page2.add(element);
+                              }
+                            } else {
+                              if (element.isDelivery) {
+                                orders_page2.add(element);
+                              } else {
+                                orders_page1.add(element);
+                              }
+                            }
+                          }).toList();
 
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 10),
-                                                      child: CardOrderWidget(
-                                                          total: context.read<OrdersCubit>().getTotal(
-                                                              item["items"]),
-                                                          onCancelOrder: () => context
-                                                              .read<
-                                                                  OrdersCubit>()
-                                                              .cancelOrder(
-                                                                  item["id"]),
-                                                          waiter: waiter,
-                                                          restaurant: item[
-                                                              "restaurant_name"],
-                                                          change: _change,
-                                                          permission:
-                                                              access_level,
-                                                          doubleTap: () => context
-                                                              .read<
-                                                                  OrdersCubit>()
-                                                              .changeStatus(
-                                                                  context,
-                                                                  item["isDelivery"]
-                                                                      ? null
-                                                                      : item["table"],
-                                                                  item["id"],
-                                                                  item["items"],
-                                                                  item["payment_method"],
-                                                                  item["status"],
-                                                                  item["created_at"],
-                                                                  item["isDelivery"]),
-                                                          onLongPress: () async => context.read<HomeCubit>().printerOrder(item, context),
-                                                          leading: item["isDelivery"] ? null : item["table"],
-                                                          address: item["isDelivery"] ? item["address"] ?? 'Endereço não informado' : "",
-                                                          status: item["status"],
-                                                          isDelivery: item["isDelivery"],
-                                                          time: time,
-                                                          method: item["payment_method"],
-                                                          items: item["items"] ?? []),
-                                                    );
-                                                  })),
-                                        ],
-                                      ),
-                                      page2: Column(
-                                        children: [
-                                          Expanded(
-                                              child: ListView.builder(
-                                                  physics:
-                                                      const BouncingScrollPhysics(),
-                                                  itemCount:
-                                                      orders_page2.length,
-                                                  shrinkWrap: true,
-                                                  itemBuilder: (_, index) {
-                                                    var item =
-                                                        orders_page2[index];
-                                                    Timestamp date =
-                                                        item["created_at"];
+                          List<String> tabs =
+                              getTextTab(access_level: access_level!);
+                          List<int> counts = getCountBadgeTab(
+                              access_level, orders_page1, orders_page2);
 
-                                                    String time =
-                                                        DateFormat("HH:mm")
-                                                            .format(date
-                                                                .toDate()
-                                                                .toLocal());
-                                                    var _change = (item[
-                                                                "need_change"] ??
-                                                            false)
-                                                        ? (item["change_money"] ??
-                                                            "")
-                                                        : "";
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 10),
-                                                      child: CardOrderWidget(
-                                                          onCancelOrder: () =>
-                                                              context.read<OrdersCubit>().cancelOrder(
-                                                                  item["id"]),
-                                                          restaurant: item[
-                                                              "restaurant_name"],
-                                                          change: _change,
-                                                          permission:
-                                                              access_level,
-                                                          doubleTap: () => context
-                                                              .read<
-                                                                  OrdersCubit>()
-                                                              .changeStatus(
-                                                                context,
-                                                                item["isDelivery"]
-                                                                    ? null
-                                                                    : item[
-                                                                        "table"],
-                                                                item["id"],
-                                                                item["items"],
-                                                                item[
-                                                                    "payment_method"],
-                                                                item["status"],
-                                                                item[
-                                                                    "created_at"],
-                                                                item[
-                                                                    "isDelivery"],
-                                                              ),
-                                                          onLongPress: () async => context
+                          var groupedOrders1 =
+                              OrderResponse.groupOrdersByCode(orders_page1);
+                          var groupedOrders2 =
+                              OrderResponse.groupOrdersByCode(orders_page2);
+                          return Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              children: [
+                                TabarBar(
+                                  tab1_text: tabs[0],
+                                  tab2_text: tabs[1],
+                                  new_items_page1: counts[0],
+                                  new_items_page2: counts[1],
+                                  page1: Column(
+                                    children: [
+                                      Expanded(
+                                          child: ListView.builder(
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              itemCount: orders_page1.length,
+                                              shrinkWrap: true,
+                                              itemBuilder: (_, index) {
+                                                var order =
+                                                    groupedOrders1[index];
+                                                var item = orders_page1[index];
+                                                // Timestamp date =
+                                                //     item["created_at"];
+                                                // // time.toDate();
+                                                // String time =
+                                                //     DateFormat("HH:mm")
+                                                //         .format(date
+                                                //             .toDate()
+                                                //             .toLocal());
+                                                // var waiter = item?[
+                                                //         "waiter_delivery"] ??
+                                                //     "";
+                                                // var _change = (item[
+                                                //             "need_change"] ??
+                                                //         false)
+                                                //     ? (item["change_money"] ??
+                                                //         "")
+                                                //     : "";
+
+                                                return Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 10),
+                                                    child: OrderCardWidget(
+                                                      orders: order["orders"],
+                                                      onDoubleTap: () => context
+                                                          .read<OrdersCubit>()
+                                                          .changeStatus(
+                                                              context,
+                                                              item.isDelivery
+                                                                  ? null
+                                                                  : item.table,
+                                                              item.id,
+                                                              item.items,
+                                                              item.paymentMethod,
+                                                              item.status,
+                                                              item.createdAt,
+                                                              item.isDelivery),
+                                                      onLongPress: () async =>
+                                                          context
                                                               .read<HomeCubit>()
                                                               .printerOrder(
-                                                                  item, context),
-                                                          leading: item["isDelivery"]
-                                                              ? null
-                                                              : item["table"],
-                                                          address: item["receive_order"] == "address"
-                                                              ? item["address"] ??
-                                                                  ""
-                                                              : "Irá até o local buscar o pedido",
-                                                          status:
-                                                              item["status"],
-                                                          isDelivery: item[
-                                                              "isDelivery"],
-                                                          time: time,
-                                                          total: context
-                                                              .read<OrdersCubit>()
-                                                              .getTotal(item["items"]),
-                                                          method: item["payment_method"],
-                                                          items: item["items"] ?? []),
+                                                                  item,
+                                                                  context),
+                                                    )
+                                                    // CardOrderWidget(
+                                                    //     total: context.read<OrdersCubit>().getTotal(
+                                                    //         item["items"]),
+                                                    //     onCancelOrder: () => context
+                                                    //         .read<
+                                                    //             OrdersCubit>()
+                                                    //         .cancelOrder(
+                                                    //             item["id"]),
+                                                    //     waiter: waiter,
+                                                    //     restaurant: item[
+                                                    //         "restaurant_name"],
+                                                    //     change: _change,
+                                                    //     permission:
+                                                    //         access_level,
+                                                    //     doubleTap: () => context
+                                                    //         .read<
+                                                    //             OrdersCubit>()
+                                                    //         .changeStatus(
+                                                    //             context,
+                                                    //             item["isDelivery"]
+                                                    //                 ? null
+                                                    //                 : item["table"],
+                                                    //             item["id"],
+                                                    //             item["items"],
+                                                    //             item["payment_method"],
+                                                    //             item["status"],
+                                                    //             item["created_at"],
+                                                    //             item["isDelivery"]),
+                                                    //     onLongPress: () async => context.read<HomeCubit>().printerOrder(item, context),
+                                                    //     leading: item["isDelivery"] ? null : item["table"],
+                                                    //     address: item["isDelivery"] ? item["address"] ?? 'Endereço não informado' : "",
+                                                    //     status: item["status"],
+                                                    //     isDelivery: item["isDelivery"],
+                                                    //     time: time,
+                                                    //     method: item["payment_method"],
+                                                    //     items: item["items"] ?? []),
                                                     );
-                                                    // );
-                                                  })),
-                                        ],
-                                      ),
-                                      onChange: (p0) {},
-                                    )
-                                  ],
-                                ),
-                              );
-                            }
-                            return const Center(
-                              child: SizedBox(
-                                  height: 60,
-                                  width: 60,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.black,
-                                    backgroundColor: Colors.black12,
-                                  )),
-                            );
-                          }),
+                                              })),
+                                    ],
+                                  ),
+                                  page2: Column(
+                                    children: [
+                                      Expanded(
+                                          child: ListView.builder(
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              itemCount: orders_page2.length,
+                                              shrinkWrap: true,
+                                              itemBuilder: (_, index) {
+                                                var item = orders_page2[index];
+                                                var order =
+                                                    groupedOrders2[index];
+                                                // Timestamp date =
+                                                //     item["created_at"];
+
+                                                // String time =
+                                                //     DateFormat("HH:mm")
+                                                //         .format(date
+                                                //             .toDate()
+                                                //             .toLocal());
+                                                // var _change = (item[
+                                                //             "need_change"] ??
+                                                //         false)
+                                                //     ? (item["change_money"] ??
+                                                //         "")
+                                                //     : "";
+                                                return Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 10),
+                                                    child: OrderCardWidget(
+                                                      orders: order["orders"],
+                                                      onDoubleTap: () => context
+                                                          .read<OrdersCubit>()
+                                                          .changeStatus(
+                                                              context,
+                                                              item.isDelivery
+                                                                  ? null
+                                                                  : item.table,
+                                                              item.id,
+                                                              item.items,
+                                                              item.paymentMethod,
+                                                              item.status,
+                                                              item.createdAt,
+                                                              item.isDelivery),
+                                                      onLongPress: () async =>
+                                                          context
+                                                              .read<HomeCubit>()
+                                                              .printerOrder(
+                                                                  item,
+                                                                  context),
+                                                    )
+                                                    // CardOrderWidget(
+                                                    //     onCancelOrder: () =>
+                                                    //         context.read<OrdersCubit>().cancelOrder(
+                                                    //             item["id"]),
+                                                    //     restaurant: item[
+                                                    //         "restaurant_name"],
+                                                    //     change: _change,
+                                                    //     permission:
+                                                    //         access_level,
+                                                    //     doubleTap: () => context
+                                                    //         .read<
+                                                    //             OrdersCubit>()
+                                                    //         .changeStatus(
+                                                    //           context,
+                                                    //           item["isDelivery"]
+                                                    //               ? null
+                                                    //               : item[
+                                                    //                   "table"],
+                                                    //           item["id"],
+                                                    //           item["items"],
+                                                    //           item[
+                                                    //               "payment_method"],
+                                                    //           item["status"],
+                                                    //           item[
+                                                    //               "created_at"],
+                                                    //           item[
+                                                    //               "isDelivery"],
+                                                    //         ),
+                                                    //     onLongPress: () async => context
+                                                    //         .read<HomeCubit>()
+                                                    //         .printerOrder(
+                                                    //             item, context),
+                                                    //     leading: item["isDelivery"]
+                                                    //         ? null
+                                                    //         : item["table"],
+                                                    //     address: item["receive_order"] == "address"
+                                                    //         ? item["address"] ??
+                                                    //             ""
+                                                    //         : "Irá até o local buscar o pedido",
+                                                    //     status:
+                                                    //         item["status"],
+                                                    //     isDelivery: item[
+                                                    //         "isDelivery"],
+                                                    //     time: time,
+                                                    //     total: context
+                                                    //         .read<OrdersCubit>()
+                                                    //         .getTotal(item["items"]),
+                                                    //     method: item["payment_method"],
+                                                    //     items: item["items"] ?? []),
+                                                    );
+                                                // );
+                                              })),
+                                    ],
+                                  ),
+                                  onChange: (p0) {},
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                        return const Center(
+                          child: SizedBox(
+                              height: 60,
+                              width: 60,
+                              child: CircularProgressIndicator(
+                                color: Colors.black,
+                                backgroundColor: Colors.black12,
+                              )),
+                        );
+                      }),
                 );
               }
 

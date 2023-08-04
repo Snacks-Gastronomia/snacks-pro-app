@@ -5,6 +5,7 @@ import 'package:image/image.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
 // import "";
 
@@ -40,8 +41,9 @@ class AppPrinter {
 
   printOrderTemplate(
       {required NetworkPrinter printer,
-      required List<OrderModel> orders,
-      required int deliveryValue,
+      required List<ItemResponse> orders,
+      required bool isDelivery,
+      required String deliveryValue,
       required String orderDestination,
       required String method,
       required String total,
@@ -110,22 +112,22 @@ class AppPrinter {
       printer.row([
         PosColumn(text: e.amount.toString(), width: 1),
         PosColumn(
-            text: '${e.item.title} - ${e.option_selected["title"]}', width: 10),
-        PosColumn(text: '${e.option_selected["value"]}', width: 1),
+            text: '${e.item.title} - ${e.optionSelected.title}', width: 10),
+        PosColumn(text: '${e.optionSelected.value}', width: 1),
       ]);
       printer.row([
-        PosColumn(text: e.observations, width: 12),
+        PosColumn(text: e.observations ?? "", width: 12),
       ]);
       printer.row([
         PosColumn(text: "Adicionais", width: 12),
       ]);
-      if (e.extras.isEmpty) {
+      if (e.extras!.isEmpty) {
         printer.row([
           PosColumn(text: "- Nenhum", width: 12),
         ]);
       } else {
-        for (var i = 0; i < e.extras.length; i++) {
-          var extra = '+ ${e.extras[i]["title"]}';
+        for (var i = 0; i < e.extras!.length; i++) {
+          var extra = '+ ${e.extras![i]["title"]}';
           printer.row([
             PosColumn(text: extra, width: 12),
           ]);
@@ -134,7 +136,7 @@ class AppPrinter {
     }
     printer.emptyLines(1);
     printer.hr();
-    if (deliveryValue > 0) {
+    if (isDelivery) {
       printer.row([
         PosColumn(text: "Entrega", width: 10),
         PosColumn(text: '+$deliveryValue', width: 2),
@@ -150,7 +152,7 @@ class AppPrinter {
     ]);
     printer.hr();
     printer.emptyLines(1);
-    if (deliveryValue > 0) {
+    if (isDelivery) {
       printer.text(
         'Endereço para entrega: $orderDestination',
         styles: const PosStyles(
@@ -228,8 +230,9 @@ class AppPrinter {
   printOrders(
       context,
       String ip,
-      List<OrderModel> orders,
-      int deliveryValue,
+      List<ItemResponse> orders,
+      String deliveryValue,
+      bool isDelivery,
       String destination,
       String total,
       String code,
@@ -241,6 +244,7 @@ class AppPrinter {
     final profile = await CapabilityProfile.load();
     final printer = NetworkPrinter(paper, profile);
     printer.setGlobalCodeTable("CP1252");
+
     var toast = AppToast();
     print(deliveryValue);
     try {
@@ -254,6 +258,7 @@ class AppPrinter {
         printOrderTemplate(
             printer: printer,
             orders: orders,
+            isDelivery: isDelivery,
             deliveryValue: deliveryValue,
             orderDestination: destination,
             method: method,

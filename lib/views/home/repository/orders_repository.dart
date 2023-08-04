@@ -43,8 +43,6 @@ class OrdersRepository {
   }
 
   updateStatus(String id, OrderStatus new_status) async {
-    // return await services.getOrdersByRestaurantId(id);
-
     try {
       return await services.changeOrderStatus(id, new_status);
     } catch (e) {
