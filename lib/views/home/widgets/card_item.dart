@@ -27,6 +27,7 @@ class CardItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var order = OrderModel(item: item, observations: "", option_selected: {});
     double value = double.parse(item.options[0]["value"].toString());
+    print(item.id);
     return Builder(builder: (context) {
       return Stack(
         children: [
@@ -56,7 +57,7 @@ class CardItemWidget extends StatelessWidget {
                   width: double.maxFinite,
                   child: item.image_url == null ||
                           item.image_url!.isEmpty ||
-                          !item.image_url!.contains("https")
+                          item.image_url!.contains("https")
                       ? Center(
                           child: SvgPicture.asset(
                             AppImages.snacks,
@@ -65,7 +66,23 @@ class CardItemWidget extends StatelessWidget {
                             width: 70,
                           ),
                         )
-                      : Image.network(item.image_url!, fit: BoxFit.cover),
+                      :
+                      // FadeInImage(
+                      //     image: NetworkImage(item.image_url!),
+                      //     placeholder: AssetImage(AppImages.snacks),
+                      //     imageErrorBuilder: (context, error, stackTrace) {
+                      //       return Image.asset(AppImages.snacks,
+                      //           fit: BoxFit.fitWidth);
+                      //     },
+                      //     fit: BoxFit.fitWidth,
+                      //   ),
+                      Image.network(
+                          item.image_url!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const SizedBox();
+                          },
+                        ),
                 ),
                 Container(
                   height: 2,

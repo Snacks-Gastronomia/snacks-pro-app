@@ -31,7 +31,7 @@ class TabarBar extends StatelessWidget {
           children: [
             Container(
               height: 40,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               padding: const EdgeInsets.all(3.0),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -41,8 +41,6 @@ class TabarBar extends StatelessWidget {
               ),
               child: TabBar(
                 onTap: onChange,
-
-                // give the indicator a decoration (color and border radius)
                 indicator: BoxDecoration(
                   color: Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(
@@ -56,7 +54,10 @@ class TabarBar extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(tab1_text),
+                        Text(
+                          tab1_text,
+                          style: AppTextStyles.medium(12),
+                        ),
                         const SizedBox(width: 5),
                         if (new_items_page1 != 0)
                           Container(
@@ -68,7 +69,7 @@ class TabarBar extends StatelessWidget {
                             child: Text(
                               new_items_page1.toString(),
                               style:
-                                  AppTextStyles.medium(11, color: Colors.white),
+                                  AppTextStyles.medium(10, color: Colors.white),
                             ),
                           )
                       ],
@@ -79,7 +80,10 @@ class TabarBar extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(tab2_text),
+                        Text(
+                          tab2_text,
+                          style: AppTextStyles.medium(12),
+                        ),
                         const SizedBox(width: 5),
                         if (new_items_page2 != 0)
                           Container(
@@ -91,7 +95,7 @@ class TabarBar extends StatelessWidget {
                             child: Text(
                               new_items_page2.toString(),
                               style:
-                                  AppTextStyles.medium(11, color: Colors.white),
+                                  AppTextStyles.medium(10, color: Colors.white),
                             ),
                           )
                       ],

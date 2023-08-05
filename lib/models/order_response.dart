@@ -338,7 +338,7 @@ class ItemDetails {
 }
 
 class OptionSelected {
-  int id;
+  String id;
   String title;
   double value;
 
@@ -366,7 +366,7 @@ class OptionSelected {
 
   factory OptionSelected.fromMap(Map<String, dynamic> map) {
     return OptionSelected(
-      id: map['id']?.toInt() ?? 0,
+      id: map['id']?.toString() ?? "0",
       title: map['title'] ?? '',
       value: double.tryParse(map['value']) ?? 0.0,
     );
