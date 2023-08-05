@@ -210,8 +210,9 @@ class ListOrderByStatus extends StatelessWidget {
                         option: item.optionSelected.title,
                         extras: item.extras!.isNotEmpty
                             ? item.extras!.length > 1
-                                ? item.extras!.reduce((value, element) =>
-                                    value["title"] + ", " + element["title"])
+                                ? item.extras!
+                                    .map((e) => e["title"].toString())
+                                    .join(", ")
                                 : item.extras![0]["title"]
                             : "",
                         value: item.amount * item.optionSelected.value,
@@ -277,8 +278,8 @@ class ItemWidget extends StatelessWidget {
                     ),
                     Text(
                       restaurant,
-                      style: AppTextStyles.light(10,
-                          color: Colors.black.withOpacity(0.3)),
+                      style: AppTextStyles.light(11,
+                          color: Colors.black.withOpacity(0.5)),
                       overflow: TextOverflow.visible,
                     ),
                   ],
