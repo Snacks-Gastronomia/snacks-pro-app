@@ -243,7 +243,7 @@ class AppPrinter {
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
     final printer = NetworkPrinter(paper, profile);
-    printer.setGlobalCodeTable("CP1252");
+    //printer.setGlobalCodeTable("CP1252");
 
     var toast = AppToast();
     print(deliveryValue);
