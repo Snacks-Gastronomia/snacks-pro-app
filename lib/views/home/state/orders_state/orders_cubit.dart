@@ -1,7 +1,8 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
@@ -12,6 +13,7 @@ import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/confirm_order.dart';
+import 'dart:convert';
 
 part 'orders_state.dart';
 
@@ -21,139 +23,136 @@ class OrdersCubit extends Cubit<OrdersState> {
   final storage = AppStorage();
 
   OrdersCubit() : super(OrdersState.initial());
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchOrders() async* {
+    var user = await storage.getDataStorage("user");
+    AppPermission access = AppPermission.values.byName(user["access_level"]);
 
-  Future<String> getLevel() async {
-    var level = await storage.getDataStorage("user");
-    return level["access_level"] ?? "";
-  }
-
-  double getTotal(List<ItemResponse> items) {
-    double total = 0;
-    items.map((e) => e.getTotalValue).reduce((c, n) => c + n);
-    for (var element in items) {
-      // var order = OrderModel.fromMap(element);
-
-      // double extras = element.extras!.isEmpty
-      //     ? 0.0
-      //     : element.extras!
-      //         .map((extra) => double.parse(extra["value"].toString()))
-      //         .reduce((value, element) => value + element);
-
-      // total += element.amount *
-      //     double.parse(element.option_selected["value"].toString());
-      total += element.getTotalValue;
+    if (access == AppPermission.waiter) {
+      yield* repository.fetchAllOrdersForWaiters();
+    } else if (access == AppPermission.radm ||
+        access == AppPermission.employee) {
+      yield* repository.fetchOrdersByRestaurantId(user["restaurant"]["id"]);
+    } else if (access == AppPermission.cashier) {
+      var start = DateTime.now().subtract(const Duration(hours: 12));
+      var end = DateTime.now().add(const Duration(hours: 12));
+      yield* repository.fetchAllOrdersByInterval(start, end);
     }
-    return total;
+
+    yield* repository.fetchAllOrders();
   }
 
-  void changeStatusBackward(doc_id, List<Map<String, dynamic>> items,
-      String payment_method, OrderStatus current) async {}
+  void changeStatus({
+    required context,
+    required List<OrderResponse> items,
+  }) async {
+    var firstOrder = items[0];
 
-  void changeStatus(
-      context,
-      String? table,
-      doc_id,
-      List<ItemResponse> items,
-      String payment_method,
-      String current,
-      dynamic datetime,
-      bool isDelivery) async {
-    double total = items.map((e) => e.getTotalValue).reduce((c, n) => c + n);
-
+    double total =
+        items.map((e) => e.value).reduce((value, element) => value + element);
     final user = await storage.getDataStorage("user");
-    var current_index = getStatusIndex(current);
-    final restaurant_name = user["restaurant"]["name"];
+    final restaurantName = user["restaurant"]["name"];
+    AppPermission access = AppPermission.values.byName(user["access_level"]);
+    var status = OrderStatus.values.byName(firstOrder.status);
 
-    if (user["access_level"] == AppPermission.employee.name &&
-            current != OrderStatus.done.name ||
-        user["access_level"] == AppPermission.cashier.name &&
-            current_index >= 3 &&
-            isDelivery ||
-        user["access_level"] == AppPermission.waiter.name &&
-            (current_index == 0 || current_index == 3)) {
-      if (current_index == 0) {
-        repository.addWaiterToOrderPayment('${user["name"]}', doc_id);
-      }
-      //done
-      if (current_index == 3 &&
-          user["access_level"] == AppPermission.waiter.name &&
-          isDelivery == false) {
-        repository.addWaiterToOrderDelivered('${user["name"]}', doc_id);
-      }
+    var allStatus =
+        items.map((e) => OrderStatus.values.byName(e.status)).toList();
 
-      if (getStatusObject(current) == OrderStatus.in_delivery ||
-          getStatusObject(current) == OrderStatus.waiting_payment) {
-        double extras = items.map((e) {
-          var ex = List.from(e.extras ?? []);
+    var isCashierAllowedByStatus =
+        items.every((key) => key.status == OrderStatus.done.name);
 
-          return ex.isNotEmpty
-              ? ex
-                  .map((extra) => double.parse(extra["value"]))
-                  .reduce((value, element) => value + element)
-              : 0.0;
-        }).reduce((value, element) => value + element);
+    bool isCashierAllowed = access == AppPermission.cashier &&
+        isCashierAllowedByStatus &&
+        firstOrder.isDelivery;
 
+    List<String> ids = items.map((e) => e.id).toList();
+
+    var nextStatus = getNextStatus(status, firstOrder.isDelivery);
+
+    if ((access == AppPermission.employee ||
+            access == AppPermission.waiter ||
+            isCashierAllowed) &&
+        nextStatus != null) {
+      bool confimationOrderPayment =
+          allStatus.contains(OrderStatus.in_delivery) ||
+              allStatus.contains(OrderStatus.waiting_payment);
+
+      if (confimationOrderPayment) {
         var res = await AppModal().showModalBottomSheet(
             context: context,
             dimissible: false,
-            content: ConfirmOrderModal(value: total, method: payment_method));
+            content: ConfirmOrderModal(
+                value: total, method: firstOrder.paymentMethod));
 
-        if (res != null) {
-          if (res != payment_method) {
-            repository.updatePaymentMethod(doc_id, res);
-          }
-          changeStatusFoward(total, doc_id, items, payment_method, current,
-              datetime, restaurant_name);
-        }
-      } else {
-        if (!isDelivery && current_index == 3) {
-          await repository.updateStatus(doc_id, OrderStatus.delivered);
-        } else {
-          changeStatusFoward(total, doc_id, items, payment_method, current,
-              datetime, restaurant_name);
+        if (res != null && res != firstOrder.paymentMethod) {
+          await repository.updateMultiplePaymentMethod(ids, res);
         }
       }
-    } else if (user["access_level"] == AppPermission.employee.name) {
-      final notification = AppNotification();
-      await notification.sendToWaiters(code: "#$table");
+
+      switch (status) {
+        case OrderStatus.waiting_payment:
+          await repository.addWaiterToAllOrderPayment('${user["name"]}', ids);
+          break;
+
+        case OrderStatus.order_in_progress:
+          if (!firstOrder.isDelivery) {
+            final notification = AppNotification();
+            await notification.sendToWaiters(code: "#${firstOrder.table}");
+          }
+          break;
+        case OrderStatus.done:
+          if (access == AppPermission.waiter) {
+            await repository.addWaiterToAllOrderDelivered(
+                '${user["name"]}', ids);
+          }
+          break;
+
+        default:
+      }
+
+      if (nextStatus == OrderStatus.delivered) {
+        await addOrderToReport(
+            orders: items,
+            restaurant: restaurantName,
+            datetime: firstOrder.createdAt);
+      }
+      await repository.updateManyStatus(ids, nextStatus);
     }
-  }
-
-  getStatusIndex(String status) {
-    return getStatusObject(status).index;
-  }
-
-  OrderStatus getStatusObject(String status) {
-    return OrderStatus.values.firstWhere((e) => e.name == status);
   }
 
   void cancelOrder(ids) async {
     await repository.updateStatus(ids, OrderStatus.canceled);
   }
 
-  changeStatusFoward(
-      double total,
-      doc_id,
-      List<ItemResponse> items,
-      String payment_method,
-      String current,
-      dynamic datetime,
-      restaurant_name) async {
-    var current_index = getStatusIndex(current);
-    var status = OrderStatus.values[current_index + 1];
+  OrderStatus? getNextStatus(OrderStatus currentStatus, bool isDelivery) {
+    var nextStatus = OrderStatus.values[currentStatus.index + 1];
 
-    if (status == OrderStatus.invalid) return;
+    if (nextStatus == OrderStatus.invalid) return null;
 
-    var finance = FinanceApiServices();
+    if (!isDelivery && currentStatus == OrderStatus.done) {
+      nextStatus = OrderStatus.delivered;
+    }
+
+    return nextStatus;
+  }
+
+  Future<void> addOrderToReport(
+      {required List<OrderResponse> orders,
+      required String restaurant,
+      required datetime}) async {
     final dataStorage = await storage.getDataStorage("user");
 
-    await repository.updateStatus(doc_id, status);
+    double total =
+        orders.map((e) => e.value).reduce((value, element) => value + element);
 
-    if (status == OrderStatus.done) {
-      var submitItems = items.map((e) {
-        double value = e.optionSelected.value;
+    String method = orders[0].paymentMethod;
 
-        List extrasList = e.extras ?? [];
+    var finance = FinanceApiServices();
+
+    var submitItems = orders.map((e) {
+      e.items.map((order) {
+        double value = order.optionSelected.value;
+
+        List extrasList = order.extras ?? [];
         double extras = extrasList.isEmpty
             ? 0.0
             : extrasList
@@ -161,24 +160,24 @@ class OrdersCubit extends Cubit<OrdersState> {
                 .reduce((value, element) => value + element);
 
         return {
-          "name": e.item.title,
+          "name": order.item.title,
           "extras": extrasList,
           "value": value,
           "extrasTotal": extras,
-          "amount": e.amount,
+          "amount": order.amount,
         };
-      }).toList();
+      });
+    }).toList();
 
-      String time = DateFormat("HH:mm").format(datetime.toDate());
-      var data = {
-        "total": total,
-        "orders": submitItems,
-        "time": time,
-        "payment": payment_method,
-      };
+    String time = DateFormat("HH:mm").format(datetime);
+    var data = {
+      "total": total,
+      "orders": submitItems,
+      "time": time,
+      "payment": method,
+    };
 
-      await finance.setMonthlyBudgetFirebase(
-          dataStorage["restaurant"]["id"], data, total, restaurant_name);
-    }
+    return await finance.setMonthlyBudgetFirebase(
+        dataStorage["restaurant"]["id"], data, total, restaurant);
   }
 }

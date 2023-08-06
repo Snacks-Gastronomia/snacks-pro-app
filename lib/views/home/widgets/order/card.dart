@@ -49,6 +49,8 @@ class OrderCardWidget extends StatelessWidget {
 
     OrderStatus orderStatus = OrderStatus.values.byName(order.status);
 
+    bool equal = orders.every((element) => element.status == order.status);
+
     if (orders.length > 1) {
       if (order.status == OrderStatus.canceled.name) {
         statusIcon = const Icon(
@@ -66,7 +68,7 @@ class OrderCardWidget extends StatelessWidget {
         orderStatus = OrderStatus.delivered;
       } else if (order.status == OrderStatus.waiting_delivery.name) {
         orderStatus = OrderStatus.waiting_payment;
-      } else {
+      } else if (!equal) {
         orderStatus = OrderStatus.order_in_progress;
       }
     }

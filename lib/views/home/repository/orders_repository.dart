@@ -50,6 +50,14 @@ class OrdersRepository {
     }
   }
 
+  updateManyStatus(List<String> ids, OrderStatus new_status) async {
+    try {
+      return await services.changeManyOrderStatus(ids, new_status);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   cancelOrder(String id) async {
     try {
       return await services.cancelOrderByDocId(id);
@@ -68,6 +76,16 @@ class OrdersRepository {
     }
   }
 
+  updateMultiplePaymentMethod(List<String> ids, String newMethod) async {
+    // return await services.getOrdersByRestaurantId(id);
+
+    try {
+      return await services.updateManyPaymentMethod(ids, newMethod);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void addWaiterToOrderPayment(String name, String id) {
     try {
       return services.addWaiterToOrderPayment(id, name);
@@ -76,9 +94,26 @@ class OrdersRepository {
     }
   }
 
-  void addWaiterToOrderDelivered(String name, String id) {
+  Future<void> addWaiterToAllOrderPayment(String name, List<String> ids) async {
     try {
-      return services.addWaiterToOrderDelivered(id, name);
+      return await services.addWaiterToAllOrderPayment(ids, name);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> addWaiterToOrderDelivered(String name, String id) async {
+    try {
+      return await services.addWaiterToOrderDelivered(id, name);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> addWaiterToAllOrderDelivered(
+      String name, List<String> ids) async {
+    try {
+      return await services.addWaiterToAllOrderDelivered(ids, name);
     } catch (e) {
       print(e);
     }

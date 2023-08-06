@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderResponse {
-  String? id;
+  String id;
   String code;
   bool needChange;
   String restaurant;
@@ -38,7 +38,7 @@ class OrderResponse {
     this.moneyChange = "",
     this.rfid,
     this.address,
-    this.id,
+    required this.id,
     this.receiveOrder,
     this.deliveryValue = 0.0,
     this.phoneNumber,

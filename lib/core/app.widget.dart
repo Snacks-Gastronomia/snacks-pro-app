@@ -65,6 +65,9 @@ class AppWidget extends StatelessWidget {
         BlocProvider<FinanceOrdersCubit>(
           create: (context) => FinanceOrdersCubit(),
         ),
+        BlocProvider<OrdersCubit>(
+          create: (context) => OrdersCubit(),
+        ),
         BlocProvider<ItemScreenCubit>(
           create: (context) => ItemScreenCubit(),
         ),
@@ -76,9 +79,6 @@ class AppWidget extends StatelessWidget {
         ),
         BlocProvider<FinanceCubit>(
           create: (context) => FinanceCubit(),
-        ),
-        BlocProvider<OrdersCubit>(
-          create: (context) => OrdersCubit(),
         ),
         BlocProvider<EmployeesCubit>(
           create: (context) => EmployeesCubit(),

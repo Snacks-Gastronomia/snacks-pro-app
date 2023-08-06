@@ -1,7 +1,6 @@
 part of 'orders_cubit.dart';
 
 class OrdersState {
-  final List<OrderModel> cart;
   final String payment_method;
   final int table_code;
 
@@ -9,8 +8,8 @@ class OrdersState {
   final AppStatus status;
   final String? error;
   final String temp_observation;
+
   OrdersState({
-    required this.cart,
     required this.payment_method,
     required this.table_code,
     required this.total,
@@ -30,7 +29,6 @@ class OrdersState {
   factory OrdersState.initial() => OrdersState(
         payment_method: "",
         table_code: 0,
-        cart: [],
         status: AppStatus.initial,
         total: 0,
         error: "",
@@ -54,7 +52,6 @@ class OrdersState {
   // }
 
   OrdersState copyWith({
-    List<OrderModel>? cart,
     String? payment_method,
     int? table_code,
     double? total,
@@ -63,7 +60,6 @@ class OrdersState {
     String? temp_observation,
   }) {
     return OrdersState(
-      cart: cart ?? this.cart,
       payment_method: payment_method ?? this.payment_method,
       table_code: table_code ?? this.table_code,
       total: total ?? this.total,
@@ -71,5 +67,40 @@ class OrdersState {
       error: error ?? this.error,
       temp_observation: temp_observation ?? this.temp_observation,
     );
+  }
+
+  @override
+  // TODO: implement props
+  List<Object> get props {
+    return [
+      payment_method,
+      table_code,
+      total,
+      status,
+      temp_observation,
+    ];
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is OrdersState &&
+        other.payment_method == payment_method &&
+        other.table_code == table_code &&
+        other.total == total &&
+        other.status == status &&
+        other.error == error &&
+        other.temp_observation == temp_observation;
+  }
+
+  @override
+  int get hashCode {
+    return payment_method.hashCode ^
+        table_code.hashCode ^
+        total.hashCode ^
+        status.hashCode ^
+        error.hashCode ^
+        temp_observation.hashCode;
   }
 }

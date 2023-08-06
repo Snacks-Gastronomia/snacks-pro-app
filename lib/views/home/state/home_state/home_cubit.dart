@@ -40,23 +40,6 @@ class HomeCubit extends Cubit<HomeState> {
     fetchItems();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> fetchOrders() async* {
-    var user = await storage.getDataStorage("user");
-    if (user["access_level"] == AppPermission.waiter.name) {
-      yield* ordersRepository.fetchAllOrdersForWaiters();
-    } else if (user["access_level"] == AppPermission.radm.name ||
-        user["access_level"] == AppPermission.employee.name) {
-      yield* ordersRepository
-          .fetchOrdersByRestaurantId(user["restaurant"]["id"]);
-    } else if (user["access_level"] == AppPermission.cashier.name) {
-      var end = DateTime.now().add(const Duration(hours: 12));
-      var start = DateTime.now().subtract(const Duration(hours: 12));
-      yield* ordersRepository.fetchAllOrdersByInterval(start, end);
-    }
-
-    yield* ordersRepository.fetchAllOrders();
-  }
-
   transformRealFormat(String value) =>
       NumberFormat.currency(locale: "pt", symbol: r"R$ ")
           .format(double.parse(value));
@@ -65,17 +48,7 @@ class HomeCubit extends Cubit<HomeState> {
     var toast = AppToast();
     toast.init(context: context);
 
-    //String value = transformRealFormat(data["value"].toString());
-    //  String delivery = transformRealFormat(data["deliveryValue"].toString());
-
-    // var total =
-    //     NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value);
-
     var user = await storage.getDataStorage("user");
-
-    // List<dynamic> items = data.items ??;
-    // List<OrderModel> orders = items.map((e) => OrderResponse.fromMap(e)).toList();
-
     var id = user["restaurant"]["id"];
     var printer = await financeRepository.getPrinterByGoal(id, "Pedidos");
 

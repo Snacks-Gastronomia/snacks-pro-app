@@ -33,38 +33,33 @@ class OrderDetailsContent extends StatelessWidget {
 
     bool allowCancel = ord.status != OrderStatus.delivered.name ||
         ord.status != OrderStatus.canceled.name;
-    // List<String?> allowCancelOrders = orders
-    //     .where((e) => e.status == OrderStatus.waiting_payment.name)
-    //     .toList()
-    //     .map((e) => e.id)
-    //     .toList();
 
-    // List<String?> all = orders.map((e) => e.id).toList();
-
-    // List<String?> allowCancelOrdersDelivery = orders
-    //     .where((e) => (ord.isDelivery
-    //         ? e.status != OrderStatus.ready_to_start.name
-    //         : false))
-    //     .toList()
-    //     .map((e) => e.id)
-    //     .toList();
-
-    // bool allowCancel =
-    //     allowCancelOrders.isNotEmpty || allowCancelOrdersDelivery.isEmpty;
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text.rich(TextSpan(
-              text: 'Detalhes ',
-              style: AppTextStyles.semiBold(26, color: Colors.black),
-              children: <TextSpan>[
-                TextSpan(
-                  text: '#${ord.partCode}',
-                  style: AppTextStyles.semiBold(26, color: Colors.black26),
-                )
-              ])),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text.rich(TextSpan(
+                  text: 'Detalhes ',
+                  style: AppTextStyles.semiBold(26, color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '#${ord.partCode}',
+                      style: AppTextStyles.semiBold(26, color: Colors.black26),
+                    )
+                  ])),
+              SizedBox(
+                width: 25,
+                child: IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close_rounded)),
+              )
+            ],
+          ),
           for (int i = 0; i < OrderStatus.values.length; i++)
             ListOrderByStatus(orders: orders, status: OrderStatus.values[i]),
           const SizedBox(
@@ -129,18 +124,18 @@ class OrderDetailsContent extends StatelessWidget {
                     AppTextStyles.regular(16, color: const Color(0xffE20808)),
               ),
             ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                backgroundColor: Colors.black,
-                fixedSize: const Size(double.maxFinite, 59)),
-            child: Text(
-              'Fechar',
-              style: AppTextStyles.regular(16, color: Colors.white),
-            ),
-          ),
+          // ElevatedButton(
+          //   onPressed: () => Navigator.pop(context),
+          //   style: ElevatedButton.styleFrom(
+          //       shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(15)),
+          //       backgroundColor: Colors.black,
+          //       fixedSize: const Size(double.maxFinite, 59)),
+          //   child: Text(
+          //     'Fechar',
+          //     style: AppTextStyles.regular(16, color: Colors.white),
+          //   ),
+          // ),
         ],
       ),
     );

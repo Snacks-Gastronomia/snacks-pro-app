@@ -56,7 +56,42 @@ class OrdersApiServices {
         .update({"waiter_payment": name});
   }
 
-  void addWaiterToOrderDelivered(String id, String name) async {
+  Future<void> addWaiterToAllOrderPayment(List<String> ids, String name) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    WriteBatch batch = firestore.batch();
+
+    for (String? orderId in ids) {
+      DocumentReference orderRef = firestore.collection('orders').doc(orderId);
+      batch.update(orderRef, {'waiter_payment': name});
+    }
+
+    batch.commit().then((_) {
+      print('Batch update successful!');
+    }).catchError((error) {
+      print('Error updating documents: $error');
+    });
+  }
+
+  Future<void> addWaiterToAllOrderDelivered(
+      List<String> ids, String name) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    WriteBatch batch = firestore.batch();
+
+    for (String? orderId in ids) {
+      DocumentReference orderRef = firestore.collection('orders').doc(orderId);
+      batch.update(orderRef, {'waiter_delivery': name});
+    }
+
+    batch.commit().then((_) {
+      print('Batch update successful!');
+    }).catchError((error) {
+      print('Error updating documents: $error');
+    });
+  }
+
+  Future<void> addWaiterToOrderDelivered(String id, String name) async {
     return await database
         .collection("orders")
         .doc(id)
@@ -86,6 +121,24 @@ class OrdersApiServices {
     // .update({"status": new_status.name});
   }
 
+  Future<void> changeManyOrderStatus(
+      List<String> ids, OrderStatus new_status) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    WriteBatch batch = firestore.batch();
+
+    for (String? orderId in ids) {
+      DocumentReference orderRef = firestore.collection('orders').doc(orderId);
+      batch.update(orderRef, {'status': new_status.name});
+    }
+
+    batch.commit().then((_) {
+      print('Batch update successful!');
+    }).catchError((error) {
+      print('Error updating documents: $error');
+    });
+  }
+
   Future<void> cancelOrderByDocId(String id) async {
     return await database.collection("orders").doc(id).delete();
   }
@@ -95,10 +148,23 @@ class OrdersApiServices {
         .collection("orders")
         .doc(id)
         .update({"payment_method": newMethod});
+  }
 
-    // await database
-    //     .collection("orders")
-    //     .doc(id)
-    // .update({"status": new_status.name});
+  Future<void> updateManyPaymentMethod(
+      List<String> ids, String newMethod) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    WriteBatch batch = firestore.batch();
+
+    for (String? orderId in ids) {
+      DocumentReference orderRef = firestore.collection('orders').doc(orderId);
+      batch.update(orderRef, {'payment_method': newMethod});
+    }
+
+    batch.commit().then((_) {
+      print('Batch update successful!');
+    }).catchError((error) {
+      print('Error updating documents: $error');
+    });
   }
 }
