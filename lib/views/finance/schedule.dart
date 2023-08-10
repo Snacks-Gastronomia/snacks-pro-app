@@ -53,7 +53,7 @@ class ScheduleContent extends StatelessWidget {
                             dateTimeStart.weekday;
                             DateTime dateTimeEnd = DateFormat("HH:mm")
                                 .parse(days[index].data()["end"]);
-
+                            print("teste");
                             return ScheduleDay(
                               active: days[index].data()["active"],
                               day: toBeginningOfSentenceCase(
