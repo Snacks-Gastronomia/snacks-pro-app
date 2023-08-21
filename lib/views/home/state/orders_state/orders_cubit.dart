@@ -76,7 +76,9 @@ class OrdersCubit extends Cubit<OrdersState> {
           allStatus.contains(OrderStatus.in_delivery) ||
               allStatus.contains(OrderStatus.waiting_payment);
 
-      if (confimationOrderPayment) {
+      if (nextStatus == OrderStatus.order_in_progress) {
+        await repository.updateManyStatus(ids, nextStatus);
+      } else if (confimationOrderPayment) {
         var res = await AppModal().showModalBottomSheet(
             context: context,
             dimissible: false,
