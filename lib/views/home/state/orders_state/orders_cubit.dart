@@ -76,7 +76,9 @@ class OrdersCubit extends Cubit<OrdersState> {
           allStatus.contains(OrderStatus.in_delivery) ||
               allStatus.contains(OrderStatus.waiting_payment);
 
-      if (confimationOrderPayment) {
+      if (nextStatus == OrderStatus.order_in_progress) {
+        await repository.updateManyStatus(ids, nextStatus);
+      } else if (confimationOrderPayment) {
         var res = await AppModal().showModalBottomSheet(
             context: context,
             dimissible: false,
@@ -86,36 +88,38 @@ class OrdersCubit extends Cubit<OrdersState> {
         if (res != null && res != firstOrder.paymentMethod) {
           await repository.updateMultiplePaymentMethod(ids, res);
         }
-      }
+        if (res != null) {
+          switch (status) {
+            case OrderStatus.waiting_payment:
+              await repository.addWaiterToAllOrderPayment(
+                  '${user["name"]}', ids);
+              break;
 
-      switch (status) {
-        case OrderStatus.waiting_payment:
-          await repository.addWaiterToAllOrderPayment('${user["name"]}', ids);
-          break;
+            case OrderStatus.order_in_progress:
+              if (!firstOrder.isDelivery) {
+                final notification = AppNotification();
+                await notification.sendToWaiters(code: "#${firstOrder.table}");
+              }
+              break;
+            case OrderStatus.done:
+              if (access == AppPermission.waiter) {
+                await repository.addWaiterToAllOrderDelivered(
+                    '${user["name"]}', ids);
+              }
+              break;
 
-        case OrderStatus.order_in_progress:
-          if (!firstOrder.isDelivery) {
-            final notification = AppNotification();
-            await notification.sendToWaiters(code: "#${firstOrder.table}");
+            default:
           }
-          break;
-        case OrderStatus.done:
-          if (access == AppPermission.waiter) {
-            await repository.addWaiterToAllOrderDelivered(
-                '${user["name"]}', ids);
+
+          if (nextStatus == OrderStatus.delivered) {
+            await addOrderToReport(
+                orders: items,
+                restaurant: restaurantName,
+                datetime: firstOrder.createdAt);
           }
-          break;
-
-        default:
+          await repository.updateManyStatus(ids, nextStatus);
+        }
       }
-
-      if (nextStatus == OrderStatus.delivered) {
-        await addOrderToReport(
-            orders: items,
-            restaurant: restaurantName,
-            datetime: firstOrder.createdAt);
-      }
-      await repository.updateManyStatus(ids, nextStatus);
     }
   }
 
