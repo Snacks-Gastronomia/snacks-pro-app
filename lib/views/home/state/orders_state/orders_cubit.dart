@@ -76,9 +76,7 @@ class OrdersCubit extends Cubit<OrdersState> {
           allStatus.contains(OrderStatus.in_delivery) ||
               allStatus.contains(OrderStatus.waiting_payment);
 
-      if (nextStatus == OrderStatus.order_in_progress) {
-        await repository.updateManyStatus(ids, nextStatus);
-      } else if (confimationOrderPayment) {
+      if (confimationOrderPayment) {
         var res = await AppModal().showModalBottomSheet(
             context: context,
             dimissible: false,
@@ -117,8 +115,9 @@ class OrdersCubit extends Cubit<OrdersState> {
                 restaurant: restaurantName,
                 datetime: firstOrder.createdAt);
           }
-          await repository.updateManyStatus(ids, nextStatus);
         }
+      } else {
+        await repository.updateManyStatus(ids, nextStatus);
       }
     }
   }
