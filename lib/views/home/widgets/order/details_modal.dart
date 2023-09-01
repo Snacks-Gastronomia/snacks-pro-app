@@ -127,6 +127,7 @@ class OrderDetailsContent extends StatelessWidget {
                 );
                 if (res) {
                   context.read<OrdersCubit>().cancelOrder(ord.id);
+                  Navigator.pop(context);
                 }
               },
               style: ElevatedButton.styleFrom(

@@ -53,7 +53,7 @@ class CancelOrder extends StatelessWidget {
                   Navigator.pop(context, true);
                 },
                 label: 'Cancelar Pedido'),
-            SizedBox(
+            const SizedBox(
               height: 35,
             )
           ],
