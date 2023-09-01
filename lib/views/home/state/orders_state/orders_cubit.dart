@@ -70,6 +70,7 @@ class OrdersCubit extends Cubit<OrdersState> {
 
     if ((access == AppPermission.employee ||
             access == AppPermission.waiter ||
+            access == AppPermission.sadm ||
             isCashierAllowed) &&
         nextStatus != null) {
       bool confimationOrderPayment =
@@ -180,6 +181,6 @@ class OrdersCubit extends Cubit<OrdersState> {
     };
 
     return await finance.setMonthlyBudgetFirebase(
-        dataStorage["restaurant"]["id"], data, total, restaurant);
+        orders[0].restaurant, data, total, orders[0].restaurantName);
   }
 }
