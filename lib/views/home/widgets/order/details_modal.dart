@@ -7,7 +7,10 @@ import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
+import 'package:snacks_pro_app/views/home/widgets/modals/cancel_order.dart';
+import 'package:snacks_pro_app/views/home/widgets/modals/confirm_order.dart';
 
 import './signal_animation.dart';
 
@@ -115,7 +118,18 @@ class OrderDetailsContent extends StatelessWidget {
           ),
           if (allowCancel)
             TextButton(
-              onPressed: () => context.read<OrdersCubit>().cancelOrder(ord.id),
+              onPressed: () async {
+                bool res = await AppModal().showModalBottomSheet(
+                  context: context,
+                  content: CancelOrder(
+                    partCode: ord.partCode,
+                  ),
+                );
+                if (res) {
+                  context.read<OrdersCubit>().cancelOrder(ord.id);
+                  Navigator.pop(context);
+                }
+              },
               style: ElevatedButton.styleFrom(
                   fixedSize: const Size(double.maxFinite, 59)),
               child: Text(

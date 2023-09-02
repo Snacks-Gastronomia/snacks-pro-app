@@ -70,53 +70,53 @@ class OrdersCubit extends Cubit<OrdersState> {
 
     if ((access == AppPermission.employee ||
             access == AppPermission.waiter ||
+            access == AppPermission.sadm ||
             isCashierAllowed) &&
         nextStatus != null) {
       bool confimationOrderPayment =
           allStatus.contains(OrderStatus.in_delivery) ||
               allStatus.contains(OrderStatus.waiting_payment);
+      dynamic didPayment;
 
       if (confimationOrderPayment) {
-        var res = await AppModal().showModalBottomSheet(
+        didPayment = await AppModal().showModalBottomSheet(
             context: context,
             dimissible: false,
             content: ConfirmOrderModal(
                 value: total, method: firstOrder.paymentMethod));
 
-        if (res != null && res != firstOrder.paymentMethod) {
-          await repository.updateMultiplePaymentMethod(ids, res);
+        if (didPayment != null && didPayment != firstOrder.paymentMethod) {
+          await repository.updateMultiplePaymentMethod(ids, didPayment);
         }
-        if (res != null) {
-          switch (status) {
-            case OrderStatus.waiting_payment:
-              await repository.addWaiterToAllOrderPayment(
+      }
+      if (didPayment != null || !confimationOrderPayment) {
+        switch (status) {
+          case OrderStatus.waiting_payment:
+            await repository.addWaiterToAllOrderPayment('${user["name"]}', ids);
+            break;
+
+          case OrderStatus.order_in_progress:
+            if (!firstOrder.isDelivery) {
+              final notification = AppNotification();
+              await notification.sendToWaiters(code: "#${firstOrder.table}");
+            }
+            break;
+          case OrderStatus.done:
+            if (access == AppPermission.waiter) {
+              await repository.addWaiterToAllOrderDelivered(
                   '${user["name"]}', ids);
-              break;
+            }
+            break;
 
-            case OrderStatus.order_in_progress:
-              if (!firstOrder.isDelivery) {
-                final notification = AppNotification();
-                await notification.sendToWaiters(code: "#${firstOrder.table}");
-              }
-              break;
-            case OrderStatus.done:
-              if (access == AppPermission.waiter) {
-                await repository.addWaiterToAllOrderDelivered(
-                    '${user["name"]}', ids);
-              }
-              break;
-
-            default:
-          }
-
-          if (nextStatus == OrderStatus.delivered) {
-            await addOrderToReport(
-                orders: items,
-                restaurant: restaurantName,
-                datetime: firstOrder.createdAt);
-          }
+          default:
         }
-      } else {
+
+        if (nextStatus == OrderStatus.delivered) {
+          await addOrderToReport(
+              orders: items,
+              restaurant: restaurantName,
+              datetime: firstOrder.createdAt);
+        }
         await repository.updateManyStatus(ids, nextStatus);
       }
     }
@@ -181,6 +181,6 @@ class OrdersCubit extends Cubit<OrdersState> {
     };
 
     return await finance.setMonthlyBudgetFirebase(
-        dataStorage["restaurant"]["id"], data, total, restaurant);
+        orders[0].restaurant, data, total, orders[0].restaurantName);
   }
 }

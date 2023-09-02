@@ -99,7 +99,11 @@ class OrdersApiServices {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrders() {
-    return database.collection("orders").snapshots();
+    return database
+        .collection("orders")
+        .orderBy("created_at", descending: true)
+        .limit(300)
+        .snapshots();
   }
 
   // Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrdersByNow() {
