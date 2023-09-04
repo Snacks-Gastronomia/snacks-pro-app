@@ -152,7 +152,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     var finance = FinanceApiServices();
 
     var submitItems = orders.map((e) {
-      e.items.map((order) {
+      return e.items.map((order) {
         double value = order.optionSelected.value;
 
         List extrasList = order.extras ?? [];
@@ -175,7 +175,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     String time = DateFormat("HH:mm").format(datetime);
     var data = {
       "total": total,
-      "orders": submitItems,
+      "orders": submitItems.single,
       "time": time,
       "payment": method,
     };
