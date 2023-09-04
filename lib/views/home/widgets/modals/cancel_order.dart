@@ -17,12 +17,14 @@ class CancelOrder extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: IconButton(
-                  alignment: Alignment.centerRight,
-                  onPressed: () => Navigator.pop(context, false),
-                  icon: const Icon(CupertinoIcons.clear_circled)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                    alignment: Alignment.centerRight,
+                    onPressed: () => Navigator.pop(context, false),
+                    icon: const Icon(CupertinoIcons.clear_circled)),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
