@@ -1,19 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 
-class RatingsContent extends StatelessWidget {
+class RatingsContent extends StatefulWidget {
   RatingsContent({super.key});
+
+  @override
+  State<RatingsContent> createState() => _RatingsContentState();
+}
+
+class _RatingsContentState extends State<RatingsContent> {
   final List<String> questions = [
     "Você indicaria o Snacks para um amigo? 0-10",
     "O que você achou da usabilidade do nosso aplicativo? 5-10",
     "O quanto você está satisfeito, em termos gerais, com a nossa empresa?"
   ];
+
   int current = 0;
+  bool select = false;
+  String filter = '';
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -31,8 +41,50 @@ class RatingsContent extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                const Expanded(
-                  child: ListRatings(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            filter = 'today';
+                          });
+                        },
+                        child: const Text('Hoje')),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            filter = 'week';
+                          });
+                        },
+                        child: const Text('Semana')),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            filter = 'month';
+                          });
+                        },
+                        child: const Text('Mês')),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            filter = 'year';
+                            select = !select;
+                          });
+                        },
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll(
+                                select ? Colors.blue : Colors.green)),
+                        child: const Text('Ano')),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: ListRatings(
+                    filter: filter,
+                  ),
                 ),
                 Column(children: [
                   SizedBox(
@@ -109,8 +161,8 @@ class RatingsContent extends StatelessWidget {
 }
 
 class ListRatings extends StatelessWidget {
-  const ListRatings({super.key});
-
+  const ListRatings({super.key, required this.filter});
+  final String filter;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -126,16 +178,66 @@ class ListRatings extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   var item = snapshot.data!.docs[index];
-                  // Timestamp? dateTime = item.data()["created_at"];
-                  // String date = dateTime != null
-                  //     ? DateFormat("dd/MM/yyyy")
-                  //         .format(dateTime.toDate().toLocal())
-                  //     : "";
-                  return CardRate(
-                    title: item.data()["customer_name"] ?? "",
-                    description: item.data()["observations"],
-                    questions: item.data()["questions"],
-                  );
+                  if (item.data()["created_at"] != null) {
+                    Timestamp timestamp = item.data()["created_at"];
+                    DateTime dateTime = timestamp.toDate();
+                    DateTime today = DateTime.now();
+
+                    //Filtros
+                    if (filter == "today") {
+                      if (dateTime.day == today.day &&
+                          dateTime.month == today.month &&
+                          dateTime.year == today.year) {
+                        return CardRate(
+                          title: item.data()["customer_name"] ?? "",
+                          description: item.data()["observations"],
+                          questions: item.data()["questions"],
+                          createdAt: item.data()["created_at"] ?? "",
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    }
+                    if (filter == "week") {
+                      if (dateTime.day >= (today.day - 7) &&
+                          dateTime.month == today.month &&
+                          dateTime.year == today.year) {
+                        return CardRate(
+                          title: item.data()["customer_name"] ?? "",
+                          description: item.data()["observations"],
+                          questions: item.data()["questions"],
+                          createdAt: item.data()["created_at"] ?? "",
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    }
+                    if (filter == "month") {
+                      if (dateTime.month == today.month &&
+                          dateTime.year == today.year) {
+                        return CardRate(
+                          title: item.data()["customer_name"] ?? "",
+                          description: item.data()["observations"],
+                          questions: item.data()["questions"],
+                          createdAt: item.data()["created_at"] ?? "",
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    }
+                    if (filter == "year" || filter.isEmpty) {
+                      if (dateTime.year == today.year) {
+                        return CardRate(
+                          title: item.data()["customer_name"] ?? "",
+                          description: item.data()["observations"],
+                          questions: item.data()["questions"],
+                          createdAt: item.data()["created_at"] ?? "",
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    }
+                  }
                 });
           }
           return const CustomCircularProgress();
@@ -150,11 +252,13 @@ class CardRate extends StatelessWidget {
     required this.description,
     required this.questions,
     this.icon = Icons.business_outlined,
+    required this.createdAt,
   }) : super(key: key);
   final String title;
   final String description;
   final List questions;
   final IconData? icon;
+  final Timestamp createdAt;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -165,9 +269,19 @@ class CardRate extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: AppTextStyles.semiBold(12),
+          Row(
+            children: [
+              Text(
+                title,
+                style: AppTextStyles.semiBold(12),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              Text(
+                '${createdAt.toDate().day}.${createdAt.toDate().month}.${createdAt.toDate().year}',
+              )
+            ],
           ),
           const SizedBox(
             height: 10,
