@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
@@ -252,8 +253,11 @@ class CardRate extends StatelessWidget {
   final List questions;
   final IconData? icon;
   final Timestamp createdAt;
+
   @override
   Widget build(BuildContext context) {
+    DateTime dateTime = createdAt.toDate();
+    String dataFormatada = DateFormat('dd/MM/yyyy').format(dateTime);
     return Container(
       decoration: BoxDecoration(
           color: const Color(0xffF0F6F5).withOpacity(0.5),
@@ -263,6 +267,7 @@ class CardRate extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 title,
@@ -272,7 +277,10 @@ class CardRate extends StatelessWidget {
                 width: 20,
               ),
               Text(
-                '${createdAt.toDate().day}.${createdAt.toDate().month}.${createdAt.toDate().year}',
+                dataFormatada,
+                style: const TextStyle(
+                  color: Colors.black38,
+                ),
               )
             ],
           ),
