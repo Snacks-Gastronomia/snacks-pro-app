@@ -23,6 +23,7 @@ class _RatingsContentState extends State<RatingsContent> {
   int current = 0;
   bool select = false;
   String filter = '';
+  List<String> categories = ["Hoje", "Semana", "Mês", "Ano"];
 
   @override
   Widget build(BuildContext context) {
@@ -42,42 +43,33 @@ class _RatingsContentState extends State<RatingsContent> {
                   height: 20,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            filter = 'today';
-                          });
-                        },
-                        child: const Text('Hoje')),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            filter = 'week';
-                          });
-                        },
-                        child: const Text('Semana')),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            filter = 'month';
-                          });
-                        },
-                        child: const Text('Mês')),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            filter = 'year';
-                            select = !select;
-                          });
-                        },
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll(
-                                select ? Colors.blue : Colors.green)),
-                        child: const Text('Ano')),
-                  ],
-                ),
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: categories
+                        .map((category) => FilterChip(
+                              label: Text(category),
+                              selected: filter == category,
+                              onSelected: (value) {
+                                setState(() {
+                                  switch (category) {
+                                    case "Hoje":
+                                      filter = "Hoje";
+                                      break;
+                                    case "Semana":
+                                      filter = "Semana";
+                                      break;
+                                    case "Mês":
+                                      filter = "Mês";
+                                      break;
+                                    case "Ano":
+                                      filter = "Ano";
+                                      break;
+                                    default:
+                                      filter = "Ano";
+                                  }
+                                });
+                              },
+                            ))
+                        .toList()),
                 const SizedBox(
                   height: 20,
                 ),
@@ -184,7 +176,7 @@ class ListRatings extends StatelessWidget {
                     DateTime today = DateTime.now();
 
                     //Filtros
-                    if (filter == "today") {
+                    if (filter == "Hoje") {
                       if (dateTime.day == today.day &&
                           dateTime.month == today.month &&
                           dateTime.year == today.year) {
@@ -198,7 +190,7 @@ class ListRatings extends StatelessWidget {
                         return const SizedBox.shrink();
                       }
                     }
-                    if (filter == "week") {
+                    if (filter == "Semana") {
                       if (dateTime.day >= (today.day - 7) &&
                           dateTime.month == today.month &&
                           dateTime.year == today.year) {
@@ -212,7 +204,7 @@ class ListRatings extends StatelessWidget {
                         return const SizedBox.shrink();
                       }
                     }
-                    if (filter == "month") {
+                    if (filter == "Mês") {
                       if (dateTime.month == today.month &&
                           dateTime.year == today.year) {
                         return CardRate(
@@ -225,7 +217,7 @@ class ListRatings extends StatelessWidget {
                         return const SizedBox.shrink();
                       }
                     }
-                    if (filter == "year" || filter.isEmpty) {
+                    if (filter == "Ano" || filter.isEmpty) {
                       if (dateTime.year == today.year) {
                         return CardRate(
                           title: item.data()["customer_name"] ?? "",
@@ -238,6 +230,7 @@ class ListRatings extends StatelessWidget {
                       }
                     }
                   }
+                  return null;
                 });
           }
           return const CustomCircularProgress();
