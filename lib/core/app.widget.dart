@@ -43,7 +43,7 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future<String> getRouter() async {
-      await auth.signInAnonymously();
+      // await auth.signInAnonymously();
       await initializeDateFormatting("pt_BR");
       var user = await storage.getDataStorage("user");
 
@@ -123,7 +123,7 @@ class AppWidget extends StatelessWidget {
                   AppRoutes.addBankAccount: (context) =>
                       const AddBankAccountScreen(),
                   AppRoutes.restaurantAuth: (context) =>
-                      const RestaurantAuthenticationScreen(),
+                      RestaurantAuthenticationScreen(),
                   AppRoutes.unathorizedAuth: (context) =>
                       const UnathorizedScreen(),
                   AppRoutes.stock: (context) => StockScreen(),
