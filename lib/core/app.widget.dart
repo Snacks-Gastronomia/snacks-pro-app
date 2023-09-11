@@ -43,6 +43,7 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future<String> getRouter() async {
+      await auth.signInAnonymously();
       await initializeDateFormatting("pt_BR");
       var user = await storage.getDataStorage("user");
 
