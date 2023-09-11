@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,8 +9,8 @@ import 'package:snacks_pro_app/utils/enums.dart';
 import './state/auth_cubit.dart';
 
 class RestaurantAuthenticationScreen extends StatelessWidget {
-  const RestaurantAuthenticationScreen({Key? key}) : super(key: key);
-
+  RestaurantAuthenticationScreen({Key? key}) : super(key: key);
+  final auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,8 +22,10 @@ class RestaurantAuthenticationScreen extends StatelessWidget {
             builder: (context, state) {
               return CustomSubmitButton(
                   dark_theme: true,
-                  onPressedAction: () async =>
-                      await context.read<AuthCubit>().sendPhoneCodeOtp(context),
+                  onPressedAction: () async {
+                    await auth.signInAnonymously();
+                    await context.read<AuthCubit>().sendPhoneCodeOtp(context);
+                  },
                   label: "Enviar",
                   loading_label: "Validando...",
                   loading: state.status == AppStatus.loading);

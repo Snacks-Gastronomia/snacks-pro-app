@@ -30,10 +30,6 @@ class _ExtraWidgetState extends State<ExtraWidget> {
   final modal = AppModal();
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      checkLimit =
-          context.read<MenuCubit>().state.item.limit_extra_options != null;
-    });
     return BlocProvider.value(
       value: BlocProvider.of<MenuCubit>(context),
       child: Scaffold(
@@ -147,9 +143,11 @@ class _ExtraWidgetState extends State<ExtraWidget> {
                 checkboxShape: const StadiumBorder(),
                 onChanged: (value) {
                   setState(() {
-                    checkLimit = value ?? false;
+                    checkLimit = value!;
                   });
                 },
+                checkColor: Colors.white,
+                activeColor: Colors.black,
                 title: Text(
                   'Limitar número de opções',
                   style: AppTextStyles.regular(15),
