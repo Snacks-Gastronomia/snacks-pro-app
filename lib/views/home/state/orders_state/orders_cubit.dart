@@ -175,7 +175,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     String time = DateFormat("HH:mm").format(datetime);
     var data = {
       "total": total,
-      "orders": submitItems.single,
+      "orders": submitItems.last,
       "time": time,
       "payment": method,
     };
