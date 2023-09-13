@@ -74,8 +74,10 @@ class UploadImageWidget extends StatelessWidget {
                         clipBehavior: Clip.hardEdge,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12)),
-                        child: Image.file(File(snapshot.item.image_url!),
-                            fit: BoxFit.cover),
+                        child: snapshot.item.image_url!.contains('https')
+                            ? Image.network(snapshot.item.image_url!)
+                            : Image.file(File(snapshot.item.image_url!),
+                                fit: BoxFit.contain),
                       ),
                       const SizedBox(
                         height: 5,

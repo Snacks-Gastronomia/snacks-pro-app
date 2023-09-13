@@ -209,6 +209,13 @@ class _ItemScreenState extends State<ItemScreen> {
                               ),
                             ]),
                       ),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                          ))
                     ],
                   ),
                 ),

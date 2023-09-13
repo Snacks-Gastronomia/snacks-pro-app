@@ -64,14 +64,14 @@ class NewItemScreen extends StatelessWidget {
           controller: pageController,
 
           children: [
-            if (!(context.read<MenuCubit>().state.status == AppStatus.editing))
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: UploadImageWidget(
-                    buttonAction: () => pageController.nextPage(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut)),
-              ),
+            // if (!(context.read<MenuCubit>().state.status == AppStatus.editing))
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: UploadImageWidget(
+                  buttonAction: () => pageController.nextPage(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut)),
+            ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: AddItemWidget(
