@@ -1,6 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
@@ -13,7 +15,11 @@ import 'package:snacks_pro_app/views/restaurant_menu/stock_control_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/upload_image.dart';
 
 class NewItemScreen extends StatelessWidget {
-  NewItemScreen({Key? key}) : super(key: key);
+  bool updateImage;
+  NewItemScreen({
+    Key? key,
+    required this.updateImage,
+  }) : super(key: key);
   final pageController = PageController(initialPage: 0);
 
   @override
@@ -64,14 +70,18 @@ class NewItemScreen extends StatelessWidget {
           controller: pageController,
 
           children: [
-            // if (!(context.read<MenuCubit>().state.status == AppStatus.editing))
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: UploadImageWidget(
-                  buttonAction: () => pageController.nextPage(
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut)),
-            ),
+            if (!(context.read<MenuCubit>().state.status ==
+                    AppStatus.editing) ||
+                updateImage)
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: UploadImageWidget(
+                    buttonAction: () => updateImage
+                        ? context.read<MenuCubit>().saveItem(context)
+                        : pageController.nextPage(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut)),
+              ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: AddItemWidget(

@@ -211,7 +211,12 @@ class _ItemScreenState extends State<ItemScreen> {
                       ),
                       const Spacer(),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context
+                                .read<MenuCubit>()
+                                .updateItem(widget.order.item);
+                            Navigator.pushNamed(context, AppRoutes.updateImage);
+                          },
                           icon: const Icon(
                             Icons.edit,
                             color: Colors.white,
