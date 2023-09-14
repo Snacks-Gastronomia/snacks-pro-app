@@ -87,11 +87,14 @@ class UploadImageWidget extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () =>
-                            context.read<MenuCubit>().removeImage(),
+                            // context.read<MenuCubit>().removeImage(),
+                            AppModal().showModalBottomSheet(
+                                context: context,
+                                content: const UploadContentModal()),
                         child: Text(
-                          "Remover",
+                          "Alterar Imagem",
                           style: AppTextStyles.regular(16,
-                              color: Colors.red.shade600),
+                              color: Colors.blueAccent),
                         ),
                       ),
                     ],

@@ -231,15 +231,6 @@ class _ItemScreenState extends State<ItemScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Row(
-                  //   children: const [
-                  //     Icon(Icons.star_rounded),
-                  //     Text('4.9'),
-                  //   ],
-                  // ),
-                  // const SizedBox(
-                  //   height: 15,
-                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -277,7 +268,6 @@ class _ItemScreenState extends State<ItemScreen> {
                   const SizedBox(
                     height: 25,
                   ),
-
                   Text(
                     widget.order.item.description!,
                     style: AppTextStyles.regular(15,
