@@ -9,6 +9,9 @@ import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/widgets/upload_content_modal.dart';
 
+import '../../components/custom_submit_button.dart';
+import '../../utils/enums.dart';
+
 class UploadImageWidget extends StatelessWidget {
   const UploadImageWidget({
     Key? key,
@@ -74,19 +77,24 @@ class UploadImageWidget extends StatelessWidget {
                         clipBehavior: Clip.hardEdge,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12)),
-                        child: Image.file(File(snapshot.item.image_url!),
-                            fit: BoxFit.cover),
+                        child: snapshot.item.image_url!.contains('https')
+                            ? Image.network(snapshot.item.image_url!)
+                            : Image.file(File(snapshot.item.image_url!),
+                                fit: BoxFit.contain),
                       ),
                       const SizedBox(
                         height: 5,
                       ),
                       TextButton(
                         onPressed: () =>
-                            context.read<MenuCubit>().removeImage(),
+                            // context.read<MenuCubit>().removeImage(),
+                            AppModal().showModalBottomSheet(
+                                context: context,
+                                content: const UploadContentModal()),
                         child: Text(
-                          "Remover",
+                          "Alterar Imagem",
                           style: AppTextStyles.regular(16,
-                              color: Colors.red.shade600),
+                              color: Colors.blueAccent),
                         ),
                       ),
                     ],
@@ -94,18 +102,13 @@ class UploadImageWidget extends StatelessWidget {
           );
         }),
         const Spacer(),
-        ElevatedButton(
-          onPressed: buttonAction,
-          style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              primary: Colors.black,
-              fixedSize: const Size(double.maxFinite, 59)),
-          child: Text(
-            'Continuar',
-            style: AppTextStyles.regular(16, color: Colors.white),
-          ),
-        ),
+        BlocBuilder<MenuCubit, MenuState>(builder: (context, state) {
+          return CustomSubmitButton(
+              onPressedAction: buttonAction,
+              label: "Continuar",
+              loading: state.status == AppStatus.loading,
+              loading_label: "Salvando...");
+        })
       ],
     );
   }

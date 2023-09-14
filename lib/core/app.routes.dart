@@ -12,6 +12,7 @@ class AppRoutes {
   // static String get item => '/item';
   // static String get payment => '/payment';
   static String get newItem => '/new-item';
+  static String get updateImage => '/update-image';
   static String get orders => '/orders';
   static String get restaurantAuth => '/restaurant-auth';
   // static String get selectRestaurant => '/select-restaurant';

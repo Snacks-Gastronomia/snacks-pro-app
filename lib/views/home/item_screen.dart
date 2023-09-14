@@ -162,7 +162,6 @@ class _ItemScreenState extends State<ItemScreen> {
                             child: SvgPicture.asset(
                               AppImages.snacks,
                               color: Colors.grey.shade400,
-                              // fit: BoxFit,
                               width: 150,
                             ),
                           ),
@@ -172,8 +171,15 @@ class _ItemScreenState extends State<ItemScreen> {
                           fit: BoxFit.cover,
                           width: double.maxFinite,
                           height: MediaQuery.of(context).size.height * 0.5,
-
-                          // height: 200,
+                          errorBuilder: (context, error, stackTrace) => Center(
+                            child: Center(
+                              child: SvgPicture.asset(
+                                AppImages.snacks,
+                                color: Colors.grey.shade400,
+                                width: 150,
+                              ),
+                            ),
+                          ),
                         ),
                 ),
                 Padding(
@@ -209,6 +215,18 @@ class _ItemScreenState extends State<ItemScreen> {
                               ),
                             ]),
                       ),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: () {
+                            context
+                                .read<MenuCubit>()
+                                .updateItem(widget.order.item);
+                            Navigator.pushNamed(context, AppRoutes.updateImage);
+                          },
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                          ))
                     ],
                   ),
                 ),
@@ -219,15 +237,6 @@ class _ItemScreenState extends State<ItemScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Row(
-                  //   children: const [
-                  //     Icon(Icons.star_rounded),
-                  //     Text('4.9'),
-                  //   ],
-                  // ),
-                  // const SizedBox(
-                  //   height: 15,
-                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -265,7 +274,6 @@ class _ItemScreenState extends State<ItemScreen> {
                   const SizedBox(
                     height: 25,
                   ),
-
                   Text(
                     widget.order.item.description!,
                     style: AppTextStyles.regular(15,

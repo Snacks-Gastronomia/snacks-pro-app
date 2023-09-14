@@ -180,6 +180,24 @@ class MenuCubit extends Cubit<MenuState> {
     var storage = AppStorage();
     if (state.status == AppStatus.editing) {
       try {
+        emit(state.copyWith(status: AppStatus.loading));
+        if (state.item.image_url != null) {
+          var ref = fs
+              .child("menu_images/${encrypt.getEncrypt(state.item.title)}.jpg");
+          File file = File(state.item.image_url!);
+          try {
+            final snapshot = await ref.putFile(file).whenComplete(() {});
+            var pathDownload = await snapshot.ref.getDownloadURL();
+            emit(state.copyWith(
+                item: state.item.copyWith(
+              value: double.parse(state.item.options[0]["value"].toString()),
+              image_url: pathDownload,
+            )));
+          } catch (e) {
+            debugPrint(e.toString());
+          }
+        }
+
         await repository.updateItem(state.item);
         clear();
       } catch (e) {
