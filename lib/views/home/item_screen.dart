@@ -162,7 +162,6 @@ class _ItemScreenState extends State<ItemScreen> {
                             child: SvgPicture.asset(
                               AppImages.snacks,
                               color: Colors.grey.shade400,
-                              // fit: BoxFit,
                               width: 150,
                             ),
                           ),
@@ -172,8 +171,13 @@ class _ItemScreenState extends State<ItemScreen> {
                           fit: BoxFit.cover,
                           width: double.maxFinite,
                           height: MediaQuery.of(context).size.height * 0.5,
-
-                          // height: 200,
+                          errorBuilder: (context, error, stackTrace) => Center(
+                            child: SvgPicture.asset(
+                              AppImages.snacks,
+                              color: Colors.grey.shade400,
+                              width: 150,
+                            ),
+                          ),
                         ),
                 ),
                 Padding(
