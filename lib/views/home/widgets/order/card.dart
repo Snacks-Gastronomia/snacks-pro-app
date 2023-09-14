@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -27,6 +29,7 @@ class OrderCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _doubleTapEnabled = true;
     var order = orders[0];
     String time = DateFormat("HH:mm").format(order.createdAt);
 
@@ -74,7 +77,15 @@ class OrderCardWidget extends StatelessWidget {
     }
 
     return GestureDetector(
-      onDoubleTap: onDoubleTap,
+      onDoubleTap: () {
+        if (_doubleTapEnabled) {
+          _doubleTapEnabled = false;
+          onDoubleTap();
+          Timer(Duration(seconds: 2), () {
+            _doubleTapEnabled = true;
+          });
+        }
+      },
       onLongPress: onLongPress,
       child: Container(
         padding: const EdgeInsets.all(10),
