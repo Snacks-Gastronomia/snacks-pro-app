@@ -172,10 +172,12 @@ class _ItemScreenState extends State<ItemScreen> {
                           width: double.maxFinite,
                           height: MediaQuery.of(context).size.height * 0.5,
                           errorBuilder: (context, error, stackTrace) => Center(
-                            child: SvgPicture.asset(
-                              AppImages.snacks,
-                              color: Colors.grey.shade400,
-                              width: 150,
+                            child: Center(
+                              child: SvgPicture.asset(
+                                AppImages.snacks,
+                                color: Colors.grey.shade400,
+                                width: 150,
+                              ),
                             ),
                           ),
                         ),
