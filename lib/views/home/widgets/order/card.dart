@@ -77,15 +77,10 @@ class OrderCardWidget extends StatelessWidget {
     }
 
     return GestureDetector(
-      onDoubleTap: () {
-        if (_doubleTapEnabled) {
-          _doubleTapEnabled = false;
-          onDoubleTap();
-          Timer(Duration(seconds: 2), () {
-            _doubleTapEnabled = true;
-          });
-        }
-      },
+      onDoubleTap: () =>
+          context.read<OrdersCubit>().state.status == AppStatus.loading
+              ? null
+              : onDoubleTap(),
       onLongPress: onLongPress,
       child: Container(
         padding: const EdgeInsets.all(10),

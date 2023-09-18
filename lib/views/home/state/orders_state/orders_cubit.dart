@@ -45,6 +45,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     required context,
     required List<OrderResponse> items,
   }) async {
+    emit(state.copyWith(status: AppStatus.loading));
     var firstOrder = items[0];
 
     double total =
@@ -118,6 +119,7 @@ class OrdersCubit extends Cubit<OrdersState> {
               datetime: firstOrder.createdAt);
         }
         await repository.updateManyStatus(ids, nextStatus);
+        emit(state.copyWith(status: AppStatus.loaded));
       }
     }
   }
@@ -180,7 +182,9 @@ class OrdersCubit extends Cubit<OrdersState> {
       "payment": method,
     };
 
-    return await finance.setMonthlyBudgetFirebase(
-        orders[0].restaurant, data, total, orders[0].restaurantName);
+    for (int i = 0; i < orders.length; i++) {
+      await finance.setMonthlyBudgetFirebase(
+          orders[i].restaurant, data, total, orders[i].restaurantName);
+    }
   }
 }
