@@ -29,7 +29,6 @@ class OrderCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _doubleTapEnabled = true;
     var order = orders[0];
     String time = DateFormat("HH:mm").format(order.createdAt);
 
