@@ -221,9 +221,14 @@ class OrderCardWidget extends StatelessWidget {
                         width: 5,
                       ),
                       Flexible(
-                        child: Text(orderStatus.displayEnum,
-                            style: AppTextStyles.regular(14,
-                                color: const Color(0xff979797))),
+                        child: context.read<OrdersCubit>().state.status ==
+                                AppStatus.loading
+                            ? Text("Carregando",
+                                style: AppTextStyles.regular(14,
+                                    color: const Color(0xff979797)))
+                            : Text(orderStatus.displayEnum,
+                                style: AppTextStyles.regular(14,
+                                    color: const Color(0xff979797))),
                       ),
                     ],
                   ),
