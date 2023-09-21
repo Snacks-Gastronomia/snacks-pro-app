@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as console;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -18,10 +19,27 @@ class AddOrderManual extends StatefulWidget {
 }
 
 class _AddOrderManualState extends State<AddOrderManual> {
-  List<String> restaurantMenu = [];
   List<Item> suggestions = [];
+  List<Item> restaurantMenu = [];
 
   final TextEditingController _controller = TextEditingController();
+
+  String searchText = '';
+
+  @override
+  void initState() {
+    super.initState();
+    suggestions = restaurantMenu;
+  }
+
+  void updateFilteredSuggestions(String text) {
+    setState(() {
+      suggestions = restaurantMenu
+          .where(
+              (item) => item.title.toLowerCase().contains(text.toLowerCase()))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +51,8 @@ class _AddOrderManualState extends State<AddOrderManual> {
             for (int i = 0; i < docs.length; i++) {
               var itemData = docs[i].data();
               var item = Item.fromJson(jsonEncode(itemData));
-              restaurantMenu.add(item.title);
+              restaurantMenu.add(item);
+              suggestions.add(item);
             }
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 35),
@@ -100,28 +119,43 @@ class _AddOrderManualState extends State<AddOrderManual> {
                     "Selecione os items",
                     style: AppTextStyles.medium(14),
                   ),
-                  DottedBorder(
-                    color: Colors.grey,
-                    strokeWidth: 1.5,
-                    dashPattern: const [7, 4],
-                    borderType: BorderType.RRect,
-                    radius: const Radius.circular(12),
-                    child: Autocomplete<String>(
-                      optionsBuilder: (TextEditingValue textEditingValue) {
-                        if (textEditingValue.text == '') {
-                          return const Iterable<String>.empty();
-                        }
-                        return restaurantMenu.where((String item) {
-                          return item
-                              .contains(textEditingValue.text.toLowerCase());
-                        }).toList();
-                      },
-                      onSelected: (String item) {
-                        print('$item selecionado');
-                      },
-                    ),
+                  Column(
+                    children: [
+                      DottedBorder(
+                        color: Colors.grey,
+                        strokeWidth: 1.5,
+                        dashPattern: const [7, 4],
+                        borderType: BorderType.RRect,
+                        radius: const Radius.circular(12),
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        child: TextField(
+                          onChanged: (text) {
+                            updateFilteredSuggestions(text);
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Search for an item',
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      SizedBox(
+                          width: double.infinity,
+                          height: 100,
+                          child: ListView.builder(
+                              itemCount: suggestions.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return ListTile(
+                                  title: Text(suggestions[index].title),
+                                  onTap: () {
+                                    // Implement your selection logic here
+                                    print(
+                                        'Selected: ${suggestions[index].title}');
+                                  },
+                                );
+                              }))
+                    ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 200,
                   )
                 ],
