@@ -80,20 +80,25 @@ class _OrdersScreenState extends State<OrdersScreen> {
             padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'Pedidos',
                   style: AppTextStyles.medium(20),
                 ),
-                IconButton(
-                    onPressed: () => AppModal().showModalBottomSheet(
+                GestureDetector(
+                    onTap: () => AppModal().showModalBottomSheet(
                           withPadding: false,
                           context: context,
                           content: Builder(builder: (context) {
-                            return AddOrderManual();
+                            return const AddOrderManual();
                           }),
                         ),
-                    icon: Icon(Icons.add))
+                    child: const Icon(
+                      Icons.add_box_rounded,
+                      color: Colors.blue,
+                      size: 40,
+                    ))
               ],
             ),
           ),
