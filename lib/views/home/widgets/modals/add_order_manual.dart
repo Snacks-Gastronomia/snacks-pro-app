@@ -3,7 +3,6 @@ import 'dart:developer' as console;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
@@ -52,7 +51,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
               var itemData = docs[i].data();
               var item = Item.fromJson(jsonEncode(itemData));
               restaurantMenu.add(item);
-              suggestions.add(item);
+              // suggestions.add(item);
             }
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 35),
@@ -132,23 +131,42 @@ class _AddOrderManualState extends State<AddOrderManual> {
                           onChanged: (text) {
                             updateFilteredSuggestions(text);
                           },
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Search for an item',
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
-                      SizedBox(
+                      const SizedBox(height: 20),
+                      Container(
                           width: double.infinity,
-                          height: 100,
+                          height: 200,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black12,
+                                    offset: Offset(0, 5),
+                                    blurRadius: 7.0,
+                                    spreadRadius: 0.0,
+                                    blurStyle: BlurStyle.normal)
+                              ]),
                           child: ListView.builder(
                               itemCount: suggestions.length,
-                              itemBuilder: (BuildContext context, int index) {
+                              itemBuilder: (context, index) {
+                                String price = suggestions[index]
+                                    .value
+                                    .toStringAsFixed(2)
+                                    .replaceAll('.', ',');
                                 return ListTile(
-                                  title: Text(suggestions[index].title),
+                                  title: Text(
+                                    suggestions[index].title,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  trailing: Text("R\$$price"),
                                   onTap: () {
-                                    // Implement your selection logic here
-                                    print(
+                                    console.log(
                                         'Selected: ${suggestions[index].title}');
                                   },
                                 );
