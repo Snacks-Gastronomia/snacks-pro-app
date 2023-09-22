@@ -77,7 +77,9 @@ class _AddOrderManualState extends State<AddOrderManual> {
                             width: 20,
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
                             child: const CircleAvatar(
                               backgroundColor: Colors.black12,
                               child: Icon(
@@ -95,12 +97,16 @@ class _AddOrderManualState extends State<AddOrderManual> {
                         "Hora do pedido",
                         style: AppTextStyles.medium(14),
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       DottedBorder(
                         color: Colors.grey,
                         strokeWidth: 1.5,
                         dashPattern: const [7, 4],
                         borderType: BorderType.RRect,
                         radius: const Radius.circular(12),
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                         child: TextFormField(
                           controller: _controllerData,
                           maxLines: 1,
@@ -124,6 +130,9 @@ class _AddOrderManualState extends State<AddOrderManual> {
                         "Selecione os items",
                         style: AppTextStyles.medium(14),
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Column(
                         children: [
                           DottedBorder(
@@ -138,16 +147,22 @@ class _AddOrderManualState extends State<AddOrderManual> {
                               onChanged: (text) {
                                 updateFilteredSuggestions(text);
                               },
-                              decoration: const InputDecoration(
-                                hintText: 'Search for an item',
-                              ),
+                              decoration: InputDecoration(
+                                  counterText: "",
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 0),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                  hintText: "Pesquise o nome do item"),
                             ),
                           ),
                           const SizedBox(height: 20),
                           if (_controllerItems.text.isNotEmpty)
                             Container(
                               width: double.infinity,
-                              height: 250,
+                              height: 200,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: Colors.white,
@@ -189,7 +204,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                       ),
                       SizedBox(
                         width: double.infinity,
-                        height: 200,
+                        height: 350,
                         child: BlocBuilder<ItemScreenCubit, ItemScreenState>(
                             builder: (context, state) {
                           return Center(
