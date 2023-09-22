@@ -6,6 +6,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
 
 import '../../../../core/app.text.dart';
 import '../../../../models/item_model.dart';
@@ -20,8 +21,10 @@ class AddOrderManual extends StatefulWidget {
 class _AddOrderManualState extends State<AddOrderManual> {
   List<Item> suggestions = [];
   List<Item> restaurantMenu = [];
+  List<Item> order = [];
 
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controllerData = TextEditingController();
+  final TextEditingController _controllerItems = TextEditingController();
 
   String searchText = '';
 
@@ -51,7 +54,6 @@ class _AddOrderManualState extends State<AddOrderManual> {
               var itemData = docs[i].data();
               var item = Item.fromJson(jsonEncode(itemData));
               restaurantMenu.add(item);
-              // suggestions.add(item);
             }
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 35),
@@ -97,6 +99,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                     borderType: BorderType.RRect,
                     radius: const Radius.circular(12),
                     child: TextFormField(
+                      controller: _controllerData,
                       maxLines: 1,
                       maxLength: 30,
                       decoration: InputDecoration(
@@ -128,6 +131,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                         radius: const Radius.circular(12),
                         padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                         child: TextField(
+                          controller: _controllerItems,
                           onChanged: (text) {
                             updateFilteredSuggestions(text);
                           },
@@ -137,13 +141,14 @@ class _AddOrderManualState extends State<AddOrderManual> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Container(
+                      if (_controllerItems.text.isNotEmpty)
+                        Container(
                           width: double.infinity,
                           height: 200,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.white,
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                     color: Colors.black12,
                                     offset: Offset(0, 5),
@@ -152,29 +157,57 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                     blurStyle: BlurStyle.normal)
                               ]),
                           child: ListView.builder(
-                              itemCount: suggestions.length,
-                              itemBuilder: (context, index) {
-                                String price = suggestions[index]
-                                    .value
-                                    .toStringAsFixed(2)
-                                    .replaceAll('.', ',');
-                                return ListTile(
-                                  title: Text(
-                                    suggestions[index].title,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  trailing: Text("R\$$price"),
-                                  onTap: () {
-                                    console.log(
-                                        'Selected: ${suggestions[index].title}');
-                                  },
-                                );
-                              }))
+                            itemCount: suggestions.length,
+                            itemBuilder: (context, index) {
+                              String price = suggestions[index]
+                                  .value
+                                  .toStringAsFixed(2)
+                                  .replaceAll('.', ',');
+                              return ListTile(
+                                title: Text(
+                                  suggestions[index].title,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                trailing: Text("R\$$price"),
+                                onTap: () {
+                                  console.log(
+                                      'Selected: ${suggestions[index].title}');
+                                  _controllerItems.clear();
+                                  setState(() {
+                                    order.add(suggestions[index]);
+                                  });
+                                },
+                              );
+                            },
+                          ),
+                        )
                     ],
                   ),
-                  const SizedBox(
-                    height: 200,
+                  SizedBox(
+                    width: double.infinity,
+                    height: 250,
+                    child: BlocBuilder<ItemScreenCubit, ItemScreenState>(
+                        builder: (context, state) {
+                      return Center(
+                        child: ListView.builder(
+                          itemCount: order.length,
+                          itemBuilder: (context, index) {
+                            String price = suggestions[index]
+                                .value
+                                .toStringAsFixed(2)
+                                .replaceAll('.', ',');
+                            return ListTile(
+                              title: Text(order[index].title),
+                              subtitle: Text("R\$ $price"),
+                              onTap: () {
+                                console.log(order[index].title);
+                              },
+                            );
+                          },
+                        ),
+                      );
+                    }),
                   )
                 ],
               ),
