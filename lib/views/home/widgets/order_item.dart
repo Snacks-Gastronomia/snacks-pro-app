@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/models/order_model.dart';
 
 import '../../../core/app.images.dart';
 import '../../../core/app.text.dart';
 import '../../../models/item_model.dart';
 import 'custom_switch.dart';
 
-class CartItemWidget extends StatelessWidget {
-  const CartItemWidget({
+class OrderItemWidget extends StatelessWidget {
+  const OrderItemWidget({
     Key? key,
     required this.order,
     // required this.amount,
@@ -18,9 +19,9 @@ class CartItemWidget extends StatelessWidget {
   }) : super(key: key);
   final Item order;
   // final int amount;
-  final Function onDelete;
-  final Function onIncrement;
-  final Function onDecrement;
+  final VoidCallback onDelete;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
 
   @override
   Widget build(BuildContext context) {
@@ -45,58 +46,6 @@ class CartItemWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // const SizedBox(
-                  //   width: 7,
-                  // ),
-                  Container(
-                    height: 60,
-                    width: 60,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Stack(
-                      children: [
-                        order.image_url == null || order.image_url!.isEmpty
-                            ? Center(
-                                child: SvgPicture.asset(
-                                  AppImages.snacks,
-                                  color: Colors.grey.shade400,
-                                  // fit: BoxFit.,
-                                  width: 70,
-                                ),
-                              )
-                            : Image.network(
-                                order.image_url!,
-                                height: 60,
-                                width: 60,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return SvgPicture.asset(
-                                    AppImages.snacks,
-                                    color: Colors.grey.shade400,
-                                    // fit: BoxFit.,
-                                    width: 70,
-                                  );
-                                },
-                              ),
-                        Positioned(
-                          bottom: 0,
-                          child: Container(
-                            width: 60,
-                            color: Colors.black,
-                            child: Center(
-                              child: Text(
-                                "${order.time} min",
-                                style: AppTextStyles.medium(10,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
                   const SizedBox(
                     width: 10,
                   ),
@@ -107,7 +56,7 @@ class CartItemWidget extends StatelessWidget {
                       SizedBox(
                         width: 130,
                         child: Text(
-                          "${order.title}",
+                          order.title,
                           style: AppTextStyles.regular(16),
                           maxLines: 2,
                           softWrap: true,
@@ -117,14 +66,13 @@ class CartItemWidget extends StatelessWidget {
                       const SizedBox(
                         height: 5,
                       ),
-                      // Text(
-                      //   NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                      //       .format((double.parse(order.value.toString()) *
-                      //               amount) +
-                      //           extras_value),
-                      //   style:
-                      //       AppTextStyles.regular(14, color: Color(0xff09B44D)),
-                      // ),
+                      Text(
+                        NumberFormat.currency(locale: "pt", symbol: r"R$ ")
+                            .format((double.parse(order.value.toString())) +
+                                extras_value),
+                        style:
+                            AppTextStyles.regular(14, color: Color(0xff09B44D)),
+                      ),
                     ],
                   )
                 ],
@@ -141,7 +89,7 @@ class CartItemWidget extends StatelessWidget {
                   SizedBox(
                     height: 30,
                     child: TextButton(
-                      onPressed: onDelete(),
+                      onPressed: onDelete,
                       // style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
                       child: Text(
                         "Remover",

@@ -5,22 +5,20 @@ part 'item_screen_state.dart';
 
 class ItemScreenCubit extends Cubit<ItemScreenState> {
   ItemScreenCubit() : super(ItemScreenState.initial());
-  incrementAmount() {
+  void incrementAmount() {
     var amount = state.order?.amount ?? 1;
     amount += 1;
 
     emit(state.copyWith(order: state.order?.copyWith(amount: amount)));
     print(state.order?.amount);
-    return amount;
   }
 
-  decrementAmount() {
+  void decrementAmount() {
     var amount = state.order?.amount ?? 1;
     if (amount != 1) {
       amount--;
       emit(state.copyWith(order: state.order!.copyWith(amount: amount)));
     }
-    return amount;
   }
 
   void observationChanged(String obs) {

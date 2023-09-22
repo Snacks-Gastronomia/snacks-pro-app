@@ -10,8 +10,8 @@ class CustomSwitch extends StatelessWidget {
     required this.incrementAction,
     required this.value,
   }) : super(key: key);
-  final Function decrementAction;
-  final Function incrementAction;
+  final VoidCallback decrementAction;
+  final VoidCallback incrementAction;
   final int value;
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class CustomSwitch extends StatelessWidget {
                 height: 45,
                 width: 45,
                 child: ElevatedButton(
-                  onPressed: decrementAction(),
+                  onPressed: decrementAction,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
 
@@ -66,7 +66,7 @@ class CustomSwitch extends StatelessWidget {
                 height: 45,
                 width: 45,
                 child: ElevatedButton(
-                    onPressed: incrementAction(),
+                    onPressed: incrementAction,
                     style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero,
                         visualDensity: VisualDensity.compact,

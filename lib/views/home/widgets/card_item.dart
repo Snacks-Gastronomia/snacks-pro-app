@@ -11,7 +11,7 @@ import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
-import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
+
 import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 
 class CardItemWidget extends StatelessWidget {

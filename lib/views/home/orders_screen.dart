@@ -88,6 +88,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 ),
                 GestureDetector(
                     onTap: () => AppModal().showIOSModalBottomSheet(
+                          drag: false,
                           context: context,
                           content: Builder(builder: (context) {
                             return const AddOrderManual();
