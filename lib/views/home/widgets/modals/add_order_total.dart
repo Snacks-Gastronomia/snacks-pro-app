@@ -16,27 +16,49 @@ class AddOrderTotal extends StatelessWidget {
     bool value = false;
     return SizedBox(
       width: double.infinity,
-      height: double.maxFinite,
+      height: 200,
       child: Column(children: [
-        CheckboxListTile(
-          controlAffinity: ListTileControlAffinity.leading,
-          secondary: const Text('Taxa delivery'),
-          value: value,
-          onChanged: (value) {
-            value = value!;
-          },
+        Row(
+          children: [
+            Checkbox(
+              splashRadius: 10,
+              value: value,
+              onChanged: (value) {
+                value = !value!;
+              },
+            ),
+            const Text('Taxa delivery')
+          ],
         ),
-        ListTile(
-          title: const Text("Subtotal"),
-          trailing: Text("$subtotal"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Subtotal',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text("$subtotal")
+          ],
         ),
-        ListTile(
-          title: const Text("Delivery"),
-          trailing: Text("$delivery"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Delivery',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text("$delivery")
+          ],
         ),
-        ListTile(
-          title: const Text("Total"),
-          trailing: Text("$total"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Total',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text("$total")
+          ],
         )
       ]),
     );

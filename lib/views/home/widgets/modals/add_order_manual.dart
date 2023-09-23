@@ -60,7 +60,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
             return Scaffold(
               body: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.all(35.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -99,7 +99,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                         style: AppTextStyles.medium(14),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       DottedBorder(
                         color: Colors.grey,
@@ -107,7 +107,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                         dashPattern: const [7, 4],
                         borderType: BorderType.RRect,
                         radius: const Radius.circular(12),
-                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        // padding: const EdgeInsets.all(10),
                         child: TextFormField(
                           controller: _controllerData,
                           maxLines: 1,
@@ -132,7 +132,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                         style: AppTextStyles.medium(14),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       Column(
                         children: [
@@ -142,7 +142,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                             dashPattern: const [7, 4],
                             borderType: BorderType.RRect,
                             radius: const Radius.circular(12),
-                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            // padding: const EdgeInsets.all(10),
                             child: TextFormField(
                               controller: _controllerItems,
                               onChanged: (text) {
@@ -205,7 +205,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                       ),
                       SizedBox(
                         width: double.infinity,
-                        height: 300,
+                        height: 250,
                         child: BlocBuilder<ItemScreenCubit, ItemScreenState>(
                             builder: (context, state) {
                           return Center(
