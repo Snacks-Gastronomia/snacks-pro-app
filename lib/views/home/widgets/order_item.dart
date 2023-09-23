@@ -25,7 +25,7 @@ class OrderItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double extras_value = order.extras.isNotEmpty
+    double extrasValue = order.extras.isNotEmpty
         ? order.extras
             .map((e) => double.parse(e["value"].toString()))
             .reduce((value, element) => value + element)
@@ -69,7 +69,7 @@ class OrderItemWidget extends StatelessWidget {
                       Text(
                         NumberFormat.currency(locale: "pt", symbol: r"R$ ")
                             .format((double.parse(order.value.toString())) +
-                                extras_value),
+                                extrasValue),
                         style:
                             AppTextStyles.regular(14, color: Color(0xff09B44D)),
                       ),

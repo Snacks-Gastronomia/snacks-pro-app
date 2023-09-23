@@ -11,6 +11,7 @@ import '../../../../core/app.text.dart';
 import '../../../../models/item_model.dart';
 import '../../state/item_screen/item_screen_cubit.dart';
 import '../order_item.dart';
+import 'add_order_total.dart';
 
 class AddOrderManual extends StatefulWidget {
   const AddOrderManual({super.key});
@@ -204,7 +205,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                       ),
                       SizedBox(
                         width: double.infinity,
-                        height: 350,
+                        height: 300,
                         child: BlocBuilder<ItemScreenCubit, ItemScreenState>(
                             builder: (context, state) {
                           return Center(
@@ -225,6 +226,11 @@ class _AddOrderManualState extends State<AddOrderManual> {
                             ),
                           );
                         }),
+                      ),
+                      AddOrderTotal(
+                        subtotal: 0,
+                        delivery: 0,
+                        total: 0,
                       )
                     ],
                   ),
