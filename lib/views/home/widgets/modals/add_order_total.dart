@@ -16,7 +16,7 @@ class AddOrderTotal extends StatelessWidget {
     bool value = false;
     return SizedBox(
       width: double.infinity,
-      height: 200,
+      height: 150,
       child: Column(children: [
         Row(
           children: [

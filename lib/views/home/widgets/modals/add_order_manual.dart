@@ -5,10 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 import '../../../../core/app.text.dart';
 import '../../../../models/item_model.dart';
+import '../../../../models/order_model.dart';
 import '../../state/item_screen/item_screen_cubit.dart';
 import '../order_item.dart';
 import 'add_order_total.dart';
@@ -23,7 +25,17 @@ class AddOrderManual extends StatefulWidget {
 class _AddOrderManualState extends State<AddOrderManual> {
   List<Item> suggestions = [];
   List<Item> restaurantMenu = [];
-  List<Item> order = [];
+  OrderModel order = OrderModel(
+      item: Item(
+          title: '',
+          value: 0,
+          num_served: 0,
+          time: 0,
+          restaurant_id: '',
+          restaurant_name: '',
+          active: true),
+      option_selected: '',
+      observations: '');
 
   final TextEditingController _controllerData = TextEditingController();
   final TextEditingController _controllerItems = TextEditingController();
@@ -178,6 +190,10 @@ class _AddOrderManualState extends State<AddOrderManual> {
                               child: ListView.builder(
                                 itemCount: suggestions.length,
                                 itemBuilder: (context, index) {
+                                  OrderModel orderGet = OrderModel(
+                                      item: suggestions[index],
+                                      option_selected: '',
+                                      observations: '');
                                   String price = suggestions[index]
                                       .value
                                       .toStringAsFixed(2)
@@ -194,7 +210,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                           'Selected: ${suggestions[index].title}');
                                       _controllerItems.clear();
                                       setState(() {
-                                        order.add(suggestions[index]);
+                                        order = orderGet;
                                       });
                                     },
                                   );
@@ -210,10 +226,10 @@ class _AddOrderManualState extends State<AddOrderManual> {
                             builder: (context, state) {
                           return Center(
                             child: ListView.builder(
-                              itemCount: order.length,
+                              itemCount: order.amount,
                               itemBuilder: (context, index) {
                                 return OrderItemWidget(
-                                  order: order[index],
+                                  order: order,
                                   onDelete: (() {}),
                                   onIncrement: context
                                       .read<ItemScreenCubit>()
@@ -228,9 +244,14 @@ class _AddOrderManualState extends State<AddOrderManual> {
                         }),
                       ),
                       AddOrderTotal(
-                        subtotal: 0,
+                        subtotal: order.item.value,
                         delivery: 0,
                         total: 0,
+                      ),
+                      CustomSubmitButton(
+                          onPressedAction: () {}, label: "Adicionar Pedido"),
+                      const SizedBox(
+                        height: 38,
                       )
                     ],
                   ),
