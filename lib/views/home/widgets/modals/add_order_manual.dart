@@ -36,6 +36,10 @@ class _AddOrderManualState extends State<AddOrderManual> {
           active: true),
       option_selected: '',
       observations: '');
+  List<OrderModel> orders = [];
+  double subtotal = 0;
+  double delivery = 0;
+  double total = 0;
 
   final TextEditingController _controllerData = TextEditingController();
   final TextEditingController _controllerItems = TextEditingController();
@@ -190,6 +194,8 @@ class _AddOrderManualState extends State<AddOrderManual> {
                               child: ListView.builder(
                                 itemCount: suggestions.length,
                                 itemBuilder: (context, index) {
+                                  console.log(suggestions[index].title);
+                                  console.log(suggestions.length.toString());
                                   OrderModel orderGet = OrderModel(
                                       item: suggestions[index],
                                       option_selected: '',
@@ -211,6 +217,9 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                       _controllerItems.clear();
                                       setState(() {
                                         order = orderGet;
+                                        orders.add(order);
+                                        subtotal += order.item.value;
+                                        total = subtotal + delivery;
                                       });
                                     },
                                   );
@@ -228,10 +237,10 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                       builder: (context, state) {
                                 return Center(
                                   child: ListView.builder(
-                                    itemCount: order.amount,
+                                    itemCount: orders.length,
                                     itemBuilder: (context, index) {
                                       return OrderItemWidget(
-                                        order: order,
+                                        order: orders[index],
                                         onDelete: (() {}),
                                         onIncrement: context
                                             .read<ItemScreenCubit>()
@@ -249,9 +258,9 @@ class _AddOrderManualState extends State<AddOrderManual> {
                               height: 250,
                             ),
                       AddOrderTotal(
-                        subtotal: order.item.value,
-                        delivery: 0,
-                        total: 0,
+                        subtotal: subtotal,
+                        delivery: delivery,
+                        total: total,
                       ),
                       CustomSubmitButton(
                           onPressedAction: () {}, label: "Adicionar Pedido"),

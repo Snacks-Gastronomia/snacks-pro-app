@@ -71,8 +71,8 @@ class OrderItemWidget extends StatelessWidget {
                             .format(
                                 (double.parse(order.item.value.toString())) +
                                     extrasValue),
-                        style:
-                            AppTextStyles.regular(14, color: Color(0xff09B44D)),
+                        style: AppTextStyles.regular(14,
+                            color: const Color(0xff000000)),
                       ),
                     ],
                   )
