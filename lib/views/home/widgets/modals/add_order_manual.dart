@@ -57,6 +57,10 @@ class _AddOrderManualState extends State<AddOrderManual> {
     total = subtotal + delivery;
   }
 
+  void removeItem(index) {
+    orders.removeAt(index);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -208,7 +212,11 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                     itemBuilder: (context, index) {
                                       return OrderItemWidget(
                                         order: orders[index],
-                                        onDelete: (() {}),
+                                        onDelete: () {
+                                          setState(() {
+                                            removeItem(index);
+                                          });
+                                        },
                                         onIncrement: context
                                             .read<ItemScreenCubit>()
                                             .incrementAmount,
