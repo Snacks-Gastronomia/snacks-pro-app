@@ -219,30 +219,35 @@ class _AddOrderManualState extends State<AddOrderManual> {
                             )
                         ],
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 250,
-                        child: BlocBuilder<ItemScreenCubit, ItemScreenState>(
-                            builder: (context, state) {
-                          return Center(
-                            child: ListView.builder(
-                              itemCount: order.amount,
-                              itemBuilder: (context, index) {
-                                return OrderItemWidget(
-                                  order: order,
-                                  onDelete: (() {}),
-                                  onIncrement: context
-                                      .read<ItemScreenCubit>()
-                                      .incrementAmount,
-                                  onDecrement: context
-                                      .read<ItemScreenCubit>()
-                                      .decrementAmount,
+                      order.item.title.isNotEmpty
+                          ? SizedBox(
+                              width: double.infinity,
+                              height: 250,
+                              child:
+                                  BlocBuilder<ItemScreenCubit, ItemScreenState>(
+                                      builder: (context, state) {
+                                return Center(
+                                  child: ListView.builder(
+                                    itemCount: order.amount,
+                                    itemBuilder: (context, index) {
+                                      return OrderItemWidget(
+                                        order: order,
+                                        onDelete: (() {}),
+                                        onIncrement: context
+                                            .read<ItemScreenCubit>()
+                                            .incrementAmount,
+                                        onDecrement: context
+                                            .read<ItemScreenCubit>()
+                                            .decrementAmount,
+                                      );
+                                    },
+                                  ),
                                 );
-                              },
+                              }),
+                            )
+                          : const SizedBox(
+                              height: 250,
                             ),
-                          );
-                        }),
-                      ),
                       AddOrderTotal(
                         subtotal: order.item.value,
                         delivery: 0,
