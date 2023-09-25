@@ -12,13 +12,13 @@ class OrderItemWidget extends StatelessWidget {
   const OrderItemWidget({
     Key? key,
     required this.order,
-    // required this.amount,
+    required this.amount,
     required this.onDelete,
     required this.onIncrement,
     required this.onDecrement,
   }) : super(key: key);
   final OrderModel order;
-  // final int amount;
+  final int amount;
   final VoidCallback onDelete;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;

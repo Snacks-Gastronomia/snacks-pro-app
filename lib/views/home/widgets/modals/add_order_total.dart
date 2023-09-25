@@ -25,26 +25,26 @@ class _AddOrderTotalState extends State<AddOrderTotal> {
     return SizedBox(
       width: double.infinity,
       height: 150,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Checkbox(
-                shape: const CircleBorder(),
-                value: isDelivery,
-                onChanged: (value) {
-                  setState(() {
-                    isDelivery = value!;
-                    widget.checkBoxValue(value);
-                  });
-                },
-              ),
-              const Text('Taxa delivery')
-            ],
-          ),
-          Row(
+      child: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Checkbox(
+              shape: const CircleBorder(),
+              value: isDelivery,
+              onChanged: (value) {
+                setState(() {
+                  isDelivery = value!;
+                  widget.checkBoxValue(value);
+                });
+              },
+            ),
+            const Text('Taxa delivery')
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
@@ -54,7 +54,10 @@ class _AddOrderTotalState extends State<AddOrderTotal> {
               Text("${widget.subtotal}")
             ],
           ),
-          Row(
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
@@ -64,7 +67,10 @@ class _AddOrderTotalState extends State<AddOrderTotal> {
               Text("${widget.delivery}")
             ],
           ),
-          Row(
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
@@ -73,9 +79,9 @@ class _AddOrderTotalState extends State<AddOrderTotal> {
               ),
               Text("${widget.total}")
             ],
-          )
-        ]),
-      ),
+          ),
+        )
+      ]),
     );
   }
 }

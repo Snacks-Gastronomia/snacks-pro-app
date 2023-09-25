@@ -58,13 +58,8 @@ class _AddOrderManualState extends State<AddOrderManual> {
   }
 
   void removeItem(index) {
+    subtotal -= orders[index].item.value;
     orders.removeAt(index);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    suggestions = restaurantMenu;
     updateTotal();
   }
 
@@ -75,6 +70,13 @@ class _AddOrderManualState extends State<AddOrderManual> {
               (item) => item.title.toLowerCase().contains(text.toLowerCase()))
           .toList();
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    suggestions = restaurantMenu;
+    updateTotal();
   }
 
   @override
@@ -211,6 +213,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                     itemCount: orders.length,
                                     itemBuilder: (context, index) {
                                       return OrderItemWidget(
+                                        amount: orders[index].amount,
                                         order: orders[index],
                                         onDelete: () {
                                           setState(() {
