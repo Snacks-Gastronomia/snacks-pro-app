@@ -5,11 +5,13 @@ class AddOrderTotal extends StatefulWidget {
   final double subtotal;
   final double delivery;
   final double total;
+  final ValueChanged<bool> checkBoxValue;
   const AddOrderTotal({
     Key? key,
     required this.subtotal,
     required this.delivery,
     required this.total,
+    required this.checkBoxValue,
   }) : super(key: key);
 
   @override
@@ -17,7 +19,7 @@ class AddOrderTotal extends StatefulWidget {
 }
 
 class _AddOrderTotalState extends State<AddOrderTotal> {
-  bool isDelivery = false;
+  bool isDelivery = true;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -35,6 +37,7 @@ class _AddOrderTotalState extends State<AddOrderTotal> {
                 onChanged: (value) {
                   setState(() {
                     isDelivery = value!;
+                    widget.checkBoxValue(value);
                   });
                 },
               ),
