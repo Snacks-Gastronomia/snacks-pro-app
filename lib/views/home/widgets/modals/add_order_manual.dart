@@ -6,11 +6,13 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
+import 'package:snacks_pro_app/views/home/state/add_order_state/add_order_state.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 import '../../../../core/app.text.dart';
 import '../../../../models/item_model.dart';
 import '../../../../models/order_model.dart';
+import '../../state/add_order_state/add_order_cubit.dart';
 import '../../state/item_screen/item_screen_cubit.dart';
 import '../order_item.dart';
 import 'add_order_total.dart';
@@ -25,7 +27,9 @@ class AddOrderManual extends StatefulWidget {
 class _AddOrderManualState extends State<AddOrderManual> {
   List<Item> suggestions = [];
   List<Item> restaurantMenu = [];
+
   OrderModel order = OrderModel(
+      amount: 1,
       item: Item(
           title: '',
           value: 0,
@@ -37,31 +41,9 @@ class _AddOrderManualState extends State<AddOrderManual> {
       option_selected: '',
       observations: '');
   List<OrderModel> orders = [];
-  double subtotal = 0;
-  double delivery = 7;
-  double total = 0;
 
   final TextEditingController _controllerData = TextEditingController();
   final TextEditingController _controllerItems = TextEditingController();
-
-  String searchText = '';
-
-  void _handleCheckboxValue(bool value) {
-    setState(() {
-      value ? delivery = 7 : delivery = 0;
-      updateTotal();
-    });
-  }
-
-  void updateTotal() {
-    total = subtotal + delivery;
-  }
-
-  void removeItem(index) {
-    subtotal -= orders[index].item.value;
-    orders.removeAt(index);
-    updateTotal();
-  }
 
   void updateFilteredSuggestions(String text) {
     setState(() {
@@ -76,11 +58,11 @@ class _AddOrderManualState extends State<AddOrderManual> {
   void initState() {
     super.initState();
     suggestions = restaurantMenu;
-    updateTotal();
   }
 
   @override
   Widget build(BuildContext context) {
+    var cubit = context.read<AddOrderCubit>();
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
       return StreamBuilder<QuerySnapshot>(
           stream: state.menu,
@@ -205,32 +187,40 @@ class _AddOrderManualState extends State<AddOrderManual> {
                             SizedBox(
                               width: double.infinity,
                               height: 250,
-                              child:
-                                  BlocBuilder<ItemScreenCubit, ItemScreenState>(
-                                      builder: (context, state) {
-                                return Center(
-                                  child: ListView.builder(
-                                    itemCount: orders.length,
-                                    itemBuilder: (context, index) {
-                                      return OrderItemWidget(
-                                        amount: orders[index].amount,
-                                        order: orders[index],
-                                        onDelete: () {
-                                          setState(() {
-                                            removeItem(index);
-                                          });
+                              child: BlocBuilder<AddOrderCubit, AddOrderState>(
+                                  bloc: cubit,
+                                  builder: (context, state) {
+                                    return Center(
+                                      child: ListView.builder(
+                                        itemCount: orders.length,
+                                        itemBuilder: (context, index) {
+                                          int amount =
+                                              orders[index].amount ?? 1;
+                                          return OrderItemWidget(
+                                              amount: amount,
+                                              order: orders[index],
+                                              onDelete: () {
+                                                setState(() {
+                                                  cubit.removeItem(
+                                                      index, orders);
+                                                });
+                                              },
+                                              onIncrement: () {
+                                                setState(() {
+                                                  cubit.incrementAmount(
+                                                      index, orders);
+                                                });
+                                              },
+                                              onDecrement: () {
+                                                setState(() {
+                                                  cubit.decrementAmount(
+                                                      index, orders);
+                                                });
+                                              });
                                         },
-                                        onIncrement: context
-                                            .read<ItemScreenCubit>()
-                                            .incrementAmount,
-                                        onDecrement: context
-                                            .read<ItemScreenCubit>()
-                                            .decrementAmount,
-                                      );
-                                    },
-                                  ),
-                                );
-                              }),
+                                      ),
+                                    );
+                                  }),
                             ),
                             if (_controllerItems.text.isNotEmpty)
                               Container(
@@ -247,40 +237,46 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                           spreadRadius: 0.0,
                                           blurStyle: BlurStyle.normal)
                                     ]),
-                                child: ListView.builder(
-                                  itemCount: suggestions.length,
-                                  itemBuilder: (context, index) {
-                                    console.log(suggestions[index].title);
-                                    console.log(suggestions.length.toString());
-                                    OrderModel orderGet = OrderModel(
-                                        item: suggestions[index],
-                                        option_selected: '',
-                                        observations: '');
-                                    String price = suggestions[index]
-                                        .value
-                                        .toStringAsFixed(2)
-                                        .replaceAll('.', ',');
-                                    return ListTile(
-                                      title: Text(
-                                        suggestions[index].title,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      trailing: Text("R\$$price"),
-                                      onTap: () {
-                                        console.log(
-                                            'Selected: ${suggestions[index].title}');
-                                        _controllerItems.clear();
-                                        setState(() {
-                                          order = orderGet;
-                                          orders.add(order);
-                                          subtotal += order.item.value;
-                                          updateTotal();
-                                        });
-                                      },
-                                    );
-                                  },
-                                ),
+                                child:
+                                    BlocBuilder<AddOrderCubit, AddOrderState>(
+                                        bloc: cubit,
+                                        builder: (context, state) {
+                                          return ListView.builder(
+                                            itemCount: suggestions.length,
+                                            itemBuilder: (context, index) {
+                                              OrderModel orderGet = OrderModel(
+                                                  amount: order.amount,
+                                                  item: suggestions[index],
+                                                  option_selected: '',
+                                                  observations: '');
+                                              String price = suggestions[index]
+                                                  .value
+                                                  .toStringAsFixed(2)
+                                                  .replaceAll('.', ',');
+                                              return ListTile(
+                                                title: Text(
+                                                  suggestions[index].title,
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                trailing: Text("R\$$price"),
+                                                onTap: () {
+                                                  console.log(
+                                                      'Selected: ${suggestions[index].title}');
+                                                  _controllerItems.clear();
+                                                  setState(() {
+                                                    order = orderGet;
+                                                    orders.add(order);
+                                                    cubit.subtotal +=
+                                                        order.item.value;
+                                                    cubit.updateTotal();
+                                                  });
+                                                },
+                                              );
+                                            },
+                                          );
+                                        }),
                               ),
                           ],
                         ),
@@ -289,10 +285,14 @@ class _AddOrderManualState extends State<AddOrderManual> {
                     Column(
                       children: [
                         AddOrderTotal(
-                          checkBoxValue: _handleCheckboxValue,
-                          subtotal: subtotal,
-                          delivery: delivery,
-                          total: total,
+                          checkBoxValue: (value) {
+                            setState(() {
+                              cubit.handleCheckboxValue(value);
+                            });
+                          },
+                          subtotal: cubit.subtotal,
+                          delivery: cubit.delivery,
+                          total: cubit.total,
                         ),
                         CustomSubmitButton(
                             onPressedAction: () {}, label: "Adicionar Pedido"),

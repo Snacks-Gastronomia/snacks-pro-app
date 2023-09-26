@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 
-import '../../../core/app.images.dart';
 import '../../../core/app.text.dart';
-import '../../../models/item_model.dart';
+
 import 'custom_switch.dart';
 
 class OrderItemWidget extends StatelessWidget {
@@ -86,12 +85,11 @@ class OrderItemWidget extends StatelessWidget {
                   CustomSwitch(
                       decrementAction: onDecrement,
                       incrementAction: onIncrement,
-                      value: 1),
+                      value: amount),
                   SizedBox(
                     height: 30,
                     child: TextButton(
                       onPressed: onDelete,
-                      // style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
                       child: Text(
                         "Remover",
                         style:

@@ -27,6 +27,7 @@ import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
 import 'package:snacks_pro_app/views/home/home_screen.dart';
 import 'package:snacks_pro_app/views/home/orders_screen.dart';
 import 'package:snacks_pro_app/views/home/scan_card_screen.dart';
+import 'package:snacks_pro_app/views/home/state/add_order_state/add_order_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
@@ -86,6 +87,9 @@ class AppWidget extends StatelessWidget {
         ),
         BlocProvider<StockCubit>(
           create: (context) => StockCubit(),
+        ),
+        BlocProvider<AddOrderCubit>(
+          create: (context) => AddOrderCubit(),
         ),
       ],
       key: UniqueKey(),

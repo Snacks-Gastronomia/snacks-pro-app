@@ -31,7 +31,7 @@ class ItemScreenCubit extends Cubit<ItemScreenState> {
     print(state);
   }
 
-  getNewValue() {
-    return state.order!.item.value * state.order!.amount;
-  }
+  // getNewValue() {
+  //   return state.order!.item.value * state.order!.amount;
+  // }
 }

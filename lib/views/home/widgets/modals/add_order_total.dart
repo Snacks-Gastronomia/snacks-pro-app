@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:snacks_pro_app/views/home/state/add_order_state/add_order_cubit.dart';
 
 class AddOrderTotal extends StatefulWidget {
   final double subtotal;
@@ -36,6 +38,7 @@ class _AddOrderTotalState extends State<AddOrderTotal> {
                 setState(() {
                   isDelivery = value!;
                   widget.checkBoxValue(value);
+                  // context.read<AddOrderCubit>().handleCheckboxValue(value);
                 });
               },
             ),
