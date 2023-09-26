@@ -22,23 +22,31 @@ class AddOrderCubit extends Cubit<AddOrderState> {
   }
 
   void removeItem(index, orders) {
-    subtotal -= orders[index].item.value;
+    subtotal -= subtotal;
     updateTotal();
     orders.removeAt(index);
   }
 
   void incrementAmount(index, List<OrderModel> orders) {
+    subtotal += orders[index].item.value;
     var amount = orders[index].amount;
     amount == null ? amount = 1 : amount += 1;
     orders[index].amount = amount;
 
-    console.log('$amount');
+    updateTotal();
   }
 
   void decrementAmount(index, List<OrderModel> orders) {
+    subtotal -= orders[index].item.value;
     var amount = orders[index].amount;
-    amount == null ? amount = 1 : amount -= 1;
+    amount == null
+        ? amount = 1
+        : amount > 1
+            ? amount -= 1
+            : null;
+
     orders[index].amount = amount;
-    console.log('$amount');
+
+    updateTotal();
   }
 }
