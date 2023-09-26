@@ -37,13 +37,11 @@ class AddOrderCubit extends Cubit<AddOrderState> {
   }
 
   void decrementAmount(index, List<OrderModel> orders) {
-    subtotal -= orders[index].item.value;
     var amount = orders[index].amount;
-    amount == null
-        ? amount = 1
-        : amount > 1
-            ? amount -= 1
-            : null;
+    if (amount! > 1) {
+      amount -= 1;
+      subtotal -= orders[index].item.value;
+    }
 
     orders[index].amount = amount;
 

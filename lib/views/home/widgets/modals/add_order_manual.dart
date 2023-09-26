@@ -46,11 +46,16 @@ class _AddOrderManualState extends State<AddOrderManual> {
   final TextEditingController _controllerItems = TextEditingController();
 
   void updateFilteredSuggestions(String text) {
+    List<Item> teste = [];
     setState(() {
-      suggestions = restaurantMenu
-          .where(
-              (item) => item.title.toLowerCase().contains(text.toLowerCase()))
-          .toList();
+      if (suggestions.contains(teste[0].title)) {
+        suggestions.clear();
+        suggestions = restaurantMenu
+            .where(
+                (item) => item.title.toLowerCase().contains(text.toLowerCase()))
+            .toList();
+        teste = suggestions;
+      }
     });
   }
 
