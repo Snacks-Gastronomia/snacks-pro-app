@@ -245,7 +245,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                             itemCount: suggestions.length,
                                             itemBuilder: (context, index) {
                                               OrderModel orderGet = OrderModel(
-                                                  amount: order.amount,
+                                                  amount: 1,
                                                   item: suggestions[index],
                                                   option_selected: '',
                                                   observations: '');
