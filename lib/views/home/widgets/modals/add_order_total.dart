@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/views/home/state/add_order_state/add_order_cubit.dart';
 
 class AddOrderTotal extends StatefulWidget {
@@ -22,6 +23,12 @@ class AddOrderTotal extends StatefulWidget {
 
 class _AddOrderTotalState extends State<AddOrderTotal> {
   bool isDelivery = true;
+
+  String fomartValues(value) {
+    final fomartter = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
+    return fomartter.format(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -54,7 +61,7 @@ class _AddOrderTotalState extends State<AddOrderTotal> {
                 'Subtotal',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text("${widget.subtotal}")
+              Text(fomartValues(widget.subtotal))
             ],
           ),
         ),
@@ -67,7 +74,7 @@ class _AddOrderTotalState extends State<AddOrderTotal> {
                 'Delivery',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text("${widget.delivery}")
+              Text(fomartValues(widget.delivery))
             ],
           ),
         ),
@@ -80,7 +87,7 @@ class _AddOrderTotalState extends State<AddOrderTotal> {
                 'Total',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text("${widget.total}")
+              Text(fomartValues(widget.total))
             ],
           ),
         )

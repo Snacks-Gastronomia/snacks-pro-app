@@ -21,8 +21,8 @@ class AddOrderCubit extends Cubit<AddOrderState> {
     total = subtotal + delivery;
   }
 
-  void removeItem(index, orders) {
-    subtotal -= subtotal;
+  void removeItem(index, orders, amount) {
+    subtotal -= (orders[index].item.value * amount);
     updateTotal();
     orders.removeAt(index);
   }
