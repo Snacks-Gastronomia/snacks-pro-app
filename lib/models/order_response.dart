@@ -333,7 +333,6 @@ class ItemDetails {
       restaurantName: map['restaurant_name'] ?? '',
     );
   }
-
   String toJson() => json.encode(toMap());
 }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
 
 import '../../../core/app.text.dart';
 
@@ -16,7 +17,7 @@ class OrderItemWidget extends StatelessWidget {
     required this.onIncrement,
     required this.onDecrement,
   }) : super(key: key);
-  final OrderModel order;
+  final ItemResponse order;
   final int amount;
   final VoidCallback onDelete;
   final VoidCallback onIncrement;
@@ -24,11 +25,11 @@ class OrderItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double extrasValue = order.extras.isNotEmpty
-        ? order.extras
-            .map((e) => double.parse(e["value"].toString()))
-            .reduce((value, element) => value + element)
-        : 0;
+    // double extrasValue = order.extras!.isNotEmpty
+    //     ? order.extras!
+    //         .map((e) => double.parse(e["value"].toString()))
+    //         .reduce((value, element) => value + element)
+    //     : 0;
     return Stack(
       children: [
         Container(
@@ -67,9 +68,10 @@ class OrderItemWidget extends StatelessWidget {
                       ),
                       Text(
                         NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                            .format(
-                                (double.parse(order.item.value.toString())) +
-                                    extrasValue),
+                            .format((double.parse(order.item.value.toString()))
+                                // +
+                                //     extrasValue
+                                ),
                         style: AppTextStyles.regular(14,
                             color: const Color(0xff000000)),
                       ),

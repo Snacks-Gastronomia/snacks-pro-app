@@ -142,8 +142,6 @@ class OrdersCubit extends Cubit<OrdersState> {
       {required List<OrderResponse> orders,
       required String restaurant,
       required datetime}) async {
-    final dataStorage = await storage.getDataStorage("user");
-
     double total =
         orders.map((e) => e.value).reduce((value, element) => value + element);
 
