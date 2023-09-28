@@ -74,7 +74,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
             restaurantId = user["restaurant"]["id"];
             restaurantName = user["restaurant"]["name"];
 
-            ItemResponse order = ItemResponse(
+            ItemResponse itemResponse = ItemResponse(
                 amount: 1,
                 item: ItemDetails(
                     imageUrl: '',
@@ -88,7 +88,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 observations: '',
                 optionSelected: OptionSelected(id: '', title: '', value: 0));
 
-            List<ItemResponse> listItemResponse = [order];
+            List<ItemResponse> listItemResponse = [itemResponse];
 
             OrderResponse orderResponse = OrderResponse(
                 code: 'code',
@@ -325,7 +325,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                           shrinkWrap: true,
                                           itemCount: suggestions.length,
                                           itemBuilder: (context, index) {
-                                            ItemResponse orderGet =
+                                            ItemResponse itemResponseGet =
                                                 ItemResponse(
                                                     amount: 1,
                                                     item: suggestions[index],
@@ -352,13 +352,18 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                                     'Selected: ${suggestions[index].title}');
                                                 _controllerItems.clear();
                                                 setState(() {
-                                                  order = orderGet;
-                                                  listItemResponse[0] = order;
+                                                  itemResponse =
+                                                      itemResponseGet;
+                                                  listItemResponse[0] =
+                                                      itemResponse;
+                                                  orderResponse.value +=
+                                                      suggestions[index].value;
+
                                                   orderResponse.items =
                                                       listItemResponse;
                                                   orders.add(orderResponse);
                                                   cubit.subtotal +=
-                                                      order.item.value;
+                                                      itemResponse.item.value;
                                                   cubit.updateTotal();
                                                 });
                                               },

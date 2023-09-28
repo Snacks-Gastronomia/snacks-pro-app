@@ -86,19 +86,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   'Pedidos',
                   style: AppTextStyles.medium(20),
                 ),
-                GestureDetector(
-                    onTap: () => AppModal().showIOSModalBottomSheet(
-                          drag: false,
-                          context: context,
-                          content: Builder(builder: (context) {
-                            return const AddOrderManual();
-                          }),
-                        ),
-                    child: const Icon(
-                      Icons.add_box_rounded,
-                      color: Colors.blue,
-                      size: 40,
-                    ))
+                FutureBuilder<AppPermission>(
+                  future: getAccessLevel(),
+                  builder: (context, snapshot) {
+                    var acces_level = snapshot.data;
+                    if (acces_level == AppPermission.employee ||
+                        acces_level == AppPermission.radm) {
+                      return GestureDetector(
+                          onTap: () => AppModal().showIOSModalBottomSheet(
+                                drag: false,
+                                context: context,
+                                content: Builder(builder: (context) {
+                                  return const AddOrderManual();
+                                }),
+                              ),
+                          child: const Icon(
+                            Icons.add_box_rounded,
+                            color: Colors.blue,
+                            size: 40,
+                          ));
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                )
               ],
             ),
           ),
