@@ -33,20 +33,6 @@ class _AddOrderManualState extends State<AddOrderManual> {
   List<ItemDetails> suggestions = [];
   List<ItemDetails> restaurantMenu = [];
 
-  ItemResponse order = ItemResponse(
-      amount: 1,
-      item: ItemDetails(
-          imageUrl: '',
-          restaurantId: '',
-          active: false,
-          id: '',
-          time: 0,
-          title: '',
-          value: 0,
-          restaurantName: 'restaurantName'),
-      observations: '',
-      optionSelected: OptionSelected(id: '', title: '', value: 0));
-
   List<OrderResponse> orders = [];
 
   final TextEditingController _controllerData = TextEditingController();
@@ -77,35 +63,49 @@ class _AddOrderManualState extends State<AddOrderManual> {
   Widget build(BuildContext context) {
     var cubit = context.read<AddOrderCubit>();
 
-    List<ItemResponse> listItemResponse = [order];
-
-    String restaurantName = '';
-    String restaurantId = '';
-
-    OrderResponse orderResponse = OrderResponse(
-        code: 'code',
-        needChange: false,
-        restaurant: restaurantId,
-        createdAt: DateTime.now(),
-        restaurantName: restaurantName,
-        isDelivery: false,
-        waiterPayment: 'waiterPayment',
-        id: 'id',
-        waiterDelivery: 'waiterDelivery',
-        partCode: 'partCode',
-        items: listItemResponse,
-        value: 0,
-        paymentMethod: 'paymentMethod',
-        status: 'status',
-        userUid: 'userUid');
-
     return FutureBuilder(
         future: storage.getDataStorage("user"),
         builder: (context, future) {
           if (future.hasData) {
             var user = future.data ?? {};
+            String restaurantName = '';
+            String restaurantId = '';
+
             restaurantId = user["restaurant"]["id"];
             restaurantName = user["restaurant"]["name"];
+
+            ItemResponse order = ItemResponse(
+                amount: 1,
+                item: ItemDetails(
+                    imageUrl: '',
+                    restaurantId: restaurantId,
+                    active: false,
+                    id: '',
+                    time: 0,
+                    title: '',
+                    value: 0,
+                    restaurantName: restaurantName),
+                observations: '',
+                optionSelected: OptionSelected(id: '', title: '', value: 0));
+
+            List<ItemResponse> listItemResponse = [order];
+
+            OrderResponse orderResponse = OrderResponse(
+                code: 'code',
+                needChange: false,
+                restaurant: restaurantId,
+                createdAt: dateTime,
+                restaurantName: restaurantName,
+                isDelivery: false,
+                waiterPayment: 'Pedido Manual',
+                id: 'Pedido Manual',
+                waiterDelivery: 'Pedido Manual',
+                partCode: 'Pedido Manual',
+                items: listItemResponse,
+                value: 0,
+                paymentMethod: 'Pedido Manual',
+                status: 'Pedido Manual',
+                userUid: 'Pedido Manual');
 
             return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
               return StreamBuilder<QuerySnapshot>(
@@ -195,12 +195,12 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                          return null;
+                                          return 'Digite a hora do pedido';
                                         }
                                         try {
                                           timeFormat.parseStrict(value);
                                         } catch (e) {
-                                          return null;
+                                          return 'Digite uma hora válida';
                                         }
                                         return null;
                                       },
@@ -255,7 +255,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                   children: [
                                     SizedBox(
                                       width: double.infinity,
-                                      height: 250,
+                                      height: 200,
                                       child: BlocBuilder<AddOrderCubit,
                                               AddOrderState>(
                                           bloc: cubit,
@@ -385,15 +385,6 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                 CustomSubmitButton(
                                     onPressedAction: () {
                                       if (formKey.currentState!.validate()) {
-                                        for (var i = 0;
-                                            i > orders.length;
-                                            i++) {
-                                          orders[i].restaurant = restaurantId;
-                                          orders[i].restaurantName =
-                                              restaurantName;
-                                          orders[i].value = cubit.total;
-                                          orders[i].createdAt = dateTime;
-                                        }
                                         context
                                             .read<OrdersCubit>()
                                             .addOrderToReport(

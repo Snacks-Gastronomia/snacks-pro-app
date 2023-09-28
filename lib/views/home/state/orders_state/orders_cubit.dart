@@ -45,6 +45,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     required context,
     required List<OrderResponse> items,
   }) async {
+    emit(state.copyWith(status: AppStatus.loading));
     var firstOrder = items[0];
 
     double total =
@@ -118,6 +119,7 @@ class OrdersCubit extends Cubit<OrdersState> {
               datetime: firstOrder.createdAt);
         }
         await repository.updateManyStatus(ids, nextStatus);
+        emit(state.copyWith(status: AppStatus.loaded));
       }
     }
   }
@@ -142,6 +144,8 @@ class OrdersCubit extends Cubit<OrdersState> {
       {required List<OrderResponse> orders,
       required String restaurant,
       required datetime}) async {
+    final dataStorage = await storage.getDataStorage("user");
+
     double total =
         orders.map((e) => e.value).reduce((value, element) => value + element);
 
@@ -171,7 +175,8 @@ class OrdersCubit extends Cubit<OrdersState> {
     }).toList();
 
     String time = DateFormat("HH:mm").format(datetime);
-    for (int i = 0; i > orders.length; i++) {
+
+    for (int i = 0; i < orders.length; i++) {
       var data = {
         "total": orders[i].value,
         "orders": submitItems[i],
