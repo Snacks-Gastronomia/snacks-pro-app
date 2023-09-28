@@ -171,14 +171,15 @@ class OrdersCubit extends Cubit<OrdersState> {
     }).toList();
 
     String time = DateFormat("HH:mm").format(datetime);
-    var data = {
-      "total": total,
-      "orders": submitItems.last,
-      "time": time,
-      "payment": method,
-    };
-
-    return await finance.setMonthlyBudgetFirebase(
-        orders[0].restaurant, data, total, orders[0].restaurantName);
+    for (int i = 0; i > orders.length; i++) {
+      var data = {
+        "total": orders[i].value,
+        "orders": submitItems[i],
+        "time": time,
+        "payment": method,
+      };
+      await finance.setMonthlyBudgetFirebase(orders[i].restaurant, data,
+          orders[i].value, orders[i].restaurantName);
+    }
   }
 }

@@ -241,6 +241,10 @@ class ItemResponse {
     return (double.parse(optionSelected.value.toString()) + extra) * amount;
   }
 
+  set getTotalValue(double value) {
+    throw Exception("Cannot set totalValue");
+  }
+
   String toJson() => json.encode(toMap());
 
   factory ItemResponse.fromMap(Map<String, dynamic> map) {

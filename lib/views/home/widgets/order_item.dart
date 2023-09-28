@@ -17,7 +17,7 @@ class OrderItemWidget extends StatelessWidget {
     required this.onIncrement,
     required this.onDecrement,
   }) : super(key: key);
-  final ItemResponse order;
+  final ItemDetails order;
   final int amount;
   final VoidCallback onDelete;
   final VoidCallback onIncrement;
@@ -56,7 +56,7 @@ class OrderItemWidget extends StatelessWidget {
                       SizedBox(
                         width: 130,
                         child: Text(
-                          order.item.title,
+                          order.title,
                           style: AppTextStyles.regular(16),
                           maxLines: 2,
                           softWrap: true,
@@ -68,7 +68,7 @@ class OrderItemWidget extends StatelessWidget {
                       ),
                       Text(
                         NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                            .format((double.parse(order.item.value.toString()))
+                            .format((double.parse(order.value.toString()))
                                 // +
                                 //     extrasValue
                                 ),

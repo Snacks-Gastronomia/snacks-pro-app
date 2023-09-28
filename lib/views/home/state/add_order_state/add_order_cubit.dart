@@ -26,57 +26,30 @@ class AddOrderCubit extends Cubit<AddOrderState> {
     total = subtotal + delivery;
   }
 
-  void removeItem(index, orders, amount) {
-    subtotal -= (orders[index].item.value * amount);
+  void removeItem(OrderResponse orders, amount) {
+    subtotal -= (orders.items[0].item.value * amount);
     updateTotal();
-    orders.removeAt(index);
+    orders.items.removeAt(0);
   }
 
-  void incrementAmount(index, List<ItemResponse> orders) {
-    subtotal += orders[index].item.value;
-    var amount = orders[index].amount;
+  void incrementAmount(OrderResponse orders) {
+    subtotal += orders.items[0].item.value;
+    var amount = orders.items[0].amount;
     amount += 1;
-    orders[index].amount = amount;
+    orders.items[0].amount = amount;
 
     updateTotal();
   }
 
-  void decrementAmount(index, List<ItemResponse> orders) {
-    var amount = orders[index].amount;
+  void decrementAmount(OrderResponse orders) {
+    var amount = orders.items[0].amount;
     if (amount > 1) {
       amount -= 1;
-      subtotal -= orders[index].item.value;
+      subtotal -= orders.items[0].item.value;
     }
 
-    orders[index].amount = amount;
+    orders.items[0].amount = amount;
 
     updateTotal();
-  }
-
-  Future<void> submitOrder(
-      orders, restaurantName, restaurantId, total, datetime) async {
-    final firestore = FirebaseFirestore.instance;
-    OrderResponse order = OrderResponse(
-      code: "pedido-manual",
-      needChange: false,
-      restaurant: restaurantId,
-      createdAt: datetime,
-      restaurantName: restaurantName,
-      isDelivery: true,
-      waiterPayment: "pedido-manual",
-      id: "pedido-manual",
-      waiterDelivery: "pedido-manual",
-      partCode: "pedido-manual",
-      items: orders,
-      value: 0,
-      paymentMethod: '',
-      status: "Delivered",
-      userUid: "pedido-manual",
-    );
-    try {
-      await firestore.collection("orders").add(orders);
-    } catch (e) {
-      print("e");
-    }
   }
 }

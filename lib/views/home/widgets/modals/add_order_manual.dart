@@ -11,6 +11,7 @@ import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/state/add_order_state/add_order_state.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
+import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 
 import '../../../../core/app.text.dart';
 
@@ -46,7 +47,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
       observations: '',
       optionSelected: OptionSelected(id: '', title: '', value: 0));
 
-  List<ItemResponse> orders = [];
+  List<OrderResponse> orders = [];
 
   final TextEditingController _controllerData = TextEditingController();
   final TextEditingController _controllerItems = TextEditingController();
@@ -76,13 +77,35 @@ class _AddOrderManualState extends State<AddOrderManual> {
   Widget build(BuildContext context) {
     var cubit = context.read<AddOrderCubit>();
 
+    List<ItemResponse> listItemResponse = [order];
+
+    String restaurantName = '';
+    String restaurantId = '';
+
+    OrderResponse orderResponse = OrderResponse(
+        code: 'code',
+        needChange: false,
+        restaurant: restaurantId,
+        createdAt: DateTime.now(),
+        restaurantName: restaurantName,
+        isDelivery: false,
+        waiterPayment: 'waiterPayment',
+        id: 'id',
+        waiterDelivery: 'waiterDelivery',
+        partCode: 'partCode',
+        items: listItemResponse,
+        value: 0,
+        paymentMethod: 'paymentMethod',
+        status: 'status',
+        userUid: 'userUid');
+
     return FutureBuilder(
         future: storage.getDataStorage("user"),
         builder: (context, future) {
           if (future.hasData) {
             var user = future.data ?? {};
-            final restaurantId = user["restaurant"]["id"];
-            final restaurantName = user["restaurant"]["name"];
+            restaurantId = user["restaurant"]["id"];
+            restaurantName = user["restaurant"]["name"];
 
             return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
               return StreamBuilder<QuerySnapshot>(
@@ -239,35 +262,45 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                           builder: (context, state) {
                                             return Center(
                                               child: ListView.builder(
-                                                itemCount: orders.length,
-                                                itemBuilder: (context, index) {
-                                                  int amount =
-                                                      orders[index].amount;
-                                                  return OrderItemWidget(
-                                                      amount: amount,
-                                                      order: orders[index],
-                                                      onDelete: () {
-                                                        setState(() {
-                                                          cubit.removeItem(
-                                                              index,
-                                                              orders,
-                                                              amount);
-                                                        });
-                                                      },
-                                                      onIncrement: () {
-                                                        setState(() {
-                                                          cubit.incrementAmount(
-                                                              index, orders);
-                                                        });
-                                                      },
-                                                      onDecrement: () {
-                                                        setState(() {
-                                                          cubit.decrementAmount(
-                                                              index, orders);
-                                                        });
-                                                      });
-                                                },
-                                              ),
+                                                  itemCount: orders.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    if (orders[index]
+                                                        .items
+                                                        .isNotEmpty) {
+                                                      int amount = orders[index]
+                                                          .items[0]
+                                                          .amount;
+                                                      return OrderItemWidget(
+                                                          amount: amount,
+                                                          order: orders[index]
+                                                              .items[0]
+                                                              .item,
+                                                          onDelete: () {
+                                                            setState(() {
+                                                              cubit.removeItem(
+                                                                  orders[index],
+                                                                  amount);
+                                                            });
+                                                          },
+                                                          onIncrement: () {
+                                                            setState(() {
+                                                              cubit.incrementAmount(
+                                                                  orders[
+                                                                      index]);
+                                                            });
+                                                          },
+                                                          onDecrement: () {
+                                                            setState(() {
+                                                              cubit.decrementAmount(
+                                                                  orders[
+                                                                      index]);
+                                                            });
+                                                          });
+                                                    } else {
+                                                      return Container();
+                                                    }
+                                                  }),
                                             );
                                           }),
                                     ),
@@ -320,7 +353,10 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                                 _controllerItems.clear();
                                                 setState(() {
                                                   order = orderGet;
-                                                  orders.add(order);
+                                                  listItemResponse[0] = order;
+                                                  orderResponse.items =
+                                                      listItemResponse;
+                                                  orders.add(orderResponse);
                                                   cubit.subtotal +=
                                                       order.item.value;
                                                   cubit.updateTotal();
@@ -349,10 +385,21 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                 CustomSubmitButton(
                                     onPressedAction: () {
                                       if (formKey.currentState!.validate()) {
-                                        formKey.currentState!.save();
-                                        console.log("$restaurantId");
-                                        console.log("$restaurantName");
-                                        console.log("$dateTime");
+                                        for (var i = 0;
+                                            i > orders.length;
+                                            i++) {
+                                          orders[i].restaurant = restaurantId;
+                                          orders[i].restaurantName =
+                                              restaurantName;
+                                          orders[i].value = cubit.total;
+                                          orders[i].createdAt = dateTime;
+                                        }
+                                        context
+                                            .read<OrdersCubit>()
+                                            .addOrderToReport(
+                                                orders: orders,
+                                                restaurant: restaurantName,
+                                                datetime: dateTime);
                                       }
                                     },
                                     label: "Adicionar Pedido"),
