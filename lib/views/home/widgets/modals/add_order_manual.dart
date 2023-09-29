@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
+import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/state/add_order_state/add_order_state.dart';
@@ -56,7 +57,6 @@ class _AddOrderManualState extends State<AddOrderManual> {
   @override
   void initState() {
     super.initState();
-    dateTime = DateTime.now();
   }
 
   @override
@@ -66,6 +66,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
     return FutureBuilder(
         future: storage.getDataStorage("user"),
         builder: (context, future) {
+          dateTime = DateTime.now();
           if (future.hasData) {
             var user = future.data ?? {};
             String restaurantName = '';
@@ -205,8 +206,10 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                         return null;
                                       },
                                       onSaved: (value) {
-                                        dateTime =
-                                            timeFormat.parseStrict(value!);
+                                        setState(() {
+                                          dateTime =
+                                              timeFormat.parseStrict(value!);
+                                        });
                                       },
                                     ),
                                   ),
@@ -331,9 +334,16 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                                     item: suggestions[index],
                                                     optionSelected:
                                                         OptionSelected(
-                                                            id: '',
-                                                            title: '',
-                                                            value: 0),
+                                                            id:
+                                                                suggestions[
+                                                                        index]
+                                                                    .id,
+                                                            title: suggestions[
+                                                                    index]
+                                                                .title,
+                                                            value: suggestions[
+                                                                    index]
+                                                                .value),
                                                     observations: '');
                                             String price = suggestions[index]
                                                 .value
@@ -389,13 +399,33 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                 ),
                                 CustomSubmitButton(
                                     onPressedAction: () {
+                                      var navigator = Navigator.of(context);
                                       if (formKey.currentState!.validate()) {
+                                        DateTime currentDate = dateTime;
+
+                                        TimeOfDay selectedTime =
+                                            TimeOfDay.fromDateTime(
+                                          timeFormat.parseStrict(
+                                              _controllerData.text),
+                                        );
+
+                                        dateTime = DateTime(
+                                          currentDate.year,
+                                          currentDate.month,
+                                          currentDate.day,
+                                          selectedTime.hour,
+                                          selectedTime.minute,
+                                        );
                                         context
                                             .read<OrdersCubit>()
                                             .addOrderToReport(
                                                 orders: orders,
                                                 restaurant: restaurantName,
                                                 datetime: dateTime);
+                                        cubit.total = 0;
+                                        cubit.subtotal = 0;
+                                        navigator.pop();
+                                        navigator.pushNamed(AppRoutes.home);
                                       }
                                     },
                                     label: "Adicionar Pedido"),
