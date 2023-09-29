@@ -287,7 +287,9 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                                           onDelete: () {
                                                             setState(() {
                                                               cubit.removeItem(
-                                                                  orders[0],
+                                                                  orders[0]
+                                                                      .items,
+                                                                  index,
                                                                   amount);
                                                             });
                                                           },
