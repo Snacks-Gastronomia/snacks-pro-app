@@ -35,6 +35,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
   List<ItemDetails> restaurantMenu = [];
 
   List<OrderResponse> orders = [];
+  List<ItemResponse> listItemResponse = [];
 
   final TextEditingController _controllerData = TextEditingController();
   final TextEditingController _controllerItems = TextEditingController();
@@ -89,8 +90,6 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 observations: '',
                 optionSelected: OptionSelected(id: '', title: '', value: 0));
 
-            List<ItemResponse> listItemResponse = [itemResponse];
-
             OrderResponse orderResponse = OrderResponse(
                 code: 'code',
                 needChange: false,
@@ -102,7 +101,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 id: 'Pedido Manual',
                 waiterDelivery: 'Pedido Manual',
                 partCode: 'Pedido Manual',
-                items: listItemResponse,
+                items: [],
                 value: 0,
                 paymentMethod: 'Pedido Manual',
                 status: 'Pedido Manual',
@@ -112,6 +111,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
               return StreamBuilder<QuerySnapshot>(
                   stream: state.menu,
                   builder: (context, snapshot) {
+                    orders.isEmpty ? orders.add(orderResponse) : null;
                     final List<QueryDocumentSnapshot> docs =
                         snapshot.data?.docs ?? [];
                     for (int i = 0; i < docs.length; i++) {
@@ -259,53 +259,57 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                     SizedBox(
                                       width: double.infinity,
                                       height: 200,
-                                      child: BlocBuilder<AddOrderCubit,
-                                              AddOrderState>(
-                                          bloc: cubit,
-                                          builder: (context, state) {
-                                            return Center(
-                                              child: ListView.builder(
-                                                  itemCount: orders.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    if (orders[index]
-                                                        .items
-                                                        .isNotEmpty) {
-                                                      int amount = orders[index]
-                                                          .items[0]
-                                                          .amount;
-                                                      return OrderItemWidget(
-                                                          amount: amount,
-                                                          order: orders[index]
-                                                              .items[0]
-                                                              .item,
-                                                          onDelete: () {
-                                                            setState(() {
-                                                              cubit.removeItem(
-                                                                  orders[index],
-                                                                  amount);
-                                                            });
-                                                          },
-                                                          onIncrement: () {
-                                                            setState(() {
-                                                              cubit.incrementAmount(
-                                                                  orders[
-                                                                      index]);
-                                                            });
-                                                          },
-                                                          onDecrement: () {
-                                                            setState(() {
-                                                              cubit.decrementAmount(
-                                                                  orders[
-                                                                      index]);
-                                                            });
-                                                          });
-                                                    } else {
-                                                      return Container();
-                                                    }
-                                                  }),
-                                            );
-                                          }),
+                                      child:
+                                          BlocBuilder<AddOrderCubit,
+                                                  AddOrderState>(
+                                              bloc: cubit,
+                                              builder: (context, state) {
+                                                return Center(
+                                                  child: ListView.builder(
+                                                      itemCount:
+                                                          listItemResponse
+                                                              .length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        if (orders[0]
+                                                            .items
+                                                            .isNotEmpty) {
+                                                          int amount = orders[0]
+                                                              .items[index]
+                                                              .amount;
+                                                          return OrderItemWidget(
+                                                              amount: amount,
+                                                              order:
+                                                                  listItemResponse[
+                                                                          index]
+                                                                      .item,
+                                                              onDelete: () {
+                                                                setState(() {
+                                                                  cubit.removeItem(
+                                                                      orders[0],
+                                                                      amount);
+                                                                });
+                                                              },
+                                                              onIncrement: () {
+                                                                setState(() {
+                                                                  cubit.incrementAmount(
+                                                                      orders[
+                                                                          0]);
+                                                                });
+                                                              },
+                                                              onDecrement: () {
+                                                                setState(() {
+                                                                  cubit.decrementAmount(
+                                                                      orders[
+                                                                          0]);
+                                                                });
+                                                              });
+                                                        } else {
+                                                          return Container();
+                                                        }
+                                                      }),
+                                                );
+                                              }),
                                     ),
                                     if (_controllerItems.text.isNotEmpty)
                                       Container(
@@ -364,14 +368,11 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                                 setState(() {
                                                   itemResponse =
                                                       itemResponseGet;
-                                                  listItemResponse[0] =
-                                                      itemResponse;
-                                                  orderResponse.value +=
-                                                      suggestions[index].value;
-
+                                                  listItemResponse
+                                                      .add(itemResponse);
                                                   orderResponse.items =
                                                       listItemResponse;
-                                                  orders.add(orderResponse);
+                                                  orders[0] = orderResponse;
                                                   cubit.subtotal +=
                                                       itemResponse.item.value;
                                                   cubit.updateTotal();
@@ -416,6 +417,9 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                           selectedTime.hour,
                                           selectedTime.minute,
                                         );
+
+                                        orders[0].value = cubit.total;
+
                                         context
                                             .read<OrdersCubit>()
                                             .addOrderToReport(
