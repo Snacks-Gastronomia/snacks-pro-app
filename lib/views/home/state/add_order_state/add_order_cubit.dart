@@ -1,24 +1,49 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
+import 'package:snacks_pro_app/utils/toast.dart';
 
-import '../../../../models/item_model.dart';
-import '../../../../models/order_model.dart';
 import 'add_order_state.dart';
-import 'dart:developer' as console;
 
 class AddOrderCubit extends Cubit<AddOrderState> {
   AddOrderCubit() : super(AddOrderState.inital());
   double subtotal = 0;
   double delivery = 7;
   double total = 0;
+  double deliveryValue = 0;
+
+  var toast = AppToast();
+
+  final firestore = FirebaseFirestore.instance;
+
+  Future<void> getDeliveryValue() async {
+    try {
+      var collectionRef = FirebaseFirestore.instance
+          .collection("snacks_config")
+          .doc("features")
+          .collection("all");
+
+      var querySnapshot = await collectionRef.get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var document in querySnapshot.docs) {
+          var data = document.data();
+
+          deliveryValue = (data["value"] is int)
+              ? (data["value"] as int).toDouble()
+              : data["value"] as double;
+          print(data);
+        }
+      } else {
+        print('A coleção está vazia.');
+      }
+    } catch (e) {
+      print('Erro ao obter dados: $e');
+    }
+  }
 
   void handleCheckboxValue(bool value) {
-    value ? delivery = 7 : delivery = 0;
+    value ? delivery = deliveryValue : delivery = 0;
     updateTotal();
   }
 
@@ -32,24 +57,28 @@ class AddOrderCubit extends Cubit<AddOrderState> {
     orders.items.removeAt(0);
   }
 
-  void incrementAmount(OrderResponse orders) {
-    subtotal += orders.items[0].item.value;
-    var amount = orders.items[0].amount;
+  void incrementAmount(ItemResponse itemResponse, amount) {
+    subtotal += itemResponse.item.value;
+
     amount += 1;
-    orders.items[0].amount = amount;
+    itemResponse.amount = amount;
 
     updateTotal();
   }
 
-  void decrementAmount(OrderResponse orders) {
-    var amount = orders.items[0].amount;
-    if (amount > 1) {
-      amount -= 1;
-      subtotal -= orders.items[0].item.value;
-    }
+  void decrementAmount(ItemResponse itemResponse, amount) {
+    subtotal -= itemResponse.item.value;
 
-    orders.items[0].amount = amount;
+    amount -= 1;
+    itemResponse.amount = amount;
 
     updateTotal();
+  }
+
+  void showToastSucess(context) {
+    toast.init(context: context);
+
+    toast.showToast(
+        context: context, content: "Pedido Realizado", type: ToastType.success);
   }
 }
