@@ -19,9 +19,13 @@ class CouponsWidget extends StatelessWidget {
               style: AppTextStyles.semiBold(22),
             ),
             const SizedBox(
-              height: 100,
-              child: CouponsList(),
+              height: 25,
             ),
+            const CouponsList(),
+            const SizedBox(
+              height: 25,
+            ),
+            TextButton(onPressed: () {}, child: const Text('Adicionar cupom')),
           ],
         ),
       ),

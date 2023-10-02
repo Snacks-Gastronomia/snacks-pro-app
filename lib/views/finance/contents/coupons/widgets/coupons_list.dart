@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/services/coupons_service.dart';
+import 'package:snacks_pro_app/services/employees_service.dart';
+import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/contents/coupons/model/coupons_model.dart';
 
 class CouponsList extends StatefulWidget {
@@ -9,19 +14,62 @@ class CouponsList extends StatefulWidget {
 }
 
 class _CouponsListState extends State<CouponsList> {
-  CouponsModel coupom =
-      CouponsModel(active: true, code: "FELIZNIVER10", discount: 10);
+  final service = CouponsService();
+  final storage = AppStorage();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<CouponsModel> couponsList = [coupom];
-    return ListView.builder(
-      itemCount: couponsList.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(coupom.code),
-        );
-      },
-    );
+    return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        future: service.getCoupons(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final data = snapshot.data!.data();
+            CouponsModel coupom = CouponsModel.fromMap(data!);
+            final couponsList = [coupom];
+            final textDiscount = 'Desconto: ${coupom.discount} %';
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: couponsList.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    coupom.code,
+                    style: AppTextStyles.semiBold(20),
+                  ),
+                  subtitle: Text(
+                    textDiscount,
+                    style: AppTextStyles.config(14, color: Colors.green),
+                  ),
+                  trailing: SizedBox(
+                    width: 100,
+                    child: Row(children: [
+                      IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.lock_outline,
+                            color: Colors.black,
+                            size: 30,
+                          )),
+                      IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 30,
+                          )),
+                    ]),
+                  ),
+                );
+              },
+            );
+          } else {
+            return Container();
+          }
+        });
   }
 }

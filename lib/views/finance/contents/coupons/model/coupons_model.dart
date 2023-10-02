@@ -8,6 +8,14 @@ class CouponsModel {
     required this.discount,
   });
 
+  factory CouponsModel.fromMap(Map<String, dynamic> map) {
+    return CouponsModel(
+      active: map['active'],
+      code: map['code'],
+      discount: map['discount'],
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       "active": active,
