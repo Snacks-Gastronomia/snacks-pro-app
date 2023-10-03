@@ -15,6 +15,13 @@ class CouponsModel {
       discount: map['discount'],
     );
   }
+  factory CouponsModel.newCupom(String code, int discount) {
+    return CouponsModel(
+      active: true,
+      code: code,
+      discount: discount,
+    );
+  }
 
   static List<CouponsModel> fromData(List data) {
     return data.map((doc) => CouponsModel.fromMap(doc.data())).toList();

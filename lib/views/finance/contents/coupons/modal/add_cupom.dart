@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/views/finance/state/coupons/coupons_cubit.dart';
 
 class AddCupom extends StatelessWidget {
   const AddCupom({super.key});
@@ -9,6 +11,7 @@ class AddCupom extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController controllerCode = TextEditingController();
     TextEditingController controllerDiscount = TextEditingController();
+    final cubit = context.read<CouponsCubit>();
 
     return Padding(
       padding: const EdgeInsets.all(30.0),
@@ -47,7 +50,15 @@ class AddCupom extends StatelessWidget {
           const SizedBox(
             height: 36,
           ),
-          CustomSubmitButton(onPressedAction: () {}, label: "Adicionar Cupom"),
+          CustomSubmitButton(
+              onPressedAction: () {
+                var code = controllerCode.text;
+                var discount = int.parse(controllerDiscount.text);
+
+                cubit.addCoupom(code, discount);
+                Navigator.pop(context);
+              },
+              label: "Adicionar Cupom"),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text(
