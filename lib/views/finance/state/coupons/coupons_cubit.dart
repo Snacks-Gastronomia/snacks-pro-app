@@ -20,14 +20,18 @@ class CouponsCubit extends Cubit<CouponsState> {
       emit(CounponsError("Esse cupom já existe"));
     } else {
       service.addCoupom(coupom);
-      emit(CounponsLoaded(_coupons));
+      final data = await service.getCoupons();
+      final couponsList = CouponsModel.fromData(data.docs);
+      emit(CounponsLoaded(couponsList));
     }
   }
 
   Future<void> removeCoupom(CouponsModel coupom) async {
     emit(CouponsLoading());
 
-    _coupons.remove(coupom);
-    emit(CounponsLoaded(_coupons));
+    service.removeCoupom(coupom);
+    final data = await service.getCoupons();
+    final couponsList = CouponsModel.fromData(data.docs);
+    emit(CounponsLoaded(couponsList));
   }
 }

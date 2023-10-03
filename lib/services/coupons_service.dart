@@ -32,7 +32,22 @@ class CouponsService {
           .collection("coupons")
           .doc(restaurantId)
           .collection("coupons")
-          .add(coupom.toMap());
+          .doc(coupom.code)
+          .set(coupom.toMap());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> removeCoupom(CouponsModel coupom) async {
+    try {
+      await getId();
+      firebase
+          .collection("coupons")
+          .doc(restaurantId)
+          .collection("coupons")
+          .doc(coupom.code)
+          .delete();
     } catch (e) {
       rethrow;
     }

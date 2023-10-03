@@ -52,7 +52,7 @@ class AddCupom extends StatelessWidget {
           ),
           CustomSubmitButton(
               onPressedAction: () {
-                var code = controllerCode.text;
+                var code = controllerCode.text.toUpperCase();
                 var discount = int.parse(controllerDiscount.text);
 
                 cubit.addCoupom(code, discount);
