@@ -1,7 +1,17 @@
+import 'package:snacks_pro_app/views/finance/contents/coupons/model/coupons_model.dart';
+
 abstract class CouponsState {}
 
-class CuponsInital {}
+class CouponsInital extends CouponsState {}
 
-class CuponsLoading {}
+class CouponsLoading extends CouponsState {}
 
-class CunponsLoaded {}
+class CounponsLoaded extends CouponsState {
+  final List<CouponsModel> couponsList;
+  CounponsLoaded(this.couponsList);
+}
+
+class CounponsError extends CouponsState {
+  final String message;
+  CounponsError(this.message);
+}

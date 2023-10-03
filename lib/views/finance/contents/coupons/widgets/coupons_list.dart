@@ -24,18 +24,20 @@ class _CouponsListState extends State<CouponsList> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
         future: service.getCoupons(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final data = snapshot.data!.data();
-            CouponsModel coupom = CouponsModel.fromMap(data!);
-            final couponsList = [coupom];
-            final textDiscount = 'Desconto: ${coupom.discount} %';
+            final data = snapshot.data!.docs;
+
+            List<CouponsModel> couponsList = CouponsModel.fromData(data);
+
             return ListView.builder(
               shrinkWrap: true,
               itemCount: couponsList.length,
               itemBuilder: (context, index) {
+                CouponsModel coupom = couponsList[index];
+                final textDiscount = 'Desconto: ${coupom.discount} %';
                 return ListTile(
                   title: Text(
                     coupom.code,
@@ -68,7 +70,7 @@ class _CouponsListState extends State<CouponsList> {
               },
             );
           } else {
-            return Container();
+            return const CircularProgressIndicator();
           }
         });
   }

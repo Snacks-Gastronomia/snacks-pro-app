@@ -531,7 +531,7 @@ class RestaurantSummaryCards extends StatelessWidget {
       "icon": Icons.local_offer,
       "highlight": true,
       "color": const Color(0xff00B907),
-      "action": const CouponsWidget()
+      "action": CouponsWidget()
     }
   ];
   @override

@@ -11,10 +11,14 @@ class CouponsService {
     restaurantId = data["restaurant"]["id"];
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getCoupons() async {
+  Future<QuerySnapshot<Map<String, dynamic>>> getCoupons() async {
     try {
       await getId();
-      return firebase.collection("coupons").doc(restaurantId).get();
+      return firebase
+          .collection("coupons")
+          .doc(restaurantId)
+          .collection("coupons")
+          .get();
     } catch (e) {
       rethrow;
     }

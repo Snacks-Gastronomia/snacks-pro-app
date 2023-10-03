@@ -16,6 +16,10 @@ class CouponsModel {
     );
   }
 
+  static List<CouponsModel> fromData(List data) {
+    return data.map((doc) => CouponsModel.fromMap(doc.data())).toList();
+  }
+
   Map<String, dynamic> toMap() {
     return {
       "active": active,
