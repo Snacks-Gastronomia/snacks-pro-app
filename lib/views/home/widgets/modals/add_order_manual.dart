@@ -125,38 +125,59 @@ class _AddOrderManualState extends State<AddOrderManual> {
                     return Scaffold(
                       resizeToAvoidBottomInset: false,
                       body: Padding(
-                        padding: const EdgeInsets.all(35.0),
+                        padding: const EdgeInsets.all(25.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(
-                              height: 20,
-                            ),
+                            // const SizedBox(
+                            //   height: 20,
+                            // ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Adicionar pedidos manual',
+                                  'Adicionar pedido manual',
                                   style: AppTextStyles.bold(20),
                                 ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    cubit.total = 0;
-                                    cubit.subtotal = 0;
-                                  },
-                                  child: const CircleAvatar(
-                                    backgroundColor: Colors.black12,
-                                    child: Icon(
-                                      Icons.close,
-                                      color: Colors.white,
-                                    ),
+                                // const SizedBox(
+                                //   width: 20,
+                                // ),
+
+                                SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      cubit.total = 0;
+                                      cubit.subtotal = 0;
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.all(0),
+                                        backgroundColor: Colors.black38,
+                                        fixedSize: Size.square(20),
+                                        elevation: 0),
+                                    child: const Icon(Icons.close,
+                                        size: 20, color: Colors.white),
                                   ),
                                 )
+                                // GestureDetector(
+                                //   onTap: () {
+                                //     Navigator.pop(context);
+                                //     cubit.total = 0;
+                                //     cubit.subtotal = 0;
+                                //   },
+                                //   child: const CircleAvatar(
+                                //     backgroundColor: Colors.black12,
+                                //     child: Icon(
+                                //       Icons.close,
+                                //       color: Colors.white,
+                                //       size: 12,
+                                //     ),
+                                //   ),
+                                // )
                               ],
                             ),
                             const SizedBox(
@@ -217,20 +238,21 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Selecione os items",
-                                    style: AppTextStyles.medium(14),
-                                  ),
-                                  const SizedBox(
                                     height: 10,
                                   ),
                                 ],
                               ),
                             ),
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text(
+                                  "Selecione os items",
+                                  style: AppTextStyles.medium(14),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
                                 DottedBorder(
                                   color: Colors.grey,
                                   strokeWidth: 1.5,
@@ -245,6 +267,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                     },
                                     decoration: InputDecoration(
                                         counterText: "",
+                                        suffixIcon: const Icon(Icons.search),
                                         contentPadding:
                                             const EdgeInsets.symmetric(
                                                 horizontal: 15, vertical: 0),
