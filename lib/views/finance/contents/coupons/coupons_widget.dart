@@ -26,63 +26,52 @@ class _CouponsWidgetState extends State<CouponsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        future: service.getCoupons(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final data = snapshot.data!.docs;
+    final cubit = context.read<CouponsCubit>();
 
-            final cubit = context.read<CouponsCubit>();
-
-            return BlocBuilder<CouponsCubit, CouponsState>(
-                bloc: cubit,
-                builder: (context, state) {
-                  List<CouponsModel> couponsList =
-                      state is CouponsLoaded ? state.couponsList : [];
-                  return SafeArea(
-                      child: Scaffold(
-                    body: Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Cupons",
-                            style: AppTextStyles.semiBold(22),
-                          ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          if (state is CouponsLoaded)
-                            CouponsList(
-                              couponsList: couponsList,
-                            ),
-                          if (state is CouponsLoading)
-                            const CircularProgressIndicator(),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                modal.showModalBottomSheet(
-                                    context: context,
-                                    content: const AddCupom());
-                              },
-                              child: const Text('Adicionar cupom')),
-                          const Spacer(),
-                          CustomSubmitButton(
-                              onPressedAction: () {
-                                Navigator.pop(context);
-                              },
-                              label: "OK")
-                        ],
-                      ),
+    return BlocBuilder<CouponsCubit, CouponsState>(
+        bloc: cubit,
+        builder: (context, state) {
+          List<CouponsModel> couponsList =
+              state is CouponsLoaded ? state.couponsList : [];
+          return SafeArea(
+              child: Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Cupons",
+                    style: AppTextStyles.semiBold(22),
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  if (state is CouponsLoaded)
+                    CouponsList(
+                      couponsList: couponsList,
                     ),
-                  ));
-                });
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
+                  if (state is CouponsLoading)
+                    const CircularProgressIndicator(),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        modal.showModalBottomSheet(
+                            context: context, content: const AddCupom());
+                      },
+                      child: const Text('Adicionar cupom')),
+                  const Spacer(),
+                  CustomSubmitButton(
+                      onPressedAction: () {
+                        Navigator.pop(context);
+                      },
+                      label: "OK")
+                ],
+              ),
+            ),
+          ));
         });
   }
 }
