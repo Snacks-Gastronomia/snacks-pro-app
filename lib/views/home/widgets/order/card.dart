@@ -78,7 +78,7 @@ class OrderCardWidget extends StatelessWidget {
     return GestureDetector(
       onDoubleTap: () =>
           context.read<OrdersCubit>().state.status == AppStatus.loading
-              ? print(("Pedindo já estando sendo enviado, aguarde..."))
+              ? null
               : onDoubleTap(),
       onLongPress: onLongPress,
       child: Container(
