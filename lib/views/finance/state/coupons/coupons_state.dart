@@ -2,16 +2,14 @@ import 'package:snacks_pro_app/views/finance/contents/coupons/model/coupons_mode
 
 abstract class CouponsState {}
 
-class CouponsInital extends CouponsState {}
-
 class CouponsLoading extends CouponsState {}
 
-class CounponsLoaded extends CouponsState {
+class CouponsLoaded extends CouponsState {
   final List<CouponsModel> couponsList;
-  CounponsLoaded(this.couponsList);
+  CouponsLoaded(this.couponsList);
 }
 
-class CounponsError extends CouponsState {
+class CouponsError extends CouponsState {
   final String message;
-  CounponsError(this.message);
+  CouponsError(this.message);
 }

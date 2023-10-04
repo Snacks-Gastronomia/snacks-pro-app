@@ -37,49 +37,48 @@ class _CouponsWidgetState extends State<CouponsWidget> {
             return BlocBuilder<CouponsCubit, CouponsState>(
                 bloc: cubit,
                 builder: (context, state) {
-                  if (state is CouponsInital || state is CounponsLoaded) {
-                    final couponsList =
-                        state is CounponsLoaded ? state.couponsList : null;
-                    return SafeArea(
-                        child: Scaffold(
-                      body: Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Cupons",
-                              style: AppTextStyles.semiBold(22),
-                            ),
-                            const SizedBox(
-                              height: 25,
-                            ),
+                  List<CouponsModel> couponsList =
+                      state is CouponsLoaded ? state.couponsList : [];
+                  return SafeArea(
+                      child: Scaffold(
+                    body: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Cupons",
+                            style: AppTextStyles.semiBold(22),
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          if (state is CouponsLoaded)
                             CouponsList(
-                              couponsList: couponsList ?? [],
+                              couponsList: couponsList,
                             ),
-                            const SizedBox(
-                              height: 25,
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  modal.showModalBottomSheet(
-                                      context: context,
-                                      content: const AddCupom());
-                                },
-                                child: const Text('Adicionar cupom')),
-                            const Spacer(),
-                            CustomSubmitButton(
-                                onPressedAction: () {
-                                  Navigator.pop(context);
-                                },
-                                label: "OK")
-                          ],
-                        ),
+                          if (state is CouponsLoading)
+                            const CircularProgressIndicator(),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                modal.showModalBottomSheet(
+                                    context: context,
+                                    content: const AddCupom());
+                              },
+                              child: const Text('Adicionar cupom')),
+                          const Spacer(),
+                          CustomSubmitButton(
+                              onPressedAction: () {
+                                Navigator.pop(context);
+                              },
+                              label: "OK")
+                        ],
                       ),
-                    ));
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                    ),
+                  ));
                 });
           } else {
             return const Center(child: CircularProgressIndicator());
