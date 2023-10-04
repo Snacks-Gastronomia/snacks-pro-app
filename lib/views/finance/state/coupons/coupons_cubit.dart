@@ -5,19 +5,15 @@ import 'package:snacks_pro_app/views/finance/contents/coupons/model/coupons_mode
 import 'package:snacks_pro_app/views/finance/state/coupons/coupons_state.dart';
 
 class CouponsCubit extends Cubit<CouponsState> {
-  final List<CouponsModel> coupons;
-
   final service = CouponsService();
 
-  CouponsCubit()
-      : coupons = [],
-        super(CouponsLoading()) {
+  CouponsCubit() : super(CouponsLoading()) {
     service.getCoupons().then((data) {
       final couponsList = CouponsModel.fromData(data.docs);
-      coupons.addAll(couponsList);
-      emit(CouponsLoaded(coupons));
+      emit(CouponsLoaded(couponsList));
     });
   }
+
   Future<void> addCoupom(String code, int discount) async {
     emit(CouponsLoading());
     final coupom = CouponsModel.newCupom(code, discount);
