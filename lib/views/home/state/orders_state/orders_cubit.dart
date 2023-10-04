@@ -117,6 +117,7 @@ class OrdersCubit extends Cubit<OrdersState> {
               datetime: firstOrder.createdAt);
         }
         await repository.updateManyStatus(ids, nextStatus);
+        emit(state.copyWith(status: AppStatus.loaded));
       }
     }
     Timer(const Duration(milliseconds: 500), () {

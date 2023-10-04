@@ -3,27 +3,27 @@ import 'package:snacks_pro_app/models/item_model.dart';
 
 class OrderModel {
   final Item item;
-  int amount;
+  int? amount;
   String observations;
   List<dynamic> extras;
   final dynamic option_selected;
   OrderModel({
     required this.item,
-    this.amount = 1,
+    this.amount,
     this.extras = const [],
     required this.option_selected,
     required this.observations,
     // required this.restaurant_id,
   });
 
-  double get getTotalValue {
-    double extra = extras.isNotEmpty
-        ? extras
-            .map((e) => double.parse(e["value"].toString()))
-            .reduce((value, element) => value + element)
-        : 0;
-    return (double.parse(option_selected["value"].toString()) + extra) * amount;
-  }
+  // double get getTotalValue {
+  //   double extra = extras.isNotEmpty
+  //       ? extras
+  //           .map((e) => double.parse(e["value"].toString()))
+  //           .reduce((value, element) => value + element)
+  //       : 0;
+  //   return (double.parse(option_selected["value"].toString()) + extra) * amount;
+  // }
 
   OrderModel copyWith({
     Item? item,
