@@ -1,10 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/services/firebase/notifications.dart';
@@ -13,7 +12,6 @@ import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/confirm_order.dart';
-import 'dart:convert';
 
 part 'orders_state.dart';
 
@@ -122,6 +120,9 @@ class OrdersCubit extends Cubit<OrdersState> {
         emit(state.copyWith(status: AppStatus.loaded));
       }
     }
+    Timer(const Duration(milliseconds: 500), () {
+      emit(state.copyWith(status: AppStatus.loaded));
+    });
   }
 
   void cancelOrder(ids) async {

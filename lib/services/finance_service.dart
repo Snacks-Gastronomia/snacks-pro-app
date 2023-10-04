@@ -344,29 +344,6 @@ class FinanceApiServices {
       "total": FieldValue.increment(total),
       "length": FieldValue.increment(1)
     }, SetOptions(merge: true));
-
-    // print("run transactions");
-//     await firebase.runTransaction((transaction) async {
-//       final snapshot = await transaction.get(docref);
-//       final snacks_snapshot = await transaction.get(snacks);
-
-//       if (snapshot.data() == null || snapshot.data()!.isEmpty) {
-//         transaction.set(docref, {"total": total});
-//       } else {
-//         final newTotalValue = snapshot.get("total") + total;
-//         transaction.update(docref, {"total": newTotalValue});
-//       }
-// //snacks total
-//       if (snacks_snapshot.data() == null || snacks_snapshot.data()!.isEmpty) {
-//         transaction.set(docref, {"total": total});
-//       } else {
-//         final newTotalValue = snacks_snapshot.get("total") + total;
-//         transaction.update(docref, {"total": newTotalValue});
-//       }
-//     }).then(
-//       (value) => print("Document snapshot successfully updated!"),
-//       onError: (e) => print("Error updating document $e"),
-//     );
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getMonthlyOrders(

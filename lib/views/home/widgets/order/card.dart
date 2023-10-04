@@ -29,7 +29,6 @@ class OrderCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _doubleTapEnabled = true;
     var order = orders[0];
     String time = DateFormat("HH:mm").format(order.createdAt);
 
@@ -77,15 +76,10 @@ class OrderCardWidget extends StatelessWidget {
     }
 
     return GestureDetector(
-      onDoubleTap: () {
-        if (_doubleTapEnabled) {
-          _doubleTapEnabled = false;
-          onDoubleTap();
-          Timer(Duration(seconds: 2), () {
-            _doubleTapEnabled = true;
-          });
-        }
-      },
+      onDoubleTap: () =>
+          context.read<OrdersCubit>().state.status == AppStatus.loading
+              ? null
+              : onDoubleTap(),
       onLongPress: onLongPress,
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -226,9 +220,14 @@ class OrderCardWidget extends StatelessWidget {
                         width: 5,
                       ),
                       Flexible(
-                        child: Text(orderStatus.displayEnum,
-                            style: AppTextStyles.regular(14,
-                                color: const Color(0xff979797))),
+                        child: context.read<OrdersCubit>().state.status ==
+                                AppStatus.loading
+                            ? Text("Carregando",
+                                style: AppTextStyles.regular(14,
+                                    color: const Color(0xff979797)))
+                            : Text(orderStatus.displayEnum,
+                                style: AppTextStyles.regular(14,
+                                    color: const Color(0xff979797))),
                       ),
                     ],
                   ),
