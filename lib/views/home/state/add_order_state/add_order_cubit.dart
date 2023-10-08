@@ -79,6 +79,8 @@ class AddOrderCubit extends Cubit<AddOrderState> {
     toast.init(context: context);
 
     toast.showToast(
-        context: context, content: "Pedido Realizado", type: ToastType.success);
+        context: context,
+        content: "Pedido adicionado com sucesso",
+        type: ToastType.success);
   }
 }

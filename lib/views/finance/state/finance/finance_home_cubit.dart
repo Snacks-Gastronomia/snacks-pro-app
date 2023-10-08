@@ -7,6 +7,7 @@ import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/models/bank_model.dart';
 import 'package:snacks_pro_app/services/employees_service.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
+import 'package:snacks_pro_app/services/receipts_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
@@ -20,6 +21,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   final storage = AppStorage();
   final empRepo = EmployeesRepository(services: EmployeesApiServices());
   final repository = FinanceRepository(services: FinanceApiServices());
+  final receiptService = ReceiptsService();
   FinanceCubit() : super(FinanceHomeState.initial());
 
   void fetchData() async {
@@ -27,20 +29,24 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     var user = (await storage.getDataStorage("user"));
     var access = user["access_level"];
 
-    var id =
-        access == AppPermission.sadm.name ? "snacks" : user["restaurant"]["id"];
+    var id = user["restaurant"]["id"];
     var count = await repository.getCountRestaurants();
-    var data = await Future.wait([
-      repository.getMonthlyBudget(id),
-      repository.fetchBankInformations(id),
-    ]);
-    emit(state.copyWith(status: AppStatus.loaded));
+
+    // var data = await Future.wait([
+    //   receiptService.sumValuesFromCollection(
+    //       id, DateTime.now(), DateTime.now()),
+    //   repository.fetchBankInformations(id),
+    // ]);
+    var budget = access == AppPermission.sadm.name
+        ? await receiptService.sumAllValuesFromRestaurants()
+        : await receiptService.sumValuesFromCollection(
+            id, DateTime.now(), DateTime.now());
 
     emit(state.copyWith(
       restaurant_count: count,
       status: AppStatus.loaded,
-      budget: data[0],
-      bankInfo: data[1],
+      budget: budget,
+      // bankInfo: data[1] as BankModel,
       // employees_count: data[0],
       // orders_count: data[2]
     ));
@@ -115,8 +121,22 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
   Future<List<Map<String, dynamic>>?> fetchRestaurantsProfits() async {
     emit(state.copyWith(status: AppStatus.loading));
     var res = await repository.fetchRestaurantsProfits();
+    List<Map<String, dynamic>> data = [];
+    for (var i = 0; i < res!.length; i++) {
+      var e = res[i];
+
+      var id = e["id"];
+      var name = e["name"];
+
+      var total = await receiptService.sumValuesFromCollection(
+          id, DateTime.now(), DateTime.now());
+
+      data.add({"id": id, "name": name, "total": total});
+    }
+
     emit(state.copyWith(status: AppStatus.loaded));
-    return res;
+
+    return data;
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> fetchFeatureByName(
