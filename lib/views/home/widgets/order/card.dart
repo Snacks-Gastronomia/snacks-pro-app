@@ -37,9 +37,10 @@ class OrderCardWidget extends StatelessWidget {
         .toList()
         .reduce((value, element) => value && element);
 
-    double sum =
-        orders.map((e) => e.value).reduce((value, element) => value + element);
-    var total = NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(sum);
+    // double sum =
+    //     orders.map((e) => e.value).reduce((value, element) => value + element);
+    var total =
+        NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(order.value);
 
     Widget statusIcon = SizedBox(
         height: 25,
