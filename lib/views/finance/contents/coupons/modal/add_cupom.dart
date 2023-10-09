@@ -49,23 +49,72 @@ class AddCupom extends StatelessWidget {
                 const SizedBox(
                   height: 13,
                 ),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [LengthLimitingTextInputFormatter(2)],
-                  controller: controllerDiscount,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide.none),
-                      hintText: "Desconto",
-                      filled: true,
-                      fillColor: Colors.black12),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Preencha esse campo';
-                    }
-                    return null;
-                  },
+                Stack(
+                  children: [
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [LengthLimitingTextInputFormatter(2)],
+                      controller: controllerDiscount,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none),
+                          hintText: "Desconto",
+                          filled: true,
+                          fillColor: Colors.black12),
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Preencha esse campo';
+                        }
+                        return null;
+                      },
+                    ),
+                    Container(
+                      height: 58,
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  padding: EdgeInsets.zero,
+                                ),
+                                child: const Icon(Icons.remove),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Text("%"),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  padding: EdgeInsets.zero,
+                                ),
+                                child: const Icon(Icons.add),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                          ]),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 36,
