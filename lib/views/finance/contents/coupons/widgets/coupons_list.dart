@@ -38,9 +38,11 @@ class CouponsList extends StatelessWidget {
             width: 100,
             child: Row(children: [
               IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.lock_outline,
+                  onPressed: () => cubit.toggleActive(coupom),
+                  icon: Icon(
+                    coupom.active
+                        ? Icons.lock_open_outlined
+                        : Icons.lock_outline,
                     color: Colors.black,
                     size: 30,
                   )),

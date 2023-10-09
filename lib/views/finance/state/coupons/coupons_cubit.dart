@@ -32,4 +32,13 @@ class CouponsCubit extends Cubit<CouponsState> {
     final couponsList = CouponsModel.fromData(data.docs);
     emit(CouponsLoaded(couponsList));
   }
+
+  Future<void> toggleActive(CouponsModel coupom) async {
+    emit(CouponsLoading());
+
+    await service.toggleValue(coupom);
+    final data = await service.getCoupons();
+    final couponsList = CouponsModel.fromData(data.docs);
+    emit(CouponsLoaded(couponsList));
+  }
 }

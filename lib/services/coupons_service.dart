@@ -52,4 +52,28 @@ class CouponsService {
       rethrow;
     }
   }
+
+  Future<void> toggleValue(CouponsModel coupom) async {
+    try {
+      await getId();
+
+      final doc = await firebase
+          .collection("coupons")
+          .doc(restaurantId)
+          .collection("coupons")
+          .doc(coupom.code)
+          .get();
+      final data = doc.data() as Map<String, dynamic>;
+      final currentValue = data["active"] as bool;
+
+      await firebase
+          .collection("coupons")
+          .doc(restaurantId)
+          .collection("coupons")
+          .doc(coupom.code)
+          .update({"active": !currentValue});
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
