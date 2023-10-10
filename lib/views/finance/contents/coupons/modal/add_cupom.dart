@@ -80,7 +80,9 @@ class AddCupom extends StatelessWidget {
                                   width: 30,
                                   height: 30,
                                   child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      cubit.decrement();
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -93,12 +95,16 @@ class AddCupom extends StatelessWidget {
                                 const SizedBox(
                                   width: 20,
                                 ),
-                                Text(
-                                  "${state.percent}%",
-                                  style: TextStyle(
-                                      color: AppColors.highlight,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
+                                SizedBox(
+                                  width: 50,
+                                  child: Text(
+                                    "${state.percent}%",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: AppColors.highlight,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                                 const SizedBox(
                                   width: 20,

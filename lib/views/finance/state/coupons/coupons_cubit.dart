@@ -48,7 +48,7 @@ class CouponsCubit extends Cubit<CouponsState> {
 
   void increment() {
     var percent = state.percent;
-    percent += 1;
+    percent < 99 ? percent += 1 : null;
     emit(state.copyWith(percent: percent));
   }
 
