@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
+import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
 
 import 'add_order_state.dart';
 
@@ -40,6 +41,16 @@ class AddOrderCubit extends Cubit<AddOrderState> {
     } catch (e) {
       print('Erro ao obter dados: $e');
     }
+  }
+
+  Future<void> makeOrder(String method,
+      {String? rfid = "", String change = ""}) async {
+    final repository = OrdersRepository();
+    var data;
+
+    await repository.createOrder(data);
+
+    // await cardRepository.doPayment(rfid, state.total);
   }
 
   void handleCheckboxValue(bool value) {

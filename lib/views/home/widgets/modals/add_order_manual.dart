@@ -136,14 +136,12 @@ class _AddOrderManualState extends State<AddOrderManual> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                const Spacer(),
                                 Text(
                                   'Adicionar pedido manual',
                                   style: AppTextStyles.bold(20),
                                 ),
-                                // const SizedBox(
-                                //   width: 20,
-                                // ),
-
+                                const Spacer(),
                                 SizedBox(
                                   height: 25,
                                   width: 25,
@@ -157,27 +155,12 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                         shape: const CircleBorder(),
                                         padding: const EdgeInsets.all(0),
                                         backgroundColor: Colors.black38,
-                                        fixedSize: Size.square(20),
+                                        fixedSize: const Size.square(20),
                                         elevation: 0),
                                     child: const Icon(Icons.close,
                                         size: 20, color: Colors.white),
                                   ),
                                 )
-                                // GestureDetector(
-                                //   onTap: () {
-                                //     Navigator.pop(context);
-                                //     cubit.total = 0;
-                                //     cubit.subtotal = 0;
-                                //   },
-                                //   child: const CircleAvatar(
-                                //     backgroundColor: Colors.black12,
-                                //     child: Icon(
-                                //       Icons.close,
-                                //       color: Colors.white,
-                                //       size: 12,
-                                //     ),
-                                //   ),
-                                // )
                               ],
                             ),
                             const SizedBox(
