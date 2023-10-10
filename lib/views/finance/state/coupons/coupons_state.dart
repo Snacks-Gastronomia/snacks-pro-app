@@ -1,15 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:snacks_pro_app/views/finance/contents/coupons/model/coupons_model.dart';
 
-abstract class CouponsState {}
+class CouponsState {
+  final List<CouponsModel>? couponsList;
+  final int percent;
 
-class CouponsLoading extends CouponsState {}
+  CouponsState({
+    required this.couponsList,
+    required this.percent,
+  });
 
-class CouponsLoaded extends CouponsState {
-  final List<CouponsModel> couponsList;
-  CouponsLoaded(this.couponsList);
-}
+  factory CouponsState.initial() => CouponsState(couponsList: null, percent: 0);
 
-class CouponsError extends CouponsState {
-  final String message;
-  CouponsError(this.message);
+  CouponsState copyWith({List<CouponsModel>? couponsList, int? percent}) {
+    return CouponsState(
+        couponsList: couponsList ?? this.couponsList,
+        percent: percent ?? this.percent);
+  }
 }

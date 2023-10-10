@@ -31,8 +31,6 @@ class _CouponsWidgetState extends State<CouponsWidget> {
     return BlocBuilder<CouponsCubit, CouponsState>(
         bloc: cubit,
         builder: (context, state) {
-          List<CouponsModel> couponsList =
-              state is CouponsLoaded ? state.couponsList : [];
           return SafeArea(
               child: Scaffold(
             body: Padding(
@@ -47,11 +45,11 @@ class _CouponsWidgetState extends State<CouponsWidget> {
                   const SizedBox(
                     height: 25,
                   ),
-                  if (state is CouponsLoaded)
+                  if (state.couponsList != null)
                     CouponsList(
-                      couponsList: couponsList,
+                      couponsList: state.couponsList,
                     ),
-                  if (state is CouponsLoading)
+                  if (state.couponsList == null)
                     const CircularProgressIndicator(),
                   const SizedBox(
                     height: 25,

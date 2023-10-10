@@ -12,7 +12,7 @@ class CouponsList extends StatelessWidget {
     super.key,
     required this.couponsList,
   });
-  final List<CouponsModel> couponsList;
+  final List<CouponsModel>? couponsList;
 
   final service = CouponsService();
 
@@ -20,9 +20,9 @@ class CouponsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: couponsList.length,
+      itemCount: couponsList!.length,
       itemBuilder: (context, index) {
-        CouponsModel coupom = couponsList[index];
+        CouponsModel coupom = couponsList![index];
         final cubit = context.read<CouponsCubit>();
         final textDiscount = 'Desconto: ${coupom.discount} %';
         return ListTile(
