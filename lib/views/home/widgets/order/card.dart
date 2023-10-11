@@ -30,7 +30,7 @@ class OrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var order = orders[0];
-    String time = DateFormat("HH:mm").format(order.createdAt);
+    String time = DateFormat("HH:mm").format(order.created_at);
 
     bool isDelivered = orders
         .map((e) => e.status == OrderStatus.delivered.name)
@@ -129,7 +129,7 @@ class OrderCardWidget extends StatelessWidget {
                           height: 5,
                         ),
                         Text(
-                          '#${order.partCode}',
+                          '#${order.part_code}',
                           style: AppTextStyles.semiBold(16,
                               color: const Color(0xff263238)),
                         ),

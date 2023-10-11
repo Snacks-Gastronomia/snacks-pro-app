@@ -212,7 +212,7 @@ class ReportScreen extends StatelessWidget {
                                       ),
                                       Text(
                                         DateFormat.Hm('pt_BR')
-                                            .format(item.createdAt),
+                                            .format(item.created_at),
                                         style: AppTextStyles.light(14),
                                       ),
                                     ],

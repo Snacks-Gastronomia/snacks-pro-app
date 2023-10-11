@@ -78,7 +78,7 @@ class HomeCubit extends Cubit<HomeState> {
           data.isDelivery,
           destination,
           transformRealFormat(data.value.toString()),
-          data.partCode,
+          data.part_code,
           data.paymentMethod,
           data.customerName ?? "",
           data.phoneNumber ?? "");

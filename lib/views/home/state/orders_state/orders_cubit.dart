@@ -114,7 +114,7 @@ class OrdersCubit extends Cubit<OrdersState> {
           await addOrderToReport(
               orders: items,
               restaurant: restaurantName,
-              datetime: firstOrder.createdAt);
+              datetime: firstOrder.created_at);
         }
         await repository.updateManyStatus(ids, nextStatus);
         emit(state.copyWith(status: AppStatus.loaded));

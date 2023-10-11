@@ -12,6 +12,7 @@ class AddOrderCubit extends Cubit<AddOrderState> {
   double delivery = 7;
   double total = 0;
   double deliveryValue = 0;
+  final repository = OrdersRepository();
 
   var toast = AppToast();
 
@@ -45,7 +46,30 @@ class AddOrderCubit extends Cubit<AddOrderState> {
 
   Future<void> makeOrder(List<OrderResponse> data) async {
     final repository = OrdersRepository();
-    final mapList = data.map((order) => order.toMap()).toList();
+    final mapList = data
+        .map((order) => {
+              'code': order.code,
+              'needChange': order.needChange,
+              'restaurant': order.restaurant,
+              'created_at': order.created_at,
+              'restaurantName': order.restaurantName,
+              'isDelivery': order.isDelivery,
+              'waiterPayment': order.waiterPayment,
+              'rfid': order.rfid,
+              'phoneNumber': order.phoneNumber,
+              'waiterDelivery': order.waiterDelivery,
+              'part_code': order.part_code,
+              'items': order.items.map((item) => item.toMap()).toList(),
+              'value': order.value,
+              'paymentMethod': order.paymentMethod,
+              'table': order.table,
+              'receive_order': order.receiveOrder,
+              'address': order.address,
+              'status': order.status,
+              'userUid': order.userUid,
+              'customerName': order.customerName,
+            })
+        .toList();
 
     await repository.createOrder(mapList);
   }
