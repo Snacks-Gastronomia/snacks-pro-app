@@ -43,14 +43,11 @@ class AddOrderCubit extends Cubit<AddOrderState> {
     }
   }
 
-  Future<void> makeOrder(String method,
-      {String? rfid = "", String change = ""}) async {
+  Future<void> makeOrder(List<OrderResponse> data) async {
     final repository = OrdersRepository();
-    var data;
+    final mapList = data.map((order) => order.toMap()).toList();
 
-    await repository.createOrder(data);
-
-    // await cardRepository.doPayment(rfid, state.total);
+    await repository.createOrder(mapList);
   }
 
   void handleCheckboxValue(bool value) {

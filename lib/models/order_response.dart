@@ -112,7 +112,7 @@ class OrderResponse {
       'code': code,
       'needChange': needChange,
       'restaurant': restaurant,
-      'createdAt': createdAt.millisecondsSinceEpoch,
+      'createdAt': createdAt,
       'restaurantName': restaurantName,
       'isDelivery': isDelivery,
       'waiterPayment': waiterPayment,

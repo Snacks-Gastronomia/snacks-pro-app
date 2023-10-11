@@ -92,7 +92,8 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 optionSelected: OptionSelected(id: '', title: '', value: 0));
 
             OrderResponse orderResponse = OrderResponse(
-                code: 'code',
+                code: 'PM0000-#PM0000',
+                customerName: "Pedido Manual",
                 needChange: false,
                 restaurant: restaurantId,
                 createdAt: dateTime,
@@ -101,11 +102,13 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 waiterPayment: 'Pedido Manual',
                 id: 'Pedido Manual',
                 waiterDelivery: 'Pedido Manual',
-                partCode: 'Pedido Manual',
+                receiveOrder: "local",
+                partCode: 'PM0000',
+                deliveryValue: 0,
                 items: [],
                 value: 0,
                 paymentMethod: 'Pedido Manual',
-                status: 'Pedido Manual',
+                status: 'delivered',
                 userUid: 'Pedido Manual');
 
             return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
@@ -433,12 +436,8 @@ class _AddOrderManualState extends State<AddOrderManual> {
 
                                         orders[0].value = cubit.total;
 
-                                        context
-                                            .read<OrdersCubit>()
-                                            .addOrderToReport(
-                                                orders: orders,
-                                                restaurant: restaurantName,
-                                                datetime: dateTime);
+                                        cubit.makeOrder(orders);
+
                                         cubit.total = 0;
                                         cubit.subtotal = 0;
                                         navigator.pop();
