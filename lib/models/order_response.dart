@@ -253,8 +253,8 @@ class ItemResponse {
       item: ItemDetails.fromMap(map['item']),
       amount: map['amount']?.toInt() ?? 0,
       observations: map['observations'],
-      extras: List<dynamic>.from(map['extras']),
-      optionSelected: OptionSelected.fromMap(map['option_selected']),
+      extras: List<dynamic>.from(map['extras'] ?? []),
+      optionSelected: OptionSelected.fromMap(map['option_selected'] ?? {}),
     );
   }
 }
@@ -372,7 +372,7 @@ class OptionSelected {
     return OptionSelected(
       id: map['id']?.toString() ?? "0",
       title: map['title'] ?? '',
-      value: double.tryParse(map['value']) ?? 0.0,
+      value: double.parse(map['value'] ?? "0"),
     );
   }
 

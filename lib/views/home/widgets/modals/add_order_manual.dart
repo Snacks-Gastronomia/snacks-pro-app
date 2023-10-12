@@ -435,6 +435,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                         );
 
                                         orders[0].value = cubit.total;
+                                        orders[0].created_at = dateTime;
 
                                         cubit.makeOrder(orders);
 
