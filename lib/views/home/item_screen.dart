@@ -216,17 +216,45 @@ class _ItemScreenState extends State<ItemScreen> {
                             ]),
                       ),
                       const Spacer(),
-                      IconButton(
-                          onPressed: () {
-                            context
-                                .read<MenuCubit>()
-                                .updateItem(widget.order.item);
-                            Navigator.pushNamed(context, AppRoutes.updateImage);
-                          },
-                          icon: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ))
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                padding: EdgeInsets.zero,
+                                backgroundColor: Colors.white),
+                            onPressed: () {},
+                            child: const Icon(
+                              Icons.local_offer_sharp,
+                              color: Colors.black,
+                            )),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                padding: EdgeInsets.zero,
+                                backgroundColor: Colors.white),
+                            onPressed: () {
+                              context
+                                  .read<MenuCubit>()
+                                  .updateItem(widget.order.item);
+                              Navigator.pushNamed(
+                                  context, AppRoutes.updateImage);
+                            },
+                            child: const Icon(
+                              Icons.edit,
+                              color: Colors.black,
+                            )),
+                      ),
                     ],
                   ),
                 ),
