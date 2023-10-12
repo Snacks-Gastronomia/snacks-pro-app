@@ -13,6 +13,7 @@ import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
+import 'package:snacks_pro_app/views/home/widgets/modals/content_discount.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/modal_content_obs.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 
@@ -28,6 +29,8 @@ class ItemScreen extends StatefulWidget {
 }
 
 class _ItemScreenState extends State<ItemScreen> {
+  final modal = AppModal();
+
   @override
   void initState() {
     super.initState();
@@ -225,7 +228,10 @@ class _ItemScreenState extends State<ItemScreen> {
                                     borderRadius: BorderRadius.circular(12)),
                                 padding: EdgeInsets.zero,
                                 backgroundColor: Colors.white),
-                            onPressed: () {},
+                            onPressed: () {
+                              modal.showModalBottomSheet(
+                                  context: context, content: ContentDiscount());
+                            },
                             child: const Icon(
                               Icons.local_offer_sharp,
                               color: Colors.black,
