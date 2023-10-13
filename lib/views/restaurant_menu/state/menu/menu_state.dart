@@ -5,7 +5,9 @@ class MenuState extends Equatable {
   final String selected;
   final List<Ingredient> ingredients;
   final AppStatus status;
-  MenuState({
+  final int? discount;
+  const MenuState({
+    required this.discount,
     required this.item,
     required this.selected,
     required this.ingredients,
@@ -14,9 +16,10 @@ class MenuState extends Equatable {
 
   factory MenuState.initial() => MenuState(
         status: AppStatus.initial,
-        ingredients: [],
+        ingredients: const [],
         item: Item.initial(),
         selected: "",
+        discount: 0,
       );
 
   MenuState copyWith({
@@ -24,34 +27,16 @@ class MenuState extends Equatable {
     String? selected,
     List<Ingredient>? ingredients,
     AppStatus? status,
+    int? discount,
   }) {
     return MenuState(
       item: item ?? this.item,
+      discount: discount ?? this.discount,
       selected: selected ?? this.selected,
       ingredients: ingredients ?? this.ingredients,
       status: status ?? this.status,
     );
   }
-
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'item': item.toMap(),
-  //     'selected': selected,
-  //     'ingredients': ingredients.map((x) => x.toMap()).toList(),
-  //     'status': status.toMap(),
-  //   };
-  // }
-
-  // factory MenuState.fromMap(Map<String, dynamic> map) {
-  //   return MenuState(
-  //     item: Item.fromMap(map['item']),
-  //     selected: map['selected'] ?? '',
-  //     ingredients: List<Ingredient>.from(map['ingredients']?.map((x) => Ingredient.fromMap(x))),
-  //     status: AppStatus.fromMap(map['status']),
-  //   );
-  // }
-
-  // String toJson() => json.encode(toMap());
 
   @override
   String toString() {
@@ -64,6 +49,7 @@ class MenuState extends Equatable {
 
     return other is MenuState &&
         other.item == item &&
+        other.discount == discount &&
         other.selected == selected &&
         listEquals(other.ingredients, ingredients) &&
         other.status == status;

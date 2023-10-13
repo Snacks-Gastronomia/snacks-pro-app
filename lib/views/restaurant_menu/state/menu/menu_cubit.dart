@@ -50,17 +50,30 @@ class MenuCubit extends Cubit<MenuState> {
     emit(state.copyWith(item: item.copyWith(image_url: "")));
   }
 
-  void changeDiscount(double value) {
-    final item = state.item;
-    emit(state.copyWith(item: item.copyWith(discount: value)));
-    repository.updateItem(item);
+  Future<void> changeDiscount(Item item) async {
+    var update = item.copyWith(discount: state.discount!.toDouble());
+    repository.updateItem(update);
+    emit(state);
+  }
+
+  Future<void> removeDiscount(Item item) async {
+    var update = item.copyWith(discount: 0);
+    repository.updateItem(update);
+    emit(state);
   }
 
   void incrementDiscount() {
-    var currentDiscount = state.item.discount ?? 1;
-    currentDiscount += 1;
-    print(currentDiscount);
-    emit(state.copyWith(item: state.item.copyWith(discount: currentDiscount)));
+    var discount = state.discount ?? 0;
+    discount < 99 ? discount += 1 : null;
+
+    emit(state.copyWith(discount: discount));
+  }
+
+  void decrementDiscount() {
+    var discount = state.discount ?? 0;
+    discount > 0 ? discount -= 1 : null;
+
+    emit(state.copyWith(discount: discount));
   }
   // void addIngredient(String value, String unit) {
   //   final item = Ingredient(name: value, volume: 0, unit: unit);

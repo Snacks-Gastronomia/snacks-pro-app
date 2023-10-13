@@ -219,24 +219,28 @@ class _ItemScreenState extends State<ItemScreen> {
                             ]),
                       ),
                       const Spacer(),
-                      SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                padding: EdgeInsets.zero,
-                                backgroundColor: Colors.white),
-                            onPressed: () {
-                              modal.showModalBottomSheet(
-                                  context: context, content: ContentDiscount());
-                            },
-                            child: const Icon(
-                              Icons.local_offer_sharp,
-                              color: Colors.black,
-                            )),
-                      ),
+                      if (widget.order.item.discount! == 0)
+                        SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  padding: EdgeInsets.zero,
+                                  backgroundColor: Colors.white),
+                              onPressed: () {
+                                modal.showModalBottomSheet(
+                                    context: context,
+                                    content: ContentDiscount(
+                                      item: widget.order.item,
+                                    ));
+                              },
+                              child: const Icon(
+                                Icons.local_offer_sharp,
+                                color: Colors.green,
+                              )),
+                        ),
                       const SizedBox(
                         width: 20,
                       ),
@@ -258,7 +262,7 @@ class _ItemScreenState extends State<ItemScreen> {
                             },
                             child: const Icon(
                               Icons.edit,
-                              color: Colors.black,
+                              color: Colors.blue,
                             )),
                       ),
                     ],
@@ -271,6 +275,39 @@ class _ItemScreenState extends State<ItemScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (widget.order.item.discount! > 0)
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                              width: 280,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.black12),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Icon(Icons.local_offer),
+                                  Text(
+                                    "Desconto de ${widget.order.item.discount!.toInt()}% aplicado",
+                                    style: const TextStyle(color: Colors.blue),
+                                  ),
+                                ],
+                              )),
+                          TextButton(
+                              onPressed: () => context
+                                  .read<MenuCubit>()
+                                  .removeDiscount(widget.order.item),
+                              child: const Text(
+                                "Remover",
+                                style: TextStyle(color: Colors.red),
+                              ))
+                        ]),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
