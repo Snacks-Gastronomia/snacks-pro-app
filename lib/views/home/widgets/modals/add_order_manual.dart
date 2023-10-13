@@ -92,6 +92,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 optionSelected: OptionSelected(id: '', title: '', value: 0));
 
             OrderResponse orderResponse = OrderResponse(
+                address: "",
                 code: 'PM0000-#PM0000',
                 customerName: "Pedido Manual",
                 needChange: false,
@@ -102,7 +103,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 waiterPayment: 'Pedido Manual',
                 id: 'Pedido Manual',
                 waiterDelivery: 'Pedido Manual',
-                receiveOrder: "local",
+                receive_order: "address",
                 part_code: 'PM0000',
                 deliveryValue: 0,
                 items: [],

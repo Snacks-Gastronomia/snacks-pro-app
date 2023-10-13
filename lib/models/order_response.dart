@@ -13,7 +13,7 @@ class OrderResponse {
   String waiterPayment;
   String? rfid;
   String? address;
-  String? receiveOrder;
+  String? receive_order;
   String? phoneNumber;
   String moneyChange;
   String waiterDelivery;
@@ -39,7 +39,7 @@ class OrderResponse {
     this.rfid,
     this.address,
     required this.id,
-    this.receiveOrder,
+    this.receive_order,
     this.deliveryValue = 0.0,
     this.phoneNumber,
     required this.waiterDelivery,
@@ -99,7 +99,7 @@ class OrderResponse {
       table: json['table'] ?? 0,
       status: json['status'] ?? '',
       address: json['address'] ?? '',
-      receiveOrder: json['receive_order'] ?? '',
+      receive_order: json['receive_order'] ?? '',
       userUid: json['user_uid'] ?? '',
       customerName: json['customer_name'] ?? "",
       moneyChange: json['money_change'] ?? "",
@@ -124,7 +124,7 @@ class OrderResponse {
       'value': value,
       'paymentMethod': paymentMethod,
       'table': table,
-      'receive_order': receiveOrder,
+      'receive_order': receive_order,
       'address': address,
       'status': status,
       'userUid': userUid,
@@ -154,7 +154,7 @@ class OrderResponse {
       status: map['status'] ?? '',
       userUid: map['userUid'] ?? '',
       customerName: map['customerName'],
-      receiveOrder: map['receiveOrder'],
+      receive_order: map['receive_order'],
       address: map['address'] ?? "",
       moneyChange: map['money_change'] ?? "",
       deliveryValue: map['delivery_value'] ?? "",
@@ -188,7 +188,7 @@ class OrderResponse {
       status: map['status'] ?? '',
       userUid: map['user_uid'] ?? '',
       customerName: map['customer_name'],
-      receiveOrder: map['receive_order'],
+      receive_order: map['receive_order'],
       address: map['address'],
       moneyChange: map['money_change'] ?? "",
       deliveryValue: (map['delivery_value'] ?? 0.0).toDouble(),

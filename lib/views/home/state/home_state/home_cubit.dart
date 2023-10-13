@@ -64,7 +64,7 @@ class HomeCubit extends Cubit<HomeState> {
           type: ToastType.info);
 
       String destination = (data.isDelivery
-              ? data.receiveOrder == "address" || data.deliveryValue > 0
+              ? data.receive_order == "address" || data.deliveryValue > 0
                   ? data.address
                   : "Ir até o local buscar o pedido"
               : data.table) ??

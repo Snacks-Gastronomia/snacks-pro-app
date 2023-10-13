@@ -63,7 +63,7 @@ class AddOrderCubit extends Cubit<AddOrderState> {
               'value': order.value,
               'paymentMethod': order.paymentMethod,
               'table': order.table,
-              'receive_order': order.receiveOrder,
+              'receive_order': order.receive_order,
               'address': order.address,
               'status': order.status,
               'userUid': order.userUid,

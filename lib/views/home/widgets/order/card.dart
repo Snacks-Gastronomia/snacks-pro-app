@@ -160,7 +160,7 @@ class OrderCardWidget extends StatelessWidget {
                                   style: AppTextStyles.light(12,
                                       color: const Color(0xff979797))),
                               Text(
-                                  order.receiveOrder == "local"
+                                  order.receive_order == "local"
                                       ? "Irá até o local buscar o pedido"
                                       : order.address ?? "",
                                   style: AppTextStyles.semiBold(14,
