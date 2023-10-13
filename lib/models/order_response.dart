@@ -24,7 +24,7 @@ class OrderResponse {
   String? table;
   String status;
   String userUid;
-  String? customerName;
+  String? customer_name;
   double deliveryValue;
 
   OrderResponse({
@@ -50,7 +50,7 @@ class OrderResponse {
     this.table,
     required this.status,
     required this.userUid,
-    this.customerName,
+    this.customer_name,
   });
 
   static List<Map<String, dynamic>> groupOrdersByCode(
@@ -101,7 +101,7 @@ class OrderResponse {
       address: json['address'] ?? '',
       receive_order: json['receive_order'] ?? '',
       userUid: json['user_uid'] ?? '',
-      customerName: json['customer_name'] ?? "",
+      customer_name: json['customer_name'] ?? "",
       moneyChange: json['money_change'] ?? "",
       deliveryValue: json['delivery_value'] ?? 0,
     );
@@ -128,7 +128,7 @@ class OrderResponse {
       'address': address,
       'status': status,
       'userUid': userUid,
-      'customerName': customerName,
+      'customer_name': customer_name,
     };
   }
 
@@ -153,7 +153,7 @@ class OrderResponse {
       table: map['table']?.toInt() ?? 0,
       status: map['status'] ?? '',
       userUid: map['userUid'] ?? '',
-      customerName: map['customerName'],
+      customer_name: map['customer_name'],
       receive_order: map['receive_order'],
       address: map['address'] ?? "",
       moneyChange: map['money_change'] ?? "",
@@ -187,7 +187,7 @@ class OrderResponse {
       table: map['table'] ?? "",
       status: map['status'] ?? '',
       userUid: map['user_uid'] ?? '',
-      customerName: map['customer_name'],
+      customer_name: map['customer_name'],
       receive_order: map['receive_order'],
       address: map['address'],
       moneyChange: map['money_change'] ?? "",

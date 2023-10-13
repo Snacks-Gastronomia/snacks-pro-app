@@ -61,13 +61,13 @@ class AddOrderCubit extends Cubit<AddOrderState> {
               'part_code': order.part_code,
               'items': order.items.map((item) => item.toMap()).toList(),
               'value': order.value,
-              'paymentMethod': order.paymentMethod,
+              'payment_method': order.paymentMethod,
               'table': order.table,
               'receive_order': order.receive_order,
               'address': order.address,
               'status': order.status,
               'userUid': order.userUid,
-              'customerName': order.customerName,
+              'customer_name': order.customer_name,
             })
         .toList();
 

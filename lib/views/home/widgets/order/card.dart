@@ -121,7 +121,7 @@ class OrderCardWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          order.customerName ?? "Não informado",
+                          order.customer_name ?? "Não informado",
                           style: AppTextStyles.regular(16,
                               color: const Color(0xff263238)),
                         ),

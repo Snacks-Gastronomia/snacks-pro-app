@@ -80,7 +80,7 @@ class HomeCubit extends Cubit<HomeState> {
           transformRealFormat(data.value.toString()),
           data.part_code,
           data.paymentMethod,
-          data.customerName ?? "",
+          data.customer_name ?? "",
           data.phoneNumber ?? "");
     }
   }

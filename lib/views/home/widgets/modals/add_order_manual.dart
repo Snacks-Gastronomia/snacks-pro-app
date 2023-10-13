@@ -1,4 +1,5 @@
 import 'dart:developer' as console;
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -94,7 +95,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
             OrderResponse orderResponse = OrderResponse(
                 address: "",
                 code: 'PM0000-#PM0000',
-                customerName: "Pedido Manual",
+                customer_name: "Pedido Manual",
                 needChange: false,
                 restaurant: restaurantId,
                 created_at: dateTime,
@@ -104,7 +105,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 id: 'Pedido Manual',
                 waiterDelivery: 'Pedido Manual',
                 receive_order: "address",
-                part_code: 'PM0000',
+                part_code: 'PM${Random().nextInt(1000) + 1000}',
                 deliveryValue: 0,
                 items: [],
                 value: 0,
@@ -437,6 +438,8 @@ class _AddOrderManualState extends State<AddOrderManual> {
 
                                         orders[0].value = cubit.total;
                                         orders[0].created_at = dateTime;
+
+                                        orders[0].isDelivery = true;
 
                                         cubit.makeOrder(orders);
 
