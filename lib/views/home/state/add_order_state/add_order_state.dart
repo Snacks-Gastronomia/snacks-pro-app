@@ -16,6 +16,7 @@ class AddOrderState {
               title: '',
               value: 0,
               discount: 0,
+              finalValue: 0,
               num_served: 0,
               time: 0,
               restaurant_id: '',

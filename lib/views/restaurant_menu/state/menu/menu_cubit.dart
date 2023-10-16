@@ -50,8 +50,12 @@ class MenuCubit extends Cubit<MenuState> {
     emit(state.copyWith(item: item.copyWith(image_url: "")));
   }
 
+  void getDiscount(Item item) {
+    emit(state.copyWith(discount: item.discount!.toDouble()));
+  }
+
   Future<void> changeDiscount(Item item) async {
-    var update = item.copyWith(discount: state.discount!.toDouble());
+    var update = item.copyWith(discount: state.discount!);
     repository.updateItem(update);
     emit(state);
   }
@@ -59,7 +63,11 @@ class MenuCubit extends Cubit<MenuState> {
   Future<void> removeDiscount(Item item) async {
     var update = item.copyWith(discount: 0);
     repository.updateItem(update);
-    emit(state);
+    emit(state.copyWith(discount: 0));
+  }
+
+  void cancel() {
+    emit(state.copyWith(discount: 0));
   }
 
   void incrementDiscount() {

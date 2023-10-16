@@ -5,7 +5,7 @@ class MenuState extends Equatable {
   final String selected;
   final List<Ingredient> ingredients;
   final AppStatus status;
-  final int? discount;
+  final double? discount;
   const MenuState({
     required this.discount,
     required this.item,
@@ -27,7 +27,7 @@ class MenuState extends Equatable {
     String? selected,
     List<Ingredient>? ingredients,
     AppStatus? status,
-    int? discount,
+    double? discount,
   }) {
     return MenuState(
       item: item ?? this.item,

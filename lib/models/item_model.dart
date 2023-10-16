@@ -10,6 +10,7 @@ class Item {
   final String? description;
   final double value;
   final double? discount;
+  final double finalValue;
   final int time;
   final int? limit_extra_options;
   final int num_served;
@@ -30,6 +31,7 @@ class Item {
     this.limit_extra_options,
     required this.value,
     this.discount,
+    required this.finalValue,
     required this.num_served,
     required this.time,
     required this.restaurant_id,
@@ -49,6 +51,7 @@ class Item {
     String? description,
     double? value,
     double? discount,
+    double? finalValue,
     int? time,
     int? limit_extra_options,
     int? num_served,
@@ -69,6 +72,7 @@ class Item {
       limit_extra_options: limit_extra_options ?? this.limit_extra_options,
       value: value ?? this.value,
       discount: discount ?? this.discount,
+      finalValue: finalValue ?? this.finalValue,
       restaurant_id: restaurant_id ?? this.restaurant_id,
       restaurant_name: restaurant_name ?? this.restaurant_name,
       num_served: num_served ?? this.num_served,
@@ -113,6 +117,7 @@ class Item {
         description: "",
         value: 0,
         discount: 0,
+        finalValue: 0,
         restaurant_id: "",
         restaurant_name: "",
         time: 0);
@@ -127,6 +132,7 @@ class Item {
       description: map['description'] ?? '',
       value: map['value']?.toDouble() ?? 0.0,
       discount: map['discount']?.toDouble() ?? 0.0,
+      finalValue: map['finalValue']?.toDouble() ?? 0.0,
       restaurant_id: map['restaurant_id'] ?? '',
       restaurant_name: map['restaurant_name'] ?? '',
       category: map['category'],
@@ -173,6 +179,8 @@ class Item {
         other.title == title &&
         other.description == description &&
         other.value == value &&
+        other.discount == discount &&
+        other.finalValue == finalValue &&
         other.time == time &&
         other.restaurant_id == restaurant_id &&
         other.restaurant_id == restaurant_id &&

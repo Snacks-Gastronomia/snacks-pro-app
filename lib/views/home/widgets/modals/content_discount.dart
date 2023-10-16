@@ -37,7 +37,7 @@ class ContentDiscount extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "${state.discount}%",
+                    "${state.discount!.toInt()}%",
                     style: AppTextStyles.bold(80),
                   ),
                   IconButton(
@@ -50,11 +50,15 @@ class ContentDiscount extends StatelessWidget {
                 label: "Adicionar desconto",
                 onPressedAction: () {
                   cubit.changeDiscount(item);
+                  Navigator.pop(context);
                 },
                 loading: false,
               ),
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  cubit.cancel();
+                  Navigator.pop(context);
+                },
                 child: const Text(
                   "Cancelar",
                   style: TextStyle(color: Colors.red),
