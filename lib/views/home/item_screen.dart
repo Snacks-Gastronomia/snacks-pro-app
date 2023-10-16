@@ -77,6 +77,13 @@ class _ItemScreenState extends State<ItemScreen> {
                               ),
                               Row(
                                 children: [
+                                  Text(
+                                    NumberFormat.currency(
+                                            locale: "pt", symbol: r"R$ ")
+                                        .format(finalValue),
+                                    style: AppTextStyles.medium(14,
+                                        color: Colors.green),
+                                  ),
                                   if (value != finalValue)
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -85,19 +92,13 @@ class _ItemScreenState extends State<ItemScreen> {
                                         NumberFormat.currency(
                                                 locale: "pt", symbol: r"R$ ")
                                             .format(value),
-                                        style: const TextStyle(
+                                        style: TextStyle(
+                                            color: Colors.grey.shade500,
                                             fontSize: 12,
                                             decoration:
                                                 TextDecoration.lineThrough),
                                       ),
                                     ),
-                                  Text(
-                                    NumberFormat.currency(
-                                            locale: "pt", symbol: r"R$ ")
-                                        .format(finalValue),
-                                    style: AppTextStyles.medium(14,
-                                        color: Colors.green),
-                                  ),
                                 ],
                               ),
                             ],
