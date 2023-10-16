@@ -26,7 +26,7 @@ class CardItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var order = OrderModel(item: item, observations: "", option_selected: {});
-    double value = double.parse(item.options[0]["value"].toString());
+    double value = item.finalValue;
     print(item.id);
     return Builder(builder: (context) {
       return Stack(

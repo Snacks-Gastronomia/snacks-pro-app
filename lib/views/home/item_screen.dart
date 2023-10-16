@@ -50,13 +50,17 @@ class _ItemScreenState extends State<ItemScreen> {
           children: [
             SizedBox(
               height: 45,
-              child: BlocBuilder<ItemScreenCubit, ItemScreenState>(
+              child: BlocBuilder<MenuCubit, MenuState>(
                 builder: (context, state) {
                   return ListView.separated(
                       scrollDirection: Axis.horizontal,
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
                         var option = widget.order.item.options[index];
+                        double value = double.parse(option["value"]);
+
+                        double finalValue = double.parse(option["value"]) *
+                            (1 - (state.discount! / 100));
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           decoration: BoxDecoration(
@@ -71,13 +75,30 @@ class _ItemScreenState extends State<ItemScreen> {
                                 style: AppTextStyles.medium(16,
                                     color: Colors.black),
                               ),
-                              Text(
-                                NumberFormat.currency(
-                                        locale: "pt", symbol: r"R$ ")
-                                    .format(double.parse(
-                                        option["value"].toString())),
-                                style: AppTextStyles.medium(12,
-                                    color: Colors.grey),
+                              Row(
+                                children: [
+                                  if (value != finalValue)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: Text(
+                                        NumberFormat.currency(
+                                                locale: "pt", symbol: r"R$ ")
+                                            .format(value),
+                                        style: const TextStyle(
+                                            fontSize: 12,
+                                            decoration:
+                                                TextDecoration.lineThrough),
+                                      ),
+                                    ),
+                                  Text(
+                                    NumberFormat.currency(
+                                            locale: "pt", symbol: r"R$ ")
+                                        .format(finalValue),
+                                    style: AppTextStyles.medium(14,
+                                        color: Colors.green),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -397,8 +418,12 @@ class _ItemScreenState extends State<ItemScreen> {
                                 itemBuilder: (context, index) {
                                   var list =
                                       List.from(widget.order.item.extras);
+                                  double discount = (1 -
+                                      (widget.order.item.discount!.toDouble() /
+                                          100));
                                   double value = double.parse(
-                                      list[index]['value'].toString());
+                                          list[index]['value'].toString()) *
+                                      discount;
 
                                   return BlocBuilder<ItemScreenCubit,
                                           ItemScreenState>(

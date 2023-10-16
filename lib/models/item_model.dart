@@ -31,7 +31,6 @@ class Item {
     this.limit_extra_options,
     required this.value,
     this.discount,
-    required this.finalValue,
     required this.num_served,
     required this.time,
     required this.restaurant_id,
@@ -43,7 +42,7 @@ class Item {
     this.ingredients = const [],
     this.extras = const [],
     this.options = const [],
-  });
+  }) : finalValue = value * (1 - ((discount ?? 0) / 100));
 
   Item copyWith({
     String? id,
@@ -72,7 +71,6 @@ class Item {
       limit_extra_options: limit_extra_options ?? this.limit_extra_options,
       value: value ?? this.value,
       discount: discount ?? this.discount,
-      finalValue: finalValue ?? this.finalValue,
       restaurant_id: restaurant_id ?? this.restaurant_id,
       restaurant_name: restaurant_name ?? this.restaurant_name,
       num_served: num_served ?? this.num_served,
@@ -117,7 +115,6 @@ class Item {
         description: "",
         value: 0,
         discount: 0,
-        finalValue: 0,
         restaurant_id: "",
         restaurant_name: "",
         time: 0);
@@ -132,7 +129,6 @@ class Item {
       description: map['description'] ?? '',
       value: map['value']?.toDouble() ?? 0.0,
       discount: map['discount']?.toDouble() ?? 0.0,
-      finalValue: map['finalValue']?.toDouble() ?? 0.0,
       restaurant_id: map['restaurant_id'] ?? '',
       restaurant_name: map['restaurant_name'] ?? '',
       category: map['category'],
