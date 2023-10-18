@@ -269,15 +269,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                             ),
                                             page2: Column(
                                               children: [
-                                                SearchOrders(
-                                                  action: () => context
-                                                      .read<OrdersCubit>()
-                                                      .filterOrders(
-                                                          controllerFilter2
-                                                              .text),
-                                                  controllerFilter:
-                                                      controllerFilter2,
-                                                ),
+                                                if (access_level ==
+                                                    AppPermission.cashier)
+                                                  SearchOrders(
+                                                    action: () => context
+                                                        .read<OrdersCubit>()
+                                                        .filterOrders(
+                                                            controllerFilter2
+                                                                .text),
+                                                    controllerFilter:
+                                                        controllerFilter2,
+                                                  ),
                                                 Expanded(
                                                     child: ListView.builder(
                                                         physics:
