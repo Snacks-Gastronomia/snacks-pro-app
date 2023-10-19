@@ -6,6 +6,7 @@ import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
+import 'package:snacks_pro_app/views/home/widgets/dropdown_items.dart';
 // import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class ReportScreen extends StatelessWidget {
@@ -98,6 +99,10 @@ class ReportScreen extends StatelessWidget {
                         )
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  DropdownItems(items: ["hamburguer"]),
                   const SizedBox(
                     height: 20,
                   ),
