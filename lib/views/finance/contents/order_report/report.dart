@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
+import 'package:snacks_pro_app/views/home/widgets/dropdown_items.dart';
 // import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class ReportScreen extends StatelessWidget {
@@ -57,6 +59,7 @@ class ReportScreen extends StatelessWidget {
             builder: (context, state) {
               // if (state.orders.isNotEmpty) {
               // var item = orders;
+
               double value = state.orders.isEmpty
                   ? 0
                   : state.orders.map((e) => e.value).reduce((v, e) => v + e);
@@ -98,6 +101,10 @@ class ReportScreen extends StatelessWidget {
                         )
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  DropdownItems(),
                   const SizedBox(
                     height: 20,
                   ),
@@ -148,7 +155,8 @@ class ReportScreen extends StatelessWidget {
                                 Divider(color: Colors.grey.shade300),
                             itemCount: state.orders.length,
                             itemBuilder: (context, index) {
-                              var item = state.orders[index];
+                              OrderResponse item = state.orders[index];
+
                               return Card(
                                 elevation: 0,
                                 child: ListTile(

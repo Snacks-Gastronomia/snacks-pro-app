@@ -3,7 +3,7 @@ part of 'orders_cubit.dart';
 class OrdersState {
   final String payment_method;
   final int table_code;
-
+  final String filter;
   final double total;
   final AppStatus status;
   final String? error;
@@ -12,6 +12,7 @@ class OrdersState {
   OrdersState({
     required this.payment_method,
     required this.table_code,
+    required this.filter,
     required this.total,
     required this.status,
     this.error,
@@ -27,13 +28,13 @@ class OrdersState {
   // });
 
   factory OrdersState.initial() => OrdersState(
-        payment_method: "",
-        table_code: 0,
-        status: AppStatus.initial,
-        total: 0,
-        error: "",
-        temp_observation: "",
-      );
+      payment_method: "",
+      table_code: 0,
+      status: AppStatus.initial,
+      total: 0,
+      error: "",
+      temp_observation: "",
+      filter: "");
   // OrdersState copyWith({
   //   List<Order>? cart,
   //   AppStatus? status,
@@ -54,6 +55,7 @@ class OrdersState {
   OrdersState copyWith({
     String? payment_method,
     int? table_code,
+    String? filter,
     double? total,
     AppStatus? status,
     String? error,
@@ -63,6 +65,7 @@ class OrdersState {
       payment_method: payment_method ?? this.payment_method,
       table_code: table_code ?? this.table_code,
       total: total ?? this.total,
+      filter: filter ?? this.filter,
       status: status ?? this.status,
       error: error ?? this.error,
       temp_observation: temp_observation ?? this.temp_observation,
@@ -88,6 +91,7 @@ class OrdersState {
     return other is OrdersState &&
         other.payment_method == payment_method &&
         other.table_code == table_code &&
+        other.filter == filter &&
         other.total == total &&
         other.status == status &&
         other.error == error &&
@@ -98,6 +102,7 @@ class OrdersState {
   int get hashCode {
     return payment_method.hashCode ^
         table_code.hashCode ^
+        filter.hashCode ^
         total.hashCode ^
         status.hashCode ^
         error.hashCode ^
