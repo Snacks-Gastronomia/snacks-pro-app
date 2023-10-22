@@ -67,7 +67,7 @@ class AddOrderCubit extends Cubit<AddOrderState> {
               'address': order.address,
               'status': order.status,
               'userUid': order.userUid,
-              'customer_name': order.customer_name,
+              'customer_name': order.customerName,
             })
         .toList();
 
