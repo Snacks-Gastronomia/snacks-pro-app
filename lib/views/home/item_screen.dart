@@ -13,6 +13,7 @@ import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/item_screen/item_screen_cubit.dart';
+import 'package:snacks_pro_app/views/home/widgets/modals/content_discount.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/modal_content_obs.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 
@@ -28,11 +29,14 @@ class ItemScreen extends StatefulWidget {
 }
 
 class _ItemScreenState extends State<ItemScreen> {
+  final modal = AppModal();
+
   @override
   void initState() {
     super.initState();
 
     context.read<ItemScreenCubit>().insertItem(widget.order, true);
+    context.read<MenuCubit>().getDiscount(widget.order.item);
   }
 
   @override
@@ -46,13 +50,17 @@ class _ItemScreenState extends State<ItemScreen> {
           children: [
             SizedBox(
               height: 45,
-              child: BlocBuilder<ItemScreenCubit, ItemScreenState>(
+              child: BlocBuilder<MenuCubit, MenuState>(
                 builder: (context, state) {
                   return ListView.separated(
                       scrollDirection: Axis.horizontal,
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
                         var option = widget.order.item.options[index];
+                        double value = double.parse(option["value"]);
+
+                        double finalValue = double.parse(option["value"]) *
+                            (1 - (state.discount! / 100));
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           decoration: BoxDecoration(
@@ -67,13 +75,31 @@ class _ItemScreenState extends State<ItemScreen> {
                                 style: AppTextStyles.medium(16,
                                     color: Colors.black),
                               ),
-                              Text(
-                                NumberFormat.currency(
-                                        locale: "pt", symbol: r"R$ ")
-                                    .format(double.parse(
-                                        option["value"].toString())),
-                                style: AppTextStyles.medium(12,
-                                    color: Colors.grey),
+                              Row(
+                                children: [
+                                  Text(
+                                    NumberFormat.currency(
+                                            locale: "pt", symbol: r"R$ ")
+                                        .format(finalValue),
+                                    style: AppTextStyles.medium(14,
+                                        color: Colors.green),
+                                  ),
+                                  if (value != finalValue)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: Text(
+                                        NumberFormat.currency(
+                                                locale: "pt", symbol: r"R$ ")
+                                            .format(value),
+                                        style: TextStyle(
+                                            color: Colors.grey.shade500,
+                                            fontSize: 12,
+                                            decoration:
+                                                TextDecoration.lineThrough),
+                                      ),
+                                    ),
+                                ],
                               ),
                             ],
                           ),
@@ -184,204 +210,289 @@ class _ItemScreenState extends State<ItemScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Row(
-                    children: [
-                      ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              backgroundColor: const Color(0xffF6F6F6),
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(41, 41)),
-                          child: const Icon(
-                            Icons.arrow_back_ios_rounded,
-                            color: Colors.black,
-                            size: 19,
-                          )),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Text(
-                        'Detalhes',
-                        style: AppTextStyles.textShadow(
-                            AppTextStyles.medium(20, color: Colors.white),
-                            shadows: [
-                              const BoxShadow(
-                                offset: Offset(0, 2),
-                                blurRadius: 20,
-                                spreadRadius: 10,
-                                color: Colors.black,
-                              ),
-                            ]),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: () {
-                            context
-                                .read<MenuCubit>()
-                                .updateItem(widget.order.item);
-                            Navigator.pushNamed(context, AppRoutes.updateImage);
-                          },
-                          icon: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ))
-                    ],
-                  ),
+                  child: BlocBuilder<MenuCubit, MenuState>(
+                      builder: (context, state) {
+                    return Row(
+                      children: [
+                        ElevatedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                backgroundColor: const Color(0xffF6F6F6),
+                                padding: EdgeInsets.zero,
+                                minimumSize: const Size(41, 41)),
+                            child: const Icon(
+                              Icons.arrow_back_ios_rounded,
+                              color: Colors.black,
+                              size: 19,
+                            )),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                          'Detalhes',
+                          style: AppTextStyles.textShadow(
+                              AppTextStyles.medium(20, color: Colors.white),
+                              shadows: [
+                                const BoxShadow(
+                                  offset: Offset(0, 2),
+                                  blurRadius: 20,
+                                  spreadRadius: 10,
+                                  color: Colors.black,
+                                ),
+                              ]),
+                        ),
+                        const Spacer(),
+                        if (state.discount! == 0)
+                          SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    padding: EdgeInsets.zero,
+                                    backgroundColor: Colors.white),
+                                onPressed: () {
+                                  modal.showModalBottomSheet(
+                                      drag: false,
+                                      dimissible: false,
+                                      context: context,
+                                      content: ContentDiscount(
+                                        item: widget.order.item,
+                                      ));
+                                },
+                                child: const Icon(
+                                  Icons.local_offer_sharp,
+                                  color: Colors.green,
+                                )),
+                          ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  padding: EdgeInsets.zero,
+                                  backgroundColor: Colors.white),
+                              onPressed: () {
+                                context
+                                    .read<MenuCubit>()
+                                    .updateItem(widget.order.item);
+                                Navigator.pushNamed(
+                                    context, AppRoutes.updateImage);
+                              },
+                              child: const Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                              )),
+                        ),
+                      ],
+                    );
+                  }),
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+            BlocBuilder<MenuCubit, MenuState>(
+              builder: (context, state) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.order.item.title,
-                        style: AppTextStyles.medium(18),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.access_time,
-                            size: 16,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            '${widget.order.item.time} min',
-                            style: AppTextStyles.medium(16),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'Este prato serve ${widget.order.item.num_served} pessoa${widget.order.item.num_served > 1 ? "s" : ""}',
-                    style: AppTextStyles.regular(12),
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  Text(
-                    widget.order.item.description!,
-                    style: AppTextStyles.regular(15,
-                        color: const Color(0xff979797)),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  if (widget.order.item.extras.isNotEmpty)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Extras",
-                          style: AppTextStyles.semiBold(18),
-                        ),
-                        if (widget.order.item.limit_extra_options != null)
-                          Column(
+                      if (state.discount! > 0)
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Selecione até ${widget.order.item.limit_extra_options} opções',
-                                style: AppTextStyles.light(12),
-                              ),
-                            ],
-                          ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        ListView.separated(
-                            itemCount: widget.order.item.extras.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              var list = List.from(widget.order.item.extras);
-                              double value =
-                                  double.parse(list[index]['value'].toString());
-
-                              return BlocBuilder<ItemScreenCubit,
-                                      ItemScreenState>(
-                                  // stream: null,
-                                  builder: (context, state) {
-                                bool selected =
-                                    state.order!.extras.contains(list[index]);
-                                return Container(
-                                  // height: 50,
-                                  padding: const EdgeInsets.all(15),
+                              Container(
+                                  width: 280,
+                                  height: 50,
                                   decoration: BoxDecoration(
-                                      color: selected
-                                          ? Colors.black
-                                          : Colors.white,
                                       borderRadius: BorderRadius.circular(10),
-                                      border: const Border.fromBorderSide(
-                                          BorderSide(width: 2))),
+                                      color: Colors.black12),
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Row(
+                                      const Icon(Icons.local_offer),
+                                      Text(
+                                        "Desconto de ${state.discount!.toInt()}% aplicado",
+                                        style:
+                                            const TextStyle(color: Colors.blue),
+                                      ),
+                                    ],
+                                  )),
+                              TextButton(
+                                  onPressed: () => context
+                                      .read<MenuCubit>()
+                                      .removeDiscount(widget.order.item),
+                                  child: const Text(
+                                    "Remover",
+                                    style: TextStyle(color: Colors.red),
+                                  ))
+                            ]),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.order.item.title,
+                            style: AppTextStyles.medium(18),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.access_time,
+                                size: 16,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                '${widget.order.item.time} min',
+                                style: AppTextStyles.medium(16),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        'Este prato serve ${widget.order.item.num_served} pessoa${widget.order.item.num_served > 1 ? "s" : ""}',
+                        style: AppTextStyles.regular(12),
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      Text(
+                        widget.order.item.description!,
+                        style: AppTextStyles.regular(15,
+                            color: const Color(0xff979797)),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      if (widget.order.item.extras.isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Extras",
+                              style: AppTextStyles.semiBold(18),
+                            ),
+                            if (widget.order.item.limit_extra_options != null)
+                              Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    'Selecione até ${widget.order.item.limit_extra_options} opções',
+                                    style: AppTextStyles.light(12),
+                                  ),
+                                ],
+                              ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            ListView.separated(
+                                itemCount: widget.order.item.extras.length,
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  var list =
+                                      List.from(widget.order.item.extras);
+                                  double discount = (1 -
+                                      (widget.order.item.discount!.toDouble() /
+                                          100));
+                                  double value = double.parse(
+                                          list[index]['value'].toString()) *
+                                      discount;
+
+                                  return BlocBuilder<ItemScreenCubit,
+                                          ItemScreenState>(
+                                      // stream: null,
+                                      builder: (context, state) {
+                                    bool selected = state.order!.extras
+                                        .contains(list[index]);
+                                    return Container(
+                                      // height: 50,
+                                      padding: const EdgeInsets.all(15),
+                                      decoration: BoxDecoration(
+                                          color: selected
+                                              ? Colors.black
+                                              : Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          border: const Border.fromBorderSide(
+                                              BorderSide(width: 2))),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          Icon(
-                                            Icons.plus_one_rounded,
-                                            color: selected
-                                                ? Colors.white
-                                                : Colors.black,
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          ),
-                                          SizedBox(
-                                            width: 150,
-                                            child: Text(
-                                              list[index]["title"],
-                                              style: AppTextStyles.medium(
-                                                16,
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.plus_one_rounded,
                                                 color: selected
                                                     ? Colors.white
                                                     : Colors.black,
                                               ),
-                                            ),
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                              SizedBox(
+                                                width: 150,
+                                                child: Text(
+                                                  list[index]["title"],
+                                                  style: AppTextStyles.medium(
+                                                    16,
+                                                    color: selected
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            "+${NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value)}",
+                                            style: AppTextStyles.medium(16,
+                                                color: AppColors.highlight),
                                           ),
                                         ],
                                       ),
-                                      Text(
-                                        "+${NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value)}",
-                                        style: AppTextStyles.medium(16,
-                                            color: AppColors.highlight),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              });
-                            })
-                      ],
-                    ),
-                  const SizedBox(
-                    height: 20,
-                  )
-                ],
-              ),
+                                    );
+                                  });
+                                })
+                          ],
+                        ),
+                      const SizedBox(
+                        height: 20,
+                      )
+                    ],
+                  ),
+                );
+              },
             )
           ],
         ),
