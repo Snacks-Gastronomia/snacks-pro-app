@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
-import 'package:snacks_pro_app/core/app.colors.dart';
-import 'package:snacks_pro_app/core/app.text.dart';
+
+import '../../../core/app.colors.dart';
+import '../../../core/app.text.dart';
 
 class CustomSwitch extends StatelessWidget {
   const CustomSwitch({
@@ -24,15 +25,7 @@ class CustomSwitch extends StatelessWidget {
             height: 30,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
-              // color: Colors.black,
               color: Color(0xffF6F6F6),
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.grey.shade300,
-              //     blurRadius: 8.0,
-              //     spreadRadius: 1.0,
-              //   ),
-              // ]
             ),
           ),
         ),

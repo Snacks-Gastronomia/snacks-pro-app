@@ -5,8 +5,8 @@ import 'package:snacks_pro_app/utils/enums.dart';
 class OrdersRepository {
   final services = OrdersApiServices();
 
-  Future<dynamic> createOrder(Map<String, dynamic> data) async {
-    // return await services.createOrder(data);
+  Future<dynamic> createOrder(List<Map<String, dynamic>> data) async {
+    return await services.createOrder(data);
   }
 
   Future<dynamic> createItemstoOrder(

@@ -1,10 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/services/firebase/notifications.dart';
@@ -13,7 +12,6 @@ import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/confirm_order.dart';
-import 'dart:convert';
 
 part 'orders_state.dart';
 
@@ -33,7 +31,7 @@ class OrdersCubit extends Cubit<OrdersState> {
         access == AppPermission.employee) {
       yield* repository.fetchOrdersByRestaurantId(user["restaurant"]["id"]);
     } else if (access == AppPermission.cashier) {
-      var start = DateTime.now().subtract(const Duration(hours: 12));
+      var start = DateTime.now().subtract(const Duration(hours: 24));
       var end = DateTime.now().add(const Duration(hours: 12));
       yield* repository.fetchAllOrdersByInterval(start, end);
     }
@@ -116,12 +114,15 @@ class OrdersCubit extends Cubit<OrdersState> {
           await addOrderToReport(
               orders: items,
               restaurant: restaurantName,
-              datetime: firstOrder.createdAt);
+              datetime: firstOrder.created_at);
         }
         await repository.updateManyStatus(ids, nextStatus);
         emit(state.copyWith(status: AppStatus.loaded));
       }
     }
+    Timer(const Duration(milliseconds: 500), () {
+      emit(state.copyWith(status: AppStatus.loaded));
+    });
   }
 
   void cancelOrder(ids) async {
@@ -185,6 +186,12 @@ class OrdersCubit extends Cubit<OrdersState> {
       };
       await finance.setMonthlyBudgetFirebase(orders[i].restaurant, data,
           orders[i].value, orders[i].restaurantName);
+    }
+  }
+
+  void filterOrders(String text) {
+    if (text.isNotEmpty) {
+      emit(state.copyWith(filter: text));
     }
   }
 }

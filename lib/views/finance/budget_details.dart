@@ -10,6 +10,7 @@ import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/new_expense.dart';
 import 'package:snacks_pro_app/views/finance/contents/order_report/month_orders_report.dart';
+import 'package:snacks_pro_app/views/finance/contents/order_report/report.dart';
 import 'package:snacks_pro_app/views/finance/contents/order_report/year_orders.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/widgets/card_expense.dart';
@@ -63,9 +64,12 @@ class BudgetDetailsContent extends StatelessWidget {
                               builder: (context, state) {
                                 var total = state.budget - state.expenses_value;
                                 return Text(
-                                  NumberFormat.currency(
-                                          locale: "pt", symbol: r"R$ ")
-                                      .format(total),
+                                  state.status == AppStatus.loading &&
+                                          total == 0
+                                      ? "Calculando..."
+                                      : NumberFormat.currency(
+                                              locale: "pt", symbol: r"R$ ")
+                                          .format(total),
                                   style: AppTextStyles.bold(30,
                                       color: Colors.white),
                                 );
@@ -308,8 +312,7 @@ class ListRestaurantsProfits extends StatelessWidget {
                       onTap: () {
                         modal.showIOSModalBottomSheet(
                             context: context,
-                            content:
-                                SelectMonthReport(restaurant_id: item["id"]),
+                            content: ReportScreen(restaurant_id: item["id"]),
                             expand: true);
                       },
                       child: CardExpense(

@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 
 class CancelOrder extends StatelessWidget {
-  String partCode;
+  String part_code;
   CancelOrder({
     Key? key,
-    required this.partCode,
+    required this.part_code,
   }) : super(key: key);
 
   @override
@@ -37,7 +37,7 @@ class CancelOrder extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   Text(
-                    '#$partCode ?',
+                    '#$part_code ?',
                     style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,

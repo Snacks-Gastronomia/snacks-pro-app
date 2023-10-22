@@ -165,20 +165,21 @@ class _HomeScreenState extends State<HomeScreen> {
     items.add(Content(
       screen: null,
       button: GButton(
-          icon: Icons.account_circle_rounded,
-          text: 'Conta',
-          onPressed: () => AppModal().showModalBottomSheet(
-                withPadding: false,
-                context: context,
-                content: Builder(builder: (context) {
-                  var data = _storage;
+        icon: Icons.account_circle_rounded,
+        text: 'Conta',
+        onPressed: () => AppModal().showModalBottomSheet(
+          withPadding: false,
+          context: context,
+          content: Builder(builder: (context) {
+            var data = _storage;
 
-                  return ProfileModal(
-                      name: data["name"] ?? "",
-                      phone: data["phone"] ?? "",
-                      ocupation: data["ocupation"] ?? "");
-                }),
-              )),
+            return ProfileModal(
+                name: data["name"] ?? "",
+                phone: data["phone"] ?? "",
+                ocupation: data["ocupation"] ?? "");
+          }),
+        ),
+      ),
     ));
     return items;
   }

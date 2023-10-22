@@ -1,11 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
+
 import 'package:snacks_pro_app/utils/enums.dart';
 
 class OrdersApiServices {
   final database = FirebaseFirestore.instance;
+  final firebase = FirebaseFirestore.instance;
 
-  // Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByNow(String id) {
+  Future<void> createOrder(List<Map<String, dynamic>> data) async {
+    var ref = firebase.collection("orders");
+
+    var batch = firebase.batch();
+    for (var element in data) {
+      var docRef = ref.doc(); //automatically generate unique id
+      batch.set(docRef, element);
+    } // await FirebaseFirestore.instance
+
+    await batch.commit();
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getOrdersByRestaurant(String id) {
     return database
         .collection("orders")

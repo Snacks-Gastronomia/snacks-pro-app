@@ -9,6 +9,7 @@ import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/budget_details.dart';
 import 'package:snacks_pro_app/views/finance/contents/Features/features_content.dart';
+import 'package:snacks_pro_app/views/finance/contents/order_report/report.dart';
 import 'package:snacks_pro_app/views/finance/contents/printer/printers.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/restaurants_content.dart';
@@ -134,9 +135,12 @@ class _HomeFinanceWidgetState extends State<HomeFinanceWidget> {
                                   BlocBuilder<FinanceCubit, FinanceHomeState>(
                                     builder: (context, state) {
                                       return Text(
-                                        NumberFormat.currency(
-                                                locale: "pt", symbol: r"R$ ")
-                                            .format(state.budget),
+                                        state.status == AppStatus.loading
+                                            ? "Calculando..."
+                                            : NumberFormat.currency(
+                                                    locale: "pt",
+                                                    symbol: r"R$ ")
+                                                .format(state.budget),
                                         style: AppTextStyles.bold(30,
                                             color: Colors.white),
                                       );
@@ -512,7 +516,7 @@ class RestaurantSummaryCards extends StatelessWidget {
       "title": "Pedidos",
       "icon": Icons.format_align_left_rounded,
       "highlight": false,
-      "action": OrdersReportScreen(),
+      "action": const ReportScreen(),
     },
     {
       "title": "Impressoras",
