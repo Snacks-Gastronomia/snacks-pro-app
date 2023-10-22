@@ -7,31 +7,31 @@ class OrderResponse {
   String code;
   bool needChange;
   String restaurant;
-  DateTime createdAt;
+  DateTime created_at;
   String restaurantName;
   bool isDelivery;
   String waiterPayment;
   String? rfid;
   String? address;
-  String? receiveOrder;
+  String? receive_order;
   String? phoneNumber;
   String moneyChange;
   String waiterDelivery;
-  String partCode;
+  String part_code;
   List<ItemResponse> items;
   double value;
   String paymentMethod;
   String? table;
   String status;
   String userUid;
-  String? customerName;
+  String? customer_name;
   double deliveryValue;
 
   OrderResponse({
     required this.code,
     required this.needChange,
     required this.restaurant,
-    required this.createdAt,
+    required this.created_at,
     required this.restaurantName,
     required this.isDelivery,
     required this.waiterPayment,
@@ -39,18 +39,18 @@ class OrderResponse {
     this.rfid,
     this.address,
     required this.id,
-    this.receiveOrder,
+    this.receive_order,
     this.deliveryValue = 0.0,
     this.phoneNumber,
     required this.waiterDelivery,
-    required this.partCode,
+    required this.part_code,
     required this.items,
     required this.value,
     required this.paymentMethod,
     this.table,
     required this.status,
     required this.userUid,
-    this.customerName,
+    this.customer_name,
   });
 
   static List<Map<String, dynamic>> groupOrdersByCode(
@@ -58,10 +58,10 @@ class OrderResponse {
     final Map<String, List<OrderResponse>> groupedOrders = {};
 
     for (var order in orders) {
-      if (groupedOrders.containsKey(order.partCode)) {
-        groupedOrders[order.partCode]!.add(order);
+      if (groupedOrders.containsKey(order.part_code)) {
+        groupedOrders[order.part_code]!.add(order);
       } else {
-        groupedOrders[order.partCode] = [order];
+        groupedOrders[order.part_code] = [order];
       }
     }
 
@@ -84,7 +84,7 @@ class OrderResponse {
       code: json['code'] ?? '',
       needChange: json['need_change'] ?? false,
       restaurant: json['restaurant'] ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch(
+      created_at: DateTime.fromMillisecondsSinceEpoch(
           json['created_at']['seconds'] * 1000),
       restaurantName: json['restaurant_name'] ?? '',
       isDelivery: json['isDelivery'] ?? false,
@@ -92,16 +92,16 @@ class OrderResponse {
       rfid: json['rfid'],
       phoneNumber: json['phone_number'],
       waiterDelivery: json['waiter_delivery'] ?? '',
-      partCode: json['part_code'] ?? '',
+      part_code: json['part_code'] ?? '',
       items: items,
       value: json['value'] ?? 0.0,
       paymentMethod: json['payment_method'] ?? '',
       table: json['table'] ?? 0,
       status: json['status'] ?? '',
       address: json['address'] ?? '',
-      receiveOrder: json['receive_order'] ?? '',
+      receive_order: json['receive_order'] ?? '',
       userUid: json['user_uid'] ?? '',
-      customerName: json['customer_name'] ?? "",
+      customer_name: json['customer_name'] ?? "",
       moneyChange: json['money_change'] ?? "",
       deliveryValue: json['delivery_value'] ?? 0,
     );
@@ -112,23 +112,23 @@ class OrderResponse {
       'code': code,
       'needChange': needChange,
       'restaurant': restaurant,
-      'createdAt': createdAt.millisecondsSinceEpoch,
+      'created_at': created_at,
       'restaurantName': restaurantName,
       'isDelivery': isDelivery,
       'waiterPayment': waiterPayment,
       'rfid': rfid,
       'phoneNumber': phoneNumber,
       'waiterDelivery': waiterDelivery,
-      'partCode': partCode,
+      'part_code': part_code,
       'items': items.map((x) => x.toMap()).toList(),
       'value': value,
       'paymentMethod': paymentMethod,
       'table': table,
-      'receive_order': receiveOrder,
+      'receive_order': receive_order,
       'address': address,
       'status': status,
       'userUid': userUid,
-      'customerName': customerName,
+      'customer_name': customer_name,
     };
   }
 
@@ -138,14 +138,14 @@ class OrderResponse {
       code: map['code'] ?? '',
       needChange: map['needChange'] ?? false,
       restaurant: map['restaurant'] ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
+      created_at: DateTime.fromMillisecondsSinceEpoch(map['created_at']),
       restaurantName: map['restaurantName'] ?? '',
       isDelivery: map['isDelivery'] ?? false,
       waiterPayment: map['waiterPayment'] ?? '',
       rfid: map['rfid'],
       phoneNumber: map['phoneNumber'],
       waiterDelivery: map['waiterDelivery'] ?? '',
-      partCode: map['partCode'] ?? '',
+      part_code: map['part_code'] ?? '',
       items: List<ItemResponse>.from(
           map['items']?.map((x) => ItemResponse.fromMap(x))),
       value: map['value']?.toDouble() ?? 0.0,
@@ -153,8 +153,8 @@ class OrderResponse {
       table: map['table']?.toInt() ?? 0,
       status: map['status'] ?? '',
       userUid: map['userUid'] ?? '',
-      customerName: map['customerName'],
-      receiveOrder: map['receiveOrder'],
+      customer_name: map['customer_name'],
+      receive_order: map['receive_order'],
       address: map['address'] ?? "",
       moneyChange: map['money_change'] ?? "",
       deliveryValue: map['delivery_value'] ?? "",
@@ -164,7 +164,7 @@ class OrderResponse {
       QueryDocumentSnapshot<Map<String, dynamic>> data) {
     Map<String, dynamic> map = data.data();
     Timestamp timestamp = map['created_at'];
-    DateTime createdAtDateTime = DateTime.fromMillisecondsSinceEpoch(
+    DateTime created_atDateTime = DateTime.fromMillisecondsSinceEpoch(
       timestamp.seconds * 1000 + (timestamp.nanoseconds ~/ 1000000),
     );
     return OrderResponse(
@@ -172,14 +172,14 @@ class OrderResponse {
       code: map['code'] ?? '',
       needChange: map['need_change'] ?? false,
       restaurant: map['restaurant'] ?? '',
-      createdAt: createdAtDateTime,
+      created_at: created_atDateTime,
       restaurantName: map['restaurant_name'] ?? '',
       isDelivery: map['isDelivery'] ?? false,
       waiterPayment: map['waiter_payment'] ?? '',
       rfid: map['rfid'],
       phoneNumber: map['phone_number'],
       waiterDelivery: map['waiter_nelivery'] ?? '',
-      partCode: map['part_code'] ?? '',
+      part_code: map['part_code'] ?? '',
       items: List<ItemResponse>.from(
           map['items']?.map((x) => ItemResponse.fromMap(x))),
       value: map['value']?.toDouble() ?? 0.0,
@@ -187,8 +187,8 @@ class OrderResponse {
       table: map['table'] ?? "",
       status: map['status'] ?? '',
       userUid: map['user_uid'] ?? '',
-      customerName: map['customer_name'],
-      receiveOrder: map['receive_order'],
+      customer_name: map['customer_name'],
+      receive_order: map['receive_order'],
       address: map['address'],
       moneyChange: map['money_change'] ?? "",
       deliveryValue: (map['delivery_value'] ?? 0.0).toDouble(),
@@ -227,6 +227,7 @@ class ItemResponse {
     return {
       'amount': amount,
       'observations': observations,
+      'item': item.toMap(),
       'extras': extras,
       'optionSelected': optionSelected.toMap(),
     };
@@ -252,8 +253,8 @@ class ItemResponse {
       item: ItemDetails.fromMap(map['item']),
       amount: map['amount']?.toInt() ?? 0,
       observations: map['observations'],
-      extras: List<dynamic>.from(map['extras']),
-      optionSelected: OptionSelected.fromMap(map['option_selected']),
+      extras: List<dynamic>.from(map['extras'] ?? []),
+      optionSelected: OptionSelected.fromMap(map['option_selected'] ?? {}),
     );
   }
 }
@@ -371,7 +372,7 @@ class OptionSelected {
     return OptionSelected(
       id: map['id']?.toString() ?? "0",
       title: map['title'] ?? '',
-      value: double.tryParse(map['value']) ?? 0.0,
+      value: double.parse(map['value'] ?? "0"),
     );
   }
 

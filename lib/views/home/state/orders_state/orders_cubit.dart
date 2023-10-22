@@ -31,7 +31,7 @@ class OrdersCubit extends Cubit<OrdersState> {
         access == AppPermission.employee) {
       yield* repository.fetchOrdersByRestaurantId(user["restaurant"]["id"]);
     } else if (access == AppPermission.cashier) {
-      var start = DateTime.now().subtract(const Duration(hours: 12));
+      var start = DateTime.now().subtract(const Duration(hours: 24));
       var end = DateTime.now().add(const Duration(hours: 12));
       yield* repository.fetchAllOrdersByInterval(start, end);
     }
@@ -114,7 +114,7 @@ class OrdersCubit extends Cubit<OrdersState> {
           await addOrderToReport(
               orders: items,
               restaurant: restaurantName,
-              datetime: firstOrder.createdAt);
+              datetime: firstOrder.created_at);
         }
         await repository.updateManyStatus(ids, nextStatus);
         emit(state.copyWith(status: AppStatus.loaded));
@@ -186,6 +186,12 @@ class OrdersCubit extends Cubit<OrdersState> {
       };
       await finance.setMonthlyBudgetFirebase(orders[i].restaurant, data,
           orders[i].value, orders[i].restaurantName);
+    }
+  }
+
+  void filterOrders(String text) {
+    if (text.isNotEmpty) {
+      emit(state.copyWith(filter: text));
     }
   }
 }

@@ -7,11 +7,13 @@ class AppModal {
     required Widget content,
     bool withPadding = true,
     bool dimissible = true,
+    bool drag = true,
   }) =>
       showMaterialModalBottomSheet(
         bounce: true,
         context: context,
         isDismissible: dimissible,
+        enableDrag: drag,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
         ),

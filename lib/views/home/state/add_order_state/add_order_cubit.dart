@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/toast.dart';
+import 'package:snacks_pro_app/views/home/repository/orders_repository.dart';
 
 import 'add_order_state.dart';
 
@@ -11,6 +12,7 @@ class AddOrderCubit extends Cubit<AddOrderState> {
   double delivery = 7;
   double total = 0;
   double deliveryValue = 0;
+  final repository = OrdersRepository();
 
   var toast = AppToast();
 
@@ -40,6 +42,36 @@ class AddOrderCubit extends Cubit<AddOrderState> {
     } catch (e) {
       print('Erro ao obter dados: $e');
     }
+  }
+
+  Future<void> makeOrder(List<OrderResponse> data) async {
+    final repository = OrdersRepository();
+    final mapList = data
+        .map((order) => {
+              'code': order.code,
+              'needChange': order.needChange,
+              'restaurant': order.restaurant,
+              'created_at': order.created_at,
+              'restaurantName': order.restaurantName,
+              'isDelivery': order.isDelivery,
+              'waiterPayment': order.waiterPayment,
+              'rfid': order.rfid,
+              'phoneNumber': order.phoneNumber,
+              'waiterDelivery': order.waiterDelivery,
+              'part_code': order.part_code,
+              'items': order.items.map((item) => item.toMap()).toList(),
+              'value': order.value,
+              'payment_method': order.paymentMethod,
+              'table': order.table,
+              'receive_order': order.receive_order,
+              'address': order.address,
+              'status': order.status,
+              'userUid': order.userUid,
+              'customer_name': order.customer_name,
+            })
+        .toList();
+
+    await repository.createOrder(mapList);
   }
 
   void handleCheckboxValue(bool value) {

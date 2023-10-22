@@ -30,7 +30,7 @@ class OrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var order = orders[0];
-    String time = DateFormat("HH:mm").format(order.createdAt);
+    String time = DateFormat("HH:mm").format(order.created_at);
 
     bool isDelivered = orders
         .map((e) => e.status == OrderStatus.delivered.name)
@@ -122,7 +122,7 @@ class OrderCardWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          order.customerName ?? "Não informado",
+                          order.customer_name ?? "Não informado",
                           style: AppTextStyles.regular(16,
                               color: const Color(0xff263238)),
                         ),
@@ -130,7 +130,7 @@ class OrderCardWidget extends StatelessWidget {
                           height: 5,
                         ),
                         Text(
-                          '#${order.partCode}',
+                          '#${order.part_code}',
                           style: AppTextStyles.semiBold(16,
                               color: const Color(0xff263238)),
                         ),
@@ -161,7 +161,7 @@ class OrderCardWidget extends StatelessWidget {
                                   style: AppTextStyles.light(12,
                                       color: const Color(0xff979797))),
                               Text(
-                                  order.receiveOrder == "local"
+                                  order.receive_order == "local"
                                       ? "Irá até o local buscar o pedido"
                                       : order.address ?? "",
                                   style: AppTextStyles.semiBold(14,
