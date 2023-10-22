@@ -1,4 +1,5 @@
 import 'dart:developer' as console;
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -92,20 +93,24 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 optionSelected: OptionSelected(id: '', title: '', value: 0));
 
             OrderResponse orderResponse = OrderResponse(
-                code: 'code',
+                address: "",
+                code: 'PM0000-#PM0000',
+                customer_name: "Pedido Manual",
                 needChange: false,
                 restaurant: restaurantId,
-                createdAt: dateTime,
+                created_at: dateTime,
                 restaurantName: restaurantName,
                 isDelivery: false,
                 waiterPayment: 'Pedido Manual',
                 id: 'Pedido Manual',
                 waiterDelivery: 'Pedido Manual',
-                partCode: 'Pedido Manual',
+                receive_order: "address",
+                part_code: 'PM${Random().nextInt(1000) + 1000}',
+                deliveryValue: 0,
                 items: [],
                 value: 0,
                 paymentMethod: 'Pedido Manual',
-                status: 'Pedido Manual',
+                status: 'delivered',
                 userUid: 'Pedido Manual');
 
             return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
@@ -432,13 +437,12 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                         );
 
                                         orders[0].value = cubit.total;
+                                        orders[0].created_at = dateTime;
 
-                                        context
-                                            .read<OrdersCubit>()
-                                            .addOrderToReport(
-                                                orders: orders,
-                                                restaurant: restaurantName,
-                                                datetime: dateTime);
+                                        orders[0].isDelivery = true;
+
+                                        cubit.makeOrder(orders);
+
                                         cubit.total = 0;
                                         cubit.subtotal = 0;
                                         navigator.pop();

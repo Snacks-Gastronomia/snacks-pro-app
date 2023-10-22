@@ -12,6 +12,7 @@ class AddOrderCubit extends Cubit<AddOrderState> {
   double delivery = 7;
   double total = 0;
   double deliveryValue = 0;
+  final repository = OrdersRepository();
 
   var toast = AppToast();
 
@@ -43,14 +44,34 @@ class AddOrderCubit extends Cubit<AddOrderState> {
     }
   }
 
-  Future<void> makeOrder(String method,
-      {String? rfid = "", String change = ""}) async {
+  Future<void> makeOrder(List<OrderResponse> data) async {
     final repository = OrdersRepository();
-    var data;
+    final mapList = data
+        .map((order) => {
+              'code': order.code,
+              'needChange': order.needChange,
+              'restaurant': order.restaurant,
+              'created_at': order.created_at,
+              'restaurantName': order.restaurantName,
+              'isDelivery': order.isDelivery,
+              'waiterPayment': order.waiterPayment,
+              'rfid': order.rfid,
+              'phoneNumber': order.phoneNumber,
+              'waiterDelivery': order.waiterDelivery,
+              'part_code': order.part_code,
+              'items': order.items.map((item) => item.toMap()).toList(),
+              'value': order.value,
+              'payment_method': order.paymentMethod,
+              'table': order.table,
+              'receive_order': order.receive_order,
+              'address': order.address,
+              'status': order.status,
+              'userUid': order.userUid,
+              'customer_name': order.customer_name,
+            })
+        .toList();
 
-    await repository.createOrder(data);
-
-    // await cardRepository.doPayment(rfid, state.total);
+    await repository.createOrder(mapList);
   }
 
   void handleCheckboxValue(bool value) {
