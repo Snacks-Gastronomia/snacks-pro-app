@@ -26,7 +26,8 @@ class CardItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var order = OrderModel(item: item, observations: "", option_selected: {});
-    double value = double.parse(item.options[0]["value"].toString());
+    double value = item.value;
+    double finalValue = item.finalValue;
     print(item.id);
     return Builder(builder: (context) {
       return Stack(
@@ -103,11 +104,30 @@ class CardItemWidget extends StatelessWidget {
                                 color: AppColors.highlight),
                             overflow: TextOverflow.ellipsis,
                             softWrap: true),
-                        Text(
-                          NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                              .format(value),
-                          style: AppTextStyles.regular(15,
-                              color: Colors.grey.shade500),
+                        Row(
+                          children: [
+                            Text(
+                              NumberFormat.currency(
+                                      locale: "pt", symbol: r"R$ ")
+                                  .format(finalValue),
+                              style: AppTextStyles.medium(14,
+                                  color: Colors.grey.shade500),
+                            ),
+                            if (value != finalValue)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                child: Text(
+                                  NumberFormat.currency(
+                                          locale: "pt", symbol: r"R$ ")
+                                      .format(value),
+                                  style: TextStyle(
+                                      color: Colors.grey.shade400,
+                                      fontSize: 12,
+                                      decoration: TextDecoration.lineThrough),
+                                ),
+                              ),
+                          ],
                         ),
                       ],
                     ),
