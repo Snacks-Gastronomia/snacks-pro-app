@@ -301,26 +301,26 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_messaging
-      sha256: e4a5eb079aa9e7bd6b5fb2681f2bb8a6c78f87aacbf1c732c6ce91ad71e595ba
+      sha256: "67f9d7c87457e71ad78ee81e332f232b8a24f7d5e338f8c958fa7d6e9e0e3636"
       url: "https://pub.dev"
     source: hosted
-    version: "14.4.0"
+    version: "14.6.9"
   firebase_messaging_platform_interface:
     dependency: transitive
     description:
       name: firebase_messaging_platform_interface
-      sha256: "3a007c888e3414c9e4f7c35ea6fa59eafc623c62ee36155710563a1ebc160063"
+      sha256: "8c7ced3201886ad7ba37f344c1468ccfc08abb3023922e0e5a016eaf38abb96c"
       url: "https://pub.dev"
     source: hosted
-    version: "4.3.0"
+    version: "4.5.8"
   firebase_messaging_web:
     dependency: transitive
     description:
       name: firebase_messaging_web
-      sha256: a3239662b91b652cea4ce3b3ecac6cccbaebc1b4ac3101224bef805de4195fbf
+      sha256: b601322bdb44e2fefe4cc7b85ef0dbb7a2479d4a7653a51340821cf8d60696b5
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.0"
+    version: "3.5.8"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -588,18 +588,18 @@ packages:
     dependency: "direct main"
     description:
       name: google_mlkit_barcode_scanning
-      sha256: bbd48976d8c6bbb1aad325f8f098fc4e6da59c8139bc4aa6f57a0cf1bfd7db47
+      sha256: "033401bc992315fe3d6ed9265b97bf1e620fa12ddaffda830107d6852abcde77"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.9.0"
   google_mlkit_commons:
     dependency: transitive
     description:
       name: google_mlkit_commons
-      sha256: af63771903947d5523d9e991a939a4b8bf994f11661c9b9c8a71d7d3997115f8
+      sha256: "42173a8ba89f386486cc5b8249e84da4a4b861daa70498373627d985eb418689"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.5.0"
   google_nav_bar:
     dependency: "direct main"
     description:
@@ -780,10 +780,10 @@ packages:
     dependency: "direct main"
     description:
       name: mobile_scanner
-      sha256: da55204e5439bc8dc058df56231a7a1d513c6ec9cbad84492f56d493382d296f
+      sha256: "2fbc3914fe625e196c64ea8ffc4084cd36781d2be276d4d5923b11af3b5d44ff"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "3.4.1"
   modal_bottom_sheet:
     dependency: "direct main"
     description:
@@ -989,22 +989,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  syncfusion_flutter_core:
-    dependency: transitive
-    description:
-      name: syncfusion_flutter_core
-      sha256: "505a07deaeb326ae9af5ee4e50937b7563cbb639982e760c26f3511b4fa535d5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "23.1.39"
-  syncfusion_flutter_datepicker:
-    dependency: "direct main"
-    description:
-      name: syncfusion_flutter_datepicker
-      sha256: a706c0ea4fbe6ce1c6a63f11d048bddd4c6fa96164bb9baf9fd45aa4f328899f
-      url: "https://pub.dev"
-    source: hosted
-    version: "23.1.39"
   term_glyph:
     dependency: transitive
     description:
