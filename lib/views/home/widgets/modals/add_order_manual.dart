@@ -95,7 +95,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
             OrderResponse orderResponse = OrderResponse(
                 address: "",
                 code: 'PM0000-#PM0000',
-                customer_name: "Pedido Manual",
+                customerName: "Pedido Manual",
                 needChange: false,
                 restaurant: restaurantId,
                 created_at: dateTime,
