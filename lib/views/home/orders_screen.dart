@@ -11,6 +11,7 @@ import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
+import 'package:snacks_pro_app/services/notification_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
@@ -105,9 +106,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               height: 30,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  modal.showIOSModalBottomSheet(
-                                      context: context,
-                                      content: const AddOrderManual());
+                                  // modal.showIOSModalBottomSheet(
+                                  //     context: context,
+                                  //     content: const AddOrderManual());
+                                  NotificationService.showNotification(
+                                      title: 'teste',
+                                      body: 'teste',
+                                      payload: 'home');
                                 },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
