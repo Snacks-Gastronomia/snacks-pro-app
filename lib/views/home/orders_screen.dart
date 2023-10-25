@@ -106,13 +106,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               height: 30,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // modal.showIOSModalBottomSheet(
-                                  //     context: context,
-                                  //     content: const AddOrderManual());
-                                  NotificationService.showNotification(
-                                      title: 'teste',
-                                      body: 'teste',
-                                      payload: 'home');
+                                  modal.showIOSModalBottomSheet(
+                                      context: context,
+                                      content: const AddOrderManual());
                                 },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
