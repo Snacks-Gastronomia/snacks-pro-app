@@ -1,21 +1,36 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:snacks_pro_app/services/notification_service.dart';
 
 class PushNotifications {
-  static final _firebaseMessaging = FirebaseMessaging.instance;
-
-  static Future intt() async {
-    await _firebaseMessaging.requestPermission(
-      alert: true,
-      announcement: true,
+  static Future<void> initialize() async {
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
       sound: true,
+      alert: true,
     );
 
-    final token = await _firebaseMessaging.getToken();
-    print('device token: $token');
+    getDeviceFirebaseToken();
+    _onMessage();
+  }
+
+  static getDeviceFirebaseToken() async {
+    final token = await FirebaseMessaging.instance.getToken();
+    debugPrint('=============');
+    debugPrint('TOKEN: $token');
+    debugPrint('=============');
+  }
+
+  static _onMessage() {
+    FirebaseMessaging.onMessage.listen((message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      if (notification != null && android != null) {
+        NotificationService.showNotification(
+            title: notification.title!, body: notification.body!, payload: '');
+      }
+    });
   }
 }
