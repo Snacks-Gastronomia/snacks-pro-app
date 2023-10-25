@@ -516,7 +516,7 @@ class RestaurantSummaryCards extends StatelessWidget {
       "title": "Pedidos",
       "icon": Icons.format_align_left_rounded,
       "highlight": false,
-      "action": const ReportScreen(),
+      "action": ReportScreen(),
     },
     {
       "title": "Impressoras",

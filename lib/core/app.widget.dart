@@ -25,6 +25,7 @@ import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dar
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
+import 'package:snacks_pro_app/views/finance/test.dart';
 import 'package:snacks_pro_app/views/home/home_screen.dart';
 import 'package:snacks_pro_app/views/home/orders_screen.dart';
 import 'package:snacks_pro_app/views/home/scan_card_screen.dart';
@@ -91,10 +92,9 @@ class AppWidget extends StatelessWidget {
         ),
         BlocProvider<CouponsCubit>(
           create: (context) => CouponsCubit(),
-          ),
-          BlocProvider<AddOrderCubit>(
+        ),
+        BlocProvider<AddOrderCubit>(
           create: (context) => AddOrderCubit(),
-
         ),
       ],
       key: UniqueKey(),
@@ -110,7 +110,8 @@ class AppWidget extends StatelessWidget {
                     textTheme: GoogleFonts.poppinsTextTheme(
                         Theme.of(context).textTheme)),
                 title: "Snacks Pro",
-                initialRoute: snapshot.data,
+                // initialRoute: snapshot.data,
+                initialRoute: "/test",
                 // initialRoute: AppRoutes.newItem,
                 // initialRoute: AppRoutes.stock,
                 // AppRoutes.home,
@@ -127,6 +128,7 @@ class AppWidget extends StatelessWidget {
                   AppRoutes.updateImage: (context) =>
                       NewItemScreen(updateImage: true),
                   AppRoutes.orders: (context) => OrdersScreen(),
+                  // "/test": (context) => MyApp(),
                   AppRoutes.home: (context) => HomeScreen(),
                   AppRoutes.finance: (context) => FinanceScreen(),
                   AppRoutes.newEmployee: (context) => NewEmployeeScreen(),
