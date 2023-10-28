@@ -20,6 +20,7 @@ class OrderResponse {
   String partCode;
   List<ItemResponse> items;
   double value;
+  double paid;
   String paymentMethod;
   String? table;
   String status;
@@ -46,6 +47,7 @@ class OrderResponse {
     required this.partCode,
     required this.items,
     required this.value,
+    required this.paid,
     required this.paymentMethod,
     this.table,
     required this.status,
@@ -95,6 +97,7 @@ class OrderResponse {
       partCode: json['part_code'] ?? '',
       items: items,
       value: json['value'] ?? 0.0,
+      paid: json['paid'] ?? 0.0,
       paymentMethod: json['payment_method'] ?? '',
       table: json['table'] ?? 0,
       status: json['status'] ?? '',
@@ -122,6 +125,7 @@ class OrderResponse {
       'partCode': partCode,
       'items': items.map((x) => x.toMap()).toList(),
       'value': value,
+      'paid': paid,
       'paymentMethod': paymentMethod,
       'table': table,
       'receive_order': receiveOrder,
@@ -149,6 +153,7 @@ class OrderResponse {
       items: List<ItemResponse>.from(
           map['items']?.map((x) => ItemResponse.fromMap(x))),
       value: map['value']?.toDouble() ?? 0.0,
+      paid: map['paid']?.toDouble() ?? 0.0,
       paymentMethod: map['paymentMethod'] ?? '',
       table: map['table']?.toInt() ?? 0,
       status: map['status'] ?? '',
@@ -183,6 +188,7 @@ class OrderResponse {
       items: List<ItemResponse>.from(
           map['items']?.map((x) => ItemResponse.fromMap(x))),
       value: map['value']?.toDouble() ?? 0.0,
+      paid: map['paid']?.toDouble() ?? 0.0,
       paymentMethod: map['payment_method'] ?? '',
       table: map['table'] ?? "",
       status: map['status'] ?? '',

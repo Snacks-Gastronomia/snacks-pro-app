@@ -108,7 +108,7 @@ class _ConfirmOrderModalState extends State<ConfirmOrderModal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Valor pago",
+                  "Valor a ser pago",
                   style: AppTextStyles.semiBold(16),
                 ),
                 Text(

@@ -104,6 +104,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 partCode: 'Pedido Manual',
                 items: [],
                 value: 0,
+                paid: 0,
                 paymentMethod: 'Pedido Manual',
                 status: 'Pedido Manual',
                 userUid: 'Pedido Manual');
