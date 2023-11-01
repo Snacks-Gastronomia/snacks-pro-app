@@ -110,7 +110,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     onPressed: () {
                                       modal.showIOSModalBottomSheet(
                                           context: context,
-                                          content: const WithdrawContent());
+                                          content: WithdrawContent());
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.black,
