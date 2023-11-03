@@ -1,11 +1,12 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
-import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class NewExpenseContent extends StatelessWidget {
   const NewExpenseContent({
@@ -126,26 +127,64 @@ class NewExpenseContent extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              TextFormField(
-                style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
-                onChanged: context.read<FinanceCubit>().changeExpensePeriod,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.numberWithOptions(signed: true),
-                decoration: InputDecoration(
-                  fillColor: const Color(0xffF7F8F9),
-                  filled: true,
-                  hintStyle: AppTextStyles.medium(16,
-                      color: const Color(0xff8391A1).withOpacity(0.5)),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          const BorderSide(color: Color(0xffE8ECF4), width: 1)),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          const BorderSide(color: Color(0xffE8ECF4), width: 1)),
-                  hintText: 'Período',
-                ),
+              BlocBuilder<FinanceCubit, FinanceHomeState>(
+                builder: (context, state) {
+                  return GestureDetector(
+                    onTap: () async {
+                      var result = await showCalendarDatePicker2Dialog(
+                        context: context,
+                        config: CalendarDatePicker2WithActionButtonsConfig(
+                            firstDate: DateTime(2022),
+                            calendarType: CalendarDatePicker2Type.range),
+                        dialogSize: const Size(325, 400),
+                        borderRadius: BorderRadius.circular(15),
+                      );
+
+                      String formatDateTime(List<DateTime?>? dateTime) {
+                        final DateFormat formatter = DateFormat('dd/MM/yyyy');
+                        final String formattedDate1 =
+                            formatter.format(dateTime![0]!);
+                        final String formattedDate2 =
+                            formatter.format(dateTime[1]!);
+                        final String formattedDate =
+                            "$formattedDate1 - $formattedDate2";
+                        return formattedDate;
+                      }
+
+                      var dataPeriod = formatDateTime(result);
+
+                      context
+                          .read<FinanceCubit>()
+                          .changeExpensePeriod(dataPeriod);
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      style: AppTextStyles.medium(16,
+                          color: const Color(0xff8391A1)),
+                      textInputAction: TextInputAction.next,
+                      keyboardType:
+                          TextInputType.numberWithOptions(signed: true),
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.calendar_month),
+                        fillColor: const Color(0xffF7F8F9),
+                        filled: true,
+                        hintStyle: AppTextStyles.medium(16,
+                            color: const Color(0xff8391A1).withOpacity(0.5)),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                                color: Color(0xffE8ECF4), width: 1)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                                color: Color(0xffE8ECF4), width: 1)),
+                        hintText: state.expenseAUX.period.isEmpty
+                            ? 'Período'
+                            : state.expenseAUX.period,
+                      ),
+                    ),
+                  );
+                },
               ),
               if (accessLevel == AppPermission.sadm)
                 Column(

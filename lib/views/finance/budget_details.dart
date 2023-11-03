@@ -111,6 +111,7 @@ class BudgetDetailsContent extends StatelessWidget {
                       CardExpenseContent(
                         iconColorBlack: false,
                         title: "Receita líquida",
+                        subtitle: DateFormat.MMMM().format(DateTime.now()),
                         month: DateFormat.MMMM("pt_BR").format(DateTime.now()),
                         value: context.read<FinanceCubit>().state.budget -
                             context.read<FinanceCubit>().state.expenses_value,
@@ -254,6 +255,9 @@ class ListAllExpenses extends StatelessWidget {
                       final value =
                           double.parse(item.data()["value"].toString()) * -1;
                       return CardExpense(
+                          docNumber: item.data()["docNumber"],
+                          supplier: item.data()["supplier"],
+                          period: item.data()["period"],
                           enableDelete: item.data()["type"] == "restaurant",
                           deleteAction: () => context
                               .read<FinanceCubit>()
@@ -318,6 +322,9 @@ class ListRestaurantsProfits extends StatelessWidget {
                             expand: true);
                       },
                       child: CardExpense(
+                          docNumber: item["docNumber"],
+                          supplier: item["supplier"],
+                          period: item["period"],
                           enableDelete: false,
                           deleteAction: null,
                           title: item["name"],
