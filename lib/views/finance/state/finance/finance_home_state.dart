@@ -1,39 +1,60 @@
 part of 'finance_home_cubit.dart';
 
 class Expense {
+  int docNumber;
   String name;
+  String supplier;
   double value;
   String type;
+  String period;
   bool sharedValue;
   Expense({
+    required this.docNumber,
     required this.name,
+    required this.supplier,
     required this.value,
     required this.type,
+    required this.period,
     required this.sharedValue,
   });
 
-  factory Expense.initial() =>
-      Expense(name: "", sharedValue: false, type: "", value: 0);
+  factory Expense.initial() => Expense(
+      docNumber: 0,
+      name: "",
+      sharedValue: false,
+      supplier: "",
+      type: "",
+      period: "",
+      value: 0);
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'sharedValue': sharedValue,
-      'value': value,
+      'docNumber': docNumber,
+      'supplier': supplier,
       'type': type,
+      'value': value,
+      'period': period,
+      'sharedValue': sharedValue,
     };
   }
 
   Expense copyWith({
+    int? docNumber,
     String? name,
+    String? supplier,
     double? value,
     String? type,
+    String? period,
     bool? sharedValue,
   }) {
     return Expense(
+      docNumber: docNumber ?? this.docNumber,
       name: name ?? this.name,
+      supplier: supplier ?? this.supplier,
       value: value ?? this.value,
       type: type ?? this.type,
+      period: period ?? this.period,
       sharedValue: sharedValue ?? this.sharedValue,
     );
   }

@@ -53,7 +53,7 @@ class BudgetDetailsContent extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Receita líquida',
+                              'Receita bruta',
                               style: AppTextStyles.regular(16,
                                   color: Colors.white),
                             ),
@@ -62,7 +62,7 @@ class BudgetDetailsContent extends StatelessWidget {
                             ),
                             BlocBuilder<FinanceCubit, FinanceHomeState>(
                               builder: (context, state) {
-                                var total = state.budget - state.expenses_value;
+                                var total = state.budget;
                                 return Text(
                                   state.status == AppStatus.loading &&
                                           total == 0
@@ -110,9 +110,10 @@ class BudgetDetailsContent extends StatelessWidget {
                       ),
                       CardExpenseContent(
                         iconColorBlack: false,
-                        title: "Receita bruta",
+                        title: "Receita líquida",
                         month: DateFormat.MMMM("pt_BR").format(DateTime.now()),
-                        value: context.read<FinanceCubit>().state.budget,
+                        value: context.read<FinanceCubit>().state.budget -
+                            context.read<FinanceCubit>().state.expenses_value,
                         icon: Icons.attach_money_rounded,
                       ),
                       const SizedBox(
@@ -258,6 +259,7 @@ class ListAllExpenses extends StatelessWidget {
                               .read<FinanceCubit>()
                               .deleteRestaurantExpense(item.id, restaurantID),
                           title: item.data()["name"],
+                          subtitle: item.data()["period"],
                           iconColorBlack: item.data()["type"] == "restaurant",
                           icon: (item.data()["sharedValue"] ?? false)
                               ? Icons.groups
@@ -319,6 +321,7 @@ class ListRestaurantsProfits extends StatelessWidget {
                           enableDelete: false,
                           deleteAction: null,
                           title: item["name"],
+                          subtitle: "",
                           icon: Icons.restaurant,
                           iconColorBlack: true,
                           value: value),

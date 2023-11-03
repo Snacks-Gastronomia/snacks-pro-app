@@ -363,6 +363,27 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
     print(state);
   }
 
+  void changeExpenseSupplier(String value) {
+    var ex = state.expenseAUX;
+    ex.supplier = value;
+    emit(state.copyWith(expenseAUX: ex));
+    print(state);
+  }
+
+  void changeExpenseDocNumber(String value) {
+    var ex = state.expenseAUX;
+    ex.docNumber = int.parse(value);
+    emit(state.copyWith(expenseAUX: ex));
+    print(state);
+  }
+
+  void changeExpensePeriod(String value) {
+    var ex = state.expenseAUX;
+    ex.period = value;
+    emit(state.copyWith(expenseAUX: ex));
+    print(state);
+  }
+
   void changeExpenseDividerValue(bool? value) {
     var ex = state.expenseAUX;
     emit(state.copyWith(expenseAUX: ex.copyWith(sharedValue: value)));

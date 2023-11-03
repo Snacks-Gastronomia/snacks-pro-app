@@ -14,8 +14,10 @@ class CardExpense extends StatelessWidget {
     this.enableDelete = true,
     this.icon,
     this.deleteAction,
+    required this.subtitle,
   }) : super(key: key);
   final String title;
+  final String subtitle;
   final String? month;
   final double value;
   final bool iconColorBlack;
@@ -120,7 +122,8 @@ class CardExpenseContent extends StatelessWidget {
         ),
         Text(
           NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value),
-          style: AppTextStyles.medium(18, color: Colors.grey.shade400),
+          style: AppTextStyles.medium(18,
+              color: value.isNegative ? Colors.red : Colors.green),
         ),
       ],
     );

@@ -34,6 +34,53 @@ class NewExpenseContent extends StatelessWidget {
               ),
               TextFormField(
                 style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
+                onChanged: context.read<FinanceCubit>().changeExpenseDocNumber,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  fillColor: const Color(0xffF7F8F9),
+                  filled: true,
+                  hintStyle: AppTextStyles.medium(16,
+                      color: const Color(0xff8391A1).withOpacity(0.5)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide:
+                          const BorderSide(color: Color(0xffE8ECF4), width: 1)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide:
+                          const BorderSide(color: Color(0xffE8ECF4), width: 1)),
+                  hintText: 'Número do documento',
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
+                onChanged: context.read<FinanceCubit>().changeExpenseSupplier,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  fillColor: const Color(0xffF7F8F9),
+                  filled: true,
+                  hintStyle: AppTextStyles.medium(16,
+                      color: const Color(0xff8391A1).withOpacity(0.5)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide:
+                          const BorderSide(color: Color(0xffE8ECF4), width: 1)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide:
+                          const BorderSide(color: Color(0xffE8ECF4), width: 1)),
+                  hintText: 'Fornecedor (opicional)',
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
                 onChanged: context.read<FinanceCubit>().changeExpenseName,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
@@ -49,7 +96,7 @@ class NewExpenseContent extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       borderSide:
                           const BorderSide(color: Color(0xffE8ECF4), width: 1)),
-                  hintText: 'Nome',
+                  hintText: 'Tipo de despesa',
                 ),
               ),
               const SizedBox(
@@ -73,7 +120,31 @@ class NewExpenseContent extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       borderSide:
                           const BorderSide(color: Color(0xffE8ECF4), width: 1)),
-                  hintText: 'Value',
+                  hintText: 'Valor',
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
+                onChanged: context.read<FinanceCubit>().changeExpensePeriod,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.numberWithOptions(signed: true),
+                decoration: InputDecoration(
+                  fillColor: const Color(0xffF7F8F9),
+                  filled: true,
+                  hintStyle: AppTextStyles.medium(16,
+                      color: const Color(0xff8391A1).withOpacity(0.5)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide:
+                          const BorderSide(color: Color(0xffE8ECF4), width: 1)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide:
+                          const BorderSide(color: Color(0xffE8ECF4), width: 1)),
+                  hintText: 'Período',
                 ),
               ),
               if (accessLevel == AppPermission.sadm)
