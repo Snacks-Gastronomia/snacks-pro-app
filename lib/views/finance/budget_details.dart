@@ -322,9 +322,9 @@ class ListRestaurantsProfits extends StatelessWidget {
                             expand: true);
                       },
                       child: CardExpense(
-                          docNumber: item["docNumber"],
-                          supplier: item["supplier"],
-                          period: item["period"],
+                          docNumber: item["docNumber"] ?? 0,
+                          supplier: item["supplier"] ?? "",
+                          period: item["period"] ?? '',
                           enableDelete: false,
                           deleteAction: null,
                           title: item["name"],
