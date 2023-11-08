@@ -217,6 +217,7 @@ class ListOrderByStatus extends StatelessWidget {
                     return ItemWidget(
                         title: "${item.amount} ${item.item.title}",
                         option: item.optionSelected.title,
+                        observations: item.observations,
                         extras: item.extras!.isNotEmpty
                             ? item.extras!.length > 1
                                 ? item.extras!
@@ -243,76 +244,93 @@ class ItemWidget extends StatelessWidget {
     required this.value,
     required this.restaurant,
     required this.image,
+    required this.observations,
   }) : super(key: key);
 
   final String title;
   final String option;
+  final String? observations;
   final String? image;
   final String extras;
   final double value;
   final String restaurant;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Row(
-            children: [
-              Container(
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: const Color(0xffF6F6F6),
-                ),
-                child: image == null || image!.isEmpty
-                    ? Center(
-                        child: SvgPicture.asset(
-                          AppImages.snacks,
-                          width: 42,
-                        ),
-                      )
-                    : Image.network(
-                        image!,
-                        height: 42,
-                        width: 42,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Center(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: const Color(0xffF6F6F6),
+                    ),
+                    child: image == null || image!.isEmpty
+                        ? Center(
                             child: SvgPicture.asset(
                               AppImages.snacks,
                               width: 42,
                             ),
-                          );
-                        },
-                      ),
+                          )
+                        : Image.network(
+                            image!,
+                            height: 42,
+                            width: 42,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Center(
+                                child: SvgPicture.asset(
+                                  AppImages.snacks,
+                                  width: 42,
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                  const SizedBox(width: 7),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '$title ${option != title ? "- ${option.trim()}" : ""} ${extras.isNotEmpty ? '+ ($extras)' : ''}',
+                          style: AppTextStyles.light(12),
+                          overflow: TextOverflow.visible,
+                        ),
+                        Text(
+                          restaurant,
+                          style: AppTextStyles.light(11,
+                              color: Colors.black.withOpacity(0.5)),
+                          overflow: TextOverflow.visible,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
-              const SizedBox(width: 7),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '$title ${option != title ? "- ${option.trim()}" : ""} ${extras.isNotEmpty ? '+ ($extras)' : ''}',
-                      style: AppTextStyles.light(12),
-                      overflow: TextOverflow.visible,
-                    ),
-                    Text(
-                      restaurant,
-                      style: AppTextStyles.light(11,
-                          color: Colors.black.withOpacity(0.5)),
-                      overflow: TextOverflow.visible,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
+            ),
+            Text(
+              NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value),
+              style: AppTextStyles.medium(12),
+            )
+          ],
         ),
-        Text(
-          NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value),
-          style: AppTextStyles.medium(12),
-        )
+        if (observations!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Text(
+              'Observações: $observations',
+              style:
+                  AppTextStyles.light(11, color: Colors.black.withOpacity(0.5)),
+              overflow: TextOverflow.visible,
+            ),
+          ),
       ],
     );
   }
