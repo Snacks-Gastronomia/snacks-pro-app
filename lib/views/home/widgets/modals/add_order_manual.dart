@@ -109,6 +109,7 @@ class _AddOrderManualState extends State<AddOrderManual> {
                 deliveryValue: 0,
                 items: [],
                 value: 0,
+                paid: 0,
                 paymentMethod: 'Pedido Manual',
                 status: 'delivered',
                 userUid: 'Pedido Manual');

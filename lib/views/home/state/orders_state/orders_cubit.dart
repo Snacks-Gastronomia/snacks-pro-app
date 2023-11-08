@@ -48,6 +48,7 @@ class OrdersCubit extends Cubit<OrdersState> {
 
     double total =
         items.map((e) => e.value).reduce((value, element) => value + element);
+    double paid = items[0].paid;
     final user = await storage.getDataStorage("user");
     final restaurantName = user["restaurant"]["name"];
     AppPermission access = AppPermission.values.byName(user["access_level"]);
@@ -82,7 +83,7 @@ class OrdersCubit extends Cubit<OrdersState> {
             context: context,
             dimissible: false,
             content: ConfirmOrderModal(
-                value: total, method: firstOrder.paymentMethod));
+                value: total - paid, method: firstOrder.paymentMethod));
 
         if (didPayment != null && didPayment != firstOrder.paymentMethod) {
           await repository.updateMultiplePaymentMethod(ids, didPayment);
