@@ -15,6 +15,7 @@ class AddOrderState {
           item: Item(
               title: '',
               value: 0,
+              discount: 0,
               num_served: 0,
               time: 0,
               restaurant_id: '',

@@ -54,9 +54,16 @@ class FinanceOrdersCubit extends Cubit<FinanceOrdersState> {
     var documents =
         response.docs.map((doc) => OrderResponse.fromFirebase(doc)).toList();
 
+    var orders = state.filter == "Todos os itens"
+        ? documents
+        : documents
+            .where((item) =>
+                item.items.any((item) => item.item.title == state.filter))
+            .toList();
+
     print(documents);
     emit(state.copyWith(
-        orders: documents,
+        orders: orders,
         interval_start: start,
         interval_end: end,
         status: AppStatus.loaded));
@@ -91,5 +98,33 @@ class FinanceOrdersCubit extends Cubit<FinanceOrdersState> {
     ));
 
     return response;
+  }
+
+  Future<List<String>> getItemsByRestaurantId() async {
+    var restaurantId = await getRestaurantId();
+    try {
+      CollectionReference menuCollection =
+          FirebaseFirestore.instance.collection('menu');
+      QuerySnapshot querySnapshot = await menuCollection
+          .where('restaurant_id', isEqualTo: restaurantId)
+          .get();
+
+      List<String> items = [];
+      querySnapshot.docs.forEach((DocumentSnapshot doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        items.add(data['title']);
+      });
+
+      return items;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  void filterItems(String itemTitle) async {
+    print('Filtering items with: $itemTitle');
+    var id = await getRestaurantId();
+    emit(state.copyWith(filter: itemTitle, status: AppStatus.loading));
+    fetchReceipts(id, state.interval_start, state.interval_end);
   }
 }
