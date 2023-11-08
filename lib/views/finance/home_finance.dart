@@ -14,6 +14,7 @@ import 'package:snacks_pro_app/views/finance/contents/printer/printers.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/restaurants_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/stock_content.dart';
 import 'package:snacks_pro_app/views/finance/ratings.dart';
 import 'package:snacks_pro_app/views/finance/schedule.dart';
 
@@ -545,7 +546,7 @@ class RestaurantSummaryCards extends StatelessWidget {
       "highlight": true,
       "color": const Color(0xffC84E89),
       "colorSecondary": const Color(0xffF15F79),
-      "action": CouponsWidget()
+      "action": StockContent()
     }
   ];
   @override
