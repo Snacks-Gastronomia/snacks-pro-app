@@ -53,7 +53,7 @@ class BudgetDetailsContent extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Receita líquida',
+                              'Receita bruta',
                               style: AppTextStyles.regular(16,
                                   color: Colors.white),
                             ),
@@ -62,7 +62,7 @@ class BudgetDetailsContent extends StatelessWidget {
                             ),
                             BlocBuilder<FinanceCubit, FinanceHomeState>(
                               builder: (context, state) {
-                                var total = state.budget - state.expenses_value;
+                                var total = state.budget;
                                 return Text(
                                   state.status == AppStatus.loading &&
                                           total == 0
@@ -110,9 +110,11 @@ class BudgetDetailsContent extends StatelessWidget {
                       ),
                       CardExpenseContent(
                         iconColorBlack: false,
-                        title: "Receita bruta",
+                        title: "Receita líquida",
+                        subtitle: DateFormat.MMMM().format(DateTime.now()),
                         month: DateFormat.MMMM("pt_BR").format(DateTime.now()),
-                        value: context.read<FinanceCubit>().state.budget,
+                        value: context.read<FinanceCubit>().state.budget -
+                            context.read<FinanceCubit>().state.expenses_value,
                         icon: Icons.attach_money_rounded,
                       ),
                       const SizedBox(
@@ -253,11 +255,15 @@ class ListAllExpenses extends StatelessWidget {
                       final value =
                           double.parse(item.data()["value"].toString()) * -1;
                       return CardExpense(
+                          docNumber: item.data()["docNumber"],
+                          supplier: item.data()["supplier"],
+                          period: item.data()["period"],
                           enableDelete: item.data()["type"] == "restaurant",
                           deleteAction: () => context
                               .read<FinanceCubit>()
                               .deleteRestaurantExpense(item.id, restaurantID),
                           title: item.data()["name"],
+                          subtitle: item.data()["period"],
                           iconColorBlack: item.data()["type"] == "restaurant",
                           icon: (item.data()["sharedValue"] ?? false)
                               ? Icons.groups
@@ -316,9 +322,13 @@ class ListRestaurantsProfits extends StatelessWidget {
                             expand: true);
                       },
                       child: CardExpense(
+                          docNumber: item["docNumber"] ?? 0,
+                          supplier: item["supplier"] ?? "",
+                          period: item["period"] ?? '',
                           enableDelete: false,
                           deleteAction: null,
                           title: item["name"],
+                          subtitle: "",
                           icon: Icons.restaurant,
                           iconColorBlack: true,
                           value: value),

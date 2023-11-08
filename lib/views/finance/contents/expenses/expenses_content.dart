@@ -136,9 +136,13 @@ class ListExpenses extends StatelessWidget {
                   return BlocBuilder<FinanceCubit, FinanceHomeState>(
                       builder: (context, state) {
                     return CardExpense(
+                        docNumber: item.data()["docNumber"],
+                        supplier: item.data()["supplier"],
+                        period: item.data()["period"],
                         deleteAction: () =>
                             context.read<FinanceCubit>().deleteExpense(item.id),
                         title: item.data()["name"],
+                        subtitle: item.data()["period"] ?? "",
                         value: double.parse(item.data()["value"].toString()));
                   });
                 });
