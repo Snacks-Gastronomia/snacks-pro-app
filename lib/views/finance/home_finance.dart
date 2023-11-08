@@ -368,11 +368,13 @@ class CardSummary extends StatelessWidget {
     required this.action,
     required this.blackContent,
     this.color,
+    this.colorSecondary,
   }) : super(key: key);
   final String title;
   final IconData icon;
   final bool bgHighlight;
   final Color? color;
+  final Color? colorSecondary;
   final bool blackContent;
   final VoidCallback action;
   @override
@@ -395,7 +397,7 @@ class CardSummary extends StatelessWidget {
                         begin: Alignment.bottomLeft,
                         end: Alignment.topRight,
                         colors: [
-                          const Color(0xff5CE2FF),
+                          colorSecondary ?? const Color(0xff5CE2FF),
                           color ?? const Color(0xff0038FF),
                         ]))
             : BoxDecoration(
@@ -536,6 +538,14 @@ class RestaurantSummaryCards extends StatelessWidget {
       "highlight": true,
       "color": const Color(0xff00B907),
       "action": CouponsWidget()
+    },
+    {
+      "title": "Estoque",
+      "icon": Icons.bar_chart_rounded,
+      "highlight": true,
+      "color": const Color(0xffC84E89),
+      "colorSecondary": const Color(0xffF15F79),
+      "action": CouponsWidget()
     }
   ];
   @override
@@ -551,6 +561,7 @@ class RestaurantSummaryCards extends StatelessWidget {
                 icon: list[index]["icon"],
                 bgHighlight: list[index]["highlight"],
                 color: list[index]["color"],
+                colorSecondary: list[index]["colorSecondary"],
                 action: () => modal.showIOSModalBottomSheet(
                     context: context,
                     content: list[index]["action"],

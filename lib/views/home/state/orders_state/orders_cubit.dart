@@ -71,6 +71,7 @@ class OrdersCubit extends Cubit<OrdersState> {
     if ((access == AppPermission.employee ||
             access == AppPermission.waiter ||
             access == AppPermission.sadm ||
+            access == AppPermission.radm ||
             isCashierAllowed) &&
         nextStatus != null) {
       bool confimationOrderPayment =
