@@ -50,7 +50,7 @@ class OrderDetailsContent extends StatelessWidget {
                   style: AppTextStyles.semiBold(26, color: Colors.black),
                   children: <TextSpan>[
                     TextSpan(
-                      text: '#${ord.partCode}',
+                      text: '#${ord.part_code}',
                       style: AppTextStyles.semiBold(26, color: Colors.black26),
                     )
                   ])),
@@ -122,7 +122,7 @@ class OrderDetailsContent extends StatelessWidget {
                 bool res = await AppModal().showModalBottomSheet(
                   context: context,
                   content: CancelOrder(
-                    partCode: ord.partCode,
+                    part_code: ord.part_code,
                   ),
                 );
                 if (res) {
