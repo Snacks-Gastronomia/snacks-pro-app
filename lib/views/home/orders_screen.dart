@@ -18,6 +18,7 @@ import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.d
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/add_order_manual.dart';
+import 'package:snacks_pro_app/views/home/widgets/modals/withdraw_content.dart';
 import 'package:snacks_pro_app/views/home/widgets/order/card.dart';
 import 'package:snacks_pro_app/views/home/widgets/search_orders.dart';
 import 'package:snacks_pro_app/views/home/widgets/tabbar.dart';
@@ -100,22 +101,49 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           const Spacer(),
                           if (access_level == AppPermission.cashier ||
                               access_level == AppPermission.radm)
-                            SizedBox(
-                              width: 30,
-                              height: 30,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  modal.showIOSModalBottomSheet(
-                                      context: context,
-                                      content: const AddOrderManual());
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  padding: EdgeInsets.zero,
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      modal.showIOSModalBottomSheet(
+                                          context: context,
+                                          content: WithdrawContent());
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    child: const Icon(Icons.attach_money),
+                                  ),
                                 ),
-                                child: const Icon(Icons.add),
-                              ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      modal.showIOSModalBottomSheet(
+                                          context: context,
+                                          content: const AddOrderManual());
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    child: const Icon(Icons.add),
+                                  ),
+                                ),
+                              ],
                             ),
                         ],
                       ),
