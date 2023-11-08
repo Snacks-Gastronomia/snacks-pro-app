@@ -1,52 +1,113 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:intl/intl.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/xml.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
-// import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:snacks_pro_app/views/home/widgets/dropdown_items.dart';
 
-class ReportScreen extends StatelessWidget {
-  const ReportScreen({super.key, this.restaurant_id});
-
+class ReportScreen extends StatefulWidget {
+  ReportScreen({super.key, this.restaurant_id});
   final String? restaurant_id;
+
+  @override
+  State<ReportScreen> createState() => _ReportScreenState();
+}
+
+class _ReportScreenState extends State<ReportScreen> {
+  final _key = GlobalKey<ExpandableFabState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: BlocBuilder<FinanceOrdersCubit, FinanceOrdersState>(
         builder: (context, state) {
-          return FloatingActionButton(
-            backgroundColor: Colors.black,
-            onPressed: () async {
-              var results = await showCalendarDatePicker2Dialog(
-                context: context,
-                config: CalendarDatePicker2WithActionButtonsConfig(
-                    firstDate: DateTime(2022),
-                    lastDate: DateTime.now(),
-                    calendarType: CalendarDatePicker2Type.range),
-                dialogSize: const Size(325, 400),
-                value: [state.interval_start, state.interval_end],
-                borderRadius: BorderRadius.circular(15),
-              );
-              if (results?.length == 1) {
-                // ignore: use_build_context_synchronously
-                context
-                    .read<FinanceOrdersCubit>()
-                    .fetchReceipts(restaurant_id, results![0]!, results[0]!);
-              } else {
-                // ignore: use_build_context_synchronously
-                context
-                    .read<FinanceOrdersCubit>()
-                    .fetchReceipts(restaurant_id, results![0]!, results[1]!);
-              }
-            },
-            tooltip: 'Escolha uma data',
-            child:
-                const Icon(Icons.calendar_today_outlined, color: Colors.white),
+          return ExpandableFab(
+            key: _key,
+            openButtonBuilder: RotateFloatingActionButtonBuilder(
+              child: const Icon(Icons.menu),
+              fabSize: ExpandableFabSize.regular,
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.black,
+              shape: const CircleBorder(),
+            ),
+            closeButtonBuilder: RotateFloatingActionButtonBuilder(
+              child: const Icon(Icons.close),
+              fabSize: ExpandableFabSize.regular,
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.black,
+              shape: const CircleBorder(),
+            ),
+            distance: 80,
+            type: ExpandableFabType.up,
+            children: [
+              SizedBox(
+                height: 50,
+                width: 50,
+                child: FloatingActionButton.small(
+                  heroTag: null,
+
+                  tooltip: 'Escolha uma data',
+                  // backgroundColor: Colors.black,
+                  onPressed: () async {
+                    var results = await showCalendarDatePicker2Dialog(
+                      context: context,
+                      config: CalendarDatePicker2WithActionButtonsConfig(
+                          firstDate: DateTime(2022),
+                          lastDate: DateTime.now(),
+                          calendarType: CalendarDatePicker2Type.range),
+                      dialogSize: const Size(325, 400),
+                      value: [state.interval_start, state.interval_end],
+                      borderRadius: BorderRadius.circular(15),
+                    );
+                    if (results?.length == 1) {
+                      // ignore: use_build_context_synchronously
+                      context.read<FinanceOrdersCubit>().fetchReceipts(
+                          widget.restaurant_id, results![0]!, results[0]!);
+                    } else {
+                      // ignore: use_build_context_synchronously
+                      context.read<FinanceOrdersCubit>().fetchReceipts(
+                          widget.restaurant_id, results![0]!, results[1]!);
+                    }
+                    final stateButton = _key.currentState;
+                    if (stateButton != null) {
+                      debugPrint('isOpen:${stateButton.isOpen}');
+                      stateButton.toggle();
+                    }
+                  },
+
+                  child: const Icon(Icons.calendar_today_outlined,
+                      color: Colors.white),
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                width: 50,
+                child: FloatingActionButton.small(
+                  heroTag: null,
+                  tooltip: 'Gerar planilha',
+                  backgroundColor: const Color(0xff008000),
+                  child: const Icon(Icons.file_download, color: Colors.white),
+                  onPressed: () {
+                    // XMLHandler().export2();
+                    // exportXML();
+                    // final stateButton = _key.currentState;
+                    // if (stateButton != null) {
+                    //   debugPrint('isOpen:${stateButton.isOpen}');
+                    //   stateButton.toggle();
+                    // }
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -57,6 +118,7 @@ class ReportScreen extends StatelessWidget {
             builder: (context, state) {
               // if (state.orders.isNotEmpty) {
               // var item = orders;
+
               double value = state.orders.isEmpty
                   ? 0
                   : state.orders.map((e) => e.value).reduce((v, e) => v + e);
@@ -98,6 +160,10 @@ class ReportScreen extends StatelessWidget {
                         )
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  DropdownItems(),
                   const SizedBox(
                     height: 20,
                   ),
@@ -144,81 +210,15 @@ class ReportScreen extends StatelessWidget {
                       ? Expanded(
                           child: ListView.separated(
                             physics: const BouncingScrollPhysics(),
-                            separatorBuilder: (context, index) =>
-                                Divider(color: Colors.grey.shade300),
+                            separatorBuilder: (context, index) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Divider(color: Colors.grey.shade300),
+                            ),
                             itemCount: state.orders.length,
                             itemBuilder: (context, index) {
-                              var item = state.orders[index];
-                              return Card(
-                                elevation: 0,
-                                child: ListTile(
-                                  contentPadding: const EdgeInsets.all(8),
-                                  title: Text(
-                                    item.paymentMethod,
-                                    style: AppTextStyles.semiBold(16),
-                                  ),
-                                  isThreeLine: true,
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ListView.builder(
-                                          itemCount: item.items.length,
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemBuilder: (context, index) {
-                                            var order = item.items[index];
-                                            List extras = order.extras ?? [];
+                              OrderResponse item = state.orders[index];
 
-                                            var extraDescription = "";
-
-                                            for (var i = 0;
-                                                i < extras.length;
-                                                i++) {
-                                              var element = extras[i];
-                                              extraDescription += element[
-                                                      "title"] +
-                                                  '(${NumberFormat.currency(locale: "pt", symbol: r"R$").format(double.parse(element["value"].toString()))})';
-                                            }
-
-                                            var text =
-                                                '${order.amount} ${order.item.title}';
-
-                                            if (extraDescription.isNotEmpty) {
-                                              text += ' + $extraDescription';
-                                            }
-
-                                            return Text(
-                                              text,
-                                              style: AppTextStyles.light(14,
-                                                  color:
-                                                      const Color(0xffB3B3B3)),
-                                            );
-                                          })
-                                    ],
-                                  ),
-                                  trailing: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        NumberFormat.currency(
-                                                locale: "pt", symbol: r"R$ ")
-                                            .format(item.value),
-                                        style: AppTextStyles.semiBold(18,
-                                            color: const Color(0xff00B907)),
-                                      ),
-                                      Text(
-                                        DateFormat.Hm('pt_BR')
-                                            .format(item.createdAt),
-                                        style: AppTextStyles.light(14),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
+                              return ReceiptCard(data: item);
                             },
                           ),
                         )
@@ -229,6 +229,130 @@ class ReportScreen extends StatelessWidget {
               );
               // }
             }),
+      ),
+    );
+  }
+}
+
+class ReceiptCard extends StatelessWidget {
+  const ReceiptCard({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
+  final OrderResponse data;
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.maxFinite,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  if (data.isDelivery)
+                    Icon(Icons.delivery_dining,
+                        color: Colors.green.shade700, size: 14),
+                  RichText(
+                      text: TextSpan(
+                          text: data.customerName,
+                          style: AppTextStyles.semiBold(14),
+                          children: [
+                        TextSpan(
+                          text: " #${data.part_code}",
+                          style:
+                              AppTextStyles.semiBold(14, color: Colors.black26),
+                        )
+                      ])),
+                ],
+              ),
+              Text(
+                DateFormat('HH:mm (dd/MM)').format(data.created_at),
+                style: AppTextStyles.regular(10, color: Colors.black26),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: data.items.length,
+            itemBuilder: (context, index) {
+              var item = data.items[index];
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${item.amount} ${item.item.title}",
+                    style: AppTextStyles.light(12, color: Colors.black45),
+                  ),
+                  Text(
+                    NumberFormat.currency(locale: "pt", symbol: r"R$ ")
+                        .format(item.item.value),
+                    style: AppTextStyles.light(12, color: Colors.black45),
+                  ),
+                ],
+              );
+            },
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: Colors.grey.shade300),
+            child: Column(
+              children: [
+                if (data.isDelivery)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Entrega",
+                        style: AppTextStyles.medium(11, color: Colors.black),
+                      ),
+                      Text(
+                        NumberFormat.currency(locale: "pt", symbol: r"R$ ")
+                            .format(data.deliveryValue),
+                        style: AppTextStyles.light(11, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Total",
+                      style: AppTextStyles.medium(11, color: Colors.black),
+                    ),
+                    Text(
+                      NumberFormat.currency(locale: "pt", symbol: r"R$ ")
+                          .format(data.value),
+                      style: AppTextStyles.light(11, color: Colors.black),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Método de pagamento",
+                      style: AppTextStyles.medium(11, color: Colors.black),
+                    ),
+                    Text(
+                      data.paymentMethod,
+                      style: AppTextStyles.light(11, color: Colors.black),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

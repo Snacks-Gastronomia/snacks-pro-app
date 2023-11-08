@@ -6,7 +6,7 @@ class ReceiptsService {
 
   Future<QuerySnapshot<Map<String, dynamic>>> getReceiptsByInterval(
       String restaurant_id, DateTime date_start, DateTime date_end) async {
-    var start = date_start.copyWith(hour: 18, minute: 0);
+    var start = date_start.copyWith(hour: 11, minute: 0);
     var end = date_end.copyWith(hour: 03, minute: 0, day: date_end.day + 1);
     print(restaurant_id);
     print(start);

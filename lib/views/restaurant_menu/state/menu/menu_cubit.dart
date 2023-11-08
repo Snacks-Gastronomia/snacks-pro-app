@@ -28,6 +28,7 @@ class MenuCubit extends Cubit<MenuState> {
   final repository = ItemsRepository(services: ItemsApiServices());
   final storage = AppStorage.initStorage;
   final fs = FirebaseStorage.instance.ref();
+
   MenuCubit() : super(MenuState.initial());
 
   void changeImage(String? value) {
@@ -49,6 +50,39 @@ class MenuCubit extends Cubit<MenuState> {
     emit(state.copyWith(item: item.copyWith(image_url: "")));
   }
 
+  void getDiscount(Item item) {
+    emit(state.copyWith(discount: item.discount!.toDouble()));
+  }
+
+  Future<void> changeDiscount(Item item) async {
+    var update = item.copyWith(discount: state.discount!);
+    repository.updateItem(update);
+    emit(state);
+  }
+
+  Future<void> removeDiscount(Item item) async {
+    var update = item.copyWith(discount: 0);
+    repository.updateItem(update);
+    emit(state.copyWith(discount: 0));
+  }
+
+  void cancel() {
+    emit(state.copyWith(discount: 0));
+  }
+
+  void incrementDiscount() {
+    var discount = state.discount ?? 0;
+    discount < 99 ? discount += 1 : null;
+
+    emit(state.copyWith(discount: discount));
+  }
+
+  void decrementDiscount() {
+    var discount = state.discount ?? 0;
+    discount > 0 ? discount -= 1 : null;
+
+    emit(state.copyWith(discount: discount));
+  }
   // void addIngredient(String value, String unit) {
   //   final item = Ingredient(name: value, volume: 0, unit: unit);
 

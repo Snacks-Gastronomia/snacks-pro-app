@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,19 +16,18 @@ import 'package:snacks_pro_app/views/finance/contents/restaurants/restaurants_co
 import 'package:snacks_pro_app/views/finance/contents/stock/stock.dart';
 import 'package:snacks_pro_app/views/finance/ratings.dart';
 import 'package:snacks_pro_app/views/finance/schedule.dart';
-import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
+
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
-import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
+
 import 'package:snacks_pro_app/views/finance/widgets/delivery_tax_modal.dart';
-import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
-import 'package:snacks_pro_app/views/recharge_card/recharge_report.dart';
-import 'package:snacks_pro_app/views/recharge_card/select_day_report.dart';
+
 import 'package:snacks_pro_app/views/recharge_card/select_month_report.dart';
 
 import './contents/employees/employees.dart';
 import './contents/order_report/month_orders_report.dart';
 import 'contents/bank/bank_info_modal.dart';
 import 'contents/bank/bank_no_info_modal.dart';
+import 'contents/coupons/coupons_widget.dart';
 
 class FinanceScreen extends StatelessWidget {
   FinanceScreen({Key? key}) : super(key: key);
@@ -370,10 +367,12 @@ class CardSummary extends StatelessWidget {
     this.bgHighlight = false,
     required this.action,
     required this.blackContent,
+    this.color,
   }) : super(key: key);
   final String title;
   final IconData icon;
   final bool bgHighlight;
+  final Color? color;
   final bool blackContent;
   final VoidCallback action;
   @override
@@ -392,12 +391,12 @@ class CardSummary extends StatelessWidget {
                     color: Colors.black)
                 : BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                         begin: Alignment.bottomLeft,
                         end: Alignment.topRight,
                         colors: [
-                          Color(0xff5CE2FF),
-                          Color(0xff0038FF),
+                          const Color(0xff5CE2FF),
+                          color ?? const Color(0xff0038FF),
                         ]))
             : BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
@@ -494,6 +493,7 @@ class SnacksAdmSummaryCards extends StatelessWidget {
               title: list[index]["title"],
               icon: list[index]["icon"],
               bgHighlight: list[index]["highlight"],
+              color: list[index]["color"],
               action: () => modal.showIOSModalBottomSheet(
                   context: context,
                   content: list[index]["action"],
@@ -516,7 +516,7 @@ class RestaurantSummaryCards extends StatelessWidget {
       "title": "Pedidos",
       "icon": Icons.format_align_left_rounded,
       "highlight": false,
-      "action": const ReportScreen(),
+      "action": ReportScreen(),
     },
     {
       "title": "Impressoras",
@@ -529,6 +529,13 @@ class RestaurantSummaryCards extends StatelessWidget {
       "icon": Icons.people_outline_rounded,
       "highlight": true,
       "action": const EmployeesContentWidget()
+    },
+    {
+      "title": "Cupons",
+      "icon": Icons.local_offer,
+      "highlight": true,
+      "color": const Color(0xff00B907),
+      "action": CouponsWidget()
     }
   ];
   @override
@@ -543,6 +550,7 @@ class RestaurantSummaryCards extends StatelessWidget {
                 title: list[index]["title"],
                 icon: list[index]["icon"],
                 bgHighlight: list[index]["highlight"],
+                color: list[index]["color"],
                 action: () => modal.showIOSModalBottomSheet(
                     context: context,
                     content: list[index]["action"],

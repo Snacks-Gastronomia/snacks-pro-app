@@ -20,10 +20,12 @@ import 'package:snacks_pro_app/views/finance/contents/stock/stock.dart';
 import 'package:snacks_pro_app/views/finance/home_finance.dart';
 import 'package:snacks_pro_app/views/finance/contents/bank/add_bank_account.dart';
 import 'package:snacks_pro_app/views/finance/contents/employees/new_employee.dart';
+import 'package:snacks_pro_app/views/finance/state/coupons/coupons_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
+import 'package:snacks_pro_app/views/finance/test.dart';
 import 'package:snacks_pro_app/views/home/home_screen.dart';
 import 'package:snacks_pro_app/views/home/orders_screen.dart';
 import 'package:snacks_pro_app/views/home/scan_card_screen.dart';
@@ -88,6 +90,9 @@ class AppWidget extends StatelessWidget {
         BlocProvider<StockCubit>(
           create: (context) => StockCubit(),
         ),
+        BlocProvider<CouponsCubit>(
+          create: (context) => CouponsCubit(),
+        ),
         BlocProvider<AddOrderCubit>(
           create: (context) => AddOrderCubit(),
         ),
@@ -105,7 +110,8 @@ class AppWidget extends StatelessWidget {
                     textTheme: GoogleFonts.poppinsTextTheme(
                         Theme.of(context).textTheme)),
                 title: "Snacks Pro",
-                initialRoute: snapshot.data,
+                // initialRoute: snapshot.data,
+                initialRoute: "/test",
                 // initialRoute: AppRoutes.newItem,
                 // initialRoute: AppRoutes.stock,
                 // AppRoutes.home,
@@ -122,6 +128,7 @@ class AppWidget extends StatelessWidget {
                   AppRoutes.updateImage: (context) =>
                       NewItemScreen(updateImage: true),
                   AppRoutes.orders: (context) => OrdersScreen(),
+                  // "/test": (context) => MyApp(),
                   AppRoutes.home: (context) => HomeScreen(),
                   AppRoutes.finance: (context) => FinanceScreen(),
                   AppRoutes.newEmployee: (context) => NewEmployeeScreen(),
