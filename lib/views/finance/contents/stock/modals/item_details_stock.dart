@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_pie_chart.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/items_stock.dart';
 
 class ItemDetailsStock extends StatelessWidget {
@@ -15,11 +16,16 @@ class ItemDetailsStock extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              title: Text(
-                item.title,
-                style: AppTextStyles.regular(22),
-              ),
+            Row(
+              children: [
+                IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back)),
+                const SizedBox(
+                  width: 30,
+                ),
+                Text(item.title, style: AppTextStyles.regular(22))
+              ],
             ),
             const SizedBox(
               height: 30,
@@ -43,7 +49,7 @@ class ItemDetailsStock extends StatelessWidget {
                       children: [
                         Flexible(
                           child: ListTile(
-                            title: Text('Valor'),
+                            title: const Text('Valor'),
                             subtitle: Text(NumberFormat.currency(
                                     locale: "pt", symbol: r"R$ ")
                                 .format(item.value)),
@@ -51,23 +57,27 @@ class ItemDetailsStock extends StatelessWidget {
                         ),
                         Flexible(
                           child: ListTile(
-                              title: Text('Quantidade'),
+                              title: const Text('Quantidade'),
                               subtitle: Text('${item.amount} ${item.measure}')),
                         ),
                       ],
                     ),
                     ListTile(
-                      title: Text('Documento'),
+                      title: const Text('Documento'),
                       subtitle: Text('${item.document}'),
                     ),
                     ListTile(
-                      title: Text('Descrição'),
-                      subtitle: Text('${item.description}'),
+                      title: const Text('Descrição'),
+                      subtitle: Text(item.description),
                     ),
                   ],
                 ),
               ),
-            )
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            StockPieChart()
           ],
         ),
       ),
