@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/custom_text_field_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/widgets/dropdown_stock.dart';
 
 class AddStock extends StatelessWidget {
   const AddStock({super.key});
@@ -32,7 +33,7 @@ class AddStock extends StatelessWidget {
                 width: 20,
               ),
               Flexible(
-                child: CustomTextFieldStock(title: 'Medida'),
+                child: DropdownStock(),
               )
             ],
           ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/items_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/stock_card.dart';
 import 'package:snacks_pro_app/views/home/widgets/search_orders.dart';
 
@@ -33,7 +35,17 @@ class StockContent extends StatelessWidget {
               subtitle: Text('Selecione um para mais detalhes'),
             ),
             SearchOrders(controllerFilter: controllerFilter, action: () {}),
-            const StockCard()
+            StockCard(
+              item: ItemsStock(
+                document: 00010010,
+                title: 'Carne Bovina',
+                dateTime: DateTime.now(),
+                measure: 'kg',
+                amount: 100,
+                value: 200,
+                description: "klansdlkasn aklshdkasljd kajshdlkasd askldhaklsd",
+              ),
+            )
           ],
         ),
       ),
