@@ -74,10 +74,11 @@ dependencies:
   cloud_firestore: ^4.3.1
   firebase_core: ^2.17.0
   calendar_date_picker2: ^0.5.3
-  xml: ^6.2.2
   flutter_expandable_fab: ^2.0.0
-  excel: ^2.1.0
   path_provider: ^2.1.1
+  syncfusion_flutter_xlsio: ^23.1.42
+  permission_handler: ^11.0.1
+  
 
 dev_dependencies:
   flutter_launcher_icons: ^0.11.0
