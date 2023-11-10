@@ -110,8 +110,8 @@ class AppWidget extends StatelessWidget {
                     textTheme: GoogleFonts.poppinsTextTheme(
                         Theme.of(context).textTheme)),
                 title: "Snacks Pro",
-                // initialRoute: snapshot.data,
-                initialRoute: "/test",
+                initialRoute: snapshot.data,
+                // initialRoute: "/test",
                 // initialRoute: AppRoutes.newItem,
                 // initialRoute: AppRoutes.stock,
                 // AppRoutes.home,
