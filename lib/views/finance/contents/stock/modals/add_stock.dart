@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/widgets/custom_data_field_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/widgets/custom_number_field_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/custom_text_field_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/dropdown_stock.dart';
 
 class AddStock extends StatelessWidget {
-  const AddStock({super.key});
+  const AddStock({super.key, this.increment, this.losses});
+  final bool? increment;
+  final bool? losses;
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +24,14 @@ class AddStock extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          CustomTextFieldStock(title: 'Título'),
+          const CustomTextFieldStock(title: 'Título'),
           const SizedBox(
             height: 20,
           ),
           Row(
-            children: [
+            children: const [
               Flexible(
-                child: CustomTextFieldStock(title: 'Quantidade'),
+                child: CustomNumberFieldStock(title: 'Quantidade'),
               ),
               SizedBox(
                 width: 20,
@@ -40,11 +44,19 @@ class AddStock extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          CustomTextFieldStock(title: 'Valor'),
+          const CustomNumberFieldStock(title: 'Número do documento (opcional)'),
           const SizedBox(
             height: 20,
           ),
-          CustomTextFieldStock(
+          const CustomDataFieldStock(title: 'Data de entrada'),
+          const SizedBox(
+            height: 20,
+          ),
+          const CustomNumberFieldStock(title: 'Valor'),
+          const SizedBox(
+            height: 20,
+          ),
+          const CustomTextFieldStock(
             title: 'Descrição',
             isDescription: true,
           ),
@@ -53,15 +65,15 @@ class AddStock extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {},
-            child: Text('Adicionar  '),
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),
                 fixedSize: const Size(double.maxFinite, 59)),
+            child: const Text('Adicionar'),
           ),
           TextButton(
               onPressed: () {},
-              child: Text(
+              child: const Text(
                 'Cancelar',
                 style: TextStyle(color: Colors.red),
               ))

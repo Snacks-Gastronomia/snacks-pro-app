@@ -21,17 +21,17 @@ class StockPieChart extends StatelessWidget {
                     PieChartSectionData(
                         value: 40,
                         color: Colors.green,
-                        radius: 20,
+                        radius: 15,
                         showTitle: false),
                     PieChartSectionData(
                         value: 20,
                         color: Colors.yellow,
-                        radius: 20,
+                        radius: 15,
                         showTitle: false),
                     PieChartSectionData(
                         value: 20,
                         color: Colors.purple,
-                        radius: 20,
+                        radius: 15,
                         showTitle: false)
                   ],
                 ),
@@ -43,13 +43,13 @@ class StockPieChart extends StatelessWidget {
               width: 30,
             ),
             Column(
-              children: [
-                const InidicatorStock(
+              children: const [
+                InidicatorStock(
                     color: Colors.purple, title: 'de consumo', value: 20),
-                const InidicatorStock(
+                InidicatorStock(
                     color: Colors.yellow, title: 'de perdas', value: 20),
-                const InidicatorStock(
-                    color: Colors.green, title: 'dísponivel', value: 20),
+                InidicatorStock(
+                    color: Colors.green, title: 'dísponivel', value: 40),
               ],
             )
           ],

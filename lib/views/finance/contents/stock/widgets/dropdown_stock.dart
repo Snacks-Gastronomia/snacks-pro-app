@@ -8,7 +8,7 @@ class DropdownStock extends StatefulWidget {
 }
 
 class _DropdownStockState extends State<DropdownStock> {
-  String selectedValue = 'ml'; // Valor inicial selecionado
+  String selectedValue = 'L'; // Valor inicial selecionado
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class _DropdownStockState extends State<DropdownStock> {
         dropdownColor: Color(0xffF7F8F9),
         value: selectedValue,
         underline: Container(),
-        items: <String>['ml', 'kg', 'g', 'un'].map((String value) {
+        items: <String>['L', 'kg', 'g', 'un'].map((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
