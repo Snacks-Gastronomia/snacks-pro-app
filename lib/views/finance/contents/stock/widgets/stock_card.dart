@@ -20,11 +20,14 @@ class StockCard extends StatelessWidget {
     final modal = AppModal();
 
     return GestureDetector(
-      onTap: () => modal.showIOSModalBottomSheet(
-          context: context,
-          content: ItemDetailsStock(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) => ItemDetailsStock(
             item: item,
-          )),
+          ),
+        ),
+      ),
       child: Card(
         shape:
             ContinuousRectangleBorder(borderRadius: BorderRadius.circular(40)),

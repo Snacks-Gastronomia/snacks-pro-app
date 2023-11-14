@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class InidicatorStock extends StatelessWidget {
-  const InidicatorStock(
+class IndicatorStock extends StatelessWidget {
+  const IndicatorStock(
       {super.key,
       required this.color,
       required this.title,

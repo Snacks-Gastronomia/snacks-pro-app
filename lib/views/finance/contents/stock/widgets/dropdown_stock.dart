@@ -21,6 +21,7 @@ class _DropdownStockState extends State<DropdownStock> {
       ),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: DropdownButton<String>(
+        isExpanded: true,
         focusColor: Colors.grey[100],
         borderRadius: BorderRadius.circular(15),
         dropdownColor: Color(0xffF7F8F9),

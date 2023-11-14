@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/charts/inidicator_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/charts/indicator_stock.dart';
 
 class StockPieChart extends StatelessWidget {
   const StockPieChart({Key? key});
@@ -44,11 +44,11 @@ class StockPieChart extends StatelessWidget {
             ),
             Column(
               children: const [
-                InidicatorStock(
+                IndicatorStock(
                     color: Colors.purple, title: 'de consumo', value: 20),
-                InidicatorStock(
+                IndicatorStock(
                     color: Colors.yellow, title: 'de perdas', value: 20),
-                InidicatorStock(
+                IndicatorStock(
                     color: Colors.green, title: 'dísponivel', value: 40),
               ],
             )

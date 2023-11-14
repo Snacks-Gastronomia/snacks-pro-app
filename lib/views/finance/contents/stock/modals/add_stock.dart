@@ -17,26 +17,35 @@ class AddStock extends StatelessWidget {
       padding: const EdgeInsets.all(30),
       child: Column(
         children: [
-          Text(
-            "Adicionar ao estoque",
-            style: AppTextStyles.bold(22),
-          ),
+          if (increment != true)
+            Text(
+              losses != true ? "Adicionar ao estoque" : "Nova perda",
+              style: AppTextStyles.bold(22),
+            ),
+          if (increment == true)
+            Text(
+              "Incrementar estoque",
+              style: AppTextStyles.bold(22),
+            ),
           const SizedBox(
             height: 20,
           ),
-          const CustomTextFieldStock(title: 'Título'),
+          if (losses != true && increment != true)
+            const CustomTextFieldStock(title: 'Título'),
           const SizedBox(
             height: 20,
           ),
           Row(
             children: const [
               Flexible(
+                flex: 2,
                 child: CustomNumberFieldStock(title: 'Quantidade'),
               ),
               SizedBox(
                 width: 20,
               ),
               Flexible(
+                flex: 1,
                 child: DropdownStock(),
               )
             ],
@@ -44,7 +53,9 @@ class AddStock extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          const CustomNumberFieldStock(title: 'Número do documento (opcional)'),
+          if (losses != true)
+            const CustomNumberFieldStock(
+                title: 'Número do documento (opcional)'),
           const SizedBox(
             height: 20,
           ),
@@ -52,7 +63,7 @@ class AddStock extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          const CustomNumberFieldStock(title: 'Valor'),
+          if (losses != true) const CustomNumberFieldStock(title: 'Valor'),
           const SizedBox(
             height: 20,
           ),

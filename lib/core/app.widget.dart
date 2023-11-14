@@ -16,6 +16,7 @@ import 'package:snacks_pro_app/views/authentication/phone_screen.dart';
 import 'package:snacks_pro_app/views/authentication/state/auth_cubit.dart';
 import 'package:snacks_pro_app/views/authentication/unathorized_screen.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/new_restaurant.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/modals/item_details_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/stock.dart';
 import 'package:snacks_pro_app/views/finance/home_finance.dart';
 import 'package:snacks_pro_app/views/finance/contents/bank/add_bank_account.dart';

@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_bar_chart.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_pie_chart.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/modals/history_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/modals/itens_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/items_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/widgets/common_button_stock.dart';
 
 class ItemDetailsStock extends StatelessWidget {
-  const ItemDetailsStock({super.key, required this.item});
+  ItemDetailsStock({super.key, required this.item});
   final ItemsStock item;
+  final modal = AppModal();
 
   @override
   Widget build(BuildContext context) {
     String amount = '${item.amount} ${item.measure}';
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => modal.showModalBottomSheet(
+            context: context,
+            content: const AddStock(
+              increment: true,
+            )),
+        shape:
+            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Colors.black,
+        child: Icon(Icons.refresh_rounded),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(30),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(
+                height: 30,
+              ),
               Row(
                 children: [
                   IconButton(
@@ -80,12 +101,12 @@ class ItemDetailsStock extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              StockPieChart(),
+              const StockPieChart(),
               const SizedBox(
                 height: 40,
               ),
               ListTile(
-                shape: BorderDirectional(
+                shape: const BorderDirectional(
                     start: BorderSide(width: 10, color: Color(0xffD9D9D9))),
                 title: Text(
                   "Consumo",
@@ -96,8 +117,79 @@ class ItemDetailsStock extends StatelessWidget {
               const SizedBox(
                 height: 50,
               ),
-              SizedBox(
-                  width: double.maxFinite, height: 200, child: StockBarChart())
+              const SizedBox(
+                  width: double.maxFinite, height: 200, child: StockBarChart()),
+              const SizedBox(
+                height: 50,
+              ),
+              CommonButtonStock(
+                label: 'Histórico de pedidos',
+                icon: Icons.arrow_forward_ios_rounded,
+                action: () => modal.showModalBottomSheet(
+                    context: context,
+                    content: HistoryStock(
+                      item: item,
+                    )),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CommonButtonStock(
+                label: 'Itens',
+                icon: Icons.arrow_forward_ios_rounded,
+                action: () => modal.showModalBottomSheet(
+                    context: context,
+                    content: ItensStock(
+                      item: item,
+                    )),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              ListTile(
+                shape: const BorderDirectional(
+                    start: BorderSide(width: 10, color: Color(0xffD9D9D9))),
+                title: Text(
+                  "Perdas",
+                  style: AppTextStyles.bold(18),
+                ),
+                trailing: Text(amount),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              const SizedBox(
+                  width: double.maxFinite, height: 200, child: StockBarChart()),
+              const SizedBox(
+                height: 20,
+              ),
+              CommonButtonStock(
+                label: 'Histórico de perdas',
+                icon: Icons.arrow_forward_ios_rounded,
+                action: () => modal.showModalBottomSheet(
+                    context: context,
+                    content: HistoryStock(
+                      item: item,
+                      losses: true,
+                    )),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CommonButtonStock(
+                label: 'Adicionar perda',
+                icon: Icons.add,
+                color: Colors.blue,
+                textColor: Colors.white,
+                action: () => modal.showModalBottomSheet(
+                    context: context,
+                    content: const AddStock(
+                      losses: true,
+                    )),
+              ),
+              const SizedBox(
+                height: 60,
+              ),
             ],
           ),
         ),
