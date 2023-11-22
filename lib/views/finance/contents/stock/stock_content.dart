@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/item_model.dart';
+import 'package:snacks_pro_app/services/new_stock_service.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/models/items_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/stock_card.dart';
 import 'package:snacks_pro_app/views/home/widgets/search_orders.dart';
 
@@ -12,6 +14,7 @@ class StockContent extends StatelessWidget {
 
   final TextEditingController controllerFilter = TextEditingController();
   final modal = AppModal();
+  NewStockService stockService = NewStockService();
 
   @override
   Widget build(BuildContext context) {
@@ -25,28 +28,49 @@ class StockContent extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
-        child: Column(
-          children: [
-            ListTile(
-              title: Text(
-                "Gerenciamento",
-                style: AppTextStyles.regular(22),
-              ),
-              subtitle: Text('Selecione um para mais detalhes'),
-            ),
-            SearchOrders(controllerFilter: controllerFilter, action: () {}),
-            StockCard(
-              item: ItemsStock(
-                document: 00010010,
-                title: 'Carne Bovina',
-                dateTime: DateTime.now(),
-                measure: 'kg',
-                amount: 100,
-                value: 200,
-                description: "klansdlkasn aklshdkasljd kajshdlkasd askldhaklsd",
-              ),
-            )
-          ],
+        child: StreamBuilder(
+          stream: stockService.streamStock(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CustomCircularProgress(),
+              );
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Erro: ${snapshot.error}'),
+              );
+            }
+
+            final docs = snapshot.data?.docs;
+
+            List<ItemStock> itemStockList = (docs ?? []).map((doc) {
+              return ItemStock.fromMap(doc.data());
+            }).toList();
+
+            return Column(
+              children: [
+                ListTile(
+                  title: Text(
+                    "Gerenciamento",
+                    style: AppTextStyles.regular(22),
+                  ),
+                  subtitle: const Text('Selecione um para mais detalhes'),
+                ),
+                SearchOrders(controllerFilter: controllerFilter, action: () {}),
+                SizedBox(
+                  height: 350,
+                  child: ListView.builder(
+                    itemCount: docs?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return StockCard(item: itemStockList[index]);
+                    },
+                  ),
+                )
+              ],
+            );
+          },
         ),
       ),
     );

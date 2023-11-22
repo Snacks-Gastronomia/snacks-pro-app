@@ -8,12 +8,12 @@ import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_pie_cha
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/history_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/itens_stock.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/models/items_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/common_button_stock.dart';
 
 class ItemDetailsStock extends StatelessWidget {
   ItemDetailsStock({super.key, required this.item});
-  final ItemsStock item;
+  final ItemStock item;
   final modal = AppModal();
 
   @override

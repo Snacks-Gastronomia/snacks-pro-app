@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/models/items_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
 class ItensStock extends StatelessWidget {
   const ItensStock({super.key, required this.item});
-  final ItemsStock item;
+  final ItemStock item;
   @override
   Widget build(BuildContext context) {
     return Padding(

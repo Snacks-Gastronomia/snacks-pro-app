@@ -4,7 +4,7 @@ import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/item_details_stock.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/models/items_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
 class StockCard extends StatelessWidget {
   const StockCard({
@@ -12,12 +12,14 @@ class StockCard extends StatelessWidget {
     required this.item,
   });
 
-  final ItemsStock item;
+  final ItemStock item;
 
   @override
   Widget build(BuildContext context) {
     final double rest = item.amount - (item.losses ?? 0);
-    final modal = AppModal();
+
+    double valuePercent = (item.amount - (item.losses ?? 0)) / item.amount;
+    int percent = (valuePercent * 100).toInt();
 
     return GestureDetector(
       onTap: () => Navigator.push(
@@ -37,7 +39,7 @@ class StockCard extends StatelessWidget {
               title: Text(item.title, style: AppTextStyles.medium(20)),
               subtitle: Text(DateFormat("d/M/y").format(item.dateTime),
                   style: AppTextStyles.regular(14, color: Colors.grey)),
-              trailing: Text("25%", style: AppTextStyles.medium(20)),
+              trailing: Text("$percent%", style: AppTextStyles.medium(20)),
             ),
             ListTile(
               title: Text(
@@ -47,7 +49,7 @@ class StockCard extends StatelessWidget {
               subtitle: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: LinearProgressIndicator(
-                  value: 0.25,
+                  value: valuePercent,
                   color: AppColors.highlight,
                   backgroundColor: Colors.grey[200],
                   minHeight: 10,
