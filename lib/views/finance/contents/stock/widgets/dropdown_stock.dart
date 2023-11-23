@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
 
 class DropdownStock extends StatefulWidget {
-  const DropdownStock({Key? key, required this.controller}) : super(key: key);
+  const DropdownStock(
+      {Key? key, required this.controller, this.initial, this.disable})
+      : super(key: key);
   final TextEditingController controller;
+  final String? initial;
+  final bool? disable;
 
   @override
   _DropdownStockState createState() => _DropdownStockState();
 }
 
 class _DropdownStockState extends State<DropdownStock> {
-  String selectedValue = 'L';
+  late String selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.initial ?? 'L';
+    widget.controller.text = selectedValue;
+  }
 
   @override
   Widget build(BuildContext context) {
-    widget.controller.text = selectedValue;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -31,25 +41,28 @@ class _DropdownStockState extends State<DropdownStock> {
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: DropdownButton<String>(
-            isExpanded: true,
-            focusColor: Colors.grey[100],
-            borderRadius: BorderRadius.circular(15),
-            dropdownColor: const Color(0xffF7F8F9),
-            value: selectedValue,
-            underline: Container(),
-            items: <String>['L', 'kg', 'g', 'un'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedValue = newValue!;
-                widget.controller.text = selectedValue;
-              });
-            },
+          child: IgnorePointer(
+            ignoring: widget.disable ?? false,
+            child: DropdownButton<String>(
+              isExpanded: true,
+              focusColor: Colors.grey[100],
+              borderRadius: BorderRadius.circular(15),
+              dropdownColor: const Color(0xffF7F8F9),
+              value: selectedValue,
+              underline: Container(),
+              items: <String>['L', 'kg', 'g', 'un'].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedValue = newValue!;
+                  widget.controller.text = selectedValue;
+                });
+              },
+            ),
           ),
         ),
       ],

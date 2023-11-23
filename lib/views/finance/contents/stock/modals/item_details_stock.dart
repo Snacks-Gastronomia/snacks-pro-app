@@ -185,7 +185,8 @@ class ItemDetailsStock extends StatelessWidget {
                 textColor: Colors.white,
                 action: () => modal.showModalBottomSheet(
                     context: context,
-                    content: const AddStock(
+                    content: AddStock(
+                      item: item,
                       losses: true,
                     )),
               ),

@@ -10,9 +10,10 @@ import 'package:snacks_pro_app/views/finance/contents/stock/widgets/custom_text_
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/dropdown_stock.dart';
 
 class AddStock extends StatelessWidget {
-  const AddStock({super.key, this.increment, this.losses});
+  const AddStock({super.key, this.increment, this.losses, this.item});
   final bool? increment;
   final bool? losses;
+  final ItemStock? item;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +72,8 @@ class AddStock extends StatelessWidget {
                   flex: 1,
                   child: DropdownStock(
                     controller: controllerMeasure,
+                    initial: losses == true ? item!.measure : null,
+                    disable: losses,
                   ),
                 )
               ],

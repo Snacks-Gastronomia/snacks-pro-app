@@ -27,7 +27,26 @@ class NewStockService {
         .collection('stock')
         .doc(restaurantId)
         .collection('items')
-        .add(item.toMap());
+        .doc(item.title)
+        .set(item.toMap());
+  }
+
+  Future<void> updateItemStock(ItemStock item, int newQuantity) async {
+    await firebase.collection('stock').doc(item.title).update({
+      'amount': FieldValue.increment(newQuantity),
+    });
+  }
+
+  Future<void> addLossesItemStock(ItemStock item, int losses) async {
+    await firebase.collection('stock').doc(item.title).update({
+      'losses': FieldValue.increment(losses),
+    });
+  }
+
+  Future<void> addConsumeItemStock(ItemStock item, int consume) async {
+    await firebase.collection('stock').doc(item.title).update({
+      'consume': FieldValue.increment(consume),
+    });
   }
 
   void printItemStock(ItemStock item) {

@@ -43,7 +43,7 @@ class StockCard extends StatelessWidget {
             ),
             ListTile(
               title: Text(
-                "$rest/${item.amount} kg",
+                "$rest/${item.amount} ${item.measure}",
                 style: AppTextStyles.regular(14, color: Colors.grey),
               ),
               subtitle: ClipRRect(
