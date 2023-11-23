@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
@@ -37,10 +38,34 @@ class NewStockService {
     });
   }
 
-  Future<void> addLossesItemStock(ItemStock item, int losses) async {
-    await firebase.collection('stock').doc(item.title).update({
+  Future<void> addLossesItemStock(
+      {required ItemStock item,
+      required int losses,
+      required String dateTime,
+      required String description}) async {
+    String restaurantId = await getId();
+    await firebase
+        .collection('stock')
+        .doc(restaurantId)
+        .collection('items')
+        .doc(item.title)
+        .update({
       'losses': FieldValue.increment(losses),
     });
+
+    Map<String, dynamic> lossesMap = {
+      'title': item.title,
+      'losses': losses,
+      'dateTIme': dateTime,
+      'description': description,
+    };
+
+    await firebase
+        .collection('stock')
+        .doc(restaurantId)
+        .collection('losses')
+        .doc(dateTime.toString())
+        .set(lossesMap);
   }
 
   Future<void> addConsumeItemStock(ItemStock item, int consume) async {

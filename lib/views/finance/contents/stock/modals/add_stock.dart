@@ -117,21 +117,31 @@ class AddStock extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                ItemStock newItem = itemStock.copyWith(
-                  title: controllerTitle.text,
-                  dateTime: DateFormat('dd/MM/yyyy').parse(controllerDate.text),
-                  description: controllerDescription.text,
-                  document: int.tryParse(controllerAmount.text),
-                  amount: double.tryParse(
-                      controllerAmount.text.replaceAll(',', '.')),
-                  measure: controllerMeasure.text,
-                  value: double.tryParse(
-                      controllerValue.text.replaceAll(',', '.')),
-                );
-                bool validate = stockService.validateItem(newItem);
-                stockService.printItemStock(newItem);
-                validate ? stockService.addItemToStock(newItem) : null;
-                validate ? Navigator.pop(context) : null;
+                String dateTIme = controllerDate.text.replaceAll('/', '-');
+                if (losses == true) {
+                  stockService.addLossesItemStock(
+                      item: item!,
+                      losses: int.parse(controllerAmount.text),
+                      dateTime: dateTIme,
+                      description: controllerDescription.text);
+                } else {
+                  ItemStock newItem = itemStock.copyWith(
+                    title: controllerTitle.text,
+                    dateTime:
+                        DateFormat('dd/MM/yyyy').parse(controllerDate.text),
+                    description: controllerDescription.text,
+                    document: int.tryParse(controllerAmount.text),
+                    amount: double.tryParse(
+                        controllerAmount.text.replaceAll(',', '.')),
+                    measure: controllerMeasure.text,
+                    value: double.tryParse(
+                        controllerValue.text.replaceAll(',', '.')),
+                  );
+                  bool validate = stockService.validateItem(newItem);
+                  stockService.printItemStock(newItem);
+                  validate ? stockService.addItemToStock(newItem) : null;
+                  validate ? Navigator.pop(context) : null;
+                }
               },
               style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
