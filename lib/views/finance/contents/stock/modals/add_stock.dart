@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/services/new_stock_service.dart';
@@ -115,6 +116,7 @@ class AddStock extends StatelessWidget {
               onPressed: () {
                 ItemStock newItem = itemStock.copyWith(
                   title: controllerTitle.text,
+                  dateTime: DateFormat('dd/MM/yyyy').parse(controllerDate.text),
                   description: controllerDescription.text,
                   document: int.tryParse(controllerAmount.text),
                   amount: double.tryParse(

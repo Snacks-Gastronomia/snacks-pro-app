@@ -1,4 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ItemStock {
   final String title;
@@ -8,6 +11,7 @@ class ItemStock {
   final DateTime dateTime;
   final double value;
   final double amount;
+  final double? consume;
   final double? losses;
 
   ItemStock({
@@ -18,6 +22,7 @@ class ItemStock {
     required this.dateTime,
     required this.value,
     required this.amount,
+    this.consume,
     this.losses,
   });
 
@@ -29,6 +34,7 @@ class ItemStock {
     DateTime? dateTime,
     double? value,
     double? amount,
+    double? consume,
     double? losses,
   }) {
     return ItemStock(
@@ -39,20 +45,23 @@ class ItemStock {
       dateTime: dateTime ?? this.dateTime,
       value: value ?? this.value,
       amount: amount ?? this.amount,
+      consume: consume ?? this.consume,
       losses: losses ?? this.losses,
     );
   }
 
   factory ItemStock.initial() {
     return ItemStock(
-        title: 'title',
-        description: 'description',
-        measure: 'measure',
-        document: 0,
-        dateTime: DateTime.now(),
-        value: 0,
-        amount: 0,
-        losses: 0);
+      title: 'title',
+      description: 'description',
+      measure: 'measure',
+      document: 0,
+      dateTime: DateTime.now(),
+      value: 0,
+      amount: 0,
+      consume: 0,
+      losses: 0,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -61,10 +70,11 @@ class ItemStock {
       'description': description,
       'measure': measure,
       'document': document,
-      'dateTime': dateTime.millisecondsSinceEpoch,
+      'dateTime': Timestamp.fromDate(dateTime),
       'value': value,
       'amount': amount,
       'losses': losses,
+      'consume': consume,
     };
   }
 
@@ -74,11 +84,14 @@ class ItemStock {
       description: map['description'] as String,
       measure: map['measure'] as String,
       document: map['document'] as int,
-      dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime'] as int),
+      dateTime: (map['dateTime'] as Timestamp).toDate(),
       value: map['value'] as double,
       amount: map['amount'] as double,
       losses: map['losses'] != null
           ? double.tryParse(map['losses'].toString())
+          : null,
+      consume: map['consume'] != null
+          ? double.tryParse(map['consume'].toString())
           : null,
     );
   }
