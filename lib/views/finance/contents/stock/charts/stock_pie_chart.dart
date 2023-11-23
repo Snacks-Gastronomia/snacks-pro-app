@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/charts/indicator_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
 class StockPieChart extends StatelessWidget {
-  const StockPieChart({Key? key});
+  const StockPieChart({Key? key, required this.item});
+  final ItemStock item;
 
   @override
   Widget build(BuildContext context) {
+    final available = (item.amount - (item.losses ?? 0) - (item.consume ?? 0));
     return Column(
       children: [
         Row(
@@ -19,17 +22,17 @@ class StockPieChart extends StatelessWidget {
                 PieChartData(
                   sections: [
                     PieChartSectionData(
-                        value: 40,
+                        value: available,
                         color: Colors.green,
                         radius: 15,
                         showTitle: false),
                     PieChartSectionData(
-                        value: 20,
+                        value: item.losses,
                         color: Colors.yellow,
                         radius: 15,
                         showTitle: false),
                     PieChartSectionData(
-                        value: 20,
+                        value: item.consume,
                         color: Colors.purple,
                         radius: 15,
                         showTitle: false)
@@ -43,13 +46,19 @@ class StockPieChart extends StatelessWidget {
               width: 30,
             ),
             Column(
-              children: const [
+              children: [
                 IndicatorStock(
-                    color: Colors.purple, title: 'de consumo', value: 20),
+                    color: Colors.purple,
+                    title: 'de consumo',
+                    value: (item.consume ?? 0).toInt()),
                 IndicatorStock(
-                    color: Colors.yellow, title: 'de perdas', value: 20),
+                    color: Colors.yellow,
+                    title: 'de perdas',
+                    value: (item.losses ?? 0).toInt()),
                 IndicatorStock(
-                    color: Colors.green, title: 'dísponivel', value: 40),
+                    color: Colors.green,
+                    title: 'dísponivel',
+                    value: available.toInt()),
               ],
             )
           ],

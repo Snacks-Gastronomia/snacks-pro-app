@@ -16,9 +16,9 @@ class StockCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double rest = item.amount - (item.losses ?? 0);
+    final double rest = item.amount - (item.losses ?? 0) - (item.consume ?? 0);
 
-    double valuePercent = (item.amount - (item.losses ?? 0)) / item.amount;
+    double valuePercent = rest / item.amount;
     int percent = (valuePercent * 100).toInt();
 
     return GestureDetector(

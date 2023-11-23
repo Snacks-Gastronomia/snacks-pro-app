@@ -101,7 +101,9 @@ class ItemDetailsStock extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              const StockPieChart(),
+              StockPieChart(
+                item: item,
+              ),
               const SizedBox(
                 height: 40,
               ),
