@@ -32,9 +32,21 @@ class NewStockService {
         .set(item.toMap());
   }
 
-  Future<void> updateItemStock(ItemStock item, int newQuantity) async {
-    await firebase.collection('stock').doc(item.title).update({
-      'amount': FieldValue.increment(newQuantity),
+  Future<void> updateItemStock(
+      {required ItemStock item,
+      required int amount,
+      required int value,
+      required DateTime dateTime}) async {
+    String restaurantId = await getId();
+    await firebase
+        .collection('stock')
+        .doc(restaurantId)
+        .collection('items')
+        .doc(item.title)
+        .update({
+      'amount': FieldValue.increment(amount),
+      'value': FieldValue.increment(value),
+      'dateTime': dateTime,
     });
   }
 
@@ -65,7 +77,8 @@ class NewStockService {
         .doc(restaurantId)
         .collection('losses')
         .doc(dateTime.toString())
-        .set(lossesMap);
+        .collection(item.title)
+        .add(lossesMap);
   }
 
   Future<void> addConsumeItemStock(ItemStock item, int consume) async {

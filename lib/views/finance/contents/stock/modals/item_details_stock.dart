@@ -23,7 +23,8 @@ class ItemDetailsStock extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => modal.showModalBottomSheet(
             context: context,
-            content: const AddStock(
+            content: AddStock(
+              item: item,
               increment: true,
             )),
         shape:

@@ -73,7 +73,7 @@ class AddStock extends StatelessWidget {
                   child: DropdownStock(
                     controller: controllerMeasure,
                     initial: losses == true ? item!.measure : null,
-                    disable: losses,
+                    disable: losses ?? increment,
                   ),
                 )
               ],
@@ -124,6 +124,17 @@ class AddStock extends StatelessWidget {
                       losses: int.parse(controllerAmount.text),
                       dateTime: dateTIme,
                       description: controllerDescription.text);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                } else if (increment == true) {
+                  stockService.updateItemStock(
+                      item: item!,
+                      amount: int.parse(controllerAmount.text),
+                      value: int.parse(controllerValue.text),
+                      dateTime:
+                          DateFormat('dd/MM/yyy').parse(controllerDate.text));
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 } else {
                   ItemStock newItem = itemStock.copyWith(
                     title: controllerTitle.text,
