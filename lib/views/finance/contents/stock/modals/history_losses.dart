@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
-class HistoryStock extends StatelessWidget {
-  const HistoryStock({super.key, required this.item, this.losses});
+class HistoryLosses extends StatelessWidget {
+  const HistoryLosses({super.key, required this.item});
   final ItemStock item;
-  final bool? losses;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -14,7 +14,7 @@ class HistoryStock extends StatelessWidget {
         children: [
           ListTile(
             title: Text(
-              'Histórico de pedidos',
+              "Historico de perdas",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             trailing: Icon(Icons.calendar_month),

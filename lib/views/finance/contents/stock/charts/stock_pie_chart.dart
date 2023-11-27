@@ -9,7 +9,14 @@ class StockPieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final available = (item.amount - (item.losses ?? 0) - (item.consume ?? 0));
+    final available =
+        ((item.amount - (item.losses ?? 0) - (item.consume ?? 0)) /
+                item.amount) *
+            100;
+
+    final losses = ((item.losses ?? 0) / item.amount) * 100;
+    final consume = ((item.consume ?? 0) / item.amount) * 100;
+
     return Column(
       children: [
         Row(
@@ -27,12 +34,12 @@ class StockPieChart extends StatelessWidget {
                         radius: 15,
                         showTitle: false),
                     PieChartSectionData(
-                        value: item.losses,
+                        value: losses,
                         color: Colors.yellow,
                         radius: 15,
                         showTitle: false),
                     PieChartSectionData(
-                        value: item.consume,
+                        value: consume,
                         color: Colors.purple,
                         radius: 15,
                         showTitle: false)
@@ -50,11 +57,11 @@ class StockPieChart extends StatelessWidget {
                 IndicatorStock(
                     color: Colors.purple,
                     title: 'de consumo',
-                    value: (item.consume ?? 0).toInt()),
+                    value: consume.toInt()),
                 IndicatorStock(
                     color: Colors.yellow,
                     title: 'de perdas',
-                    value: (item.losses ?? 0).toInt()),
+                    value: losses.toInt()),
                 IndicatorStock(
                     color: Colors.green,
                     title: 'dísponivel',

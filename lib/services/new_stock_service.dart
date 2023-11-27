@@ -14,12 +14,31 @@ class NewStockService {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> streamStock() async* {
-    String restaurantId = await getId();
-    yield* firebase
-        .collection('stock')
-        .doc(restaurantId)
-        .collection('items')
-        .snapshots();
+    try {
+      String restaurantId = await getId();
+      yield* firebase
+          .collection('stock')
+          .doc(restaurantId)
+          .collection('items')
+          .snapshots();
+    } catch (e) {
+      print('Erro ao obter dados do Firestore: $e');
+    }
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamLossesStock() async* {
+    try {
+      String restaurantId = await getId();
+      yield* FirebaseFirestore.instance
+          .collection('stock')
+          .doc(restaurantId)
+          .collection('losses')
+          .doc('05-04-2023')
+          .collection('agua')
+          .snapshots();
+    } catch (e) {
+      print('Erro ao obter dados do Firestore: $e');
+    }
   }
 
   Future<void> addItemToStock(ItemStock item) async {

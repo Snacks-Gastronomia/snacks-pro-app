@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/services/new_stock_service.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_bar_chart.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_pie_chart.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/modals/history_losses.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/history_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/itens_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/losses_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/common_button_stock.dart';
 
 class ItemDetailsStock extends StatelessWidget {
   ItemDetailsStock({super.key, required this.item});
   final ItemStock item;
   final modal = AppModal();
+  final stock = NewStockService();
 
   @override
   Widget build(BuildContext context) {
@@ -115,13 +120,27 @@ class ItemDetailsStock extends StatelessWidget {
                   "Consumo",
                   style: AppTextStyles.bold(18),
                 ),
-                trailing: Text(amount),
+                trailing: Text('${item.consume}'),
               ),
               const SizedBox(
                 height: 50,
               ),
-              const SizedBox(
-                  width: double.maxFinite, height: 200, child: StockBarChart()),
+              SizedBox(
+                  width: double.maxFinite,
+                  height: 200,
+                  child: StreamBuilder(
+                      stream: stock.streamLossesStock(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var docs = snapshot.data!.docs;
+                          LossesStock losses =
+                              LossesStock.fromMap(docs[0].data());
+                          debugPrint(losses.toMap().toString());
+                          return StockBarChart();
+                        } else {
+                          return CustomCircularProgress();
+                        }
+                      })),
               const SizedBox(
                 height: 50,
               ),
@@ -156,7 +175,7 @@ class ItemDetailsStock extends StatelessWidget {
                   "Perdas",
                   style: AppTextStyles.bold(18),
                 ),
-                trailing: Text(amount),
+                trailing: Text('${item.losses}'),
               ),
               const SizedBox(
                 height: 50,
@@ -171,9 +190,8 @@ class ItemDetailsStock extends StatelessWidget {
                 icon: Icons.arrow_forward_ios_rounded,
                 action: () => modal.showModalBottomSheet(
                     context: context,
-                    content: HistoryStock(
+                    content: HistoryLosses(
                       item: item,
-                      losses: true,
                     )),
               ),
               const SizedBox(
