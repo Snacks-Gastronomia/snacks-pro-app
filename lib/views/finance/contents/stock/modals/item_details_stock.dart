@@ -128,17 +128,28 @@ class ItemDetailsStock extends StatelessWidget {
               SizedBox(
                   width: double.maxFinite,
                   height: 200,
-                  child: StreamBuilder(
-                      stream: stock.streamLossesStock(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          var docs = snapshot.data!.docs;
-                          LossesStock losses =
-                              LossesStock.fromMap(docs[0].data());
-                          debugPrint(losses.toMap().toString());
-                          return StockBarChart();
+                  child: FutureBuilder(
+                      future: stock.getItemLossesCollection(
+                          data: '02-09-2023', item: item.title),
+                      builder: (context, stream) {
+                        if (stream.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                              child:
+                                  CircularProgressIndicator()); // Ou qualquer indicador de carregamento que você preferir
+                        } else if (stream.hasError) {
+                          return Text('Erro: ${stream.error}');
+                        } else if (!stream.hasData) {
+                          return const Center(child: Text('Sem dados'));
                         } else {
-                          return CustomCircularProgress();
+                          var docs = stream.data!;
+                          List<LossesStock> losses = docs
+                              .map((e) => LossesStock.fromMap(e.data()))
+                              .toList();
+                          for (var losse in losses) {
+                            debugPrint(losse.toMap().toString());
+                          }
+
+                          return const StockBarChart();
                         }
                       })),
               const SizedBox(

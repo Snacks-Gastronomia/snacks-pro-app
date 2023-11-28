@@ -117,12 +117,12 @@ class AddStock extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                String dateTIme = controllerDate.text.replaceAll('/', '-');
+                String dateTime = controllerDate.text;
                 if (losses == true) {
                   stockService.addLossesItemStock(
                       item: item!,
                       losses: int.parse(controllerAmount.text),
-                      dateTime: dateTIme,
+                      dateTime: dateTime,
                       description: controllerDescription.text);
                   Navigator.pop(context);
                   Navigator.pop(context);

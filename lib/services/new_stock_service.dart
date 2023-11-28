@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -26,18 +28,42 @@ class NewStockService {
     }
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> streamLossesStock() async* {
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getLossesCollection(
+      {required String data, required String item}) async {
     try {
       String restaurantId = await getId();
-      yield* FirebaseFirestore.instance
-          .collection('stock')
-          .doc(restaurantId)
-          .collection('losses')
-          .doc('05-04-2023')
-          .collection('agua')
-          .snapshots();
+      QuerySnapshot<Map<String, dynamic>> lossesSnapshot =
+          await FirebaseFirestore.instance
+              .collection('stock')
+              .doc(restaurantId)
+              .collection('losses')
+              .get();
+
+      return lossesSnapshot.docs;
     } catch (e) {
       print('Erro ao obter dados do Firestore: $e');
+      return []; // Retorna uma lista vazia em caso de erro
+    }
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getItemLossesCollection(
+          {required String data, required String item}) async {
+    try {
+      String restaurantId = await getId();
+      QuerySnapshot<Map<String, dynamic>> lossesSnapshot =
+          await FirebaseFirestore.instance
+              .collection('stock')
+              .doc(restaurantId)
+              .collection('losses')
+              .where('dateTime', isGreaterThanOrEqualTo: DateTime(2023, 8, 1))
+              .where('dateTime', isLessThan: DateTime(2023, 9, 1))
+              .get();
+
+      return lossesSnapshot.docs;
+    } catch (e) {
+      print('Erro ao obter dados do Firestore: $e');
+      return []; // Retorna uma lista vazia em caso de erro
     }
   }
 
@@ -87,7 +113,7 @@ class NewStockService {
     Map<String, dynamic> lossesMap = {
       'title': item.title,
       'losses': losses,
-      'dateTIme': dateTime,
+      'dateTime': DateFormat('dd/MM/yyy').parse(dateTime),
       'description': description,
     };
 
@@ -95,9 +121,8 @@ class NewStockService {
         .collection('stock')
         .doc(restaurantId)
         .collection('losses')
-        .doc(dateTime.toString())
-        .collection(item.title)
-        .add(lossesMap);
+        .doc()
+        .set(lossesMap);
   }
 
   Future<void> addConsumeItemStock(ItemStock item, int consume) async {
