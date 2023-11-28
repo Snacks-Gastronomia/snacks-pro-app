@@ -120,38 +120,39 @@ class ItemDetailsStock extends StatelessWidget {
                   "Consumo",
                   style: AppTextStyles.bold(18),
                 ),
-                trailing: Text('${item.consume}'),
+                trailing: Text('${item.consume}${item.measure}'),
               ),
               const SizedBox(
                 height: 50,
               ),
               SizedBox(
-                  width: double.maxFinite,
-                  height: 200,
-                  child: FutureBuilder(
-                      future: stock.getItemLossesCollection(
-                          data: '02-09-2023', item: item.title),
-                      builder: (context, stream) {
-                        if (stream.connectionState == ConnectionState.waiting) {
-                          return const Center(
-                              child:
-                                  CircularProgressIndicator()); // Ou qualquer indicador de carregamento que você preferir
-                        } else if (stream.hasError) {
-                          return Text('Erro: ${stream.error}');
-                        } else if (!stream.hasData) {
-                          return const Center(child: Text('Sem dados'));
-                        } else {
-                          var docs = stream.data!;
-                          List<LossesStock> losses = docs
-                              .map((e) => LossesStock.fromMap(e.data()))
-                              .toList();
-                          for (var losse in losses) {
-                            debugPrint(losse.toMap().toString());
-                          }
+                width: double.maxFinite,
+                height: 200,
+                child: FutureBuilder(
+                  future: stock.getItemLossesCollection(item: item.title),
+                  builder: (context, stream) {
+                    if (stream.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                          child:
+                              CircularProgressIndicator()); // Ou qualquer indicador de carregamento que você preferir
+                    } else if (stream.hasError) {
+                      return Text('Erro: ${stream.error}');
+                    } else if (!stream.hasData) {
+                      return const Center(child: Text('Sem dados'));
+                    } else {
+                      var docs = stream.data!;
+                      List<LossesStock> losses = docs
+                          .map((e) => LossesStock.fromMap(e.data()))
+                          .toList();
+                      for (var losse in losses) {
+                        debugPrint(losse.toMap().toString());
+                      }
 
-                          return const StockBarChart();
-                        }
-                      })),
+                      return const StockBarChart();
+                    }
+                  },
+                ),
+              ),
               const SizedBox(
                 height: 50,
               ),
@@ -186,13 +187,39 @@ class ItemDetailsStock extends StatelessWidget {
                   "Perdas",
                   style: AppTextStyles.bold(18),
                 ),
-                trailing: Text('${item.losses}'),
+                trailing: Text('${item.losses}${item.measure}'),
               ),
               const SizedBox(
                 height: 50,
               ),
-              const SizedBox(
-                  width: double.maxFinite, height: 200, child: StockBarChart()),
+              SizedBox(
+                width: double.maxFinite,
+                height: 200,
+                child: FutureBuilder(
+                  future: stock.getItemLossesCollection(item: item.title),
+                  builder: (context, stream) {
+                    if (stream.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                          child:
+                              CircularProgressIndicator()); // Ou qualquer indicador de carregamento que você preferir
+                    } else if (stream.hasError) {
+                      return Text('Erro: ${stream.error}');
+                    } else if (!stream.hasData) {
+                      return const Center(child: Text('Sem dados'));
+                    } else {
+                      var docs = stream.data!;
+                      List<LossesStock> losses = docs
+                          .map((e) => LossesStock.fromMap(e.data()))
+                          .toList();
+                      for (var losse in losses) {
+                        debugPrint(losse.toMap().toString());
+                      }
+
+                      return const StockBarChart();
+                    }
+                  },
+                ),
+              ),
               const SizedBox(
                 height: 20,
               ),

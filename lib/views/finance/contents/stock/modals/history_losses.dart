@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
+import 'package:snacks_pro_app/services/new_stock_service.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/losses_stock.dart';
 
 class HistoryLosses extends StatelessWidget {
   const HistoryLosses({super.key, required this.item});
@@ -8,6 +11,9 @@ class HistoryLosses extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final stock = NewStockService();
+    String amount = '${item.amount.toInt()}${item.measure}';
+
     return Padding(
       padding: const EdgeInsets.all(30),
       child: Column(
@@ -24,23 +30,38 @@ class HistoryLosses extends StatelessWidget {
           ),
           ListTile(
             trailing: Text(
-              "Total: ${item.amount}${item.measure}",
+              amount,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           SizedBox(
             height: 350,
-            child: ListView.separated(
-              separatorBuilder: (context, index) => const Divider(),
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(item.title),
-                  subtitle: Text("Quantidade: ${item.amount}"),
-                  trailing: Text("${item.amount}${item.measure}"),
-                );
-              },
-            ),
+            child: FutureBuilder(
+                future: stock.getItemLossesCollection(item: item.title),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var docs = snapshot.data!;
+                    List<LossesStock> losses =
+                        docs.map((e) => LossesStock.fromMap(e.data())).toList();
+                    return ListView.separated(
+                      separatorBuilder: (context, index) => const Divider(),
+                      itemCount: losses.length,
+                      itemBuilder: (context, index) {
+                        var dateTime = DateFormat('dd/MM/yyyy \'às\' HH:mm')
+                            .format(losses[index].dateTime);
+
+                        var losse = losses[index].losses.toInt();
+                        return ListTile(
+                          title: Text(losses[index].title),
+                          subtitle: Text(dateTime),
+                          trailing: Text("$losse${item.measure}"),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                }),
           ),
           const SizedBox(
             height: 25,

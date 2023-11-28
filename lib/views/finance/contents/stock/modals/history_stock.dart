@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
+import 'package:snacks_pro_app/services/new_stock_service.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
 class HistoryStock extends StatelessWidget {
@@ -8,6 +9,8 @@ class HistoryStock extends StatelessWidget {
   final bool? losses;
   @override
   Widget build(BuildContext context) {
+    final stock = NewStockService();
+    String amount = '${item.amount.toInt()}${item.measure}';
     return Padding(
       padding: const EdgeInsets.all(30),
       child: Column(
@@ -24,7 +27,7 @@ class HistoryStock extends StatelessWidget {
           ),
           ListTile(
             trailing: Text(
-              "Total: ${item.amount}${item.measure}",
+              amount,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),

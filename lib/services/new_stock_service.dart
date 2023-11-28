@@ -47,8 +47,7 @@ class NewStockService {
   }
 
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
-      getItemLossesCollection(
-          {required String data, required String item}) async {
+      getItemLossesCollection({required String item}) async {
     try {
       String restaurantId = await getId();
       QuerySnapshot<Map<String, dynamic>> lossesSnapshot =
@@ -56,8 +55,29 @@ class NewStockService {
               .collection('stock')
               .doc(restaurantId)
               .collection('losses')
-              .where('dateTime', isGreaterThanOrEqualTo: DateTime(2023, 8, 1))
-              .where('dateTime', isLessThan: DateTime(2023, 9, 1))
+              .where('title', isEqualTo: item)
+              .get();
+
+      return lossesSnapshot.docs;
+    } catch (e) {
+      print('Erro ao obter dados do Firestore: $e');
+      return []; // Retorna uma lista vazia em caso de erro
+    }
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getDataLossesCollection(
+          {required int mounth, required String item}) async {
+    try {
+      String restaurantId = await getId();
+      QuerySnapshot<Map<String, dynamic>> lossesSnapshot =
+          await FirebaseFirestore.instance
+              .collection('stock')
+              .doc(restaurantId)
+              .collection('losses')
+              .where('dateTime',
+                  isGreaterThanOrEqualTo: DateTime(2023, mounth, 1))
+              .where('dateTime', isLessThan: DateTime(2023, (mounth + 1), 1))
               .get();
 
       return lossesSnapshot.docs;
