@@ -85,8 +85,8 @@ class ItemStock {
       measure: map['measure'] as String,
       document: map['document'] as int,
       dateTime: (map['dateTime'] as Timestamp).toDate(),
-      value: map['value'] as double,
-      amount: map['amount'] as double,
+      value: double.tryParse(map['value'].toString()) as double,
+      amount: double.tryParse(map['value'].toString()) as double,
       losses: map['losses'] != null
           ? double.tryParse(map['losses'].toString())
           : null,

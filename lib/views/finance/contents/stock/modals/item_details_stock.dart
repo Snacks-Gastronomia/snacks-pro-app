@@ -37,9 +37,9 @@ class ItemDetailsStock extends StatelessWidget {
         backgroundColor: Colors.black,
         child: Icon(Icons.refresh_rounded),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(30),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

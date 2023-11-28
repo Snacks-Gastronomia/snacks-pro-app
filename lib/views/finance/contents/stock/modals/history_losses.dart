@@ -43,16 +43,19 @@ class HistoryLosses extends StatelessWidget {
                     var docs = snapshot.data!;
                     List<LossesStock> losses =
                         docs.map((e) => LossesStock.fromMap(e.data())).toList();
+
+                    var listLosses = losses.reversed.toList();
+
                     return ListView.separated(
                       separatorBuilder: (context, index) => const Divider(),
                       itemCount: losses.length,
                       itemBuilder: (context, index) {
-                        var dateTime = DateFormat('dd/MM/yyyy \'às\' HH:mm')
-                            .format(losses[index].dateTime);
+                        var dateTime = DateFormat('dd/MM/yyyy')
+                            .format(listLosses[index].dateTime);
 
-                        var losse = losses[index].losses.toInt();
+                        var losse = listLosses[index].losses.toInt();
                         return ListTile(
-                          title: Text(losses[index].title),
+                          title: Text(listLosses[index].title),
                           subtitle: Text(dateTime),
                           trailing: Text("$losse${item.measure}"),
                         );
