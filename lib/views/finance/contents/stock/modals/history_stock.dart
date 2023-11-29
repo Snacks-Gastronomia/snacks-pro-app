@@ -10,7 +10,7 @@ class HistoryStock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stock = NewStockService();
-    String amount = '${item.amount.toInt()}${item.measure}';
+    String amount = '${item.consume!.toInt()}${item.measure}';
     return Padding(
       padding: const EdgeInsets.all(30),
       child: Column(
@@ -27,7 +27,7 @@ class HistoryStock extends StatelessWidget {
           ),
           ListTile(
             trailing: Text(
-              amount,
+              'Total: $amount',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),

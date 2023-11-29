@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_consume.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
 class NewStockService {
@@ -113,6 +114,16 @@ class NewStockService {
       'value': FieldValue.increment(value),
       'dateTime': dateTime,
     });
+  }
+
+  Future<void> addItem({required ItemConsume item}) async {
+    String restaurantId = await getId();
+    await firebase
+        .collection('stock')
+        .doc(restaurantId)
+        .collection('items')
+        .doc(item.title)
+        .set(item.toMap());
   }
 
   Future<void> addLossesItemStock(
