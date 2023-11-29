@@ -45,7 +45,10 @@ class ItensStock extends StatelessWidget {
           ),
           BlueButtomAdd(
             action: () => modal.showModalBottomSheet(
-                context: context, content: const AddItemModal()),
+                context: context,
+                content: AddItemModal(
+                  itemStock: item,
+                )),
             label: 'Adicionar Item',
           ),
           const SizedBox(

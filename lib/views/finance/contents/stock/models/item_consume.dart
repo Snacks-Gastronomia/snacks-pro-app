@@ -26,4 +26,8 @@ class ItemConsume {
 
   factory ItemConsume.fromJson(String source) =>
       ItemConsume.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  static List<ItemConsume> fromList(List list) {
+    return list.map((map) => ItemConsume.fromMap(map)).toList();
+  }
 }

@@ -116,14 +116,17 @@ class NewStockService {
     });
   }
 
-  Future<void> addItem({required ItemConsume item}) async {
+  Future<void> addItem(
+      {required ItemConsume itemConsume, required ItemStock itemStock}) async {
     String restaurantId = await getId();
     await firebase
         .collection('stock')
         .doc(restaurantId)
         .collection('items')
-        .doc(item.title)
-        .set(item.toMap());
+        .doc(itemStock.title)
+        .set({
+      'items': FieldValue.arrayUnion([itemConsume.toMap()]),
+    }, SetOptions(merge: true));
   }
 
   Future<void> addLossesItemStock(
