@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -43,7 +41,7 @@ class NewStockService {
       return lossesSnapshot.docs;
     } catch (e) {
       print('Erro ao obter dados do Firestore: $e');
-      return []; // Retorna uma lista vazia em caso de erro
+      return [];
     }
   }
 
@@ -62,7 +60,25 @@ class NewStockService {
       return lossesSnapshot.docs;
     } catch (e) {
       print('Erro ao obter dados do Firestore: $e');
-      return []; // Retorna uma lista vazia em caso de erro
+      return [];
+    }
+  }
+
+  Stream<List> getItemConsumeStream({required String item}) async* {
+    try {
+      String restaurantId = await getId();
+      yield* firebase
+          .collection('stock')
+          .doc(restaurantId)
+          .collection('items')
+          .doc(item)
+          .snapshots()
+          .map((DocumentSnapshot<Map<String, dynamic>> snapshot) {
+        List itemList = snapshot.data()?['items'] ?? [];
+        return itemList;
+      });
+    } catch (e) {
+      print('Erro ao obter dados do Firestore: $e');
     }
   }
 
@@ -84,7 +100,36 @@ class NewStockService {
       return lossesSnapshot.docs;
     } catch (e) {
       print('Erro ao obter dados do Firestore: $e');
-      return []; // Retorna uma lista vazia em caso de erro
+      return [];
+    }
+  }
+
+  Future<void> deleteItem(String stockItemId, int index) async {
+    try {
+      String restaurantId = await getId();
+
+      DocumentReference<Map<String, dynamic>> docRef = FirebaseFirestore
+          .instance
+          .collection('stock')
+          .doc(restaurantId)
+          .collection('items')
+          .doc(stockItemId);
+
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await docRef.get();
+      List<dynamic> currentItems = snapshot.data()?['items'] ?? [];
+
+      if (index >= 0 && index < currentItems.length) {
+        currentItems.removeAt(index);
+
+        await docRef.update({
+          'items': currentItems,
+        });
+      } else {
+        print('Índice inválido para exclusão.');
+      }
+    } catch (e) {
+      print('Erro ao excluir item do Firestore: $e');
+      throw e;
     }
   }
 

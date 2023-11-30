@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
+import 'package:snacks_pro_app/services/new_stock_service.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_item_modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/blue_buttom_add.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/widgets/common_button_stock.dart';
 
 class ItensStock extends StatelessWidget {
   const ItensStock({super.key, required this.item});
   final ItemStock item;
   @override
   Widget build(BuildContext context) {
+    final stock = NewStockService();
     final modal = AppModal();
     return Padding(
       padding: const EdgeInsets.all(30),
@@ -28,17 +29,40 @@ class ItensStock extends StatelessWidget {
           ),
           SizedBox(
             height: 350,
-            child: ListView.separated(
-              separatorBuilder: (context, index) => const Divider(),
-              itemCount: item.items?.length ?? 0,
-              itemBuilder: (context, index) {
-                var itemMenu = item.items?[index];
-                return ListTile(
-                  title: Text(itemMenu?.title ?? ''),
-                  trailing: Text("${itemMenu?.consume}${item.measure}"),
-                );
-              },
-            ),
+            child: StreamBuilder(
+                stream: stock.getItemConsumeStream(item: item.title),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Erro: ${snapshot.error}');
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    var itemConsume = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: itemConsume.length,
+                      itemBuilder: (context, index) {
+                        return Dismissible(
+                          key: Key(itemConsume[index]['title']),
+                          onDismissed: (direction) =>
+                              stock.deleteItem(item.title, index),
+                          background: Container(
+                              padding: EdgeInsets.only(right: 5),
+                              alignment: Alignment.centerRight,
+                              color: Colors.red,
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              )),
+                          child: ListTile(
+                            title: Text(itemConsume[index]['title']),
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Text('Nenhum item encontrado.');
+                  }
+                }),
           ),
           const SizedBox(
             height: 25,

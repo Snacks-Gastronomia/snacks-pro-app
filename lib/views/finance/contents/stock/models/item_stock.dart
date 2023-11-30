@@ -98,7 +98,8 @@ class ItemStock {
         consume: map['consume'] != null
             ? double.tryParse(map['consume'].toString())
             : null,
-        items: ItemConsume.fromList(map['items']));
+        items:
+            map['items'] != null ? ItemConsume.fromList(map['items']) : null);
   }
 
   String toJson() => json.encode(toMap());
