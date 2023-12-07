@@ -224,4 +224,42 @@ class NewStockService {
       return false;
     }
   }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getItemsMenu() async* {
+    try {
+      String restaurantId = await getId();
+      var ref = firebase
+          .collection("menu")
+          .where("restaurant_id", isEqualTo: restaurantId);
+
+      yield* ref.snapshots();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getOrdersByItem(
+      String itemTitle) async {
+    try {
+      String restaurantId = await getId();
+      QuerySnapshot<Map<String, dynamic>> ref = await firebase
+          .collection('orders')
+          .orderBy('created_at', descending: true)
+          .where('restaurant', isEqualTo: restaurantId)
+          .where('status', isEqualTo: 'delivered')
+          .limit(20)
+          .get();
+
+      for (QueryDocumentSnapshot<Map<String, dynamic>> doc in ref.docs) {
+        final data = doc.data();
+        print('Documento ID: ${doc.id}');
+        print('Dados: $data');
+      }
+
+      return ref.docs.toList();
+    } catch (e) {
+      debugPrint('Erro: $e');
+      rethrow;
+    }
+  }
 }
