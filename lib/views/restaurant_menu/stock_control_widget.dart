@@ -124,17 +124,17 @@ class StockControlWidget extends StatelessWidget {
                       itemBuilder: (context, index) {
                         var item = state.item.ingredients[index];
                         return CardIngredient(
-                            title: item.name,
-                            volume: item.volume,
-                            unit: item.unit,
+                            title: item,
+                            volume: 0,
+                            unit: item,
                             onTap: () => context
                                 .read<MenuCubit>()
-                                .changeSelectedItem(item.name),
+                                .changeSelectedItem(item),
                             onRemove: () {},
                             // context
                             //     .read<MenuCubit>()
                             //     .removeIngredient(item),
-                            selected: state.selected == item.name);
+                            selected: state.selected == item);
                       },
                     );
                   }),

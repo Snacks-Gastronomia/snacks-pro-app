@@ -82,7 +82,7 @@ class _DropDownItemsMenuState extends State<DropDownItemsMenu> {
           if (stream.hasData) {
             var docs = stream.data!.docs;
             List list = docs.map((e) => Item.fromMap(e.data()).title).toList();
-            print(list);
+            list.sort();
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

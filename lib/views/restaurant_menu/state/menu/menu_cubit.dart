@@ -190,7 +190,7 @@ class MenuCubit extends Cubit<MenuState> {
 
   itemSelected() {
     return state.item.ingredients
-        .singleWhere((element) => element.name == state.selected);
+        .singleWhere((element) => element == state.selected);
   }
 
   void changeSelectedItem(String value) {

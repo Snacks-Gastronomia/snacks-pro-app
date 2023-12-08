@@ -104,31 +104,54 @@ class NewStockService {
     }
   }
 
-  Future<void> deleteItem(String stockItemId, int index) async {
+  Future<void> deleteItem({
+    required ItemConsume itemConsume,
+    required String stockItemId,
+    required int index,
+  }) async {
     try {
       String restaurantId = await getId();
 
-      DocumentReference<Map<String, dynamic>> docRef = FirebaseFirestore
+      DocumentReference<Map<String, dynamic>> stockDocRef = FirebaseFirestore
           .instance
           .collection('stock')
           .doc(restaurantId)
           .collection('items')
           .doc(stockItemId);
 
-      DocumentSnapshot<Map<String, dynamic>> snapshot = await docRef.get();
-      List<dynamic> currentItems = snapshot.data()?['items'] ?? [];
+      DocumentSnapshot<Map<String, dynamic>> stockSnapshot =
+          await stockDocRef.get();
+      List<dynamic> currentItems = stockSnapshot.data()?['items'] ?? [];
 
       if (index >= 0 && index < currentItems.length) {
         currentItems.removeAt(index);
 
-        await docRef.update({
+        await stockDocRef.update({
           'items': currentItems,
         });
       } else {
-        print('Índice inválido para exclusão.');
+        print('Índice inválido para exclusão do stock.');
       }
+
+      QuerySnapshot<Map<String, dynamic>> menuQuery = await FirebaseFirestore
+          .instance
+          .collection('menu')
+          .where('title', isEqualTo: itemConsume.title)
+          .limit(1)
+          .get();
+
+      DocumentReference<Map<String, dynamic>> menuDocRef =
+          menuQuery.docs.first.reference;
+      List<dynamic> menuIngredients =
+          menuQuery.docs.first.data()['ingredients'] ?? [];
+
+      menuIngredients.remove(stockItemId);
+
+      await menuDocRef.set({
+        'ingredients': menuIngredients,
+      }, SetOptions(merge: true));
     } catch (e) {
-      print('Erro ao excluir item do Firestore: $e');
+      print('Erro ao excluir item: $e');
       throw e;
     }
   }
@@ -171,6 +194,18 @@ class NewStockService {
         .doc(itemStock.title)
         .set({
       'items': FieldValue.arrayUnion([itemConsume.toMap()]),
+    }, SetOptions(merge: true));
+
+    QuerySnapshot<Map<String, dynamic>> ref = await firebase
+        .collection('menu')
+        .where('title', isEqualTo: itemConsume.title)
+        .limit(1)
+        .get();
+
+    var id = ref.docs.first.data()['id'];
+
+    await firebase.collection('menu').doc(id).set({
+      'ingredients': FieldValue.arrayUnion([itemStock.title]),
     }, SetOptions(merge: true));
   }
 
@@ -247,7 +282,7 @@ class NewStockService {
           .orderBy('created_at', descending: true)
           .where('restaurant', isEqualTo: restaurantId)
           .where('status', isEqualTo: 'delivered')
-          .limit(20)
+          .limit(500)
           .get();
 
       for (QueryDocumentSnapshot<Map<String, dynamic>> doc in ref.docs) {

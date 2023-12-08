@@ -92,7 +92,7 @@ class HistoryStock extends StatelessWidget {
                         title: Text(mylist[index]['title']),
                         subtitle: Text(
                             "Quantidade: ${processedOrders[index][0]['amount']}"),
-                        trailing: Text("${item.amount}${item.measure}"),
+                        trailing: Text("${0}${item.measure}"),
                       );
                     },
                   ),

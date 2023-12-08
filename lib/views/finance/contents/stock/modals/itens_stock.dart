@@ -4,6 +4,7 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/services/new_stock_service.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_item_modal.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_consume.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/blue_buttom_add.dart';
 
@@ -51,8 +52,11 @@ class ItensStock extends StatelessWidget {
                         return Dismissible(
                           key: Key(itemConsume[index]['title']),
                           direction: DismissDirection.endToStart,
-                          onDismissed: (direction) =>
-                              stock.deleteItem(item.title, index),
+                          onDismissed: (direction) => stock.deleteItem(
+                              itemConsume:
+                                  ItemConsume.fromMap(itemConsume[index]),
+                              stockItemId: item.title,
+                              index: index),
                           background: Container(
                               padding: const EdgeInsets.only(right: 5),
                               alignment: Alignment.centerRight,
