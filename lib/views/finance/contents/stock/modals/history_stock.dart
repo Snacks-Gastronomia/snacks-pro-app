@@ -59,6 +59,14 @@ class HistoryStock extends StatelessWidget {
           } else {
             List processedOrders =
                 snapshot.data!.map((doc) => doc.data()['items']).toList();
+            List mylist =
+                processedOrders.map((order) => order[0]['item']).toList();
+
+            List filteredList = processedOrders.where((order) {
+              return order[0]['item']['ingredients'].contains('agua');
+            }).toList();
+            print('filtered list: ${filteredList}');
+
             return Column(
               children: [
                 const ListTile(
@@ -82,16 +90,12 @@ class HistoryStock extends StatelessWidget {
                   height: 350,
                   child: ListView.separated(
                     separatorBuilder: (context, index) => const Divider(),
-                    itemCount: processedOrders.length,
+                    itemCount: filteredList.length,
                     itemBuilder: (context, index) {
-                      List mylist = processedOrders
-                          .map((order) => order[0]['item'])
-                          .toList();
-
                       return ListTile(
-                        title: Text(mylist[index]['title']),
+                        title: Text(filteredList[index][0]['item']['title']),
                         subtitle: Text(
-                            "Quantidade: ${processedOrders[index][0]['amount']}"),
+                            "Quantidade: ${filteredList[index][0]['amount']}"),
                         trailing: Text("${0}${item.measure}"),
                       );
                     },
