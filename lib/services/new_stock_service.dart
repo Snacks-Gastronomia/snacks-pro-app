@@ -281,7 +281,6 @@ class NewStockService {
           .collection('orders')
           .orderBy('created_at', descending: true)
           .where('restaurant', isEqualTo: restaurantId)
-          .where('status', isEqualTo: 'delivered')
           .limit(500)
           .get();
 
@@ -298,20 +297,51 @@ class NewStockService {
     }
   }
 
-  Future updateConsume(String itemStock) async {
+  Future updateConsume(ItemStock itemStock) async {
     try {
       List<QueryDocumentSnapshot<Map<String, dynamic>>> order =
           await getOrders();
       List<OrderResponse> res =
           order.map((e) => OrderResponse.fromFirebase(e)).toList();
-      // print('----------------------------');
-      // print('TESTE ${res.map((e) => e.toMap())}');
+
       List<OrderResponse> filterList = res
-          .where((element) => element.items
-              .any((element) => element.item.ingredients!.contains(itemStock)))
+          .where((element) => element.items.any(
+              (element) => element.item.ingredients!.contains(itemStock.title)))
           .toList();
-      // print('----------------------------');
-      // print('TESTE ${filterList}');
+
+      List test = filterList.map((e) => e.items.first.item.title).toList();
+
+      List<Map> myConsume = filterList
+          .map((e) => {
+                'amount': e.items.map((e) => e.amount).first,
+                'ingredients':
+                    e.items.map((e) => e.item.ingredients!.first).first,
+                'consume': itemStock.items!
+                    .where((element) => test.contains(element.title))
+                    .map((e) => e.consume)
+                    .first,
+                'month': DateFormat('MMM').format(e.created_at)
+              })
+          .toList();
+
+      print(myConsume);
+
+      String restaurantId = await getId();
+      for (Map consume in myConsume) {
+        String month = consume['month'];
+
+        DocumentReference docRef = firebase
+            .collection('stock')
+            .doc(restaurantId)
+            .collection('consume')
+            .doc(month);
+        var newValue = (consume['consume'] * consume['amount']);
+        await docRef.set({
+          "consume": newValue,
+          "ingredients": consume['ingredients'],
+          "month": month
+        });
+      }
 
       return res;
     } catch (e) {

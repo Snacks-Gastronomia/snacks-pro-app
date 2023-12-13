@@ -129,7 +129,7 @@ class ItemDetailsStock extends StatelessWidget {
                 width: double.maxFinite,
                 height: 200,
                 child: FutureBuilder(
-                  future: stock.updateConsume(item.title),
+                  future: stock.updateConsume(item),
                   builder: (context, future) {
                     if (future.connectionState == ConnectionState.waiting) {
                       return const Center(
