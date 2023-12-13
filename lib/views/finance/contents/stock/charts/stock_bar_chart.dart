@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class StockBarChart extends StatelessWidget {
-  const StockBarChart();
+  const StockBarChart({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -16,7 +16,7 @@ class HistoryStock extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(30),
       child: FutureBuilder(
-        future: stock.getOrdersByItem('Heineken'),
+        future: stock.getOrders(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const SizedBox(
@@ -67,6 +67,10 @@ class HistoryStock extends StatelessWidget {
             }).toList();
             print('filtered list: ${filteredList}');
 
+            int totalAmount = filteredList.fold<int>(0, (previousValue, order) {
+              return previousValue + order[0]['amount'] as int;
+            });
+
             return Column(
               children: [
                 const ListTile(
@@ -81,7 +85,7 @@ class HistoryStock extends StatelessWidget {
                 ),
                 ListTile(
                   trailing: Text(
-                    'Total: $amount',
+                    'Total: $totalAmount',
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),
@@ -92,11 +96,16 @@ class HistoryStock extends StatelessWidget {
                     separatorBuilder: (context, index) => const Divider(),
                     itemCount: filteredList.length,
                     itemBuilder: (context, index) {
+                      String titleFilter =
+                          filteredList[index][0]['item']['title'];
+                      int amount = filteredList[index][0]['amount'];
+                      var itemConsume =
+                          item.items!.firstWhere((e) => e.title == titleFilter);
                       return ListTile(
-                        title: Text(filteredList[index][0]['item']['title']),
-                        subtitle: Text(
-                            "Quantidade: ${filteredList[index][0]['amount']}"),
-                        trailing: Text("${0}${item.measure}"),
+                        title: Text(titleFilter),
+                        subtitle: Text("Quantidade: $amount"),
+                        trailing: Text(
+                            "${itemConsume.consume * amount}${item.measure}"),
                       );
                     },
                   ),

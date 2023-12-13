@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_consume.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
@@ -273,8 +274,7 @@ class NewStockService {
     }
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getOrdersByItem(
-      String itemTitle) async {
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getOrders() async {
     try {
       String restaurantId = await getId();
       QuerySnapshot<Map<String, dynamic>> ref = await firebase
@@ -287,13 +287,34 @@ class NewStockService {
 
       for (QueryDocumentSnapshot<Map<String, dynamic>> doc in ref.docs) {
         final data = doc.data();
-        print('Documento ID: ${doc.id}');
-        print('Dados: $data');
+        // print('Documento ID: ${doc.id}');
+        // print('Dados: $data');
       }
 
       return ref.docs.toList();
     } catch (e) {
       debugPrint('Erro: $e');
+      rethrow;
+    }
+  }
+
+  Future updateConsume(String itemStock) async {
+    try {
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> order =
+          await getOrders();
+      List<OrderResponse> res =
+          order.map((e) => OrderResponse.fromFirebase(e)).toList();
+      // print('----------------------------');
+      // print('TESTE ${res.map((e) => e.toMap())}');
+      List<OrderResponse> filterList = res
+          .where((element) => element.items
+              .any((element) => element.item.ingredients!.contains(itemStock)))
+          .toList();
+      // print('----------------------------');
+      // print('TESTE ${filterList}');
+
+      return res;
+    } catch (e) {
       rethrow;
     }
   }

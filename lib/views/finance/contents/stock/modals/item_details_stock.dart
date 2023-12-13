@@ -129,25 +129,17 @@ class ItemDetailsStock extends StatelessWidget {
                 width: double.maxFinite,
                 height: 200,
                 child: FutureBuilder(
-                  future: stock.getItemLossesCollection(item: item.title),
-                  builder: (context, stream) {
-                    if (stream.connectionState == ConnectionState.waiting) {
+                  future: stock.updateConsume(item.title),
+                  builder: (context, future) {
+                    if (future.connectionState == ConnectionState.waiting) {
                       return const Center(
                           child:
                               CircularProgressIndicator()); // Ou qualquer indicador de carregamento que você preferir
-                    } else if (stream.hasError) {
-                      return Text('Erro: ${stream.error}');
-                    } else if (!stream.hasData) {
+                    } else if (future.hasError) {
+                      return Text('Erro: ${future.error}');
+                    } else if (!future.hasData) {
                       return const Center(child: Text('Sem dados'));
                     } else {
-                      var docs = stream.data!;
-                      List<LossesStock> losses = docs
-                          .map((e) => LossesStock.fromMap(e.data()))
-                          .toList();
-                      for (var losse in losses) {
-                        debugPrint(losse.toMap().toString());
-                      }
-
                       return const StockBarChart();
                     }
                   },
