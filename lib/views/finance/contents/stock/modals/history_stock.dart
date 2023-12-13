@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/services/new_stock_service.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_consume.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
 class HistoryStock extends StatelessWidget {
