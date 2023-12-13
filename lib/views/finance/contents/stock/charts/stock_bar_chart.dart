@@ -2,7 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class StockBarChart extends StatelessWidget {
-  const StockBarChart({super.key});
+  final List<Map> dataBarChart;
+  const StockBarChart({super.key, required this.dataBarChart});
 
   @override
   Widget build(BuildContext context) {
@@ -50,44 +51,8 @@ class StockBarChart extends StatelessWidget {
     );
     String text;
     switch (value.toInt()) {
-      case 1:
-        text = 'Jan';
-        break;
-      case 2:
-        text = 'Fev';
-        break;
-      case 3:
-        text = 'Mar';
-        break;
-      case 4:
-        text = 'Abr';
-        break;
-      case 5:
-        text = 'Mai';
-        break;
-      case 6:
-        text = 'Jun';
-        break;
-      case 7:
-        text = 'Jul';
-        break;
-      case 8:
-        text = 'Ago';
-        break;
-      case 9:
-        text = 'Set';
-        break;
-      case 10:
-        text = 'Out';
-        break;
-      case 11:
-        text = 'Nov';
-        break;
-      case 12:
-        text = 'Dez';
-        break;
       default:
-        text = '';
+        text = dataBarChart[value.toInt()]['month'];
         break;
     }
     return SideTitleWidget(
@@ -130,73 +95,20 @@ class StockBarChart extends StatelessWidget {
         end: Alignment.topCenter,
       );
 
-  List<BarChartGroupData> get barGroups => [
-        BarChartGroupData(
-          x: 1,
+  List<BarChartGroupData> get barGroups =>
+      dataBarChart.asMap().entries.map((e) {
+        final index = e.key;
+        final element = e.value;
+        return BarChartGroupData(
+          x: index,
           barRods: [
             BarChartRodData(
-              toY: 10,
+              toY: double.parse(
+                  (element['consume'] * element['amount']).toString()),
               gradient: _barsGradient,
             )
           ],
           showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 2,
-          barRods: [
-            BarChartRodData(
-              toY: 14,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-              toY: 15,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 4,
-          barRods: [
-            BarChartRodData(
-              toY: 13,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 5,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-      ];
-}
-
-class BarChartSample3 extends StatefulWidget {
-  const BarChartSample3({super.key});
-
-  @override
-  State<StatefulWidget> createState() => BarChartSample3State();
-}
-
-class BarChartSample3State extends State<BarChartSample3> {
-  @override
-  Widget build(BuildContext context) {
-    return const AspectRatio(
-      aspectRatio: 1.6,
-      child: StockBarChart(),
-    );
-  }
+        );
+      }).toList();
 }

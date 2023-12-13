@@ -343,7 +343,7 @@ class NewStockService {
         });
       }
 
-      return res;
+      return myConsume;
     } catch (e) {
       rethrow;
     }

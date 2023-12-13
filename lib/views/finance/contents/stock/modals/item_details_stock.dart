@@ -140,7 +140,10 @@ class ItemDetailsStock extends StatelessWidget {
                     } else if (!future.hasData) {
                       return const Center(child: Text('Sem dados'));
                     } else {
-                      return const StockBarChart();
+                      List<Map> mylist = future.data;
+                      return StockBarChart(
+                        dataBarChart: mylist,
+                      );
                     }
                   },
                 ),
@@ -207,7 +210,9 @@ class ItemDetailsStock extends StatelessWidget {
                         debugPrint(losse.toMap().toString());
                       }
 
-                      return const StockBarChart();
+                      return StockBarChart(
+                        dataBarChart: [],
+                      );
                     }
                   },
                 ),
