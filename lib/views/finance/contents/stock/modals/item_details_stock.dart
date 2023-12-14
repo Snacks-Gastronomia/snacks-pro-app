@@ -11,15 +11,17 @@ import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dar
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/history_losses.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/history_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/itens_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/consume_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/losses_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/common_button_stock.dart';
 
 class ItemDetailsStock extends StatelessWidget {
-  ItemDetailsStock({super.key, required this.item});
+  ItemDetailsStock({super.key, required this.item, required this.totalConsume});
   final ItemStock item;
   final modal = AppModal();
   final stock = NewStockService();
+  final int totalConsume;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +122,7 @@ class ItemDetailsStock extends StatelessWidget {
                   "Consumo",
                   style: AppTextStyles.bold(18),
                 ),
-                trailing: Text('${item.consume}${item.measure}'),
+                trailing: Text('$totalConsume ${item.measure}'),
               ),
               const SizedBox(
                 height: 50,

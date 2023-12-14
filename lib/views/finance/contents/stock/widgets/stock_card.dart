@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
+import 'package:snacks_pro_app/services/new_stock_service.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/item_details_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/consume_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
 class StockCard extends StatelessWidget {
@@ -21,13 +24,25 @@ class StockCard extends StatelessWidget {
     double valuePercent = rest / item.amount;
     int percent = (valuePercent * 100).toInt();
 
+    final stock = NewStockService();
+
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute<void>(
-          builder: (BuildContext context) => ItemDetailsStock(
-            item: item,
-          ),
+          builder: (BuildContext context) => FutureBuilder(
+              future: stock.getConsume(item),
+              builder: (context, future) {
+                if (future.hasData) {
+                  return ItemDetailsStock(
+                    item: item,
+                    totalConsume: future.data!,
+                  );
+                } else {
+                  return const Scaffold(
+                      body: Center(child: CustomCircularProgress()));
+                }
+              }),
         ),
       ),
       child: Card(

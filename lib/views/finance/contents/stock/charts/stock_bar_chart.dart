@@ -7,6 +7,12 @@ class StockBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var consume = dataBarChart.isNotEmpty ? dataBarChart[0]['consume'] : 0;
+    double maxY = consume != 0
+        ? double.parse(((consume * dataBarChart[0]['amount']) +
+                (dataBarChart[0]['consume'] / 2))
+            .toString())
+        : 100;
     return BarChart(
       BarChartData(
         barTouchData: barTouchData,
@@ -15,7 +21,7 @@ class StockBarChart extends StatelessWidget {
         barGroups: barGroups,
         gridData: FlGridData(show: true, drawVerticalLine: false),
         alignment: BarChartAlignment.spaceAround,
-        maxY: 20,
+        maxY: maxY,
       ),
     );
   }
@@ -72,7 +78,12 @@ class StockBarChart extends StatelessWidget {
           ),
         ),
         leftTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: true),
+          sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 50,
+              interval: dataBarChart.isNotEmpty
+                  ? dataBarChart[0]['consume'] / 5
+                  : 10),
         ),
         topTitles: AxisTitles(
           sideTitles: SideTitles(showTitles: false),

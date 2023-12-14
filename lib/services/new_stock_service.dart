@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/consume_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_consume.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
@@ -14,6 +15,8 @@ class NewStockService {
     var data = await storage.getDataStorage("user");
     return data["restaurant"]["id"];
   }
+
+  var refItemStock = FirebaseFirestore.instance.collection('stock');
 
   Stream<QuerySnapshot<Map<String, dynamic>>> streamStock() async* {
     try {
@@ -68,6 +71,7 @@ class NewStockService {
   Stream<List> getItemConsumeStream({required String item}) async* {
     try {
       String restaurantId = await getId();
+
       yield* firebase
           .collection('stock')
           .doc(restaurantId)
@@ -241,8 +245,13 @@ class NewStockService {
   }
 
   Future<void> addConsumeItemStock(ItemStock item, int consume) async {
-    await firebase.collection('stock').doc(item.title).update({
-      'consume': FieldValue.increment(consume),
+    String restaurantId = await getId();
+    await refItemStock
+        .doc(restaurantId)
+        .collection('items')
+        .doc(item.title)
+        .update({
+      'consume': consume,
     });
   }
 
@@ -344,6 +353,35 @@ class NewStockService {
       }
 
       return myConsume;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<int> getConsume(ItemStock itemStock) async {
+    try {
+      String month = DateFormat('MMM').format(DateTime.now());
+      String restaurantId = await getId();
+      var res = await firebase
+          .collection('stock')
+          .doc(restaurantId)
+          .collection('consume')
+          .get();
+
+      var data = res.docs.map((e) => e.data()).toList();
+      var filterData =
+          data.where((element) => element['ingredients'] == itemStock.title);
+      List<ConsumeStock> consumeList =
+          filterData.map((e) => ConsumeStock.fromMap(e)).toList();
+
+      int totalConsume = 0;
+      for (final consumeStock in consumeList) {
+        totalConsume += consumeStock.consume;
+      }
+
+      addConsumeItemStock(itemStock, totalConsume);
+
+      return totalConsume;
     } catch (e) {
       rethrow;
     }
