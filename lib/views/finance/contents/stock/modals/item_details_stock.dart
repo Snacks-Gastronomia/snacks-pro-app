@@ -5,7 +5,8 @@ import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/services/new_stock_service.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_bar_chart.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_bar_chart_consume.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_bar_chart_losses.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/charts/stock_pie_chart.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/history_losses.dart';
@@ -143,7 +144,7 @@ class ItemDetailsStock extends StatelessWidget {
                       return const Center(child: Text('Sem dados'));
                     } else {
                       List<Map> mylist = future.data;
-                      return StockBarChart(
+                      return StockBarChartConsume(
                         dataBarChart: mylist,
                       );
                     }
@@ -209,11 +210,11 @@ class ItemDetailsStock extends StatelessWidget {
                           .map((e) => LossesStock.fromMap(e.data()))
                           .toList();
                       for (var losse in losses) {
-                        debugPrint(losse.toMap().toString());
+                        print('losses: ${losse.toMap()}');
                       }
 
-                      return StockBarChart(
-                        dataBarChart: [],
+                      return StockBarChartLosses(
+                        dataBarChart: losses,
                       );
                     }
                   },

@@ -1,9 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class StockBarChart extends StatelessWidget {
+class StockBarChartConsume extends StatelessWidget {
   final List<Map> dataBarChart;
-  const StockBarChart({super.key, required this.dataBarChart});
+  const StockBarChartConsume({super.key, required this.dataBarChart});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class StockBarChart extends StatelessWidget {
               reservedSize: 50,
               interval: dataBarChart.isNotEmpty
                   ? dataBarChart[0]['consume'] / 5
-                  : 10),
+                  : 30),
         ),
         topTitles: AxisTitles(
           sideTitles: SideTitles(showTitles: false),
