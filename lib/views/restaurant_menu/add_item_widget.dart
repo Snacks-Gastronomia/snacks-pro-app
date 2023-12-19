@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:snacks_pro_app/core/app.colors.dart';
@@ -96,6 +97,10 @@ class AddItemWidget extends StatelessWidget {
                     borderType: BorderType.RRect,
                     radius: const Radius.circular(12),
                     child: TextFormField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp("[' , a-zA-Z 0-9]")),
+                      ],
                       maxLines: 6,
                       maxLength: 200,
                       onChanged: context.read<MenuCubit>().changeDescription,
