@@ -154,6 +154,7 @@ class CardExpenseContent extends StatelessWidget {
           NumberFormat.currency(locale: "pt", symbol: r"R$ ").format(value),
           style: AppTextStyles.medium(18,
               color: value.isNegative ? Colors.red : Colors.green),
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
