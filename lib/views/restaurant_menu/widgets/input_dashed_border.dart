@@ -48,9 +48,7 @@ class DashedBorderInput extends StatelessWidget {
           child: TextFormField(
             keyboardType: keyboardType,
             inputFormatters: inputFormatters,
-            controller: status == AppStatus.editing
-                ? TextEditingController(text: value)
-                : null,
+            controller: null,
             textInputAction:
                 doneButton ? TextInputAction.done : TextInputAction.next,
             onChanged: onChange,

@@ -41,7 +41,7 @@ class ItemDetailsWidget extends StatelessWidget {
                     label: 'Tempo de preparo(minutos)',
                     onChange: context.read<MenuCubit>().changeTime,
                     status: context.read<MenuCubit>().state.status,
-                    value: context.read<MenuCubit>().state.item.time.toString(),
+                    initialValue: context.read<MenuCubit>().state.item.time.toString(),
                     keyboardType:
                         const TextInputType.numberWithOptions(signed: true),
                     inputFormatters: [
@@ -55,7 +55,7 @@ class ItemDetailsWidget extends StatelessWidget {
                     label: 'Serve quantas pessoas?',
                     onChange: context.read<MenuCubit>().changeNumServed,
                     status: context.read<MenuCubit>().state.status,
-                    value: context
+                    initialValue: context
                         .read<MenuCubit>()
                         .state
                         .item
