@@ -185,30 +185,33 @@ class ExpensesTab extends StatelessWidget {
   final restaurantID;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 15,
-        ),
-        ListAllExpenses(access_level: access_level, restaurantID: restaurantID),
-        if (access_level == AppPermission.radm.name)
-          SizedBox(
-            height: 50,
-            child: Center(
-              child: TextButton(
-                onPressed: () => AppModal().showModalBottomSheet(
-                    withPadding: false,
-                    context: context,
-                    content: NewExpenseContent(
-                      restaurantDocId: restaurantID,
-                      restaurantExpense: true,
-                      accessLevel: access_level.toString().stringToEnum,
-                    )),
-                child: const Text('Adicionar depesa adicional'),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 15,
+          ),
+          ListAllExpenses(
+              access_level: access_level, restaurantID: restaurantID),
+          if (access_level == AppPermission.radm.name)
+            SizedBox(
+              height: 50,
+              child: Center(
+                child: TextButton(
+                  onPressed: () => AppModal().showModalBottomSheet(
+                      withPadding: false,
+                      context: context,
+                      content: NewExpenseContent(
+                        restaurantDocId: restaurantID,
+                        restaurantExpense: true,
+                        accessLevel: access_level.toString().stringToEnum,
+                      )),
+                  child: const Text('Adicionar depesa adicional'),
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -255,15 +258,15 @@ class ListAllExpenses extends StatelessWidget {
                       final value =
                           double.parse(item.data()["value"].toString()) * -1;
                       return CardExpense(
-                          docNumber: item.data()["docNumber"],
-                          supplier: item.data()["supplier"],
-                          period: item.data()["period"],
+                          docNumber: item.data()["docNumber"] ?? 0,
+                          supplier: item.data()["supplier"] ?? '',
+                          period: item.data()["period"] ?? '',
                           enableDelete: item.data()["type"] == "restaurant",
                           deleteAction: () => context
                               .read<FinanceCubit>()
                               .deleteRestaurantExpense(item.id, restaurantID),
                           title: item.data()["name"],
-                          subtitle: item.data()["period"],
+                          subtitle: item.data()["period"] ?? '',
                           iconColorBlack: item.data()["type"] == "restaurant",
                           icon: (item.data()["sharedValue"] ?? false)
                               ? Icons.groups
