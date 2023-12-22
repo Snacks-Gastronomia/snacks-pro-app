@@ -8,6 +8,9 @@ import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+
+import 'package:snacks_pro_app/utils/save_excel.dart';
+import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/dropdown_items.dart';
 
@@ -67,14 +70,16 @@ class _ReportScreenState extends State<ReportScreen> {
                       value: [state.interval_start, state.interval_end],
                       borderRadius: BorderRadius.circular(15),
                     );
-                    if (results?.length == 1) {
-                      // ignore: use_build_context_synchronously
-                      context.read<FinanceOrdersCubit>().fetchReceipts(
-                          widget.restaurant_id, results![0]!, results[0]!);
-                    } else {
-                      // ignore: use_build_context_synchronously
-                      context.read<FinanceOrdersCubit>().fetchReceipts(
-                          widget.restaurant_id, results![0]!, results[1]!);
+                    if (results != null) {
+                      if (results?.length == 1) {
+                        // ignore: use_build_context_synchronously
+                        context.read<FinanceOrdersCubit>().fetchReceipts(
+                            widget.restaurant_id, results![0]!, results[0]!);
+                      } else {
+                        // ignore: use_build_context_synchronously
+                        context.read<FinanceOrdersCubit>().fetchReceipts(
+                            widget.restaurant_id, results![0]!, results[1]!);
+                      }
                     }
                     final stateButton = _key.currentState;
                     if (stateButton != null) {
@@ -87,25 +92,42 @@ class _ReportScreenState extends State<ReportScreen> {
                       color: Colors.white),
                 ),
               ),
-              SizedBox(
-                height: 50,
-                width: 50,
-                child: FloatingActionButton.small(
-                  heroTag: null,
-                  tooltip: 'Gerar planilha',
-                  backgroundColor: const Color(0xff008000),
-                  child: const Icon(Icons.file_download, color: Colors.white),
-                  onPressed: () {
-                    // XMLHandler().export2();
-                    // exportXML();
-                    // final stateButton = _key.currentState;
-                    // if (stateButton != null) {
-                    //   debugPrint('isOpen:${stateButton.isOpen}');
-                    //   stateButton.toggle();
-                    // }
-                  },
+              if (state.orders.isNotEmpty)
+                SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: FloatingActionButton.small(
+                    heroTag: null,
+                    tooltip: 'Gerar planilha',
+                    backgroundColor: Colors.green[800],
+                    child: const Icon(Icons.file_download_outlined,
+                        color: Colors.white),
+                    onPressed: () async {
+                      final toast = AppToast();
+                      toast.init(context: context);
+                      var state = context.read<FinanceOrdersCubit>().state;
+                      await FileStorage.generateExcel(
+                          state.orders,
+                          [state.interval_start, state.interval_end],
+                          state.totalValue);
+
+                      final stateButton = _key.currentState;
+                      if (stateButton != null) {
+                        stateButton.toggle();
+                        // ignore: use_build_context_synchronously
+                        toast.showToast(
+                            context: context,
+                            content: "Relatório salvo em Documentos!",
+                            type: ToastType.info);
+                        // SnackBar(
+                        //   content: const Text('Relatorio salvo em documentos'),
+                        //   action: SnackBarAction(
+                        //       label: 'Ok', onPressed: () => print("close")),
+                        // );
+                      }
+                    },
+                  ),
                 ),
-              ),
             ],
           );
         },
@@ -276,24 +298,34 @@ class ReceiptCard extends StatelessWidget {
             height: 5,
           ),
           ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: data.items.length,
             itemBuilder: (context, index) {
               var item = data.items[index];
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${item.amount} ${item.item.title}",
-                    style: AppTextStyles.light(12, color: Colors.black45),
-                  ),
-                  Text(
-                    NumberFormat.currency(locale: "pt", symbol: r"R$ ")
-                        .format(item.item.value),
-                    style: AppTextStyles.light(12, color: Colors.black45),
-                  ),
-                ],
-              );
+              return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${item.amount} ${item.item.title}",
+                          style: AppTextStyles.light(12, color: Colors.black45),
+                        ),
+                        Text(
+                          NumberFormat.currency(locale: "pt", symbol: r"R$ ")
+                              .format(item.item.value),
+                          style: AppTextStyles.light(12, color: Colors.black54),
+                        ),
+                      ],
+                    ),
+                    if (item.extras?.isNotEmpty ?? false)
+                      Text(
+                        item.extras?.map((e) => e["title"]).join(",") ?? "",
+                        style: AppTextStyles.light(12, color: Colors.black26),
+                      ),
+                  ]);
             },
           ),
           const SizedBox(
