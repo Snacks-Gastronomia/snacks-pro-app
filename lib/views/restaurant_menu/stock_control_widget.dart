@@ -69,95 +69,97 @@
 //           //   ),
 //           // ),
 
-//           const SizedBox(
-//             height: 70,
-//           ),
-//           Center(
-//               child: BlocBuilder<MenuCubit, MenuState>(
-//                   key: UniqueKey(),
-//                   builder: (context, snapshot) {
-//                     if (snapshot.selected.isNotEmpty) {
-//                       final item = context.read<MenuCubit>().itemSelected();
-//                       final roundedValue = (item.volume).ceil().toInt();
-//                       return SleekCircularSlider(
-//                         // onChangeStart: (double value) {},
-//                         // onChangeEnd: (double value) {
-//                         //   print(value)
-//                         // },
-//                         // onChange: (value) => context
-//                         //     .read<MenuCubit>()
-//                         //     .changeIngredientVolume(value.ceil().toInt()),
-//                         innerWidget: (percentage) {
-//                           final roundedValue = percentage.ceil().toInt();
-//                           return Center(
-//                               child: Text(
-//                             '$roundedValue ${item.unit}',
-//                             style: AppTextStyles.medium(30, color: Colors.grey),
-//                           ));
-//                         },
-//                         appearance: const CircularSliderAppearance(
-//                           size: 200,
-//                         ),
-//                         min: 0,
-//                         max: 1000, //quantidade - item_volume;
-//                         initialValue: double.parse(roundedValue.toString()),
-//                       );
-//                     } else {
-//                       return const SizedBox();
-//                     }
-//                   })),
-//           Center(
-//             child: SizedBox(
-//               height: 100,
-//               child: BlocBuilder<MenuCubit, MenuState>(
-//                   key: UniqueKey(),
-//                   builder: (context, state) {
-//                     print(state.item.ingredients.length);
-//                     return ListView.separated(
-//                       separatorBuilder: (context, index) => const SizedBox(
-//                         width: 15,
-//                       ),
-//                       physics: const BouncingScrollPhysics(),
-//                       itemCount: state.item.ingredients.length,
-//                       shrinkWrap: true,
-//                       scrollDirection: Axis.horizontal,
-//                       itemBuilder: (context, index) {
-//                         var item = state.item.ingredients[index];
-//                         return CardIngredient(
-//                             title: item,
-//                             volume: item,
-//                             unit: item.unit,
-//                             onTap: () => context
-//                                 .read<MenuCubit>()
-//                                 .changeSelectedItem(item.name),
-//                             onRemove: () {},
-//                             // context
-//                             //     .read<MenuCubit>()
-//                             //     .removeIngredient(item),
-//                             selected: state.selected == item.name);
-//                       },
-//                     );
-//                   }),
-//             ),
-//           ),
-//           const Spacer(),
-//           ElevatedButton(
-//             onPressed: buttonAction,
-//             style: ElevatedButton.styleFrom(
-//                 shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(15)),
-//                 primary: Colors.black,
-//                 fixedSize: const Size(double.maxFinite, 59)),
-//             child: Text(
-//               'Adicionar item',
-//               style: AppTextStyles.regular(16, color: Colors.white),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+
+          const SizedBox(
+            height: 70,
+          ),
+          Center(
+              child: BlocBuilder<MenuCubit, MenuState>(
+                  key: UniqueKey(),
+                  builder: (context, snapshot) {
+                    if (snapshot.selected.isNotEmpty) {
+                      final item = context.read<MenuCubit>().itemSelected();
+                      final roundedValue = (item.volume).ceil().toInt();
+                      return SleekCircularSlider(
+                        // onChangeStart: (double value) {},
+                        // onChangeEnd: (double value) {
+                        //   print(value)
+                        // },
+                        // onChange: (value) => context
+                        //     .read<MenuCubit>()
+                        //     .changeIngredientVolume(value.ceil().toInt()),
+                        innerWidget: (percentage) {
+                          final roundedValue = percentage.ceil().toInt();
+                          return Center(
+                              child: Text(
+                            '$roundedValue ${item.unit}',
+                            style: AppTextStyles.medium(30, color: Colors.grey),
+                          ));
+                        },
+                        appearance: const CircularSliderAppearance(
+                          size: 200,
+                        ),
+                        min: 0,
+                        max: 1000, //quantidade - item_volume;
+                        initialValue: double.parse(roundedValue.toString()),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  })),
+          Center(
+            child: SizedBox(
+              height: 100,
+              child: BlocBuilder<MenuCubit, MenuState>(
+                  key: UniqueKey(),
+                  builder: (context, state) {
+                    print(state.item.ingredients.length);
+                    return ListView.separated(
+                      separatorBuilder: (context, index) => const SizedBox(
+                        width: 15,
+                      ),
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: state.item.ingredients.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        var item = state.item.ingredients[index];
+                        return CardIngredient(
+                            title: item,
+                            volume: 0,
+                            unit: item,
+                            onTap: () => context
+                                .read<MenuCubit>()
+                                .changeSelectedItem(item),
+                            onRemove: () {},
+                            // context
+                            //     .read<MenuCubit>()
+                            //     .removeIngredient(item),
+                            selected: state.selected == item);
+                      },
+                    );
+                  }),
+            ),
+          ),
+          const Spacer(),
+          ElevatedButton(
+            onPressed: buttonAction,
+            style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                primary: Colors.black,
+                fixedSize: const Size(double.maxFinite, 59)),
+            child: Text(
+              'Adicionar item',
+              style: AppTextStyles.regular(16, color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 
 // class CardIngredient extends StatelessWidget {
 //   const CardIngredient({

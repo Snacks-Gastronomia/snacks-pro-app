@@ -31,10 +31,6 @@ class ItemsApiServices {
           .collection("menu")
           .where("restaurant_id", isEqualTo: restaurant_id);
 
-      // print(restaurant_id);
-      // if (document != null) {
-      //   return ref.startAfterDocument(document).snapshots();
-      // }
       return ref.snapshots();
     } catch (e) {
       rethrow;
