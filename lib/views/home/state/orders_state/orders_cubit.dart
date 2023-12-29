@@ -60,9 +60,9 @@ class OrdersCubit extends Cubit<OrdersState> {
     var isCashierAllowedByStatus =
         items.every((key) => key.status == OrderStatus.done.name);
 
-    bool isCashierAllowed = access == AppPermission.cashier &&
-        isCashierAllowedByStatus &&
-        firstOrder.isDelivery;
+    bool isCashierAllowed =
+        access == AppPermission.cashier && isCashierAllowedByStatus ||
+            firstOrder.isDelivery;
 
     List<String> ids = items.map((e) => e.id).toList();
 

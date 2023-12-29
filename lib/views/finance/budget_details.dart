@@ -7,14 +7,11 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
-import 'package:snacks_pro_app/views/finance/contents/expenses/expenses_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/expenses/new_expense.dart';
-import 'package:snacks_pro_app/views/finance/contents/order_report/month_orders_report.dart';
 import 'package:snacks_pro_app/views/finance/contents/order_report/report.dart';
-import 'package:snacks_pro_app/views/finance/contents/order_report/year_orders.dart';
+
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/widgets/card_expense.dart';
-import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 
 class BudgetDetailsContent extends StatelessWidget {
   const BudgetDetailsContent({Key? key}) : super(key: key);
@@ -29,7 +26,7 @@ class BudgetDetailsContent extends StatelessWidget {
           if (snapshot.hasData) {
             var user = snapshot.data ?? {};
             final restaurantID = user["restaurant"]["id"];
-            final access_level = user["access_level"];
+            final accessLevel = user["access_level"];
 
             return Scaffold(
               // bottomSheet:
@@ -120,7 +117,7 @@ class BudgetDetailsContent extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      (access_level == AppPermission.sadm.name)
+                      (accessLevel == AppPermission.sadm.name)
                           ? Expanded(
                               child: Column(
                                 children: [
@@ -148,7 +145,7 @@ class BudgetDetailsContent extends StatelessWidget {
                                     child: TabBarView(
                                       children: [
                                         ExpensesTab(
-                                            access_level: access_level,
+                                            access_level: accessLevel,
                                             restaurantID: restaurantID),
                                         Padding(
                                           padding:
@@ -164,7 +161,7 @@ class BudgetDetailsContent extends StatelessWidget {
                             )
                           : Expanded(
                               child: ExpensesTab(
-                                  access_level: access_level,
+                                  access_level: accessLevel,
                                   restaurantID: restaurantID),
                             ),
                     ],
