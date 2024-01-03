@@ -24,6 +24,9 @@ class AppRoutes {
   static String get addBankAccount => '/add-bank-account';
   static String get unathorizedAuth => '/unathorized-auth';
 
+  static String get conference => '/conference';
+  static String get conferenceMessage => '/conference-message';
+
   // '/': (context) => const StartScreen(),
   // '/': (context) => const SelectRestaurantScreen(),
   // '/': (context) => const PhoneAuthenticationScreen(),
