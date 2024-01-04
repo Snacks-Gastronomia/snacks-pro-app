@@ -77,6 +77,8 @@ class ConferenceController {
         content: 'Conferência criada com sucesso',
         type: ToastType.success,
       );
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppRoutes.home, (route) => false);
     } else {
       toast.showToast(
         context: context,
