@@ -1,7 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/views/conference/controllers/conference_controller.dart';
@@ -36,10 +33,7 @@ class ModalConference extends StatelessWidget {
           TextFormField(
             controller: textEditingController,
             style: const TextStyle(fontSize: 52),
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              RealInputFormatter(),
-            ],
+            inputFormatters: const [],
             keyboardType: TextInputType.number,
             textAlign: TextAlign.center,
             decoration: const InputDecoration(

@@ -27,7 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  brasil_fields: ^1.10.0
+  
   calendar_date_picker2: ^0.5.3
   cloud_firestore: ^4.3.1
   crypto: ^3.0.2

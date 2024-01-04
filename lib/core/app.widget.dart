@@ -12,7 +12,7 @@ import 'package:snacks_pro_app/views/authentication/password_screen.dart';
 import 'package:snacks_pro_app/views/authentication/phone_screen.dart';
 import 'package:snacks_pro_app/views/authentication/state/auth_cubit.dart';
 import 'package:snacks_pro_app/views/authentication/unathorized_screen.dart';
-import 'package:snacks_pro_app/views/conference/pages/conference_resume.dart';
+import 'package:snacks_pro_app/views/conference/pages/conference_resume_page.dart';
 import 'package:snacks_pro_app/views/conference/pages/message_conference_page.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/new_restaurant.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/stock.dart';
@@ -142,7 +142,8 @@ class AppWidget extends StatelessWidget {
                   AppRoutes.stock: (context) => StockScreen(),
                   AppRoutes.conferenceMessage: (context) =>
                       const MessageConferencePage(),
-                  AppRoutes.conference: (context) => const ConferenceResume(),
+                  AppRoutes.conference: (context) =>
+                      const ConferenceResumePage(),
                 },
               );
             }

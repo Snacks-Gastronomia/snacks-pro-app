@@ -1,31 +1,43 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class ConferenceModel {
-  final String? title;
-  final int? total;
-  final DateTime? date;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+class ConferenceModel {
+  final double dinheiro;
+  final double credito;
+  final double debito;
+  final double pix;
+  final double total;
+  final Timestamp date;
   ConferenceModel({
-    this.title,
-    this.total,
-    this.date,
+    required this.dinheiro,
+    required this.credito,
+    required this.debito,
+    required this.pix,
+    required this.total,
+    required this.date,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'title': title,
+      'dinheiro': dinheiro,
+      'credito': credito,
+      'debito': debito,
+      'pix': pix,
       'total': total,
-      'date': date?.millisecondsSinceEpoch,
+      'date': date,
     };
   }
 
   factory ConferenceModel.fromMap(Map<String, dynamic> map) {
     return ConferenceModel(
-      title: map['title'] != null ? map['title'] as String : null,
-      total: map['total'] != null ? map['total'] as int : null,
-      date: map['date'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['date'] as int)
-          : null,
+      dinheiro: map['dinheiro'] as double,
+      credito: map['credito'] as double,
+      debito: map['debito'] as double,
+      pix: map['pix'] as double,
+      total: map['total'] as double,
+      date: map['date'] as Timestamp,
     );
   }
 

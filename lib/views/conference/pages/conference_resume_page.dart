@@ -7,8 +7,8 @@ import 'package:snacks_pro_app/views/conference/controllers/conference_controlle
 import 'package:snacks_pro_app/views/conference/modals/modal_conference.dart';
 import 'package:snacks_pro_app/views/conference/widgets/card_conference.dart';
 
-class ConferenceResume extends StatelessWidget {
-  const ConferenceResume({super.key});
+class ConferenceResumePage extends StatelessWidget {
+  const ConferenceResumePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +48,13 @@ class ConferenceResume extends StatelessWidget {
                         modal.showModalBottomSheet(
                           context: context,
                           content: ModalConference(
-                              title: 'Dinheiro',
-                              controller: controller,
-                              textEditingController:
-                                  controller.store.dinheiroController,
-                              onTap: () => controller.setTotalDinheiro(
-                                  controller.store.dinheiroController)),
+                            title: 'Dinheiro',
+                            controller: controller,
+                            textEditingController:
+                                controller.store.dinheiroController,
+                            onTap: () => controller.setTotalDinheiro(
+                                controller.store.dinheiroController),
+                          ),
                         );
                       },
                     );
@@ -71,12 +72,13 @@ class ConferenceResume extends StatelessWidget {
                         modal.showModalBottomSheet(
                           context: context,
                           content: ModalConference(
-                              title: 'Cartão de crédito',
-                              controller: controller,
-                              textEditingController:
-                                  controller.store.creditoController,
-                              onTap: () => controller.setTotalCredit(
-                                  controller.store.creditoController)),
+                            title: 'Cartão de crédito',
+                            controller: controller,
+                            textEditingController:
+                                controller.store.creditoController,
+                            onTap: () => controller.setTotalCredit(
+                                controller.store.creditoController),
+                          ),
                         );
                       },
                     );
@@ -85,48 +87,51 @@ class ConferenceResume extends StatelessWidget {
                 height: 20,
               ),
               ValueListenableBuilder(
-                  valueListenable: controller.store.totalDebito,
-                  builder: (context, value, child) {
-                    return CardConference(
-                      title: 'Cartão de débito',
-                      total: value,
-                      onTap: () {
-                        modal.showModalBottomSheet(
-                            context: context,
-                            content: ModalConference(
-                              title: 'Cartão de débito',
-                              controller: controller,
-                              textEditingController:
-                                  controller.store.debitoController,
-                              onTap: () => controller.setTotalDebito(
-                                  controller.store.debitoController),
-                            ));
-                      },
-                    );
-                  }),
+                valueListenable: controller.store.totalDebito,
+                builder: (context, value, child) {
+                  return CardConference(
+                    title: 'Cartão de débito',
+                    total: value,
+                    onTap: () {
+                      modal.showModalBottomSheet(
+                        context: context,
+                        content: ModalConference(
+                          title: 'Cartão de débito',
+                          controller: controller,
+                          textEditingController:
+                              controller.store.debitoController,
+                          onTap: () => controller.setTotalDebito(
+                              controller.store.debitoController),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
               const SizedBox(
                 height: 20,
               ),
               ValueListenableBuilder(
-                  valueListenable: controller.store.totalPix,
-                  builder: (context, value, child) {
-                    return CardConference(
-                      title: 'Pix',
-                      total: value,
-                      onTap: () {
-                        modal.showModalBottomSheet(
-                            context: context,
-                            content: ModalConference(
-                              title: 'Pix',
-                              controller: controller,
-                              textEditingController:
-                                  controller.store.pixController,
-                              onTap: () => controller
-                                  .setTotalPix(controller.store.pixController),
-                            ));
-                      },
-                    );
-                  }),
+                valueListenable: controller.store.totalPix,
+                builder: (context, value, child) {
+                  return CardConference(
+                    title: 'Pix',
+                    total: value,
+                    onTap: () {
+                      modal.showModalBottomSheet(
+                        context: context,
+                        content: ModalConference(
+                          title: 'Pix',
+                          controller: controller,
+                          textEditingController: controller.store.pixController,
+                          onTap: () => controller
+                              .setTotalPix(controller.store.pixController),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
               const SizedBox(
                 height: 20,
               ),
@@ -137,18 +142,25 @@ class ConferenceResume extends StatelessWidget {
                 'Total',
                 style: AppTextStyles.bold(26),
               ),
-              Text(
-                NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$')
-                    .format(0.0),
-                style: AppTextStyles.regular(18),
-              ),
+              ValueListenableBuilder(
+                  valueListenable: controller.store.total,
+                  builder: (context, value, child) {
+                    return Text(
+                      NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$')
+                          .format(value ?? 0),
+                      style: AppTextStyles.regular(18),
+                    );
+                  }),
             ],
           ),
         ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        child: CustomSubmitButton(onPressedAction: () {}, label: 'Enviar'),
+        child: CustomSubmitButton(
+          onPressedAction: () => controller.submitConference(context),
+          label: 'Enviar',
+        ),
       ),
     );
   }
