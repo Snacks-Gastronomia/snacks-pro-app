@@ -27,33 +27,34 @@ class OrderResponse {
   String userUid;
   String? customerName;
   double deliveryValue;
+  bool? confirmed;
 
-  OrderResponse({
-    required this.code,
-    required this.needChange,
-    required this.restaurant,
-    required this.created_at,
-    required this.restaurantName,
-    required this.isDelivery,
-    required this.waiterPayment,
-    this.moneyChange = "",
-    this.rfid,
-    this.address,
-    required this.id,
-    this.receive_order,
-    this.deliveryValue = 0.0,
-    this.phoneNumber,
-    required this.waiterDelivery,
-    required this.part_code,
-    required this.items,
-    required this.value,
-    required this.paid,
-    required this.paymentMethod,
-    this.table,
-    required this.status,
-    required this.userUid,
-    this.customerName,
-  });
+  OrderResponse(
+      {required this.code,
+      required this.needChange,
+      required this.restaurant,
+      required this.created_at,
+      required this.restaurantName,
+      required this.isDelivery,
+      required this.waiterPayment,
+      this.moneyChange = "",
+      this.rfid,
+      this.address,
+      required this.id,
+      this.receive_order,
+      this.deliveryValue = 0.0,
+      this.phoneNumber,
+      required this.waiterDelivery,
+      required this.part_code,
+      required this.items,
+      required this.value,
+      required this.paid,
+      required this.paymentMethod,
+      this.table,
+      required this.status,
+      required this.userUid,
+      this.customerName,
+      this.confirmed});
 
   static List<Map<String, dynamic>> groupOrdersByCode(
       List<OrderResponse> orders) {
@@ -107,6 +108,7 @@ class OrderResponse {
       customerName: json['customer_name'] ?? "",
       moneyChange: json['money_change'] ?? "",
       deliveryValue: json['delivery_value'] ?? 0,
+      confirmed: json['confirmed'] ?? false,
     );
   }
 
@@ -133,6 +135,7 @@ class OrderResponse {
       'status': status,
       'userUid': userUid,
       'customerName': customerName,
+      'confirmed': confirmed ?? false,
     };
   }
 
@@ -163,13 +166,14 @@ class OrderResponse {
       address: map['address'] ?? "",
       moneyChange: map['money_change'] ?? "",
       deliveryValue: map['delivery_value'] ?? "",
+      confirmed: map['confirmed'] ?? false,
     );
   }
   factory OrderResponse.fromFirebase(
       QueryDocumentSnapshot<Map<String, dynamic>> data) {
     Map<String, dynamic> map = data.data();
     Timestamp timestamp = map['created_at'];
-    DateTime created_atDateTime = DateTime.fromMillisecondsSinceEpoch(
+    DateTime createdAtdatetime = DateTime.fromMillisecondsSinceEpoch(
       timestamp.seconds * 1000 + (timestamp.nanoseconds ~/ 1000000),
     );
     return OrderResponse(
@@ -177,7 +181,7 @@ class OrderResponse {
       code: map['code'] ?? '',
       needChange: map['need_change'] ?? false,
       restaurant: map['restaurant'] ?? '',
-      created_at: created_atDateTime,
+      created_at: createdAtdatetime,
       restaurantName: map['restaurant_name'] ?? '',
       isDelivery: map['isDelivery'] ?? false,
       waiterPayment: map['waiter_payment'] ?? '',
@@ -198,6 +202,7 @@ class OrderResponse {
       address: map['address'],
       moneyChange: map['money_change'] ?? "",
       deliveryValue: (map['delivery_value'] ?? 0.0).toDouble(),
+      confirmed: map['confirmed'] ?? false,
     );
   }
 
