@@ -7,6 +7,7 @@ import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
+import 'package:snacks_pro_app/views/conference/pages/conference_adm_page.dart';
 import 'package:snacks_pro_app/views/finance/budget_details.dart';
 import 'package:snacks_pro_app/views/finance/contents/Features/features_content.dart';
 import 'package:snacks_pro_app/views/finance/contents/order_report/report.dart';
@@ -25,7 +26,6 @@ import 'package:snacks_pro_app/views/finance/widgets/delivery_tax_modal.dart';
 import 'package:snacks_pro_app/views/recharge_card/select_month_report.dart';
 
 import './contents/employees/employees.dart';
-import './contents/order_report/month_orders_report.dart';
 import 'contents/bank/bank_info_modal.dart';
 import 'contents/bank/bank_no_info_modal.dart';
 import 'contents/coupons/coupons_widget.dart';
@@ -482,6 +482,15 @@ class SnacksAdmSummaryCards extends StatelessWidget {
       "highlight": true,
       "blackContent": true,
       "action": SelectMonthRechargeReport(),
+    },
+    {
+      "title": "Conferência",
+      "icon": Icons.bar_chart_rounded,
+      "highlight": true,
+      "color": const Color(0xffC84E89),
+      "colorSecondary": const Color(0xffF15F79),
+      "action": const ConferenceAdmPage(),
+      "blackContent": false,
     }
   ];
   @override
@@ -497,6 +506,7 @@ class SnacksAdmSummaryCards extends StatelessWidget {
               icon: list[index]["icon"],
               bgHighlight: list[index]["highlight"],
               color: list[index]["color"],
+              colorSecondary: list[index]["colorSecondary"],
               action: () => modal.showIOSModalBottomSheet(
                   context: context,
                   content: list[index]["action"],
@@ -519,7 +529,7 @@ class RestaurantSummaryCards extends StatelessWidget {
       "title": "Pedidos",
       "icon": Icons.format_align_left_rounded,
       "highlight": false,
-      "action": ReportScreen(),
+      "action": const ReportScreen(),
     },
     {
       "title": "Impressoras",
@@ -538,7 +548,7 @@ class RestaurantSummaryCards extends StatelessWidget {
       "icon": Icons.local_offer,
       "highlight": true,
       "color": const Color(0xff00B907),
-      "action": CouponsWidget()
+      "action": const CouponsWidget()
     },
     {
       "title": "Estoque",
@@ -547,7 +557,7 @@ class RestaurantSummaryCards extends StatelessWidget {
       "color": const Color(0xffC84E89),
       "colorSecondary": const Color(0xffF15F79),
       "action": StockContent()
-    }
+    },
   ];
   @override
   Widget build(BuildContext context) {
@@ -626,6 +636,7 @@ class SettingButton extends StatelessWidget {
 class GradientText extends StatelessWidget {
   const GradientText(
     this.text, {
+    super.key,
     required this.gradient,
     this.style,
   });
