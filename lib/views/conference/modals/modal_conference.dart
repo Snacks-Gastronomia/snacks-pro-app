@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
-import 'package:snacks_pro_app/views/conference/controllers/conference_controller.dart';
 
 class ModalConference extends StatelessWidget {
   const ModalConference({
     Key? key,
     required this.title,
-    required this.controller,
     required this.textEditingController,
     required this.onTap,
+    required this.subtitle,
   }) : super(key: key);
 
   final String title;
-  final ConferenceController controller;
   final TextEditingController textEditingController;
   final VoidCallback onTap;
+  final String subtitle;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,7 +28,7 @@ class ModalConference extends StatelessWidget {
             style: AppTextStyles.semiBold(26),
           ),
           Text(
-            'Valor correspondente ao total de pedidos no $title',
+            subtitle,
           ),
           TextFormField(
             controller: textEditingController,

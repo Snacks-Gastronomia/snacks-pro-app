@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -207,6 +208,62 @@ class OrderResponse {
   }
 
   String toJson() => json.encode(toMap());
+
+  OrderResponse copyWith({
+    String? id,
+    String? code,
+    bool? needChange,
+    String? restaurant,
+    DateTime? created_at,
+    String? restaurantName,
+    bool? isDelivery,
+    String? waiterPayment,
+    String? rfid,
+    String? address,
+    String? receive_order,
+    String? phoneNumber,
+    String? moneyChange,
+    String? waiterDelivery,
+    String? part_code,
+    List<ItemResponse>? items,
+    double? value,
+    double? paid,
+    String? paymentMethod,
+    String? table,
+    String? status,
+    String? userUid,
+    String? customerName,
+    double? deliveryValue,
+    bool? confirmed,
+  }) {
+    return OrderResponse(
+      id: id ?? this.id,
+      code: code ?? this.code,
+      needChange: needChange ?? this.needChange,
+      restaurant: restaurant ?? this.restaurant,
+      created_at: created_at ?? this.created_at,
+      restaurantName: restaurantName ?? this.restaurantName,
+      isDelivery: isDelivery ?? this.isDelivery,
+      waiterPayment: waiterPayment ?? this.waiterPayment,
+      rfid: rfid ?? this.rfid,
+      address: address ?? this.address,
+      receive_order: receive_order ?? this.receive_order,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      moneyChange: moneyChange ?? this.moneyChange,
+      waiterDelivery: waiterDelivery ?? this.waiterDelivery,
+      part_code: part_code ?? this.part_code,
+      items: items ?? this.items,
+      value: value ?? this.value,
+      paid: paid ?? this.paid,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      table: table ?? this.table,
+      status: status ?? this.status,
+      userUid: userUid ?? this.userUid,
+      customerName: customerName ?? this.customerName,
+      deliveryValue: deliveryValue ?? this.deliveryValue,
+      confirmed: confirmed ?? this.confirmed,
+    );
+  }
 }
 
 class ItemResponse {

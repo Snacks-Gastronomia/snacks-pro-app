@@ -49,7 +49,8 @@ class ConferenceResumePage extends StatelessWidget {
                           context: context,
                           content: ModalConference(
                             title: 'Dinheiro',
-                            controller: controller,
+                            subtitle:
+                                'Valor correspondente ao total de pedidos no cartão de dinheiro',
                             textEditingController:
                                 controller.store.dinheiroController,
                             onTap: () => controller.setTotalDinheiro(
@@ -73,7 +74,8 @@ class ConferenceResumePage extends StatelessWidget {
                           context: context,
                           content: ModalConference(
                             title: 'Cartão de crédito',
-                            controller: controller,
+                            subtitle:
+                                'Valor correspondente ao total de pedidos no cartão de crédito',
                             textEditingController:
                                 controller.store.creditoController,
                             onTap: () => controller.setTotalCredit(
@@ -97,7 +99,8 @@ class ConferenceResumePage extends StatelessWidget {
                         context: context,
                         content: ModalConference(
                           title: 'Cartão de débito',
-                          controller: controller,
+                          subtitle:
+                              'Valor correspondente ao total de pedidos no cartão de débito',
                           textEditingController:
                               controller.store.debitoController,
                           onTap: () => controller.setTotalDebito(
@@ -122,7 +125,8 @@ class ConferenceResumePage extends StatelessWidget {
                         context: context,
                         content: ModalConference(
                           title: 'Pix',
-                          controller: controller,
+                          subtitle:
+                              'Valor correspondente ao total de pedidos no pix',
                           textEditingController: controller.store.pixController,
                           onTap: () => controller
                               .setTotalPix(controller.store.pixController),
