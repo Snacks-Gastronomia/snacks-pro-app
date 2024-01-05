@@ -14,6 +14,7 @@ class CardConference extends StatelessWidget {
         total == null ? '0' : total!.toStringAsFixed(2).replaceAll('.', ',');
     return Container(
       decoration: BoxDecoration(
+        color: total == null ? Colors.white : Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey),
       ),
@@ -33,7 +34,8 @@ class CardConference extends StatelessWidget {
                   : 'Total: R\$ $totalFormatted',
               style: const TextStyle(height: 2),
             ),
-            trailing: const Icon(Icons.add),
+            trailing:
+                total == null ? const Icon(Icons.add) : const Icon(Icons.check),
           ),
         ),
       ),
