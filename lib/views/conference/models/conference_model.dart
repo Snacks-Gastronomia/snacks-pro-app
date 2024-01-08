@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class ConferenceModel {
   final double dinheiro;
@@ -45,4 +46,29 @@ class ConferenceModel {
 
   factory ConferenceModel.fromJson(String source) =>
       ConferenceModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  factory ConferenceModel.defaultValues() {
+    return ConferenceModel(
+      dinheiro: 100,
+      credito: 100,
+      debito: 100,
+      pix: 100,
+      total: 400,
+      date: Timestamp.now(),
+    );
+  }
+
+  String get dateFormat =>
+      DateFormat("d 'de' MMMM 'de' y", "pt_BR").format(date.toDate());
+
+  String get totalFormat =>
+      NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(total);
+  String get pixFormat =>
+      NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(pix);
+  String get dinheiroFormat =>
+      NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(dinheiro);
+  String get creditoFormat =>
+      NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(credito);
+  String get debitoFormat =>
+      NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(debito);
 }

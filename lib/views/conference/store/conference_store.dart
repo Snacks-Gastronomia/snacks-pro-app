@@ -14,12 +14,13 @@ class ConferenceStore {
   ValueNotifier<double?> totalDebito = ValueNotifier<double?>(null);
   ValueNotifier<double?> totalPix = ValueNotifier<double?>(null);
 
-  ConferenceModel conferenceModel = ConferenceModel(
-    dinheiro: 0,
-    credito: 0,
-    debito: 0,
-    pix: 0,
-    total: 0,
-    date: Timestamp.now(),
-  );
+  ConferenceModel conferenceModel = ConferenceModel.defaultValues();
+
+  ConferenceModel conferenceModelMock = ConferenceModel(
+      dinheiro: 120,
+      credito: 89,
+      debito: 64,
+      pix: 164,
+      total: 437,
+      date: Timestamp.now());
 }
