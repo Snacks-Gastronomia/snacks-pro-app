@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
 
 import 'package:snacks_pro_app/core/app.routes.dart';
-import 'package:snacks_pro_app/services/firebase/notifications.dart';
-import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 
 import 'package:snacks_pro_app/views/authentication/otp_screen.dart';
@@ -15,8 +12,9 @@ import 'package:snacks_pro_app/views/authentication/password_screen.dart';
 import 'package:snacks_pro_app/views/authentication/phone_screen.dart';
 import 'package:snacks_pro_app/views/authentication/state/auth_cubit.dart';
 import 'package:snacks_pro_app/views/authentication/unathorized_screen.dart';
+import 'package:snacks_pro_app/views/conference/pages/conference_resume_page.dart';
+import 'package:snacks_pro_app/views/conference/pages/message_conference_page.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/new_restaurant.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/modals/item_details_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/stock.dart';
 import 'package:snacks_pro_app/views/finance/home_finance.dart';
 import 'package:snacks_pro_app/views/finance/contents/bank/add_bank_account.dart';
@@ -26,7 +24,6 @@ import 'package:snacks_pro_app/views/finance/state/employees/employees_cubit.dar
 import 'package:snacks_pro_app/views/finance/state/finance/finance_home_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
-import 'package:snacks_pro_app/views/finance/test.dart';
 import 'package:snacks_pro_app/views/home/home_screen.dart';
 import 'package:snacks_pro_app/views/home/orders_screen.dart';
 import 'package:snacks_pro_app/views/home/scan_card_screen.dart';
@@ -106,10 +103,10 @@ class AppWidget extends StatelessWidget {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 theme: ThemeData(
-                    // primaryColor: AppColors.main,
-                    backgroundColor: Colors.white,
-                    textTheme: GoogleFonts.poppinsTextTheme(
-                        Theme.of(context).textTheme)),
+                  // primaryColor: AppColors.main,
+                  textTheme:
+                      GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+                ),
                 title: "Snacks Pro",
 
                 initialRoute: snapshot.data,
@@ -129,9 +126,9 @@ class AppWidget extends StatelessWidget {
                       NewItemScreen(updateImage: false),
                   AppRoutes.updateImage: (context) =>
                       NewItemScreen(updateImage: true),
-                  AppRoutes.orders: (context) => OrdersScreen(),
+                  AppRoutes.orders: (context) => const OrdersScreen(),
                   // "/test": (context) => MyApp(),
-                  AppRoutes.home: (context) => HomeScreen(),
+                  AppRoutes.home: (context) => const HomeScreen(),
                   AppRoutes.finance: (context) => FinanceScreen(),
                   AppRoutes.newEmployee: (context) => NewEmployeeScreen(),
                   AppRoutes.newRestaurant: (context) =>
@@ -143,6 +140,10 @@ class AppWidget extends StatelessWidget {
                   AppRoutes.unathorizedAuth: (context) =>
                       const UnathorizedScreen(),
                   AppRoutes.stock: (context) => StockScreen(),
+                  AppRoutes.conferenceMessage: (context) =>
+                      const MessageConferencePage(),
+                  AppRoutes.conference: (context) =>
+                      const ConferenceResumePage(),
                 },
               );
             }

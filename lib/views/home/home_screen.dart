@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -8,6 +5,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
+import 'package:snacks_pro_app/views/conference/pages/message_conference_page.dart';
 import 'package:snacks_pro_app/views/finance/home_finance.dart';
 import 'package:snacks_pro_app/views/home/home_widget.dart';
 import 'package:snacks_pro_app/views/home/orders_screen.dart';
@@ -16,6 +14,8 @@ import 'package:snacks_pro_app/views/home/widgets/profile_modal.dart';
 import 'package:snacks_pro_app/views/recharge_card/recharge_card_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: FutureBuilder<List<Content>>(
                   future: contents,
                   builder: (context, snapshot) {
-                    var _contents = snapshot.data ?? [];
+                    var contents0 = snapshot.data ?? [];
                     if (snapshot.hasData) {
                       return GNav(
                         backgroundColor: Colors.transparent,
@@ -97,11 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         tabBackgroundColor: Colors.grey[100]!,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         color: Colors.black,
-                        tabs: _contents.map((e) => e.button).toList(),
+                        tabs: contents0.map((e) => e.button).toList(),
                         selectedIndex: _selectedIndex,
                         onTabChange: (index) async {
                           setState(() {
-                            if (index < _contents.length - 1) {
+                            if (index < contents0.length - 1) {
                               _selectedIndex = index;
                             }
                           });
@@ -118,8 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<Content>> getButtons() async {
-    var _storage = await storage.getDataStorage("user");
-    var access = _storage["access_level"];
+    var storageUser = await storage.getDataStorage("user");
+    var access = storageUser["access_level"];
     List<Content> items = [];
 
     if (access == AppPermission.cashier.name) {
@@ -146,10 +146,18 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     items.addAll([
       Content(
-          screen: OrdersScreen(),
+          screen: const OrdersScreen(),
           button: const GButton(
             icon: Icons.receipt_rounded,
             text: 'Pedidos',
+          )),
+    ]);
+    items.addAll([
+      Content(
+          screen: const MessageConferencePage(),
+          button: const GButton(
+            icon: Icons.check_circle_outlined,
+            text: 'Conferência',
           )),
     ]);
     if (access == AppPermission.sadm.name ||
@@ -171,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
           withPadding: false,
           context: context,
           content: Builder(builder: (context) {
-            var data = _storage;
+            var data = storageUser;
 
             return ProfileModal(
                 name: data["name"] ?? "",

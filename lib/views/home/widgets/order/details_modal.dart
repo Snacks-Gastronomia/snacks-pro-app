@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:snacks_pro_app/core/app.colors.dart';
 
 import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
@@ -10,7 +11,7 @@ import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/cancel_order.dart';
-import 'package:snacks_pro_app/views/home/widgets/modals/confirm_order.dart';
+import 'package:snacks_pro_app/views/home/widgets/order/controllers/details_order_controller.dart';
 
 import './signal_animation.dart';
 
@@ -24,6 +25,9 @@ class OrderDetailsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final DetailsOrderController detailsOrderController =
+        DetailsOrderController();
+
     var ord = orders[0];
 
     double sum =
@@ -116,6 +120,19 @@ class OrderDetailsContent extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
+          if (!(ord.confirmed ?? false))
+            ElevatedButton(
+              onPressed: () {
+                detailsOrderController.showModalConfimateOrder(
+                    context, ord.part_code);
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.highlight,
+                  shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  fixedSize: const Size(double.maxFinite, 45)),
+              child: const Text('Confirmar'),
+            ),
           if (allowCancel)
             TextButton(
               onPressed: () async {
