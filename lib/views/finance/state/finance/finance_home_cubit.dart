@@ -457,7 +457,7 @@ class FinanceCubit extends Cubit<FinanceHomeState> {
         id: id,
         rname: data["name"],
         rcategory: data["category"],
-        oname: "",
+        oname: data["owner"]["name"],
         ophone: "");
     print(rest.rname);
     emit(state.copyWith(restaurantAUX: rest, status: AppStatus.editing));

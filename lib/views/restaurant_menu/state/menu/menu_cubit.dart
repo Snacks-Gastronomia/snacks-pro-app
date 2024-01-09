@@ -116,8 +116,23 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   changeLimitOptions(int value) {
-    final item = state.item;
-    emit(state.copyWith(item: item.copyWith(limit_extra_options: value)));
+    emit(state.copyWith(item: state.item.copyWith(limit_extra_options: value)));
+  }
+
+  incrementLimitOptions() {
+    int limit = state.item.limit_extra_options ?? 0;
+    int newLimit = limit + 1;
+
+    emit(state.copyWith(
+        item: state.item.copyWith(limit_extra_options: newLimit)));
+  }
+
+  decrementLimitOptions() {
+    int limit = state.item.limit_extra_options ?? 0;
+    if (limit - 1 > 0) {
+      emit(state.copyWith(
+          item: state.item.copyWith(limit_extra_options: limit - 1)));
+    }
   }
 
   void changeTitle(String value) {

@@ -15,9 +15,9 @@ class LimitOptionsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: BlocProvider.of<MenuCubit>(context),
-      child: Container(
+    return BlocBuilder<MenuCubit, MenuState>(builder: (context, state) {
+      int value = state.item.limit_extra_options ?? 0;
+      return Container(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
@@ -31,49 +31,21 @@ class LimitOptionsModal extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                BlocBuilder<MenuCubit, MenuState>(
-                  builder: (context, state) {
-                    return Text(
-                      (state.item.limit_extra_options ?? 0).toString(),
-                      style: AppTextStyles.semiBold(80, color: Colors.black),
-                    );
-                  },
+                Text(
+                  (value).toString(),
+                  style: AppTextStyles.semiBold(80, color: Colors.black),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
                         onPressed: () {
-                          int value = context
-                              .read<MenuCubit>()
-                              .state
-                              .item
-                              .options
-                              .length;
-                          int newValue = value++;
-
-                          if (newValue < value) {
-                            context
-                                .read<MenuCubit>()
-                                .changeLimitOptions(newValue);
-                          }
+                          context.read<MenuCubit>().incrementLimitOptions();
                         },
                         icon: const Icon(Icons.keyboard_arrow_up_rounded)),
                     IconButton(
                         onPressed: () {
-                          int value = context
-                              .read<MenuCubit>()
-                              .state
-                              .item
-                              .options
-                              .length;
-                          int newValue = --value;
-
-                          if (newValue > 0) {
-                            context
-                                .read<MenuCubit>()
-                                .changeLimitOptions(newValue);
-                          }
+                          context.read<MenuCubit>().decrementLimitOptions();
                         },
                         icon: const Icon(Icons.keyboard_arrow_down_rounded)),
                   ],
@@ -98,7 +70,7 @@ class LimitOptionsModal extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 }
