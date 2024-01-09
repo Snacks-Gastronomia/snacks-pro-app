@@ -1,3 +1,4 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
@@ -50,7 +51,17 @@ class ConferenceAdmPage extends StatelessWidget {
                 const Text('ultimos 7 dias'),
                 const Spacer(),
                 IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.calendar_today))
+                    onPressed: () async {
+                      var result = await showCalendarDatePicker2Dialog(
+                        context: context,
+                        config: CalendarDatePicker2WithActionButtonsConfig(
+                            firstDate: DateTime(2022),
+                            calendarType: CalendarDatePicker2Type.range),
+                        dialogSize: const Size(325, 400),
+                        borderRadius: BorderRadius.circular(15),
+                      );
+                    },
+                    icon: const Icon(Icons.calendar_today))
               ],
             ),
             const SizedBox(
