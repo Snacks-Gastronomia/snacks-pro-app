@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,33 +28,34 @@ class OrderResponse {
   String userUid;
   String? customerName;
   double deliveryValue;
+  bool? confirmed;
 
-  OrderResponse({
-    required this.code,
-    required this.needChange,
-    required this.restaurant,
-    required this.created_at,
-    required this.restaurantName,
-    required this.isDelivery,
-    required this.waiterPayment,
-    this.moneyChange = "",
-    this.rfid,
-    this.address,
-    required this.id,
-    this.receive_order,
-    this.deliveryValue = 0.0,
-    this.phoneNumber,
-    required this.waiterDelivery,
-    required this.part_code,
-    required this.items,
-    required this.value,
-    required this.paid,
-    required this.paymentMethod,
-    this.table,
-    required this.status,
-    required this.userUid,
-    this.customerName,
-  });
+  OrderResponse(
+      {required this.code,
+      required this.needChange,
+      required this.restaurant,
+      required this.created_at,
+      required this.restaurantName,
+      required this.isDelivery,
+      required this.waiterPayment,
+      this.moneyChange = "",
+      this.rfid,
+      this.address,
+      required this.id,
+      this.receive_order,
+      this.deliveryValue = 0.0,
+      this.phoneNumber,
+      required this.waiterDelivery,
+      required this.part_code,
+      required this.items,
+      required this.value,
+      required this.paid,
+      required this.paymentMethod,
+      this.table,
+      required this.status,
+      required this.userUid,
+      this.customerName,
+      this.confirmed});
 
   static List<Map<String, dynamic>> groupOrdersByCode(
       List<OrderResponse> orders) {
@@ -107,6 +109,7 @@ class OrderResponse {
       customerName: json['customer_name'] ?? "",
       moneyChange: json['money_change'] ?? "",
       deliveryValue: json['delivery_value'] ?? 0,
+      confirmed: json['confirmed'] ?? false,
     );
   }
 
@@ -133,6 +136,7 @@ class OrderResponse {
       'status': status,
       'userUid': userUid,
       'customerName': customerName,
+      'confirmed': confirmed ?? false,
     };
   }
 
@@ -163,13 +167,14 @@ class OrderResponse {
       address: map['address'] ?? "",
       moneyChange: map['money_change'] ?? "",
       deliveryValue: map['delivery_value'] ?? "",
+      confirmed: map['confirmed'] ?? false,
     );
   }
   factory OrderResponse.fromFirebase(
       QueryDocumentSnapshot<Map<String, dynamic>> data) {
     Map<String, dynamic> map = data.data();
     Timestamp timestamp = map['created_at'];
-    DateTime created_atDateTime = DateTime.fromMillisecondsSinceEpoch(
+    DateTime createdAtdatetime = DateTime.fromMillisecondsSinceEpoch(
       timestamp.seconds * 1000 + (timestamp.nanoseconds ~/ 1000000),
     );
     return OrderResponse(
@@ -177,7 +182,7 @@ class OrderResponse {
       code: map['code'] ?? '',
       needChange: map['need_change'] ?? false,
       restaurant: map['restaurant'] ?? '',
-      created_at: created_atDateTime,
+      created_at: createdAtdatetime,
       restaurantName: map['restaurant_name'] ?? '',
       isDelivery: map['isDelivery'] ?? false,
       waiterPayment: map['waiter_payment'] ?? '',
@@ -198,10 +203,67 @@ class OrderResponse {
       address: map['address'],
       moneyChange: map['money_change'] ?? "",
       deliveryValue: (map['delivery_value'] ?? 0.0).toDouble(),
+      confirmed: map['confirmed'] ?? false,
     );
   }
 
   String toJson() => json.encode(toMap());
+
+  OrderResponse copyWith({
+    String? id,
+    String? code,
+    bool? needChange,
+    String? restaurant,
+    DateTime? created_at,
+    String? restaurantName,
+    bool? isDelivery,
+    String? waiterPayment,
+    String? rfid,
+    String? address,
+    String? receive_order,
+    String? phoneNumber,
+    String? moneyChange,
+    String? waiterDelivery,
+    String? part_code,
+    List<ItemResponse>? items,
+    double? value,
+    double? paid,
+    String? paymentMethod,
+    String? table,
+    String? status,
+    String? userUid,
+    String? customerName,
+    double? deliveryValue,
+    bool? confirmed,
+  }) {
+    return OrderResponse(
+      id: id ?? this.id,
+      code: code ?? this.code,
+      needChange: needChange ?? this.needChange,
+      restaurant: restaurant ?? this.restaurant,
+      created_at: created_at ?? this.created_at,
+      restaurantName: restaurantName ?? this.restaurantName,
+      isDelivery: isDelivery ?? this.isDelivery,
+      waiterPayment: waiterPayment ?? this.waiterPayment,
+      rfid: rfid ?? this.rfid,
+      address: address ?? this.address,
+      receive_order: receive_order ?? this.receive_order,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      moneyChange: moneyChange ?? this.moneyChange,
+      waiterDelivery: waiterDelivery ?? this.waiterDelivery,
+      part_code: part_code ?? this.part_code,
+      items: items ?? this.items,
+      value: value ?? this.value,
+      paid: paid ?? this.paid,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      table: table ?? this.table,
+      status: status ?? this.status,
+      userUid: userUid ?? this.userUid,
+      customerName: customerName ?? this.customerName,
+      deliveryValue: deliveryValue ?? this.deliveryValue,
+      confirmed: confirmed ?? this.confirmed,
+    );
+  }
 }
 
 class ItemResponse {

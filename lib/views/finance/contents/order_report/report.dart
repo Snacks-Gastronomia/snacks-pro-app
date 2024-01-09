@@ -15,7 +15,7 @@ import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.d
 import 'package:snacks_pro_app/views/home/widgets/dropdown_items.dart';
 
 class ReportScreen extends StatefulWidget {
-  ReportScreen({super.key, this.restaurant_id});
+  const ReportScreen({super.key, this.restaurant_id});
   final String? restaurant_id;
 
   @override
@@ -71,14 +71,14 @@ class _ReportScreenState extends State<ReportScreen> {
                       borderRadius: BorderRadius.circular(15),
                     );
                     if (results != null) {
-                      if (results?.length == 1) {
+                      if (results.length == 1) {
                         // ignore: use_build_context_synchronously
                         context.read<FinanceOrdersCubit>().fetchReceipts(
-                            widget.restaurant_id, results![0]!, results[0]!);
+                            widget.restaurant_id, results[0]!, results[0]!);
                       } else {
                         // ignore: use_build_context_synchronously
                         context.read<FinanceOrdersCubit>().fetchReceipts(
-                            widget.restaurant_id, results![0]!, results[1]!);
+                            widget.restaurant_id, results[0]!, results[1]!);
                       }
                     }
                     final stateButton = _key.currentState;
