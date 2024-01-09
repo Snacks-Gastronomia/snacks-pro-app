@@ -57,11 +57,14 @@ class ConferenceAdmPage extends StatelessWidget {
               height: 20,
             ),
             FutureBuilder(
-              future: service.getConferenceTeste(),
+              future: service.getConferences(),
               builder: (context, future) {
                 if (future.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CustomCircularProgress(),
+                  return const SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: CustomCircularProgress(),
+                    ),
                   );
                 } else if (future.hasData) {
                   List<ConferenceModel> conferences = future.data!;
@@ -78,9 +81,7 @@ class ConferenceAdmPage extends StatelessWidget {
                             modal.showModalBottomSheet(
                               context: context,
                               content: ModalConferenceAdm(
-                                  conferenceModelCaixa:
-                                      service.store.conferenceModelMock,
-                                  conferenceModelSistema: conferences[index]),
+                                  conferenceModelCaixa: conferences[index]),
                             );
                           },
                         );

@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:snacks_pro_app/models/order_response.dart';
+import 'package:snacks_pro_app/views/conference/enums/payment_method_enum.dart';
 import 'package:snacks_pro_app/views/conference/models/conference_model.dart';
 import 'package:snacks_pro_app/views/conference/store/conference_store.dart';
 
@@ -33,7 +35,7 @@ class ConferenceService {
     return result;
   }
 
-  Future<List<ConferenceModel>> getConference() async {
+  Future<List<ConferenceModel>> getConferences() async {
     debugPrint('Buscando Conferências');
     try {
       QuerySnapshot querySnapshot = await firestore
@@ -48,16 +50,91 @@ class ConferenceService {
       return conferences;
     } catch (e) {
       debugPrint('Erro ao carregar conferências!');
+      debugPrint('$e');
       rethrow;
     }
   }
 
-  Future<List<ConferenceModel>> getConferenceTeste() async {
+  Future<List<ConferenceModel>> getConferencesTeste() async {
     debugPrint('Buscando Conferências');
     List<ConferenceModel> conferences = [
       store.conferenceModel,
       store.conferenceModelMock
     ];
     return conferences;
+  }
+
+  Future<double> getTotalSistemaByPaymentMethod(
+      Timestamp timestamp, String paymentMethod) async {
+    debugPrint('Buscando Pedidos');
+
+    try {
+      Timestamp fourPmTimestamp = Timestamp.fromDate(
+        DateTime(timestamp.toDate().year, timestamp.toDate().month,
+            timestamp.toDate().day, 16),
+      );
+
+      Timestamp oneAmTimestamp = Timestamp.fromDate(
+        DateTime(timestamp.toDate().year, timestamp.toDate().month,
+            timestamp.toDate().day + 1, 1),
+      );
+
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await firestore
+          .collection('orders')
+          .where("created_at", isGreaterThanOrEqualTo: fourPmTimestamp)
+          .where("created_at", isLessThan: oneAmTimestamp)
+          .where("payment_method", isEqualTo: paymentMethod)
+          .get();
+
+      List<OrderResponse?> orders = querySnapshot.docs.isNotEmpty
+          ? querySnapshot.docs
+              .map((doc) => OrderResponse.fromFirebase(doc))
+              .toList()
+          : [];
+
+      debugPrint('Conferências carregados com sucesso!');
+
+      double total = 0;
+      if (orders.isNotEmpty) {
+        for (var order in orders) {
+          total += order!.value;
+          debugPrint('Somando valor: ${order.value}');
+          debugPrint('Total: $total');
+        }
+      }
+      return total;
+    } catch (e) {
+      debugPrint('Erro ao carregar pedidos!');
+      debugPrint('$e');
+
+      rethrow;
+    }
+  }
+
+  Future<ConferenceModel> getConferenceSistema(Timestamp timestamp) async {
+    try {
+      debugPrint('Buscando Conferências');
+      double totalCredito = await getTotalSistemaByPaymentMethod(
+          timestamp, PaymentMethodEnum.cartaoCredito);
+      double totalDebito = await getTotalSistemaByPaymentMethod(
+          timestamp, PaymentMethodEnum.cartaoDebito);
+      double totalDInheiro = await getTotalSistemaByPaymentMethod(
+          timestamp, PaymentMethodEnum.dinheiro);
+      double totalPix = await getTotalSistemaByPaymentMethod(
+          timestamp, PaymentMethodEnum.pix);
+      debugPrint('Calculando Total');
+      double total = totalCredito + totalDebito + totalDInheiro + totalPix;
+      return ConferenceModel(
+          credito: totalCredito,
+          debito: totalDebito,
+          dinheiro: totalDInheiro,
+          pix: totalPix,
+          total: total,
+          date: timestamp);
+    } catch (e) {
+      debugPrint('Erro ao carregar conferências!');
+      debugPrint('$e');
+      rethrow;
+    }
   }
 }
