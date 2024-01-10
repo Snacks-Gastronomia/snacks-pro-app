@@ -23,4 +23,9 @@ class ConferenceStore {
       pix: 164,
       total: 437,
       date: Timestamp.now());
+
+  final ValueNotifier<List<DateTime?>> listDateTimeNotifier = ValueNotifier([]);
+  List<DateTime> get listDateTime =>
+      listDateTimeNotifier.value.cast<DateTime>();
+  set listDateTime(List<DateTime?> value) => listDateTimeNotifier.value = value;
 }

@@ -35,12 +35,20 @@ class ConferenceService {
     return result;
   }
 
-  Future<List<ConferenceModel>> getConferences() async {
-    debugPrint('Buscando Conferências');
+  Future<List<ConferenceModel>> getConferences({
+    DateTime? startDay,
+    DateTime? endDay,
+  }) async {
+    Timestamp startDayTimestamp = Timestamp.fromDate(
+        startDay ?? DateTime.now().subtract(const Duration(days: 7)));
+    Timestamp endDayTimestamp = Timestamp.fromDate(endDay ?? DateTime.now());
+    debugPrint(
+        'Buscando Conferências do dia $startDayTimestamp até $endDayTimestamp');
     try {
       QuerySnapshot querySnapshot = await firestore
           .collection('conferences')
-          .orderBy('date', descending: true)
+          .where("date", isGreaterThanOrEqualTo: startDayTimestamp)
+          .where("date", isLessThanOrEqualTo: endDayTimestamp)
           .get();
       List<ConferenceModel> conferences = querySnapshot.docs
           .map((doc) =>
