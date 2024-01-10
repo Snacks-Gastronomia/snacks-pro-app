@@ -21,59 +21,66 @@ class ConferenceAdmPage extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(25),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const Spacer(),
-                Text(
-                  'Conferências',
-                  style: AppTextStyles.bold(25),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                    ),
+        child: AnimatedBuilder(
+          animation: store.listDateTimeNotifier,
+          builder: (context, _) => Column(
+            children: [
+              Row(
+                children: [
+                  const Spacer(),
+                  Text(
+                    'Conferências',
+                    style: AppTextStyles.bold(25),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 44,
-            ),
-            Row(
-              children: [
-                const Text('ultimos 7 dias'),
-                const Spacer(),
-                IconButton(
-                    onPressed: () async {
-                      store.listDateTime = (await showCalendarDatePicker2Dialog(
-                            context: context,
-                            config: CalendarDatePicker2WithActionButtonsConfig(
-                                firstDate: DateTime(2022),
-                                calendarType: CalendarDatePicker2Type.range),
-                            dialogSize: const Size(325, 400),
-                            borderRadius: BorderRadius.circular(15),
-                          )) ??
-                          [];
-                      debugPrint(store.listDateTime.toString());
+                  const Spacer(),
+                  IconButton(
+                    icon: const CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
-                    icon: const Icon(Icons.calendar_today))
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            AnimatedBuilder(
-              animation: store.listDateTimeNotifier,
-              builder: (context, _) => FutureBuilder(
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 44,
+              ),
+              Row(
+                children: [
+                  store.listDateTime.isEmpty
+                      ? const Text('últimos 7 dias')
+                      : store.listDateTime.length == 2
+                          ? Text(store.intervaloDeDatas())
+                          : Text(store.dataEspecifica()),
+                  const Spacer(),
+                  IconButton(
+                      onPressed: () async {
+                        store.listDateTime =
+                            (await showCalendarDatePicker2Dialog(
+                                  context: context,
+                                  config:
+                                      CalendarDatePicker2WithActionButtonsConfig(
+                                          firstDate: DateTime(2022),
+                                          calendarType:
+                                              CalendarDatePicker2Type.range),
+                                  dialogSize: const Size(325, 400),
+                                  borderRadius: BorderRadius.circular(15),
+                                )) ??
+                                [];
+                        debugPrint(store.listDateTime.toString());
+                      },
+                      icon: const Icon(Icons.calendar_today))
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              FutureBuilder(
                 future: service.getConferences(
                     startDay: store.listDateTime.isEmpty
                         ? null
@@ -84,10 +91,16 @@ class ConferenceAdmPage extends StatelessWidget {
                 builder: (context, future) {
                   if (future.connectionState == ConnectionState.waiting) {
                     return const SizedBox(
-                      height: 200,
+                      height: 400,
                       child: Center(
                         child: CustomCircularProgress(),
                       ),
+                    );
+                  } else if (future.data!.isEmpty) {
+                    return const SizedBox(
+                      height: 400,
+                      child: Center(
+                          child: Text('Nenhuma conferência encontrada!')),
                     );
                   } else if (future.hasData) {
                     List<ConferenceModel> conferences = future.data!;
@@ -121,8 +134,8 @@ class ConferenceAdmPage extends StatelessWidget {
                   }
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

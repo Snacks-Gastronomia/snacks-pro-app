@@ -39,8 +39,8 @@ class ConferenceService {
     DateTime? startDay,
     DateTime? endDay,
   }) async {
-    Timestamp startDayTimestamp = Timestamp.fromDate(
-        startDay ?? DateTime.now().subtract(const Duration(days: 7)));
+    DateTime sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
+    Timestamp startDayTimestamp = Timestamp.fromDate(startDay ?? sevenDaysAgo);
     Timestamp endDayTimestamp = Timestamp.fromDate(endDay ?? DateTime.now());
     debugPrint(
         'Buscando Conferências do dia $startDayTimestamp até $endDayTimestamp');

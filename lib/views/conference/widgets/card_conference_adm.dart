@@ -22,6 +22,9 @@ class CardConferenceAdm extends StatelessWidget {
     return Card(
       elevation: 0,
       color: Colors.grey[200],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: InkWell(
         onTap: onTap,
         child: Padding(

@@ -28,4 +28,10 @@ class ConferenceStore {
   List<DateTime> get listDateTime =>
       listDateTimeNotifier.value.cast<DateTime>();
   set listDateTime(List<DateTime?> value) => listDateTimeNotifier.value = value;
+
+  String intervaloDeDatas() =>
+      '${listDateTime[0].day}/${listDateTime[0].month}/${listDateTime[0].year} - ${listDateTime[1].day}/${listDateTime[1].month}/${listDateTime[1].year}';
+
+  String dataEspecifica() =>
+      '${listDateTime[0].day}/${listDateTime[0].month}/${listDateTime[0].year} - em diante';
 }

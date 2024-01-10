@@ -169,8 +169,8 @@ class ModalConferenceAdm extends StatelessWidget {
                           style: AppTextStyles.bold(
                             20,
                             color: controller.colorTotal(
-                              valueOne: conferenceModelCaixa.total,
-                              valueTwo: conferenceModelSistema.total,
+                              valueOne: conferenceModelCaixa.dinheiro,
+                              valueTwo: conferenceModelSistema.dinheiro,
                             ),
                           ),
                         ),
