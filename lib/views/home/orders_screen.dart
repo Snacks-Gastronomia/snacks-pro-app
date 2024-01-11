@@ -1,20 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 
-import 'package:snacks_pro_app/core/app.images.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
-import 'package:snacks_pro_app/models/order_model.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
-import 'package:snacks_pro_app/views/finance/state/orders/finance_orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
 import 'package:snacks_pro_app/views/home/state/orders_state/orders_cubit.dart';
 import 'package:snacks_pro_app/views/home/widgets/modals/add_order_manual.dart';
@@ -54,15 +47,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
           : 0;
     }
 
-    getCountBadgeTab(access_level, orders_page1, orders_page2) {
+    getCountBadgeTab(accessLevel, ordersPage1, ordersPage2) {
       var count1 = 0;
       var count2 = 0;
-      if (access_level == AppPermission.employee) {
-        count1 = getCountByStatus(orders_page1, OrderStatus.ready_to_start);
-        count2 = getCountByStatus(orders_page2, OrderStatus.order_in_progress);
+      if (accessLevel == AppPermission.employee) {
+        count1 = getCountByStatus(ordersPage1, OrderStatus.ready_to_start);
+        count2 = getCountByStatus(ordersPage2, OrderStatus.order_in_progress);
       } else {
-        count1 = getCountByStatus(orders_page1, OrderStatus.waiting_payment);
-        count2 = getCountByStatus(orders_page2, OrderStatus.done);
+        count1 = getCountByStatus(ordersPage1, OrderStatus.waiting_payment);
+        count2 = getCountByStatus(ordersPage2, OrderStatus.done);
       }
 
       return [count1, count2];
@@ -85,7 +78,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
         backgroundPage: FutureBuilder<AppPermission>(
             future: getAccessLevel(),
             builder: (context, snapshot) {
-              var access_level = snapshot.data;
+              var accessLevel = snapshot.data;
               return Scaffold(
                   appBar: PreferredSize(
                     preferredSize: const Size.fromHeight(60.0),
@@ -99,8 +92,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             style: AppTextStyles.medium(20),
                           ),
                           const Spacer(),
-                          if (access_level == AppPermission.cashier ||
-                              access_level == AppPermission.radm)
+                          if (accessLevel == AppPermission.cashier ||
+                              accessLevel == AppPermission.radm)
                             Row(
                               children: [
                                 SizedBox(
@@ -166,44 +159,49 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   var orders = docs.map(
                                       (e) => OrderResponse.fromFirebase(e));
 
-                                  List<OrderResponse> orders_page1 = [];
-                                  List<OrderResponse> orders_page2 = [];
+                                  List<OrderResponse> ordersPage1 = [];
+                                  List<OrderResponse> ordersPage2 = [];
 
                                   orders.map((element) {
-                                    if (access_level == AppPermission.waiter) {
+                                    if (accessLevel == AppPermission.waiter) {
                                       if (element.status ==
                                           OrderStatus.waiting_payment.name) {
-                                        orders_page1.add(element);
+                                        ordersPage1.add(element);
                                       } else {
-                                        orders_page2.add(element);
+                                        ordersPage2.add(element);
                                       }
-                                    } else if (access_level ==
+                                    } else if (accessLevel ==
                                         AppPermission.employee) {
                                       if (element.status ==
                                           OrderStatus.ready_to_start.name) {
-                                        orders_page1.add(element);
+                                        ordersPage1.add(element);
                                       } else {
-                                        orders_page2.add(element);
+                                        ordersPage2.add(element);
                                       }
                                     } else {
                                       if (element.isDelivery) {
-                                        orders_page2.add(element);
+                                        ordersPage2.add(element);
+                                      } else if (accessLevel ==
+                                              AppPermission.cashier &&
+                                          element.status !=
+                                              OrderStatus.delivered.name) {
+                                        ordersPage1.add(element);
                                       } else {
-                                        orders_page1.add(element);
+                                        // ordersPage1.add(element);
                                       }
                                     }
                                   }).toList();
 
                                   List<String> tabs =
-                                      getTextTab(access_level: access_level!);
+                                      getTextTab(access_level: accessLevel!);
                                   List<int> counts = getCountBadgeTab(
-                                      access_level, orders_page1, orders_page2);
+                                      accessLevel, ordersPage1, ordersPage2);
 
                                   var groupedOrders1 = OrderResponse
                                       .groupOrdersByCode(controllerFilter1
                                                   .text !=
                                               ''
-                                          ? orders_page1
+                                          ? ordersPage1
                                               .where((element) =>
                                                   element.table!
                                                       .contains(state.filter) ||
@@ -214,12 +212,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                       .toLowerCase()
                                                       .contains(state.filter))
                                               .toList()
-                                          : orders_page1);
+                                          : ordersPage1);
 
                                   var groupedOrders2 =
                                       OrderResponse.groupOrdersByCode(
                                           controllerFilter2.text != ''
-                                              ? orders_page2
+                                              ? ordersPage2
                                                   .where((element) =>
                                                       element.code
                                                           .toLowerCase()
@@ -230,7 +228,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                           .contains(
                                                               state.filter))
                                                   .toList()
-                                              : orders_page2);
+                                              : ordersPage2);
                                   return Padding(
                                     padding: const EdgeInsets.all(20.0),
                                     child:
@@ -297,7 +295,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                             ),
                                             page2: Column(
                                               children: [
-                                                if (access_level ==
+                                                if (accessLevel ==
                                                     AppPermission.cashier)
                                                   SearchOrders(
                                                     action: () => context
@@ -323,7 +321,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                                   index];
 
                                                           List<OrderResponse>
-                                                              _orders =
+                                                              orders0 =
                                                               order["orders"];
 
                                                           return Padding(
@@ -334,7 +332,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                                           10),
                                                               child:
                                                                   OrderCardWidget(
-                                                                orders: _orders,
+                                                                orders: orders0,
                                                                 onDoubleTap:
                                                                     () => context
                                                                         .read<
@@ -343,13 +341,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                                           context:
                                                                               context,
                                                                           items:
-                                                                              _orders,
+                                                                              orders0,
                                                                         ),
                                                                 onLongPress: () async => context
                                                                     .read<
                                                                         HomeCubit>()
                                                                     .printerOrder(
-                                                                        _orders[
+                                                                        orders0[
                                                                             0],
                                                                         context),
                                                               ));
