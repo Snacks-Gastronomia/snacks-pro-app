@@ -14,12 +14,24 @@ class ConferenceStore {
   ValueNotifier<double?> totalDebito = ValueNotifier<double?>(null);
   ValueNotifier<double?> totalPix = ValueNotifier<double?>(null);
 
-  ConferenceModel conferenceModel = ConferenceModel(
-    dinheiro: 0,
-    credito: 0,
-    debito: 0,
-    pix: 0,
-    total: 0,
-    date: Timestamp.now(),
-  );
+  ConferenceModel conferenceModel = ConferenceModel.defaultValues();
+
+  ConferenceModel conferenceModelMock = ConferenceModel(
+      dinheiro: 120,
+      credito: 89,
+      debito: 64,
+      pix: 164,
+      total: 437,
+      date: Timestamp.now());
+
+  final ValueNotifier<List<DateTime?>> listDateTimeNotifier = ValueNotifier([]);
+  List<DateTime> get listDateTime =>
+      listDateTimeNotifier.value.cast<DateTime>();
+  set listDateTime(List<DateTime?> value) => listDateTimeNotifier.value = value;
+
+  String intervaloDeDatas() =>
+      '${listDateTime[0].day}/${listDateTime[0].month}/${listDateTime[0].year} - ${listDateTime[1].day}/${listDateTime[1].month}/${listDateTime[1].year}';
+
+  String dataEspecifica() =>
+      '${listDateTime[0].day}/${listDateTime[0].month}/${listDateTime[0].year} - em diante';
 }

@@ -107,7 +107,8 @@ class NewExpenseContent extends StatelessWidget {
                 style: AppTextStyles.medium(16, color: const Color(0xff8391A1)),
                 onChanged: context.read<FinanceCubit>().changeExpenseValue,
                 textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.numberWithOptions(signed: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(signed: true),
                 decoration: InputDecoration(
                   fillColor: const Color(0xffF7F8F9),
                   filled: true,
@@ -163,9 +164,9 @@ class NewExpenseContent extends StatelessWidget {
                           color: const Color(0xff8391A1)),
                       textInputAction: TextInputAction.next,
                       keyboardType:
-                          TextInputType.numberWithOptions(signed: true),
+                          const TextInputType.numberWithOptions(signed: true),
                       decoration: InputDecoration(
-                        suffixIcon: Icon(Icons.calendar_month),
+                        suffixIcon: const Icon(Icons.calendar_month),
                         fillColor: const Color(0xffF7F8F9),
                         filled: true,
                         hintStyle: AppTextStyles.medium(16,

@@ -152,14 +152,16 @@ class _HomeScreenState extends State<HomeScreen> {
             text: 'Pedidos',
           )),
     ]);
-    items.addAll([
-      Content(
-          screen: const MessageConferencePage(),
-          button: const GButton(
-            icon: Icons.check_circle_outlined,
-            text: 'Conferência',
-          )),
-    ]);
+    if (access == AppPermission.cashier.name) {
+      items.addAll([
+        Content(
+            screen: const MessageConferencePage(),
+            button: const GButton(
+              icon: Icons.check_circle_outlined,
+              text: 'Conferência',
+            )),
+      ]);
+    }
     if (access == AppPermission.sadm.name ||
         access == AppPermission.radm.name) {
       items.add(Content(

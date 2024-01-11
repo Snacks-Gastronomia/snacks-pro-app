@@ -88,4 +88,14 @@ class ConferenceController {
       Navigator.pushReplacementNamed(context, AppRoutes.conference);
     }
   }
+
+  Color colorTotal({required double valueOne, required double valueTwo}) {
+    if (valueOne < valueTwo) {
+      return Colors.red;
+    } else if (valueOne > valueTwo) {
+      return Colors.green;
+    } else {
+      return Colors.black;
+    }
+  }
 }
