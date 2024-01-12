@@ -73,7 +73,8 @@ class OrdersCubit extends Cubit<OrdersState> {
             access == AppPermission.sadm ||
             access == AppPermission.radm ||
             isCashierAllowed) &&
-        nextStatus != null) {
+        nextStatus != null &&
+        nextStatus != OrderStatus.canceled) {
       bool confimationOrderPayment =
           allStatus.contains(OrderStatus.in_delivery) ||
               allStatus.contains(OrderStatus.waiting_payment);
