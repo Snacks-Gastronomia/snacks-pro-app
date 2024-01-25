@@ -24,25 +24,28 @@ class Item {
   final List<dynamic> extras;
   final List<dynamic> options;
 
-  Item({
-    this.id,
-    required this.title,
-    this.description,
-    this.limit_extra_options,
-    required this.value,
-    this.discount,
-    required this.num_served,
-    required this.time,
-    required this.restaurant_id,
-    required this.restaurant_name,
-    this.category,
-    this.measure,
-    this.image_url,
-    required this.active,
-    this.ingredients = const [],
-    this.extras = const [],
-    this.options = const [],
-  }) : finalValue = value * (1 - ((discount ?? 0) / 100));
+  Item(
+      {this.id,
+      required this.title,
+      this.description,
+      this.limit_extra_options,
+      required this.value,
+      this.discount,
+      required this.num_served,
+      required this.time,
+      required this.restaurant_id,
+      required this.restaurant_name,
+      this.category,
+      this.measure,
+      this.image_url,
+      required this.active,
+      this.ingredients = const [],
+      this.extras = const [],
+      this.options = const [],
+      this.finalValue = 0});
+
+  double valueDiscount() =>
+      double.parse(options[0]["value"]) * (1 - ((discount ?? 0) / 100));
 
   Item copyWith({
     String? id,
@@ -95,7 +98,7 @@ class Item {
       'restaurant_id': restaurant_id,
       'limit_extra_options': limit_extra_options,
       'restaurant_name': restaurant_name,
-      'num_served ': num_served,
+      'num_served': num_served,
       'category': category,
       'measure': measure,
       'active': active,
@@ -123,7 +126,7 @@ class Item {
     return Item(
       id: map['id'],
       active: map['active'],
-      num_served: map['num_served'] ?? 1,
+      num_served: map['num_served'] ?? map['num_served '] ?? 1,
       title: map['title'] ?? '',
       time: map['time'] ?? 0,
       description: map['description'] ?? '',

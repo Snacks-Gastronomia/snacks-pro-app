@@ -14,6 +14,8 @@ enum OrderStatus {
   invalid
 }
 
+enum StockModalOptions { loss, isNew, increment }
+
 enum AppPermission { employee, cashier, waiter, radm, sadm }
 
 extension ParseToStringFromDisplay on String {

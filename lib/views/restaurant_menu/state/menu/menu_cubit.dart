@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -27,6 +28,7 @@ part 'menu_state.dart';
 class MenuCubit extends Cubit<MenuState> {
   final repository = ItemsRepository(services: ItemsApiServices());
   final storage = AppStorage.initStorage;
+  final stockService = StockApiServices();
   final fs = FirebaseStorage.instance.ref();
 
   MenuCubit() : super(MenuState.initial());
@@ -309,5 +311,54 @@ class MenuCubit extends Cubit<MenuState> {
         selected: "",
         status: AppStatus.loaded,
         ingredients: []));
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchStock() async {
+    var storage = AppStorage();
+    Map<String, dynamic> data = await storage.getDataStorage("user");
+    // data = Map.from(jsonDecode(data["user"]));
+
+    var restaurant = data["restaurant"]["id"];
+    return stockService.fetchStockItems(restaurant);
+  }
+
+  addIngredient(ingredient, toOptions) {
+    var options = List.from(state.item.options);
+
+    options = options.map((element) {
+      if ((toOptions as List).contains(element["title"])) {
+        if (element["ingredients"] != null) {
+          element["ingredients"] = [...element["ingredients"], ingredient];
+        } else {
+          element["ingredients"] = [ingredient];
+        }
+      }
+      return element;
+    }).toList();
+
+    var item = state.item.copyWith(options: options);
+    var newIng = [...state.ingredients, options];
+
+    emit(state.copyWith(ingredients: newIng, item: item));
+  }
+
+  removeIngredient(name, op) {
+    var options = List.from(state.item.options);
+
+    options = options.map((element) {
+      if (op == element["title"]) {
+        var all = List.from(element["ingredients"]);
+
+        all.removeWhere((element) => element["name"] == name);
+
+        element["ingredients"] = all;
+      }
+      return element;
+    }).toList();
+
+    var item = state.item.copyWith(options: options);
+    var newIng = [...state.ingredients, options];
+
+    emit(state.copyWith(ingredients: newIng, item: item));
   }
 }

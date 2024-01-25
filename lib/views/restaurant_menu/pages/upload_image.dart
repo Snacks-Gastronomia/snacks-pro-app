@@ -9,8 +9,8 @@ import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/widgets/upload_content_modal.dart';
 
-import '../../components/custom_submit_button.dart';
-import '../../utils/enums.dart';
+import '../../../components/custom_submit_button.dart';
+import '../../../utils/enums.dart';
 
 class UploadImageWidget extends StatelessWidget {
   const UploadImageWidget({

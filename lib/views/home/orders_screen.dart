@@ -32,10 +32,10 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  final storage = AppStorage();
-  final modal = AppModal();
   TextEditingController controllerFilter1 = TextEditingController();
   TextEditingController controllerFilter2 = TextEditingController();
+  final modal = AppModal();
+  final storage = AppStorage();
 
   Future<AppPermission> getAccessLevel() async {
     var user = await storage.getDataStorage("user");
@@ -99,51 +99,46 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             style: AppTextStyles.medium(20),
                           ),
                           const Spacer(),
+                          if (access_level == AppPermission.cashier)
+                            SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  modal.showIOSModalBottomSheet(
+                                      context: context,
+                                      content: WithdrawContent());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  padding: EdgeInsets.zero,
+                                ),
+                                child: const Icon(Icons.attach_money),
+                              ),
+                            ),
+                          const SizedBox(
+                            width: 20,
+                          ),
                           if (access_level == AppPermission.cashier ||
                               access_level == AppPermission.radm)
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      modal.showIOSModalBottomSheet(
-                                          context: context,
-                                          content: WithdrawContent());
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    child: const Icon(Icons.attach_money),
-                                  ),
+                            SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  modal.showIOSModalBottomSheet(
+                                      context: context,
+                                      content: const AddOrderManual());
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  padding: EdgeInsets.zero,
                                 ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      modal.showIOSModalBottomSheet(
-                                          context: context,
-                                          content: const AddOrderManual());
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    child: const Icon(Icons.add),
-                                  ),
-                                ),
-                              ],
+                                child: const Icon(Icons.add),
+                              ),
                             ),
                         ],
                       ),
@@ -274,6 +269,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                                     .only(
                                                                 bottom: 10),
                                                         child: OrderCardWidget(
+                                                          access_level:
+                                                              access_level.name,
                                                           orders: orders,
                                                           onDoubleTap: () => context
                                                               .read<
@@ -334,6 +331,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                                           10),
                                                               child:
                                                                   OrderCardWidget(
+                                                                access_level:
+                                                                    access_level
+                                                                        .name,
                                                                 orders: _orders,
                                                                 onDoubleTap:
                                                                     () => context

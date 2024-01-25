@@ -200,11 +200,12 @@ class AllItemsWidget extends StatelessWidget {
     bool isTablet = MediaQuery.of(context).size.width > 600;
 
     return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
-      return StreamBuilder<QuerySnapshot>(
+      return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: state.menu,
         builder: (context, snapshot) {
           if (snapshot.hasData && (snapshot.data?.docs ?? []).isNotEmpty) {
-            final List<QueryDocumentSnapshot> docs = snapshot.data?.docs ?? [];
+            final List<QueryDocumentSnapshot<Map<String, dynamic>>> docs =
+                snapshot.data?.docs ?? [];
 
             return GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -226,11 +227,16 @@ class AllItemsWidget extends StatelessWidget {
                   return BlocBuilder<HomeCubit, HomeState>(
                       builder: (context, state) {
                     // }
-                    var data = state.menu;
+                    // var data = state.menu;
 
                     if (docs.isNotEmpty && index < docs.length) {
-                      var item = Item.fromJson(jsonEncode(docs[index].data()));
+                      var obj = docs[index].data();
+                      var item = Item.fromMap(obj);
+
                       var id = docs[index].id;
+                      // print(docs[index].data());
+                      print(obj["num_served "]);
+                      print(obj);
                       item = item.copyWith(id: id);
                       return GestureDetector(
                           onTap: () => modal.showIOSModalBottomSheet(

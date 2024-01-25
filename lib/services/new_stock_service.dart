@@ -167,6 +167,7 @@ class NewStockService {
         .collection('stock')
         .doc(restaurantId)
         .collection('items')
+        // .doc()
         .doc(item.title)
         .set(item.toMap());
   }

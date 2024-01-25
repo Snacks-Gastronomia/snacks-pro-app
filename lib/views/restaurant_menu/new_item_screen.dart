@@ -6,13 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/core/app.colors.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
-import 'package:snacks_pro_app/views/restaurant_menu/add_item_widget.dart';
-import 'package:snacks_pro_app/views/restaurant_menu/extras_widget.dart';
-import 'package:snacks_pro_app/views/restaurant_menu/item_details_widget.dart';
-import 'package:snacks_pro_app/views/restaurant_menu/options_widget.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/pages/add_item_widget.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/pages/extras_widget.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/pages/item_details_widget.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/pages/options_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
-import 'package:snacks_pro_app/views/restaurant_menu/stock_control_widget.dart';
-import 'package:snacks_pro_app/views/restaurant_menu/upload_image.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/pages/ingredients_widget.dart';
+import 'package:snacks_pro_app/views/restaurant_menu/pages/upload_image.dart';
 
 class NewItemScreen extends StatelessWidget {
   bool updateImage;
@@ -68,7 +68,6 @@ class NewItemScreen extends StatelessWidget {
           allowImplicitScrolling: false,
           scrollDirection: Axis.vertical,
           controller: pageController,
-
           children: [
             if (!(context.read<MenuCubit>().state.status ==
                     AppStatus.editing) ||
@@ -101,7 +100,6 @@ class NewItemScreen extends StatelessWidget {
                     backAction: () => pageController.previousPage(
                         duration: const Duration(milliseconds: 400),
                         curve: Curves.easeInOut))),
-
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: OptionsWidget(
@@ -115,25 +113,23 @@ class NewItemScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: ExtraWidget(
-                  buttonAction: () =>
-                      context.read<MenuCubit>().saveItem(context),
+                  buttonAction: () => pageController.nextPage(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut),
                   backAction: () => pageController.previousPage(
                       duration: const Duration(milliseconds: 400),
                       curve: Curves.easeInOut)),
             ),
-
-            // Padding(
-            //   padding: const EdgeInsets.all(20.0),
-            //   child: StockControlWidget(
-            //       buttonAction: () =>
-            //           BlocProvider.of<MenuCubit>(context).createItem()),
-            // )
+            Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: IngredientsPage(
+                  buttonAction: () =>
+                      context.read<MenuCubit>().saveItem(context),
+                  backAction: () => pageController.previousPage(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut),
+                ))
           ],
-
-          // Padding(padding: const EdgeInsets.all(25), child: AddItemWidget()
-          // ItemDetailsWidget()
-          // StockControlWidget()
-          // ),
         ),
       ),
     );

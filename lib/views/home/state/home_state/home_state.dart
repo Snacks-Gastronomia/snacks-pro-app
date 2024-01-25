@@ -11,7 +11,7 @@ class HomeState {
   final String? category;
   final String? query;
   final String? error;
-  final Stream<QuerySnapshot> menu;
+  final Stream<QuerySnapshot<Map<String, dynamic>>> menu;
   HomeState({
     required this.items,
     required this.numberOfPostsPerRequest,
@@ -62,7 +62,7 @@ class HomeState {
       DocumentSnapshot? lastDocument,
       List<Item>? popular,
       AppStatus? status,
-      Stream<QuerySnapshot>? menu,
+      Stream<QuerySnapshot<Map<String, dynamic>>>? menu,
       bool? search,
       String? category,
       String? query,

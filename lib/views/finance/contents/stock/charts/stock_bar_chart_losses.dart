@@ -9,8 +9,8 @@ class StockBarChartLosses extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var losse = dataBarChart.isNotEmpty ? dataBarChart[0] : 0;
-    double maxY = dataBarChart[0].losses * 1.5;
+    var losses = dataBarChart.isNotEmpty ? dataBarChart[0].losses : 0;
+    double maxY = losses * 1.5;
     return BarChart(
       BarChartData(
         barTouchData: barTouchData,
@@ -79,7 +79,8 @@ class StockBarChartLosses extends StatelessWidget {
           sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 50,
-              interval: dataBarChart[0].losses / 3),
+              interval:
+                  dataBarChart.isNotEmpty ? dataBarChart[0].losses / 3 : 1),
         ),
         topTitles: AxisTitles(
           sideTitles: SideTitles(showTitles: false),

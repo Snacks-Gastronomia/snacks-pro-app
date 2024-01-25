@@ -26,9 +26,9 @@ class CardItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var order = OrderModel(item: item, observations: "", option_selected: {});
-    double value = item.value;
-    double finalValue = item.finalValue;
-    print(item.id);
+    double value = double.parse(item.options[0]["value"]);
+    double finalValue = order.item.valueDiscount();
+
     return Builder(builder: (context) {
       return Stack(
         children: [
@@ -56,35 +56,35 @@ class CardItemWidget extends StatelessWidget {
                 SizedBox(
                   height: 100,
                   width: double.maxFinite,
-                  child: item.image_url == null ||
-                          item.image_url!.isEmpty ||
-                          !item.image_url!.contains("https")
-                      ? Center(
-                          child: SvgPicture.asset(
-                            AppImages.snacks,
-                            color: Colors.grey.shade400,
-                            // fit: BoxFit.,
-                            width: 70,
-                          ),
-                        )
-                      :
-                      // FadeInImage(
-                      //     image: NetworkImage(item.image_url!),
-                      //     placeholder: AssetImage(AppImages.snacks),
-                      //     imageErrorBuilder: (context, error, stackTrace) {
-                      //       return Image.asset(AppImages.snacks,
-                      //           fit: BoxFit.fitWidth);
-                      //     },
-                      //     fit: BoxFit.fitWidth,
-                      //   ),
-                      // Container()
-                      Image.network(
-                          item.image_url!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const SizedBox();
-                          },
-                        ),
+                  // child: item.image_url == null ||
+                  //         item.image_url!.isEmpty ||
+                  //         !item.image_url!.contains("https")
+                  //     ? Center(
+                  //         child: SvgPicture.asset(
+                  //           AppImages.snacks,
+                  //           color: Colors.grey.shade400,
+                  //           // fit: BoxFit.,
+                  //           width: 70,
+                  //         ),
+                  //       )
+                  //     :
+                  // FadeInImage(
+                  //     image: NetworkImage(item.image_url!),
+                  //     placeholder: AssetImage(AppImages.snacks),
+                  //     imageErrorBuilder: (context, error, stackTrace) {
+                  //       return Image.asset(AppImages.snacks,
+                  //           fit: BoxFit.fitWidth);
+                  //     },
+                  //     fit: BoxFit.fitWidth,
+                  //   ),
+                  // Container()
+                  // Image.network(
+                  //     item.image_url!,
+                  //     fit: BoxFit.cover,
+                  //     errorBuilder: (context, error, stackTrace) {
+                  //       return const SizedBox();
+                  //     },
+                  //   ),
                 ),
                 Container(
                   height: 2,

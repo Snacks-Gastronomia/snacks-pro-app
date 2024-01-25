@@ -7,7 +7,7 @@ import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
-import 'package:snacks_pro_app/views/restaurant_menu/extras_widget.dart';
+import './extras_widget.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/state/menu/menu_cubit.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/widgets/input_dashed_border.dart';
 import 'package:snacks_pro_app/views/restaurant_menu/widgets/new_option_item.dart';
@@ -41,7 +41,8 @@ class ItemDetailsWidget extends StatelessWidget {
                     label: 'Tempo de preparo(minutos)',
                     onChange: context.read<MenuCubit>().changeTime,
                     status: context.read<MenuCubit>().state.status,
-                    initialValue: context.read<MenuCubit>().state.item.time.toString(),
+                    initialValue:
+                        context.read<MenuCubit>().state.item.time.toString(),
                     keyboardType:
                         const TextInputType.numberWithOptions(signed: true),
                     inputFormatters: [

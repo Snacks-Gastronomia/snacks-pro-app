@@ -413,11 +413,13 @@ class OptionSelected {
   String id;
   String title;
   double value;
+  List ingredients;
 
   OptionSelected({
     required this.id,
     required this.title,
     required this.value,
+    required this.ingredients,
   });
 
   factory OptionSelected.fromJson(Map<String, dynamic> json) {
@@ -425,6 +427,7 @@ class OptionSelected {
       id: json['id'] ?? 0,
       title: json['title'] ?? '',
       value: json['value'] ?? 0.0,
+      ingredients: json['ingredients'] ?? [],
     );
   }
 
@@ -433,16 +436,18 @@ class OptionSelected {
       'id': id,
       'title': title,
       'value': value,
+      'ingredients': ingredients,
     };
   }
 
+  String toJson() => json.encode(toMap());
+
   factory OptionSelected.fromMap(Map<String, dynamic> map) {
     return OptionSelected(
-      id: map['id']?.toString() ?? "0",
+      id: map['id'].toString(),
       title: map['title'] ?? '',
-      value: double.parse(map['value'] ?? "0"),
+      value: double.parse(map['value'].toString()) ?? 0.0,
+      ingredients: List.from(map['ingredients']),
     );
   }
-
-  String toJson() => json.encode(toMap());
 }

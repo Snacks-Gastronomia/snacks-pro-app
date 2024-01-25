@@ -21,8 +21,10 @@ class OrderCardWidget extends StatelessWidget {
     required this.orders,
     required this.onDoubleTap,
     required this.onLongPress,
+    required this.access_level,
   }) : super(key: key);
   final List<OrderResponse> orders;
+  final String access_level;
 
   final Function() onDoubleTap;
   final Function() onLongPress;
@@ -246,7 +248,8 @@ class OrderCardWidget extends StatelessWidget {
                       onPressed: () => AppModal().showModalBottomSheet(
                           context: context,
                           // expand: true,
-                          content: OrderDetailsContent(orders: orders)),
+                          content: OrderDetailsContent(
+                              orders: orders, access_level: access_level)),
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
                           shape: RoundedRectangleBorder(

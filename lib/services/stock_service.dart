@@ -45,6 +45,26 @@ class StockApiServices {
     }
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchStockItems(
+    String? restaurant_id,
+  ) {
+    try {
+      // var ref = database.collection("stock").doc(restaurant_id).snapshots();
+      // .limit(limit);
+      // if (document != null) {
+      //   return ref.startAfterDocument(document).snapshots();
+      // }
+
+      return database
+          .collection("stock")
+          .doc(restaurant_id)
+          .collection("details")
+          .get();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getStockConsumed(
       String? restaurant_id,
       {int limit = 5}) {
@@ -88,6 +108,8 @@ class StockApiServices {
       print(e);
     }
   }
+
+  Future<void> insertStockExpense(restaurant_id, List ingredients) async {}
 
   Future<void> updateStock(restaurant_id, doc, data) async {
     try {

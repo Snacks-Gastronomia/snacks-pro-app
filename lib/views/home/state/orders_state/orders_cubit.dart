@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:snacks_pro_app/models/order_response.dart';
 import 'package:snacks_pro_app/services/finance_service.dart';
 import 'package:snacks_pro_app/services/firebase/notifications.dart';
+import 'package:snacks_pro_app/services/new_stock.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
@@ -17,6 +18,7 @@ part 'orders_state.dart';
 
 class OrdersCubit extends Cubit<OrdersState> {
   final repository = OrdersRepository();
+  final stockService = StockServiceApi();
   final auth = FirebaseAuth.instance;
   final storage = AppStorage();
 
@@ -44,6 +46,8 @@ class OrdersCubit extends Cubit<OrdersState> {
     required List<OrderResponse> items,
   }) async {
     emit(state.copyWith(status: AppStatus.loading));
+
+    ///Adicionar baixa do restaurante no stock
     var firstOrder = items[0];
 
     double total =
@@ -51,6 +55,8 @@ class OrdersCubit extends Cubit<OrdersState> {
     double paid = items[0].paid;
     final user = await storage.getDataStorage("user");
     final restaurantName = user["restaurant"]["name"];
+    final restaurantID = user["restaurant"]["id"];
+
     AppPermission access = AppPermission.values.byName(user["access_level"]);
     var status = OrderStatus.values.byName(firstOrder.status);
 
@@ -113,12 +119,30 @@ class OrdersCubit extends Cubit<OrdersState> {
           default:
         }
 
-        if (nextStatus == OrderStatus.delivered) {
-          await addOrderToReport(
-              orders: items,
-              restaurant: restaurantName,
-              datetime: firstOrder.created_at);
+        if (nextStatus == OrderStatus.done) {
+          for (var element in items) {
+            for (var el in element.items) {
+              for (var e in el.optionSelected.ingredients) {
+                var data = {
+                  "order": el.optionSelected.title,
+                  "order_code": element.code,
+                  "amount": el.amount,
+                  "volume": e["value"],
+                  "unit": e["unit"],
+                  "ing_name": e["name"],
+                };
+
+                await stockService.newStockConsume(restaurantID, e["id"], data);
+              }
+            }
+          }
         }
+        // if (nextStatus == OrderStatus.delivered) {
+        //   await addOrderToReport(
+        //       orders: items,
+        //       restaurant: restaurantName,
+        //       datetime: firstOrder.created_at);
+        // }
         await repository.updateManyStatus(ids, nextStatus);
         emit(state.copyWith(status: AppStatus.loaded));
       }

@@ -488,7 +488,48 @@ class _ItemScreenState extends State<ItemScreen> {
                         ),
                       const SizedBox(
                         height: 20,
-                      )
+                      ),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Ingredientes",
+                              style: AppTextStyles.semiBold(18),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            ListView.builder(
+                              itemCount: widget.order.item.options.length,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                var item = widget.order.item.options[index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 15),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item["title"],
+                                        style: AppTextStyles.medium(16),
+                                      ),
+                                      for (int i = 0;
+                                          i <
+                                              (item["ingredients"] ?? [])
+                                                  .length;
+                                          i++)
+                                        Text(item["ingredients"][i]["name"] +
+                                            " - " +
+                                            item["ingredients"][i]["value"] +
+                                            item["ingredients"][i]["unit"])
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ])
                     ],
                   ),
                 );

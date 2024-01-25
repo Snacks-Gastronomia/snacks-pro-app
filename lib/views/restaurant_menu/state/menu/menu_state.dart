@@ -3,7 +3,7 @@ part of 'menu_cubit.dart';
 class MenuState extends Equatable {
   final Item item;
   final String selected;
-  final List<Ingredient> ingredients;
+  final List<dynamic> ingredients;
   final AppStatus status;
   final double? discount;
   const MenuState({
@@ -25,7 +25,7 @@ class MenuState extends Equatable {
   MenuState copyWith({
     Item? item,
     String? selected,
-    List<Ingredient>? ingredients,
+    List<dynamic>? ingredients,
     AppStatus? status,
     double? discount,
   }) {

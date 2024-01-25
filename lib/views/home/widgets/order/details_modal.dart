@@ -19,9 +19,11 @@ class OrderDetailsContent extends StatelessWidget {
   const OrderDetailsContent({
     Key? key,
     required this.orders,
+    required this.access_level,
   }) : super(key: key);
 
   final List<OrderResponse> orders;
+  final String access_level;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +122,8 @@ class OrderDetailsContent extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          if (!(ord.confirmed ?? false))
+          if (!(ord.confirmed ?? false) &&
+              access_level == AppPermission.cashier.name)
             ElevatedButton(
               onPressed: () {
                 detailsOrderController.showModalConfimateOrder(

@@ -94,9 +94,11 @@ class WithdrawService {
           .where('timestamp', isLessThanOrEqualTo: lastDayOfMonth)
           .snapshots()
           .map((snapshot) {
-        double sum = snapshot.docs
-            .map((doc) => doc['amount'] as double)
-            .reduce((value, element) => value + element);
+        double sum = snapshot.docs.isEmpty
+            ? 0
+            : snapshot.docs
+                .map((doc) => doc['amount'] as double)
+                .reduce((value, element) => value + element);
         return sum;
       });
     } catch (e) {

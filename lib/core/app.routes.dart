@@ -1,6 +1,7 @@
 class AppRoutes {
   static String get home => '/home';
   static String get stock => '/stock';
+  static String get stockDetails => '/stock-details';
   // static String get start => '/start';
   static String get phoneAuth => '/phone-auth';
   static String get otp => '/otp';

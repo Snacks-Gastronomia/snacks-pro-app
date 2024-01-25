@@ -1,21 +1,26 @@
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+
 import 'package:snacks_pro_app/views/finance/contents/stock/charts/indicator_stock.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 
 class StockPieChart extends StatelessWidget {
-  const StockPieChart({Key? key, required this.item});
-  final ItemStock item;
+  const StockPieChart({
+    Key? key,
+    required this.consume,
+    required this.loss,
+    required this.total,
+  }) : super(key: key);
+
+  final double consume;
+  final double loss;
+  final double total;
 
   @override
   Widget build(BuildContext context) {
-    final available =
-        ((item.amount - (item.losses ?? 0) - (item.consume ?? 0)) /
-                item.amount) *
-            100;
-
-    final losses = ((item.losses ?? 0) / item.amount) * 100;
-    final consume = ((item.consume ?? 0) / item.amount) * 100;
+    double available =
+        total != 0 ? ((total - loss - consume) / total) * 100 : 0;
+    double losses = total != 0 ? (loss / total) * 100 : 0;
+    double consumed = total != 0 ? (consume / total) * 100 : 0;
 
     return Column(
       children: [
@@ -35,17 +40,17 @@ class StockPieChart extends StatelessWidget {
                         showTitle: false),
                     PieChartSectionData(
                         value: losses,
-                        color: Colors.yellow,
+                        color: Colors.red,
                         radius: 15,
                         showTitle: false),
                     PieChartSectionData(
-                        value: consume,
+                        value: consumed,
                         color: Colors.purple,
                         radius: 15,
                         showTitle: false)
                   ],
                 ),
-                swapAnimationDuration: Duration(milliseconds: 300),
+                swapAnimationDuration: const Duration(milliseconds: 300),
                 swapAnimationCurve: Curves.linear,
               ),
             ),
@@ -57,9 +62,9 @@ class StockPieChart extends StatelessWidget {
                 IndicatorStock(
                     color: Colors.purple,
                     title: 'de consumo',
-                    value: consume.toInt()),
+                    value: consumed.toInt()),
                 IndicatorStock(
-                    color: Colors.yellow,
+                    color: Colors.red,
                     title: 'de perdas',
                     value: losses.toInt()),
                 IndicatorStock(

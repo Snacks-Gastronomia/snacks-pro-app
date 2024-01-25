@@ -90,7 +90,8 @@ class _AddOrderManualState extends State<AddOrderManual> {
                     value: 0,
                     restaurantName: restaurantName),
                 observations: '',
-                optionSelected: OptionSelected(id: '', title: '', value: 0));
+                optionSelected: OptionSelected(
+                    id: '', title: '', value: 0, ingredients: []));
 
             OrderResponse orderResponse = OrderResponse(
                 address: "",
@@ -355,18 +356,19 @@ class _AddOrderManualState extends State<AddOrderManual> {
                                                 ItemResponse(
                                                     amount: 1,
                                                     item: suggestions[index],
-                                                    optionSelected:
-                                                        OptionSelected(
-                                                            id:
-                                                                suggestions[
-                                                                        index]
-                                                                    .id,
-                                                            title: suggestions[
-                                                                    index]
+                                                    optionSelected: OptionSelected(
+                                                        id: suggestions[index]
+                                                            .id,
+                                                        title:
+                                                            suggestions[index]
                                                                 .title,
-                                                            value: suggestions[
+                                                        value:
+                                                            suggestions[index]
+                                                                .value,
+                                                        ingredients: suggestions[
                                                                     index]
-                                                                .value),
+                                                                .ingredients ??
+                                                            []),
                                                     observations: '');
                                             String price = suggestions[index]
                                                 .value
