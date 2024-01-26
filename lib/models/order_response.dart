@@ -447,7 +447,7 @@ class OptionSelected {
       id: map['id'].toString(),
       title: map['title'] ?? '',
       value: double.parse(map['value'].toString()) ?? 0.0,
-      ingredients: List.from(map['ingredients']),
+      ingredients: List.from(map['ingredients'] ?? []),
     );
   }
 }
