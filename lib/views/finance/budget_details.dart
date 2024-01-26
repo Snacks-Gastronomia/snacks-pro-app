@@ -105,14 +105,18 @@ class BudgetDetailsContent extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      CardExpenseContent(
-                        iconColorBlack: false,
-                        title: "Receita líquida",
-                        subtitle: DateFormat.MMMM().format(DateTime.now()),
-                        month: DateFormat.MMMM("pt_BR").format(DateTime.now()),
-                        value: context.read<FinanceCubit>().state.budget -
-                            context.read<FinanceCubit>().state.expenses_value,
-                        icon: Icons.attach_money_rounded,
+                      BlocBuilder<FinanceCubit, FinanceHomeState>(
+                        builder: (context, state) {
+                          return CardExpenseContent(
+                            iconColorBlack: false,
+                            title: "Receita líquida",
+                            subtitle: DateFormat.MMMM().format(DateTime.now()),
+                            month:
+                                DateFormat.MMMM("pt_BR").format(DateTime.now()),
+                            value: state.budget - state.expenses_value,
+                            icon: Icons.attach_money_rounded,
+                          );
+                        },
                       ),
                       const SizedBox(
                         height: 20,
@@ -242,38 +246,36 @@ class ListAllExpenses extends StatelessWidget {
                 builder: (context, state) {
               var list = state.expensesData;
               // print(list.length);
-              return Expanded(
-                child: ListView.separated(
-                    separatorBuilder: (context, index) => const SizedBox(
-                          height: 15,
-                        ),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      var item = list[index];
-                      final value =
-                          double.parse(item.data()["value"].toString()) * -1;
-                      return CardExpense(
-                          docNumber: item.data()["docNumber"] ?? 0,
-                          supplier: item.data()["supplier"] ?? '',
-                          period: item.data()["period"] ?? '',
-                          enableDelete: item.data()["type"] == "restaurant",
-                          deleteAction: () => context
-                              .read<FinanceCubit>()
-                              .deleteRestaurantExpense(item.id, restaurantID),
-                          title: item.data()["name"],
-                          subtitle: item.data()["period"] ?? '',
-                          iconColorBlack: item.data()["type"] == "restaurant",
-                          icon: (item.data()["sharedValue"] ?? false)
-                              ? Icons.groups
-                              : null,
-                          value: (item.data()["sharedValue"] ?? false) &&
-                                  access_level == AppPermission.radm.name
-                              ? value / state.restaurant_count
-                              : value);
-                    }),
-              );
+              return ListView.separated(
+                  separatorBuilder: (context, index) => const SizedBox(
+                        height: 15,
+                      ),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    var item = list[index];
+                    final value =
+                        double.parse(item.data()["value"].toString()) * -1;
+                    return CardExpense(
+                        docNumber: item.data()["docNumber"] ?? 0,
+                        supplier: item.data()["supplier"] ?? '',
+                        period: item.data()["period"] ?? '',
+                        enableDelete: item.data()["type"] == "restaurant",
+                        deleteAction: () => context
+                            .read<FinanceCubit>()
+                            .deleteRestaurantExpense(item.id, restaurantID),
+                        title: item.data()["name"],
+                        subtitle: item.data()["period"] ?? '',
+                        iconColorBlack: item.data()["type"] == "restaurant",
+                        icon: (item.data()["sharedValue"] ?? false)
+                            ? Icons.groups
+                            : null,
+                        value: (item.data()["sharedValue"] ?? false) &&
+                                access_level == AppPermission.radm.name
+                            ? value / state.restaurant_count
+                            : value);
+                  });
             });
           }
           return const Center(
@@ -306,14 +308,15 @@ class ListRestaurantsProfits extends StatelessWidget {
                   separatorBuilder: (context, index) => const SizedBox(
                         height: 15,
                       ),
-                  shrinkWrap: false,
-                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
                   itemCount: list.length,
                   itemBuilder: (context, index) {
                     var item = list[index];
 
                     final value = double.parse(item["total"].toString());
 
+                    print(item);
                     return GestureDetector(
                       onTap: () {
                         modal.showIOSModalBottomSheet(
@@ -328,7 +331,8 @@ class ListRestaurantsProfits extends StatelessWidget {
                           enableDelete: false,
                           deleteAction: null,
                           title: item["name"],
-                          subtitle: "",
+                          subtitle:
+                              DateFormat.MMMM("pt_BR").format(DateTime.now()),
                           icon: Icons.restaurant,
                           iconColorBlack: true,
                           value: value),
