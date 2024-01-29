@@ -422,6 +422,16 @@ class FinanceApiServices {
 
   Future<void> deleteRestaurant(rid, owner_id) async {
     await firebase.collection("employees").doc(owner_id).delete();
+
+    var values = await firebase
+        .collection("menu")
+        .where("restaurant_id", isEqualTo: rid)
+        .get();
+
+    for (var element in values.docs) {
+      await element.reference.delete();
+    }
+
     return await firebase.collection("restaurants").doc(rid).delete();
   }
 
