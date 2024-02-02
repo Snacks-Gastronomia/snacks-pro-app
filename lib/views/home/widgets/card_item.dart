@@ -56,27 +56,27 @@ class CardItemWidget extends StatelessWidget {
                 SizedBox(
                   height: 100,
                   width: double.maxFinite,
-                  // child: item.image_url == null ||
-                  //         item.image_url!.isEmpty ||
-                  //         !item.image_url!.contains("https")
-                  //     ? Center(
-                  //         child: SvgPicture.asset(
-                  //           AppImages.snacks,
-                  //           color: Colors.grey.shade400,
-                  //           // fit: BoxFit.,
-                  //           width: 70,
-                  //         ),
-                  //       )
-                  //     :
-                  // FadeInImage(
-                  //     image: NetworkImage(item.image_url!),
-                  //     placeholder: AssetImage(AppImages.snacks),
-                  //     imageErrorBuilder: (context, error, stackTrace) {
-                  //       return Image.asset(AppImages.snacks,
-                  //           fit: BoxFit.fitWidth);
-                  //     },
-                  //     fit: BoxFit.fitWidth,
-                  //   ),
+                  child: item.image_url == null ||
+                          item.image_url!.isEmpty ||
+                          !item.image_url!.contains("https")
+                      ? Center(
+                          child: SvgPicture.asset(
+                            AppImages.snacks,
+                            color: Colors.grey.shade400,
+                            // fit: BoxFit.,
+                            width: 70,
+                          ),
+                        )
+                      :
+                  FadeInImage(
+                      image: NetworkImage(item.image_url!),
+                      placeholder: AssetImage(AppImages.snacks),
+                      imageErrorBuilder: (context, error, stackTrace) {
+                        return Image.asset(AppImages.snacks,
+                            fit: BoxFit.fitWidth);
+                      },
+                      fit: BoxFit.fitWidth,
+                    ),
                   // Container()
                   // Image.network(
                   //     item.image_url!,
