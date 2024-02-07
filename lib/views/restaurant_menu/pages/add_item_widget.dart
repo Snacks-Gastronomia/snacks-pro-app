@@ -97,10 +97,6 @@ class AddItemWidget extends StatelessWidget {
                     borderType: BorderType.RRect,
                     radius: const Radius.circular(12),
                     child: TextFormField(
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp("[' , a-zA-Z 0-9]")),
-                      ],
                       maxLines: 6,
                       maxLength: 200,
                       onChanged: context.read<MenuCubit>().changeDescription,

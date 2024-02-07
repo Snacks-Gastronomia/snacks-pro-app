@@ -67,16 +67,15 @@ class CardItemWidget extends StatelessWidget {
                             width: 70,
                           ),
                         )
-                      :
-                  FadeInImage(
-                      image: NetworkImage(item.image_url!),
-                      placeholder: AssetImage(AppImages.snacks),
-                      imageErrorBuilder: (context, error, stackTrace) {
-                        return Image.asset(AppImages.snacks,
-                            fit: BoxFit.fitWidth);
-                      },
-                      fit: BoxFit.fitWidth,
-                    ),
+                      : FadeInImage(
+                          image: NetworkImage(item.image_url!),
+                          placeholder: AssetImage(AppImages.snacks),
+                          imageErrorBuilder: (context, error, stackTrace) {
+                            return Image.asset(AppImages.snacks,
+                                fit: BoxFit.fitWidth);
+                          },
+                          fit: BoxFit.fitWidth,
+                        ),
                   // Container()
                   // Image.network(
                   //     item.image_url!,
