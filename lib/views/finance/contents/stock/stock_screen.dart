@@ -4,15 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
 import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
-import 'package:snacks_pro_app/models/item_model.dart';
-import 'package:snacks_pro_app/services/new_stock_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/stock_card.dart';
 import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
-import 'package:snacks_pro_app/views/home/widgets/search_orders.dart';
 
 class StockScreen extends StatelessWidget {
   StockScreen({super.key});
@@ -78,7 +74,8 @@ class StockScreen extends StatelessWidget {
                           total: double.parse(item["total"].toString()),
                           unit: item["unit"] ?? "",
                           used: double.parse(
-                              (item["consumed"] + item["loss"]).toString()),
+                              (item["consumed"] ?? 0 + item["loss"])
+                                  .toString()),
                           onTap: () {
                             context
                                 .read<StockCubit>()

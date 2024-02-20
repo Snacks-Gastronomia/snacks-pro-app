@@ -101,12 +101,13 @@ class StockDetailsScreen extends StatelessWidget {
 
                               var timestamp = item["created_at"] as Timestamp;
                               return CardEntrancesWidget(
-                                  doc: entc["document"],
-                                  unit: entc["unit"],
-                                  description: entc["description"],
-                                  created_at: timestamp.toDate().toString(),
-                                  volume: entc["volume"],
-                                  value: double.parse(entc["value"]));
+                                doc: entc["document"],
+                                unit: entc["unit"],
+                                description: entc["description"],
+                                created_at: timestamp.toDate().toString(),
+                                volume: entc["volume"],
+                                value: totalValue,
+                              );
                             },
                           ),
                         ),
@@ -114,9 +115,10 @@ class StockDetailsScreen extends StatelessWidget {
                           height: 30,
                         ),
                         StockPieChart(
-                            consume: consumedValue,
-                            loss: lossValue,
-                            total: totalValue),
+                          consume: consumedValue,
+                          loss: lossValue,
+                          total: totalValue,
+                        ),
                         const SizedBox(
                           height: 40,
                         ),
