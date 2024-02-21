@@ -1,7 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/services/new_stock.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
@@ -117,14 +115,15 @@ class StockCubit extends Cubit<StockState> {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetch() async* {
     var user = await storage.getDataStorage("user");
-    var rest_id = user["restaurant"]["id"];
-    yield* repository.fetchStock(rest_id);
+    var restId = user["restaurant"]["id"];
+    yield* repository.fetchStock(restId);
   }
 
-  selectStockItem(data, sid) {
+  selectStockItem({data, sid}) {
     var out = {...data, "id": sid};
 
-    emit(state.copyWith(selected: out));
+    emit(state.copyWith(selected: data));
+    print("selected: ${data["title"]}");
   }
 
   getRestaurantId() async {

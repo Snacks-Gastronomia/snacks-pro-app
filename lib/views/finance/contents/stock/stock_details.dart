@@ -17,9 +17,10 @@ class StockDetailsScreen extends StatelessWidget {
   StockDetailsScreen({super.key});
 
   final modal = AppModal();
-  String lastEntranceId = "";
+
   @override
   Widget build(BuildContext context) {
+    String lastEntranceId = "";
     return SafeArea(
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -106,7 +107,7 @@ class StockDetailsScreen extends StatelessWidget {
                                 description: entc["description"],
                                 created_at: timestamp.toDate().toString(),
                                 volume: entc["volume"],
-                                value: totalValue,
+                                value: entc["value"] == '' ? 0 : entc["value"],
                               );
                             },
                           ),

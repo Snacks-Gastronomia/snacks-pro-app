@@ -74,13 +74,12 @@ class StockScreen extends StatelessWidget {
                           total: double.parse(item["total"].toString()),
                           unit: item["unit"] ?? "",
                           used: double.parse(
-                              (item["consumed"] ?? 0 + item["loss"])
-                                  .toString()),
-                          onTap: () {
-                            context
-                                .read<StockCubit>()
-                                .selectStockItem(item, raw.id);
-
+                              (item["consumed"] + item["losses"]).toString()),
+                          onTap: () async {
+                            await context.read<StockCubit>().selectStockItem(
+                                  data: item,
+                                  sid: raw.id,
+                                );
                             Navigator.pushNamed(
                                 context, AppRoutes.stockDetails);
                           },
