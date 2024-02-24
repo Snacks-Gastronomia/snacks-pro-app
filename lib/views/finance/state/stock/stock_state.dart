@@ -45,36 +45,6 @@ class StockState {
         isEmpty: false);
   }
 
-  StockState copyWith({
-    String? title,
-    String? document,
-    String? unit,
-    String? volume,
-    String? date,
-    String? time,
-    String? value,
-    String? description,
-    DateTime? created_at,
-    ItemStock? selected,
-    bool? isEmpty,
-    AppStatus? status,
-  }) {
-    return StockState(
-      title: title ?? this.title,
-      document: document ?? this.document,
-      unit: unit ?? this.unit,
-      volume: volume ?? this.volume,
-      date: date ?? this.date,
-      time: time ?? this.time,
-      value: value ?? this.value,
-      description: description ?? this.description,
-      created_at: created_at ?? this.created_at,
-      selected: selected ?? this.selected,
-      isEmpty: isEmpty ?? this.isEmpty,
-      status: status ?? this.status,
-    );
-  }
-
   Map<String, dynamic> toMap() {
     return {
       'title': title,
@@ -151,5 +121,35 @@ class StockState {
         selected.hashCode ^
         isEmpty.hashCode ^
         status.hashCode;
+  }
+
+  StockState copyWith({
+    String? title,
+    String? document,
+    String? unit,
+    String? volume,
+    String? date,
+    String? time,
+    String? value,
+    String? description,
+    DateTime? created_at,
+    ItemStock? selected,
+    bool? isEmpty,
+    AppStatus? status,
+  }) {
+    return StockState(
+      title: title ?? this.title,
+      document: document ?? this.document,
+      unit: unit ?? this.unit,
+      volume: volume ?? this.volume,
+      date: date ?? this.date,
+      time: time ?? this.time,
+      value: value ?? this.value,
+      description: description ?? this.description,
+      created_at: created_at ?? this.created_at,
+      selected: selected ?? this.selected,
+      isEmpty: isEmpty ?? this.isEmpty,
+      status: status ?? this.status,
+    );
   }
 }
