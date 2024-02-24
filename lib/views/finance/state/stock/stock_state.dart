@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'stock_cubit.dart';
 
 class StockState {
@@ -10,7 +11,7 @@ class StockState {
   final String value;
   final String description;
   final DateTime created_at;
-  final Map selected;
+  final ItemStock selected;
   final bool isEmpty;
   final AppStatus status;
 
@@ -40,7 +41,7 @@ class StockState {
         value: "",
         description: "",
         created_at: DateTime.now(),
-        selected: {},
+        selected: ItemStock.getDefault(),
         isEmpty: false);
   }
 
@@ -54,7 +55,7 @@ class StockState {
     String? value,
     String? description,
     DateTime? created_at,
-    Map? selected,
+    ItemStock? selected,
     bool? isEmpty,
     AppStatus? status,
   }) {
@@ -67,10 +68,10 @@ class StockState {
       time: time ?? this.time,
       value: value ?? this.value,
       description: description ?? this.description,
+      created_at: created_at ?? this.created_at,
       selected: selected ?? this.selected,
       isEmpty: isEmpty ?? this.isEmpty,
       status: status ?? this.status,
-      created_at: created_at ?? this.created_at,
     );
   }
 
@@ -109,7 +110,7 @@ class StockState {
       time: map['time'] ?? '',
       value: map['value'] ?? '',
       description: map['description'] ?? '',
-      selected: Map.from(map['selected']),
+      selected: ItemStock.fromMap(map['selected']),
       isEmpty: map['isEmpty'] ?? false,
       created_at: map['isEmpty'],
     );

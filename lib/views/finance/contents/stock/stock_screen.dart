@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
@@ -7,6 +6,7 @@ import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/stock_card.dart';
 import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
 
@@ -65,23 +65,20 @@ class StockScreen extends StatelessWidget {
                       itemCount: docs.length,
                       itemBuilder: (context, index) {
                         var raw = docs[index];
-                        var item = raw.data();
-                        var timestamp = item["created_at"] as Timestamp;
+                        ItemStock item = ItemStock.fromData(raw);
 
                         return StockCard(
-                          created_at: timestamp.toDate(),
-                          title: item["title"],
-                          total: double.parse(item["total"].toString()),
-                          unit: item["unit"] ?? "",
-                          used: double.parse(
-                              (item["consumed"] + item["losses"]).toString()),
+                          created_at: item.created_at,
+                          title: item.title,
+                          total: item.total,
+                          unit: item.unit,
+                          used: (item.consumed + item.losses),
                           onTap: () async {
-                            await context.read<StockCubit>().selectStockItem(
-                                  data: item,
-                                  sid: raw.id,
-                                );
-                            Navigator.pushNamed(
-                                context, AppRoutes.stockDetails);
+                            await context
+                                .read<StockCubit>()
+                                .selectStockItem(item)
+                                .then((value) => Navigator.pushNamed(
+                                    context, AppRoutes.stockDetails));
                           },
                         );
                       },
