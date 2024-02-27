@@ -1,15 +1,12 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 // import 'package:meta/meta.dart';
-import 'package:snacks_pro_app/models/ingredient_model.dart';
 import 'package:snacks_pro_app/models/item_model.dart';
 import 'package:snacks_pro_app/services/items_service.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
@@ -19,8 +16,6 @@ import 'package:snacks_pro_app/utils/md5.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
 import 'package:snacks_pro_app/views/home/repository/items_repository.dart';
-import 'package:snacks_pro_app/views/home/state/home_state/home_cubit.dart';
-import 'package:snacks_pro_app/views/restaurant_menu/repository/stock_repository.dart';
 import 'package:snacks_pro_app/views/success/success_screen.dart';
 
 part 'menu_state.dart';
@@ -137,9 +132,14 @@ class MenuCubit extends Cubit<MenuState> {
     }
   }
 
-  void changeTitle(String value) {
+  void changeTitle(String title) {
     final item = state.item;
-    emit(state.copyWith(item: item.copyWith(title: value)));
+    if (title.isNotEmpty && title[0] == " ") {
+      String filtertitle = title.substring(1);
+      emit(state.copyWith(item: item.copyWith(title: filtertitle)));
+    } else {
+      emit(state.copyWith(item: item.copyWith(title: title)));
+    }
   }
 
   String get generateId =>
