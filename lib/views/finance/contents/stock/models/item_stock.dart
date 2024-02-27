@@ -3,107 +3,94 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:snacks_pro_app/views/finance/contents/stock/models/item_consume.dart';
-
 class ItemStock {
+  final String id;
+  final String unit;
   final String title;
-  final String description;
-  final String measure;
-  final int document;
-  final DateTime dateTime;
-  final double value;
-  final double amount;
-  final double? consume;
-  final double? losses;
-  final List<ItemConsume>? items;
+  final DateTime created_at;
+  final double losses;
+  final double consumed;
+  final double total;
 
   ItemStock({
+    required this.id,
+    required this.unit,
     required this.title,
-    required this.description,
-    required this.measure,
-    required this.document,
-    required this.dateTime,
-    required this.value,
-    required this.amount,
-    this.consume,
-    this.losses,
-    this.items,
+    required this.created_at,
+    required this.losses,
+    required this.consumed,
+    required this.total,
   });
-
-  ItemStock copyWith(
-      {String? title,
-      String? description,
-      String? measure,
-      int? document,
-      DateTime? dateTime,
-      double? value,
-      double? amount,
-      double? consume,
-      double? losses,
-      List<ItemConsume>? items}) {
-    return ItemStock(
-        title: title ?? this.title,
-        description: description ?? this.description,
-        measure: measure ?? this.measure,
-        document: document ?? this.document,
-        dateTime: dateTime ?? this.dateTime,
-        value: value ?? this.value,
-        amount: amount ?? this.amount,
-        consume: consume ?? this.consume,
-        losses: losses ?? this.losses,
-        items: items ?? this.items);
-  }
-
-  factory ItemStock.initial() {
-    return ItemStock(
-      title: 'title',
-      description: 'description',
-      measure: 'measure',
-      document: 0,
-      dateTime: DateTime.now(),
-      value: 0,
-      amount: 0,
-      consume: 0,
-      losses: 0,
-    );
-  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'title': title,
-      'description': description,
-      'measure': measure,
-      'document': document,
-      'dateTime': Timestamp.fromDate(dateTime),
-      'value': value,
-      'amount': amount,
+      'created_at': created_at.millisecondsSinceEpoch,
       'losses': losses,
-      'consume': consume,
-      'items': items,
+      'consumed': consumed,
+      'total': total,
     };
+  }
+
+  static ItemStock getDefault() {
+    return ItemStock(
+      id: 'default_id',
+      unit: '',
+      title: 'default_title',
+      created_at: DateTime.now(),
+      losses: 0.0,
+      consumed: 0.0,
+      total: 0.0,
+    );
   }
 
   factory ItemStock.fromMap(Map<String, dynamic> map) {
     return ItemStock(
-        title: map['title'] as String,
-        description: map['description'] as String,
-        measure: map['measure'] as String,
-        document: map['document'] as int,
-        dateTime: (map['dateTime'] as Timestamp).toDate(),
-        value: double.tryParse(map['value'].toString()) as double,
-        amount: double.tryParse(map['value'].toString()) as double,
-        losses: map['losses'] != null
-            ? double.tryParse(map['losses'].toString())
-            : null,
-        consume: map['consume'] != null
-            ? double.tryParse(map['consume'].toString())
-            : null,
-        items:
-            map['items'] != null ? ItemConsume.fromList(map['items']) : null);
+      id: map['id'] ?? '',
+      unit: map['unit'] as String,
+      title: map['title'] as String,
+      created_at: map['created_at'].toDate() as DateTime,
+      losses: double.parse(map['losses'].toString()),
+      consumed: double.parse(map['consumed'].toString()),
+      total: double.parse(map['total'].toString()),
+    );
+  }
+  factory ItemStock.fromData(QueryDocumentSnapshot<Map<String, dynamic>> raw) {
+    var map = raw.data();
+    return ItemStock(
+      id: raw.id,
+      unit: map['unit'] as String,
+      title: map['title'] as String,
+      created_at: map['created_at'].toDate() as DateTime,
+      losses: double.parse(map['losses'].toString()),
+      consumed: double.parse(map['consumed'].toString()),
+      total: double.parse(map['total'].toString()),
+    );
   }
 
   String toJson() => json.encode(toMap());
 
   factory ItemStock.fromJson(String source) =>
       ItemStock.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  ItemStock copyWith({
+    String? id,
+    String? unit,
+    String? title,
+    DateTime? created_at,
+    double? losses,
+    double? consumed,
+    double? total,
+  }) {
+    return ItemStock(
+      id: id ?? this.id,
+      unit: unit ?? this.unit,
+      title: title ?? this.title,
+      created_at: created_at ?? this.created_at,
+      losses: losses ?? this.losses,
+      consumed: consumed ?? this.consumed,
+      total: total ?? this.total,
+    );
+  }
 }

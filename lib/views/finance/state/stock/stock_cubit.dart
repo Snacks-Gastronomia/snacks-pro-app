@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/services/new_stock.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/storage.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
 import 'package:snacks_pro_app/views/finance/repository/stock_repository.dart';
 
 part 'stock_state.dart';
@@ -79,17 +78,17 @@ class StockCubit extends Cubit<StockState> {
     var user = await storage.getDataStorage("user");
     var rid = user["restaurant"]["id"];
     emit(state.copyWith(
-        created_at: DateTime.now(), title: state.selected["title"]));
+        created_at: DateTime.now(), title: state.selected.title));
 
     if (isNew) {
       await stockService.newStockEntrance(rid, state.toMap());
     } else {
-      var stock = state.selected["id"];
-      var consume = state.selected["consumed"];
-      var loss = state.selected["loss"];
-      var total = state.selected["total"];
+      var stock = state.selected.id;
+      var consume = state.selected.consumed;
+      var loss = state.selected.losses;
+      var total = state.selected.total;
 
-      emit(state.copyWith(title: state.selected["title"]));
+      emit(state.copyWith(title: state.selected.title));
 
       if (lastEntranceId != null) {
         await stockService.newStockEntrance(rid, state.toMap(),
@@ -107,24 +106,22 @@ class StockCubit extends Cubit<StockState> {
   Future<void> saveLoss() async {
     var user = await storage.getDataStorage("user");
     var rid = user["restaurant"]["id"];
-    var stock = state.selected["id"];
+    var stock = state.selected.id;
 
-    emit(state.copyWith(
-        created_at: DateTime.now(), unit: state.selected["unit"]));
+    emit(state.copyWith(created_at: DateTime.now(), unit: state.selected.unit));
 
     await stockService.newStockLoss(rid, stock, state.toMapLoss());
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetch() async* {
     var user = await storage.getDataStorage("user");
-    var rest_id = user["restaurant"]["id"];
-    yield* repository.fetchStock(rest_id);
+    var restId = user["restaurant"]["id"];
+    yield* repository.fetchStock(restId);
   }
 
-  selectStockItem(data, sid) {
-    var out = {...data, "id": sid};
-
-    emit(state.copyWith(selected: out));
+  Future<void> selectStockItem(ItemStock data) async {
+    emit(state.copyWith(selected: data));
+    print("selected: ${data.title}");
   }
 
   getRestaurantId() async {
@@ -147,13 +144,13 @@ class StockCubit extends Cubit<StockState> {
 
   Future<QuerySnapshot<Map<String, dynamic>>> fetchStockAllLoss() async {
     var rid = await getRestaurantId();
-    var sid = state.selected["id"];
+    var sid = state.selected.id;
     return await stockService.getLoss(rid, sid, limit: 50);
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> fetchStockAllConsume() async {
     var rid = await getRestaurantId();
-    var sid = state.selected["id"];
+    var sid = state.selected.id;
     return await stockService.getConsume(rid, sid, limit: 50);
   }
 
@@ -164,7 +161,7 @@ class StockCubit extends Cubit<StockState> {
 
   Future<dynamic> fetchScreenData() async {
     var rid = await getRestaurantId();
-    var stock = state.selected["id"];
+    var stock = state.selected.id;
 
     var futures = await Future.wait([
       fetchStockEntrances(rid, stock),
@@ -176,9 +173,9 @@ class StockCubit extends Cubit<StockState> {
       "entrances": futures[0].docs,
       "consume": futures[1].docs,
       "losses": futures[2].docs,
-      "totalValue": state.selected["total"],
-      "consumedValue": state.selected["consumed"],
-      "lossValue": state.selected["losses"],
+      "totalValue": state.selected.total,
+      "consumedValue": state.selected.consumed,
+      "lossValue": state.selected.losses,
     };
   }
 }

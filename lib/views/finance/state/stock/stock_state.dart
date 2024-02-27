@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'stock_cubit.dart';
 
 class StockState {
@@ -10,7 +11,7 @@ class StockState {
   final String value;
   final String description;
   final DateTime created_at;
-  final Map selected;
+  final ItemStock selected;
   final bool isEmpty;
   final AppStatus status;
 
@@ -40,38 +41,8 @@ class StockState {
         value: "",
         description: "",
         created_at: DateTime.now(),
-        selected: {},
+        selected: ItemStock.getDefault(),
         isEmpty: false);
-  }
-
-  StockState copyWith({
-    String? title,
-    String? document,
-    String? unit,
-    String? volume,
-    String? date,
-    String? time,
-    String? value,
-    String? description,
-    DateTime? created_at,
-    Map? selected,
-    bool? isEmpty,
-    AppStatus? status,
-  }) {
-    return StockState(
-      title: title ?? this.title,
-      document: document ?? this.document,
-      unit: unit ?? this.unit,
-      volume: volume ?? this.volume,
-      date: date ?? this.date,
-      time: time ?? this.time,
-      value: value ?? this.value,
-      description: description ?? this.description,
-      selected: selected ?? this.selected,
-      isEmpty: isEmpty ?? this.isEmpty,
-      status: status ?? this.status,
-      created_at: created_at ?? this.created_at,
-    );
   }
 
   Map<String, dynamic> toMap() {
@@ -109,7 +80,7 @@ class StockState {
       time: map['time'] ?? '',
       value: map['value'] ?? '',
       description: map['description'] ?? '',
-      selected: Map.from(map['selected']),
+      selected: ItemStock.fromMap(map['selected']),
       isEmpty: map['isEmpty'] ?? false,
       created_at: map['isEmpty'],
     );
@@ -150,5 +121,35 @@ class StockState {
         selected.hashCode ^
         isEmpty.hashCode ^
         status.hashCode;
+  }
+
+  StockState copyWith({
+    String? title,
+    String? document,
+    String? unit,
+    String? volume,
+    String? date,
+    String? time,
+    String? value,
+    String? description,
+    DateTime? created_at,
+    ItemStock? selected,
+    bool? isEmpty,
+    AppStatus? status,
+  }) {
+    return StockState(
+      title: title ?? this.title,
+      document: document ?? this.document,
+      unit: unit ?? this.unit,
+      volume: volume ?? this.volume,
+      date: date ?? this.date,
+      time: time ?? this.time,
+      value: value ?? this.value,
+      description: description ?? this.description,
+      created_at: created_at ?? this.created_at,
+      selected: selected ?? this.selected,
+      isEmpty: isEmpty ?? this.isEmpty,
+      status: status ?? this.status,
+    );
   }
 }

@@ -398,7 +398,7 @@ class CustomFieldDropdown extends StatelessWidget {
               dropdownColor: const Color(0xffF7F8F9),
               value: selectedValue,
               underline: Container(),
-              items: <String>['L', 'kg', 'g', 'un'].map((String value) {
+              items: <String>['L', 'ML', 'KG', 'G', 'un'].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),

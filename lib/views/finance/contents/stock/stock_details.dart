@@ -17,9 +17,10 @@ class StockDetailsScreen extends StatelessWidget {
   StockDetailsScreen({super.key});
 
   final modal = AppModal();
-  String lastEntranceId = "";
+
   @override
   Widget build(BuildContext context) {
+    String lastEntranceId = "";
     return SafeArea(
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -101,12 +102,13 @@ class StockDetailsScreen extends StatelessWidget {
 
                               var timestamp = item["created_at"] as Timestamp;
                               return CardEntrancesWidget(
-                                  doc: entc["document"],
-                                  unit: entc["unit"],
-                                  description: entc["description"],
-                                  created_at: timestamp.toDate().toString(),
-                                  volume: entc["volume"],
-                                  value: double.parse(entc["value"]));
+                                doc: entc["document"],
+                                unit: entc["unit"],
+                                description: entc["description"],
+                                created_at: timestamp.toDate().toString(),
+                                volume: entc["volume"],
+                                value: entc["value"] == '' ? 0 : entc["value"],
+                              );
                             },
                           ),
                         ),
@@ -114,9 +116,10 @@ class StockDetailsScreen extends StatelessWidget {
                           height: 30,
                         ),
                         StockPieChart(
-                            consume: consumedValue,
-                            loss: lossValue,
-                            total: totalValue),
+                          consume: consumedValue,
+                          loss: lossValue,
+                          total: totalValue,
+                        ),
                         const SizedBox(
                           height: 40,
                         ),
@@ -191,7 +194,8 @@ class StockDetailsScreen extends StatelessWidget {
                                           unit: context
                                               .read<StockCubit>()
                                               .state
-                                              .selected["unit"],
+                                              .selected
+                                              .unit,
                                         )),
                                     child: const Text(
                                       "Ver tudo",
@@ -235,7 +239,8 @@ class StockDetailsScreen extends StatelessWidget {
                                           context
                                               .read<StockCubit>()
                                               .state
-                                              .selected["unit"],
+                                              .selected
+                                              .unit,
                                       style: AppTextStyles.medium(
                                         18,
                                       ),
@@ -299,7 +304,8 @@ class StockDetailsScreen extends StatelessWidget {
                                                   unit: context
                                                       .read<StockCubit>()
                                                       .state
-                                                      .selected["unit"],
+                                                      .selected
+                                                      .unit,
                                                 )),
                                         child: Text(
                                           "Nova perda",
@@ -318,7 +324,8 @@ class StockDetailsScreen extends StatelessWidget {
                                                   unit: context
                                                       .read<StockCubit>()
                                                       .state
-                                                      .selected["unit"],
+                                                      .selected
+                                                      .unit,
                                                 )),
                                         child: const Text(
                                           "Ver tudo",
