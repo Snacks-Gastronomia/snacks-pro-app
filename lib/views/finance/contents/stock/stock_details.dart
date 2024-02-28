@@ -23,18 +23,60 @@ class StockDetailsScreen extends StatelessWidget {
     String lastEntranceId = "";
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => modal.showModalBottomSheet(
-              context: context,
-              content: AddDataToStock(
-                typeModal: StockModalOptions.increment,
-                lastEntrance: lastEntranceId,
-              )),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          backgroundColor: Colors.black,
-          child: const Icon(Icons.refresh_rounded),
+        floatingActionButton: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned(
+              left: 30,
+              bottom: 20,
+              child: FloatingActionButton(
+                heroTag: 'Excluir',
+                onPressed: () => context
+                    .read<StockCubit>()
+                    .deleteStockItem()
+                    .then((value) => Navigator.pop(context)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.delete_forever_rounded,
+                  size: 40,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 20,
+              right: 30,
+              child: FloatingActionButton(
+                onPressed: () => modal.showModalBottomSheet(
+                    context: context,
+                    content: AddDataToStock(
+                      typeModal: StockModalOptions.increment,
+                      lastEntrance: lastEntranceId,
+                    )),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                backgroundColor: Colors.black,
+                child: const Icon(Icons.refresh_rounded),
+              ),
+            ),
+            // Add more floating buttons if you want
+            // There is no limit
+          ],
         ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () => modal.showModalBottomSheet(
+        //       context: context,
+        //       content: AddDataToStock(
+        //         typeModal: StockModalOptions.increment,
+        //         lastEntrance: lastEntranceId,
+        //       )),
+        //   shape:
+        //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        //   backgroundColor: Colors.black,
+        //   child: const Icon(Icons.refresh_rounded),
+        // ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         body: FutureBuilder(
             future: context.read<StockCubit>().fetchScreenData(),
             builder: (context, snapshot) {

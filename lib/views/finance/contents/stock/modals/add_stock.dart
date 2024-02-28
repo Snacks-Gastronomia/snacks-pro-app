@@ -331,8 +331,10 @@ class CustomFieldText extends StatelessWidget {
           autofocus: false,
           readOnly: readOnly,
           onChanged: onChangeValue,
-          keyboardType:
-              isNumberType ? TextInputType.number : TextInputType.text,
+          keyboardType: isNumberType
+              ? const TextInputType.numberWithOptions(
+                  decimal: true, signed: true)
+              : TextInputType.text,
           decoration: InputDecoration(
             fillColor: Colors.black.withOpacity(0.033),
             suffixIcon: suffix,

@@ -124,6 +124,11 @@ class StockCubit extends Cubit<StockState> {
     print("selected: ${data.title}");
   }
 
+  Future<void> deleteStockItem() async {
+    var rid = await getRestaurantId();
+    await stockService.deleteStock(rid, state.selected.id);
+  }
+
   getRestaurantId() async {
     var user = await storage.getDataStorage("user");
     return user["restaurant"]["id"];

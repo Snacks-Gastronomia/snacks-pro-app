@@ -119,4 +119,17 @@ class StockServiceApi {
         .collection("entrances")
         .get();
   }
+
+  Future<void> deleteStock(restaurant_id, stockid) async {
+    try {
+      await firebase
+          .collection("restaurants")
+          .doc(restaurant_id)
+          .collection("stock")
+          .doc(stockid)
+          .delete();
+    } catch (e) {
+      print(e);
+    }
+  }
 }
