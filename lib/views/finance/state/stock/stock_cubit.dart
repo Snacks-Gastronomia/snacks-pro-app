@@ -75,31 +75,34 @@ class StockCubit extends Cubit<StockState> {
   // }
 
   Future<void> save(bool isNew, {String? lastEntranceId}) async {
-    var user = await storage.getDataStorage("user");
-    var rid = user["restaurant"]["id"];
-    emit(state.copyWith(
-        created_at: DateTime.now(), title: state.selected.title));
+    try {
+      var user = await storage.getDataStorage("user");
+      var rid = user["restaurant"]["id"];
+      emit(state.copyWith(created_at: DateTime.now(), title: state.title));
 
-    if (isNew) {
-      await stockService.newStockEntrance(rid, state.toMap());
-    } else {
-      var stock = state.selected.id;
-      var consume = state.selected.consumed;
-      var loss = state.selected.losses;
-      var total = state.selected.total;
-
-      emit(state.copyWith(title: state.selected.title));
-
-      if (lastEntranceId != null) {
-        await stockService.newStockEntrance(rid, state.toMap(),
-            stockItemId: stock,
-            pastConsume: double.parse(consume.toString()),
-            pastLoss: double.parse(loss.toString()),
-            pastTotal: double.parse(total.toString()),
-            entranceId: lastEntranceId);
+      if (isNew) {
+        await stockService.newStockEntrance(rid, state.toMap());
       } else {
-        print("no last entrance id");
+        var stock = state.selected.id;
+        var consume = state.selected.consumed;
+        var loss = state.selected.losses;
+        var total = state.selected.total;
+
+        emit(state.copyWith(title: state.selected.title));
+
+        if (lastEntranceId != null) {
+          await stockService.newStockEntrance(rid, state.toMap(),
+              stockItemId: stock,
+              pastConsume: double.parse(consume.toString()),
+              pastLoss: double.parse(loss.toString()),
+              pastTotal: double.parse(total.toString()),
+              entranceId: lastEntranceId);
+        } else {
+          print("no last entrance id");
+        }
       }
+    } catch (e) {
+      print("error: $e");
     }
   }
 
@@ -125,8 +128,12 @@ class StockCubit extends Cubit<StockState> {
   }
 
   Future<void> deleteStockItem() async {
-    var rid = await getRestaurantId();
-    await stockService.deleteStock(rid, state.selected.id);
+    try {
+      var rid = await getRestaurantId();
+      await stockService.deleteStock(rid, state.selected.id);
+    } catch (e) {
+      print("error: $e");
+    }
   }
 
   getRestaurantId() async {

@@ -149,7 +149,9 @@ class StockDetailsScreen extends StatelessWidget {
                                 description: entc["description"],
                                 created_at: timestamp.toDate().toString(),
                                 volume: entc["volume"],
-                                value: entc["value"] == '' ? 0 : entc["value"],
+                                value: entc["value"] == ''
+                                    ? 0
+                                    : double.parse(entc["value"]),
                               );
                             },
                           ),
