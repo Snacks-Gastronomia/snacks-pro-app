@@ -14,7 +14,8 @@ import 'package:snacks_pro_app/views/finance/contents/stock/modals/history_stock
 import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
 
 class StockDetailsScreen extends StatelessWidget {
-  StockDetailsScreen({super.key});
+  StockDetailsScreen({super.key, required this.itemId});
+  final String itemId;
 
   final modal = AppModal();
 
@@ -78,7 +79,7 @@ class StockDetailsScreen extends StatelessWidget {
         // ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         body: FutureBuilder(
-            future: context.read<StockCubit>().fetchScreenData(),
+            future: context.read<StockCubit>().fetchScreenData(itemId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CustomCircularProgress();
@@ -151,7 +152,7 @@ class StockDetailsScreen extends StatelessWidget {
                                 volume: entc["volume"],
                                 value: entc["value"] == ''
                                     ? 0
-                                    : double.parse(entc["value"].toString()),
+                                    : double.parse(entc["value"]),
                               );
                             },
                           ),

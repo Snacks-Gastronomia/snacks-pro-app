@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/components/custom_circular_progress.dart';
-import 'package:snacks_pro_app/core/app.routes.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/models/item_stock.dart';
+import 'package:snacks_pro_app/views/finance/contents/stock/stock_details.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/widgets/stock_card.dart';
 import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
 
@@ -77,8 +77,16 @@ class StockScreen extends StatelessWidget {
                             await context
                                 .read<StockCubit>()
                                 .selectStockItem(item)
-                                .then((value) => Navigator.pushNamed(
-                                    context, AppRoutes.stockDetails));
+                                .then(
+                                  (value) => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => StockDetailsScreen(
+                                        itemId: item.id,
+                                      ),
+                                    ),
+                                  ),
+                                );
                           },
                         );
                       },

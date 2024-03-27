@@ -286,7 +286,9 @@ class NewStockItem extends StatelessWidget {
             onPressedAction: () => context
                 .read<StockCubit>()
                 .save(isNew, lastEntranceId: lastEntrance)
-                .then((value) => Navigator.pop(context)),
+                .then(
+                  (value) => Navigator.pop(context),
+                ),
             label: "Adicionar")
       ],
     );

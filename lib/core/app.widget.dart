@@ -15,7 +15,6 @@ import 'package:snacks_pro_app/views/authentication/unathorized_screen.dart';
 import 'package:snacks_pro_app/views/conference/pages/conference_resume_page.dart';
 import 'package:snacks_pro_app/views/conference/pages/message_conference_page.dart';
 import 'package:snacks_pro_app/views/finance/contents/restaurants/new_restaurant.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/stock_details.dart';
 // import 'package:snacks_pro_app/views/finance/contents/stock/stock.dart';
 import 'package:snacks_pro_app/views/finance/contents/stock/stock_screen.dart';
 import 'package:snacks_pro_app/views/finance/home_finance.dart';
@@ -142,7 +141,6 @@ class AppWidget extends StatelessWidget {
                   AppRoutes.unathorizedAuth: (context) =>
                       const UnathorizedScreen(),
                   AppRoutes.stock: (context) => StockScreen(),
-                  AppRoutes.stockDetails: (context) => StockDetailsScreen(),
                   AppRoutes.conferenceMessage: (context) =>
                       const MessageConferencePage(),
                   AppRoutes.conference: (context) =>
