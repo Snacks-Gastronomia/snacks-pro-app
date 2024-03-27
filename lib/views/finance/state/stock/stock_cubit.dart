@@ -124,7 +124,7 @@ class StockCubit extends Cubit<StockState> {
 
   Future<void> selectStockItem(ItemStock data) async {
     emit(state.copyWith(selected: data));
-    print("selected: ${data.title}");
+    print("selected: ${state.selected.title}");
   }
 
   Future<void> deleteStockItem() async {
@@ -171,9 +171,9 @@ class StockCubit extends Cubit<StockState> {
     return await stockService.getEntrances(rid, sid);
   }
 
-  Future<dynamic> fetchScreenData() async {
+  Future<dynamic> fetchScreenData(String id) async {
     var rid = await getRestaurantId();
-    var stock = state.selected.id;
+    var stock = id;
 
     var futures = await Future.wait([
       fetchStockEntrances(rid, stock),
