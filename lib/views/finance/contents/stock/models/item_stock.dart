@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -58,10 +59,11 @@ class ItemStock {
   }
   factory ItemStock.fromData(QueryDocumentSnapshot<Map<String, dynamic>> raw) {
     var map = raw.data();
+    log(map.toString());
     return ItemStock(
       id: raw.id,
-      unit: map['unit'] as String,
-      title: map['title'] as String,
+      unit: map['unit'] ?? "",
+      title: map['title'] ?? "",
       created_at: map['created_at'].toDate() as DateTime,
       losses: double.parse(map['losses'].toString()),
       consumed: double.parse(map['consumed'].toString()),

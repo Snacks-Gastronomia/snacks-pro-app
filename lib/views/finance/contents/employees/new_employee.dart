@@ -35,7 +35,6 @@ class NewEmployeeScreen extends StatelessWidget {
                     navigator.pop();
                   } else {
                     toast.showToast(
-                        context: context,
                         content:
                             "Não foi possível salvar o funcionário: verifique o número, ele pode já está cadastrado!",
                         type: ToastType.error);

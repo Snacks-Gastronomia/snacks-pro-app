@@ -116,7 +116,6 @@ class _ReportScreenState extends State<ReportScreen> {
                         stateButton.toggle();
                         // ignore: use_build_context_synchronously
                         toast.showToast(
-                            context: context,
                             content: "Relatório salvo em Documentos!",
                             type: ToastType.info);
                         // SnackBar(

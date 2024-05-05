@@ -1,7 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:snacks_pro_app/utils/modal.dart';
-import 'package:snacks_pro_app/views/finance/contents/stock/modals/add_item_modal.dart';
 
 class BlueButtomAdd extends StatelessWidget {
   const BlueButtomAdd({super.key, required this.label, required this.action});

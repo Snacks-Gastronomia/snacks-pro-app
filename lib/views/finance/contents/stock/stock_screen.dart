@@ -63,6 +63,7 @@ class StockScreen extends StatelessWidget {
                   Expanded(
                     child: ListView.builder(
                       itemCount: docs.length,
+                      physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
                         var raw = docs[index];
                         ItemStock item = ItemStock.fromData(raw);

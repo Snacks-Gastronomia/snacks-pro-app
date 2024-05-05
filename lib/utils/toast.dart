@@ -12,7 +12,7 @@ class AppToast {
   init({context}) => fToast.init(context);
 
   showToast(
-          {required context,
+          {context,
           required String content,
           color,
           background,

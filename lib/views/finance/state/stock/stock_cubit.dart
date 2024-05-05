@@ -74,14 +74,23 @@ class StockCubit extends Cubit<StockState> {
   //   emit(state.copyWith(unit: value));
   // }
 
-  Future<void> save(bool isNew, {String? lastEntranceId}) async {
+  Future<bool> save(bool isNew, {String? lastEntranceId}) async {
     try {
       var user = await storage.getDataStorage("user");
       var rid = user["restaurant"]["id"];
       emit(state.copyWith(created_at: DateTime.now(), title: state.title));
 
       if (isNew) {
+        if (state.title.isEmpty ||
+            state.volume.isEmpty ||
+            state.unit.isEmpty ||
+            state.date.isEmpty ||
+            state.time.isEmpty ||
+            state.value.isEmpty ||
+            state.description.isEmpty) return false;
+
         await stockService.newStockEntrance(rid, state.toMap());
+        return true;
       } else {
         var stock = state.selected.id;
         var consume = state.selected.consumed;
@@ -90,6 +99,13 @@ class StockCubit extends Cubit<StockState> {
 
         emit(state.copyWith(title: state.selected.title));
 
+        if (state.volume.isEmpty ||
+            state.unit.isEmpty ||
+            state.date.isEmpty ||
+            state.time.isEmpty ||
+            state.value.isEmpty ||
+            state.description.isEmpty) return false;
+
         if (lastEntranceId != null) {
           await stockService.newStockEntrance(rid, state.toMap(),
               stockItemId: stock,
@@ -97,12 +113,15 @@ class StockCubit extends Cubit<StockState> {
               pastLoss: double.parse(loss.toString()),
               pastTotal: double.parse(total.toString()),
               entranceId: lastEntranceId);
+          return true;
         } else {
           print("no last entrance id");
+          return false;
         }
       }
     } catch (e) {
       print("error: $e");
+      return false;
     }
   }
 

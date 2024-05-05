@@ -73,7 +73,6 @@ class ConferenceController {
     if (conferenceIsValidate()) {
       service.createConference(store.conferenceModel);
       toast.showToast(
-        context: context,
         content: 'Conferência criada com sucesso',
         type: ToastType.success,
       );
@@ -81,7 +80,6 @@ class ConferenceController {
           context, AppRoutes.home, (route) => false);
     } else {
       toast.showToast(
-        context: context,
         content: 'Preencha todos os campos',
         type: ToastType.error,
       );

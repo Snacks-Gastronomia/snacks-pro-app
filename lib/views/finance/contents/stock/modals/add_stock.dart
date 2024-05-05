@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snacks_pro_app/components/custom_submit_button.dart';
 import 'package:snacks_pro_app/core/app.text.dart';
 import 'package:snacks_pro_app/utils/enums.dart';
+import 'package:snacks_pro_app/utils/toast.dart';
 import 'package:snacks_pro_app/views/finance/state/stock/stock_cubit.dart';
 
 class AddDataToStock extends StatelessWidget {
@@ -160,7 +161,7 @@ class NewStockItem extends StatelessWidget {
         ),
         if (isNew)
           CustomFieldText(
-            title: "Titulo",
+            title: "Titulo*",
             hintText: "Ex.: Batatas",
             onChangeValue: (value) =>
                 context.read<StockCubit>().onChangeState(title: value),
@@ -176,7 +177,7 @@ class NewStockItem extends StatelessWidget {
           children: [
             Flexible(
                 child: CustomFieldText(
-              title: "Quantidade",
+              title: "Quantidade*",
               hintText: "Ex: 200",
               isNumberType: true,
               onChangeValue: (value) =>
@@ -189,7 +190,7 @@ class NewStockItem extends StatelessWidget {
               builder: (context, state) {
                 return Flexible(
                     child: CustomFieldDropdown(
-                  title: "Medida",
+                  title: "Medida*",
                   readOnly: !isNew,
                   selectedValue: state.unit == "" ? null : state.unit,
                   onChangeValue: (value) =>
@@ -205,13 +206,12 @@ class NewStockItem extends StatelessWidget {
               children: [
                 Flexible(
                   child: CustomFieldText(
-                      title: "Data de entrada",
+                      title: "Data de entrada*",
                       hintText: state.date,
                       readOnly: true,
                       onChangeValue: (p0) {},
                       suffix: GestureDetector(
                         onTap: () async {
-                          print("object");
                           var value = await showDatePicker(
                             context: context,
                             initialEntryMode: DatePickerEntryMode.input,
@@ -244,18 +244,19 @@ class NewStockItem extends StatelessWidget {
                     }
                   },
                   child: CustomFieldText(
-                    title: "Hora de entrada",
+                    title: "Hora de entrada*",
                     hintText: state.time,
                     readOnly: true,
                     onChangeValue: (p0) {},
                     suffix: GestureDetector(
                         onTap: () async {
+                          var cubit = context.read<StockCubit>();
                           var selectedTime = await showTimePicker(
                             initialTime: TimeOfDay.now(),
                             context: context,
                           );
                           if (selectedTime != null) {
-                            context.read<StockCubit>().onChangeState(
+                            cubit.onChangeState(
                                 time: selectedTime.format(context));
                           }
                         },
@@ -267,14 +268,14 @@ class NewStockItem extends StatelessWidget {
           },
         ),
         CustomFieldText(
-          title: "Valor",
+          title: "Valor*",
           hintText: "",
           isNumberType: true,
           onChangeValue: (value) =>
               context.read<StockCubit>().onChangeState(value: value),
         ),
         CustomFieldText(
-          title: "Descrição",
+          title: "Descrição*",
           hintText: "",
           onChangeValue: (value) =>
               context.read<StockCubit>().onChangeState(description: value),
@@ -283,12 +284,21 @@ class NewStockItem extends StatelessWidget {
           height: 30,
         ),
         CustomSubmitButton(
-            onPressedAction: () => context
-                .read<StockCubit>()
-                .save(isNew, lastEntranceId: lastEntrance)
-                .then(
-                  (value) => Navigator.pop(context),
-                ),
+            onPressedAction: () async {
+              final toast = AppToast();
+              toast.init(context: context);
+
+              var res = await context
+                  .read<StockCubit>()
+                  .save(isNew, lastEntranceId: lastEntrance);
+              if (!res) {
+                toast.showToast(
+                    content: "Preencha os campos vazios",
+                    type: ToastType.error);
+              } else {
+                Navigator.pop(context);
+              }
+            },
             label: "Adicionar")
       ],
     );
